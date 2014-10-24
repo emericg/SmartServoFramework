@@ -1023,30 +1023,7 @@ void Dynamixel::printTxPacket()
     printf("]\n");
 }
 
-void Dynamixel::dxl_ping(const int id)
-{
-    while(commLock);
-
-    if (protocolVersion == 2)
-    {
-        txPacket[PKT2_ID] = get_lowbyte(id);
-        txPacket[PKT2_INSTRUCTION] = INST_PING;
-        txPacket[PKT2_LENGTH_L] = 3;
-        txPacket[PKT2_LENGTH_H] = 0;
-
-        // Please note: ping v2 send parameters back
-    }
-    else
-    {
-        txPacket[PKT1_ID] = get_lowbyte(id);
-        txPacket[PKT1_INSTRUCTION] = INST_PING;
-        txPacket[PKT1_LENGTH] = 2;
-    }
-
-    dxl_txrx_packet();
-}
-
-bool Dynamixel::dxl_ping_advanced(const int id, PingResponse *status)
+bool Dynamixel::dxl_ping(const int id, PingResponse *status)
 {
     bool retcode = false;
 

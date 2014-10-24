@@ -147,8 +147,7 @@ protected:
     void printTxPacket();           //!< Print the TX buffer (last packet sent)
 
     // Instructions
-    void hkx_ping(const int id);
-    bool hkx_ping_advanced(const int id, PingResponse *status = NULL);
+    bool hkx_ping(const int id, PingResponse *status = NULL);
 
     void hkx_reset(const int id, int setting = RESET_ALL_EXCEPT_ID);
     void hkx_reboot(const int id);

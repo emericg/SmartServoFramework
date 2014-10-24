@@ -148,8 +148,7 @@ protected:
     void printTxPacket();           //!< Print the TX buffer (last packet sent)
 
     // Instructions
-    void dxl_ping(const int id);
-    bool dxl_ping_advanced(const int id, PingResponse *status = NULL);
+    bool dxl_ping(const int id, PingResponse *status = NULL);
 
     /*!
      * \brief Reset servo control table.

@@ -144,7 +144,7 @@ void HerkuleXController::autodetect_internal(int start, int stop)
         PingResponse pingstats;
 
         // If the ping gets a response, then we have found a servo
-        if (hkx_ping_advanced(id, &pingstats) == true)
+        if (hkx_ping(id, &pingstats) == true)
         {
             //setLed(id, 1, LED_GREEN);
 

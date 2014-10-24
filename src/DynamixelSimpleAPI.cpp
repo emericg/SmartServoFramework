@@ -159,7 +159,7 @@ std::vector <int> DynamixelSimpleAPI::servoScan(int start, int stop)
         PingResponse pingstats;
 
         // If the ping gets a response, then we have found a servo
-        if (dxl_ping_advanced(id, &pingstats) == true)
+        if (dxl_ping(id, &pingstats) == true)
         {
             setLed(id, 1, LED_GREEN);
 
@@ -191,7 +191,7 @@ std::vector <int> DynamixelSimpleAPI::servoScan(int start, int stop)
 
 bool DynamixelSimpleAPI::ping(const int id, PingResponse *status)
 {
-    return dxl_ping_advanced(id, status);
+    return dxl_ping(id, status);
 }
 
 void DynamixelSimpleAPI::action(const int id)

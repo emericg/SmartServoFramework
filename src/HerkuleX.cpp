@@ -722,18 +722,7 @@ void HerkuleX::printTxPacket()
     printf("]\n");
 }
 
-void HerkuleX::hkx_ping(const int id)
-{
-    while(commLock);
-
-    txPacket[PKT_ID] = get_lowbyte(id);
-    txPacket[PKT_CMD] = CMD_STAT;
-    txPacket[PKT_LENGTH] = 7;
-
-    hkx_txrx_packet();
-}
-
-bool HerkuleX::hkx_ping_advanced(const int id, PingResponse *status)
+bool HerkuleX::hkx_ping(const int id, PingResponse *status)
 {
     bool retcode = false;
 

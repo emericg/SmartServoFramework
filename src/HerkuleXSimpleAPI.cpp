@@ -159,7 +159,7 @@ std::vector <int> HerkuleXSimpleAPI::servoScan(int start, int stop)
         PingResponse pingstats;
 
         // If the ping gets a response, then we have found a servo
-        if (hkx_ping_advanced(id, &pingstats) == true)
+        if (hkx_ping(id, &pingstats) == true)
         {
             setLed(id, 1, LED_GREEN);
 
@@ -191,7 +191,7 @@ std::vector <int> HerkuleXSimpleAPI::servoScan(int start, int stop)
 
 bool HerkuleXSimpleAPI::ping(const int id, PingResponse *status)
 {
-    return hkx_ping_advanced(id, status);
+    return hkx_ping(id, status);
 }
 
 void HerkuleXSimpleAPI::reboot(const int id)
