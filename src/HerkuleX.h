@@ -54,7 +54,7 @@ private:
     /*!
      * The software lock used to lock the serial interface, to avoid concurent
      * reads/writes that would lead to multiplexing and packet corruptions.
-     * We need one lock per Dynamixel (or DynamixelController) instance because
+     * We need one lock per HerkuleX (or HerkuleXController) instance because
      * we want to keep the ability to use multiple serial interface simultaneously
      * (ex: /dev/tty0 and /dev/ttyUSB0).
      */
@@ -66,39 +66,6 @@ private:
     void hkx_rx_packet();
     void hkx_txrx_packet();
 
-public:
-    /*!
-     * \brief Change protocol version.
-     * \param protocol: The Dynamixel communication protocol to use. Can be v1 (default) or v2.
-     */
-    void setProtocolVersion(int protocol);
-
-    /*!
-     * \brief Open a serial link with the given parameters.
-     * \param deviceName: The name of the device OR the path to the device node.
-     * \param baud: The baudrate or dynamixel 'baudnum'.
-     * \param serialDevice: Specify (if known) what TTL converter is in use.
-     * \return 1 if success, 0 otherwise.
-     */
-    int serialInitialize(std::string &deviceName, const int baud, const int serialDevice = SERIAL_UNKNOWN);
-
-    /*!
-     * \brief Make sure the serial link is properly closed.
-     */
-    void serialTerminate();
-
-    /*!
-     * \brief Get the name of the serial device associated with this Dynamixel instance.
-     * \return The path to the serial device node (ex: "/dev/ttyUSB0").
-     */
-    std::string serialGetCurrentDevice();
-
-    /*!
-     * \brief Get the available serial devices.
-     * \return The path to all the serial device nodes available (ex: "/dev/ttyUSB0").
-     */
-    std::vector <std::string> serialGetAvailableDevices();
-
 protected:
     HerkuleX();
     virtual ~HerkuleX() = 0;
@@ -109,6 +76,22 @@ protected:
     int protocolVersion;                        //!< Version of the communication protocol in use.
     int maxId;                                  //!< Store in the maximum value for servo IDs.
     int ackPolicy;                              //!< Set the status/ack packet return policy (0: No return; 1: Return for READ commands; 2: Return for all commands).
+
+    // Handle serial link
+    ////////////////////////////////////////////////////////////////////////////
+
+    /*!
+     * \brief Open a serial link with the given parameters.
+     * \param deviceName: The name of the device OR the path to the device node.
+     * \param baud: The baudrate or HerkuleX 'baudnum'.
+     * \return 1 if success, 0 otherwise.
+     */
+    int serialInitialize(std::string &deviceName, const int baud);
+
+    /*!
+     * \brief Make sure the serial link is properly closed.
+     */
+    void serialTerminate();
 
     // Low level API
     ////////////////////////////////////////////////////////////////////////////
@@ -148,10 +131,8 @@ protected:
 
     // Instructions
     bool hkx_ping(const int id, PingResponse *status = NULL);
-
     void hkx_reset(const int id, int setting = RESET_ALL_EXCEPT_ID);
     void hkx_reboot(const int id);
-    void hkx_action(const int id);
 
     // DOCME // Read/write register instructions
     int hkx_read_byte(const int id, const int address, const int register_type = REGISTER_RAM);
@@ -160,6 +141,19 @@ protected:
     void hkx_write_word(const int id, const int address, const int value, const int register_type = REGISTER_RAM);
     void hkx_i_jog(const int id, const int mode, const int value);
     void hkx_s_jog(const int id, const int mode, const int value);
+
+public:
+    /*!
+     * \brief Get the name of the serial device associated with this HerkuleX instance.
+     * \return The path to the serial device node (ex: "/dev/ttyUSB0").
+     */
+    std::string serialGetCurrentDevice();
+
+    /*!
+     * \brief Get the available serial devices.
+     * \return The path to all the serial device nodes available (ex: "/dev/ttyUSB0").
+     */
+    std::vector <std::string> serialGetAvailableDevices();
 };
 
 #endif /* HERKULEX_H */

@@ -33,7 +33,7 @@
  *
  * This class provide a high level API to handle servos with minimal efforts.
  * One "Simple API" instance can only be attached to ONE serial link at a time,
- * but you can create has many instances as you need.
+ * but you can create as many instances as you need.
  *
  * You must specify what device class you will be using for this API to operate
  * efficiently. If you want to use this API with multiple servo series at the
@@ -65,10 +65,24 @@ public:
     /*!
      * \brief DynamixelSimpleAPI destructor.
      *
-     * The destructor calls the serialTerminate() function to make sure the serial
+     * The destructor calls the disconnect() function to make sure the serial
      * port is properly freed.
      */
     ~DynamixelSimpleAPI();
+
+    /*!
+     * \brief Connect the SimpleAPI to a serial port.
+     * \param deviceName: The serial port device node.
+     * \param baud: The serial port speed, can be a baud rate or a 'baudnum'.
+     * \param serialDevice: If known, the serial adapter model used by this link.
+     * \return 1 if the connection is successfull, 0 otherwise.
+     */
+    int connect(std::string &deviceName, const int baud, const int serialDevice = SERIAL_UNKNOWN);
+
+    /*!
+     * \brief Stop the serial connection.
+     */
+    void disconnect();
 
     /*!
      * \brief Scan a serial link for Dynamixel devices.

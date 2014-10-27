@@ -33,6 +33,17 @@
 DynamixelController::DynamixelController(int freq, int servoSerie):
     ControllerAPI(freq)
 {
+    this->servoSerie = servoSerie;
+    updateInternalSettings();
+}
+
+DynamixelController::~DynamixelController()
+{
+    disconnect();
+}
+
+void DynamixelController::updateInternalSettings()
+{
     if (servoSerie != SERVO_UNKNOWN)
     {
         std::cout << std::endl;
@@ -83,14 +94,6 @@ DynamixelController::DynamixelController(int freq, int servoSerie):
     {
         std::cerr << "Warning: Unknown servo serie!" << std::endl;
     }
-
-    startThread();
-}
-
-DynamixelController::~DynamixelController()
-{
-    stopThread();
-    serialTerminate();
 }
 
 void DynamixelController::changeProtocolVersion(int protocol)
@@ -124,13 +127,28 @@ void DynamixelController::changeProtocolVersion(int protocol)
     }
 }
 
-int DynamixelController::serialInitialize_wrapper(std::string &deviceName, const int baud, const int serialDevice)
+int DynamixelController::connect(std::string &deviceName, const int baud, const int serialDevice)
 {
-    return serialInitialize(deviceName, baud, serialDevice);
+    this->serialDevice = serialDevice;
+    updateInternalSettings();
+
+    int retcode = serialInitialize(deviceName, baud);
+
+    if (retcode == 1)
+    {
+        startThread();
+    }
+
+    return retcode;
 }
 
-void DynamixelController::serialTerminate_wrapper()
+void DynamixelController::disconnect()
 {
+    stopThread();
+
+    unregisterServos_internal();
+    clearMessageQueue();
+
     serialTerminate();
 }
 
@@ -245,7 +263,7 @@ void DynamixelController::run()
     std::cout << "DynamixelController::run(port: '" << serialGetCurrentDevice() << "' | tid: '" << std::this_thread::get_id() << "')" << std::endl;
     std::chrono::time_point<std::chrono::system_clock> start, end;
 
-    while (syncloopRunning)
+    while (controllerState >= state_started)
     {
         // Loop timer
         start = std::chrono::system_clock::now();

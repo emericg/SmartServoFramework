@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
     {
         // Initialize a serial link for the controller with serial port auto-detection
         std::string deviceName = "auto";
-        if (dxl.serialInitialize(deviceName, i) == 0)
+        if (dxl.connect(deviceName, i) == 0)
         {
             std::cerr << "> Failed to open a serial link for our SimpleAPI!" << std::endl;
             break;
@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
         }
 
         // Close device(s)
-        dxl.serialTerminate();
+        dxl.disconnect();
     }
 
     std::cout << std::endl << "======== SEARCH RESULTS ========" << std::endl;

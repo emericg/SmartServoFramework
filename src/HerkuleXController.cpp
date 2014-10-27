@@ -33,6 +33,17 @@
 HerkuleXController::HerkuleXController(int freq, int servoSerie):
     ControllerAPI(freq)
 {
+    this->servoSerie = servoSerie;
+    updateInternalSettings();
+}
+
+HerkuleXController::~HerkuleXController()
+{
+    disconnect();
+}
+
+void HerkuleXController::updateInternalSettings()
+{
     if (servoSerie != SERVO_UNKNOWN)
     {
         std::cout << std::endl;
@@ -83,23 +94,30 @@ HerkuleXController::HerkuleXController(int freq, int servoSerie):
     {
         std::cerr << "Warning: Unknown servo serie!" << std::endl;
     }
-
-    startThread();
 }
 
-HerkuleXController::~HerkuleXController()
+int HerkuleXController::connect(std::string &deviceName, const int baud, const int serialDevice)
+{
+    this->serialDevice = serialDevice;
+    updateInternalSettings();
+
+    int retcode = serialInitialize(deviceName, baud);
+
+    if (retcode == 1)
+    {
+        startThread();
+    }
+
+    return retcode;
+}
+
+void HerkuleXController::disconnect()
 {
     stopThread();
-    serialTerminate();
-}
 
-int HerkuleXController::serialInitialize_wrapper(std::string &deviceName, const int baud, const int serialDevice)
-{
-    return serialInitialize(deviceName, baud, serialDevice);
-}
+    unregisterServos_internal();
+    clearMessageQueue();
 
-void HerkuleXController::serialTerminate_wrapper()
-{
     serialTerminate();
 }
 
@@ -201,7 +219,7 @@ void HerkuleXController::run()
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
 
-    while (syncloopRunning)
+    while (controllerState >= state_started)
     {
         // Loop timer
         start = std::chrono::system_clock::now();

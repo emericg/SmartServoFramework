@@ -113,6 +113,17 @@ DynamixelSimpleAPI::DynamixelSimpleAPI(int servos)
 
 DynamixelSimpleAPI::~DynamixelSimpleAPI()
 {
+    disconnect();
+}
+
+int DynamixelSimpleAPI::connect(std::string &deviceName, const int baud, const int serialDevice)
+{
+    this->serialDevice = serialDevice;
+    return serialInitialize(deviceName, baud);
+}
+
+void DynamixelSimpleAPI::disconnect()
+{
     serialTerminate();
 }
 

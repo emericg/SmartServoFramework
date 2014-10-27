@@ -85,7 +85,7 @@ HerkuleX::HerkuleX():
     rxPacketSizeReceived(0),
     commLock(0),
     commStatus(COMM_RXSUCCESS),
-    serialDevice(0),
+    serialDevice(SERIAL_UNKNOWN),
     servoSerie(SERVO_HERKULEX),
     protocolVersion(1)
 {
@@ -98,21 +98,14 @@ HerkuleX::~HerkuleX()
     serialTerminate();
 }
 
-void HerkuleX::setProtocolVersion(int protocol)
-{
-    if (protocol == 1)
-    {
-        protocolVersion = protocol;
-    }
-    else
-    {
-        std::cerr << "Error: Unknown communication protocol version '" << protocolVersion << "'" << std::endl;
-    }
-}
-
-int HerkuleX::serialInitialize(std::string &deviceName, const int baud, const int serialDevice)
+int HerkuleX::serialInitialize(std::string &deviceName, const int baud)
 {
     int status = 0;
+
+    if (serial != NULL)
+    {
+        serialTerminate();
+    }
 
     // Instanciate a different serial subclass, depending on the current OS
 #if defined(__linux__) || defined(__gnu_linux)
@@ -790,11 +783,6 @@ void HerkuleX::hkx_reboot(const int id)
     txPacket[PKT_CMD] = CMD_REBOOT;
 
     hkx_txrx_packet();
-}
-
-void HerkuleX::hkx_action(const int id)
-{
-    // NOT AVAILABLE ?!
 }
 
 int HerkuleX::hkx_read_byte(const int id, const int address, const int register_type)

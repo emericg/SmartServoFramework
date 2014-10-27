@@ -101,7 +101,7 @@ int dxl_get_servo_model(const int model_number);
  * Valid baudnum values are in range 1 to 254, which gives us baudrate values
  * of 1MB/s to 7,84kB/s.
  *
- * However, the MX dynamixel series have a maximum speed of 4.5MB/s (which is
+ * However, the MX Dynamixel series have a maximum speed of 4.5MB/s (which is
  * the maximum speed for most high-end desktop UART and also for the USB2Dynamixel).
  * To handle MX series correctly and set them to speeds higher than 1MB/s, we use
  * the forumla for the baudnum in range 1-249 and interpret values 250 to 254

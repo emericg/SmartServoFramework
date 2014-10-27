@@ -410,7 +410,7 @@ void MainWindow::scanServos(QString port_qstring)
                 // Scan
                 if (h->deviceController != NULL)
                 {
-                    if (h->deviceController->serialInitialize_wrapper(port_stdstring, speed) == 1)
+                    if (h->deviceController->connect(port_stdstring, speed) == 1)
                     {
                         // Scan for servo(s)
                         h->deviceController->autodetect(ui->rangeStart_spinBox->value(), ui->rangeStop_spinBox->value());

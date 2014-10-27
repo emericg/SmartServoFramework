@@ -399,7 +399,7 @@ void AdvanceScanner::startScan()
 
                         // Initialize a Dynamixel (v1) instance on current serial port
                         DynamixelSimpleAPI dxl(SERVO_MX);
-                        if (dxl.serialInitialize(port, baudnum) != 0)
+                        if (dxl.connect(port, baudnum) != 0)
                         {
                             ui->treeWidget_results->setCurrentItem(wport);
 
@@ -410,7 +410,7 @@ void AdvanceScanner::startScan()
                             results += servoscan_dxl(&dxl, wport, baudrate);
 
                             // Close device(s)
-                            dxl.serialTerminate();
+                            dxl.disconnect();
                         }
                     }
                 }
@@ -438,7 +438,7 @@ void AdvanceScanner::startScan()
 
                         // Initialize a Dynamixel (v2) instance on current serial port
                         DynamixelSimpleAPI dxl(SERVO_XL);
-                        if (dxl.serialInitialize(port, baudnum) != 0)
+                        if (dxl.connect(port, baudnum) != 0)
                         {
                             // Update progress string
                             ui->label_progress->setText("Dynamixel v2  on  " + QString::fromStdString(port) + "  @  " + QString::number(baudrate));
@@ -447,7 +447,7 @@ void AdvanceScanner::startScan()
                             results += servoscan_dxl(&dxl, wport, baudrate);
 
                             // Close device(s)
-                            dxl.serialTerminate();
+                            dxl.disconnect();
                         }
                     }
                 }
@@ -476,7 +476,7 @@ void AdvanceScanner::startScan()
 
                         // Initialize a HerkuleX instance on current serial port
                         HerkuleXSimpleAPI hkx;
-                        if (hkx.serialInitialize(port, baudrate) != 0)
+                        if (hkx.connect(port, baudrate) != 0)
                         {
                             // Update progress string
                             ui->label_progress->setText("HerkuleX  on  " + QString::fromStdString(port) + "  @  " + QString::number(baudrate));
@@ -485,7 +485,7 @@ void AdvanceScanner::startScan()
                             results += servoscan_hkx(&hkx, wport, baudrate);
 
                             // Close device(s)
-                            hkx.serialTerminate();
+                            hkx.disconnect();
                         }
                     }
                 }

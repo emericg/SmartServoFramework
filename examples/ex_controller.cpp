@@ -62,14 +62,11 @@ int main(int argc, char *argv[])
     // You can specify the serial port path directly if you know it. Ex: "/dev/ttyUSB0" for a Linux system; "//./COM1" for a Windows system.
     // Note: serial port "auto-detection" will only work if a single serial port adapter is connected to your computer, or if the fisrt one detected is the one connected to your devices.
     std::string deviceName = "auto";
-    if (ctrl.serialInitialize(deviceName, 1) == 0)
+    if (ctrl.connect(deviceName, 1) == 0)
     {
         std::cerr << "> Failed to open a serial link for our ControllerAPI! Exiting..." << std::endl;
         exit(EXIT_FAILURE);
     }
-
-    // Start sync thread
-    ctrl.startThread();
 
     std::cout << std::endl << "======== Dynamixel Servos ========" << std::endl;
 
@@ -150,9 +147,8 @@ int main(int argc, char *argv[])
 
     std::cout << std::endl << "======== EXITING ========" << std::endl;
 
-    // Stop controller(s) and close serial device(s)
-    ctrl.stopThread();
-    ctrl.serialTerminate();
+    // Stop controller and close serial device(s)
+    ctrl.disconnect();
 
     return EXIT_SUCCESS;
 }

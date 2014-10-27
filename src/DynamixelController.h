@@ -39,15 +39,18 @@
 /*!
  * \brief The DynamixelController class
  *
- * A "controller" provide a high level API to handle several servos object at the
- * same time. A program must instanciate servos instances and register them to
- * a controller. Each servo object is synchronized with its hardware counterpart
- * by the run() method, running in its own backgound thread.
+ * A "controller" provide a high level API to handle several servos at the same time.
+ * A client must instanciate servos objects and register them to a controller.
+ * Each servo object is synchronized with its hardware counterpart by the run()
+ * method, running in its own backgound thread.
  *
  * A DynamixelController instance can only be attached to ONE serial link at a time.
  */
 class DynamixelController: public Dynamixel, public ControllerAPI
 {
+    //! Compute some internal settings (ackPolicy, maxId, protocolVersion) depending on current servo serie and serial device.
+    void updateInternalSettings();
+
     //! Read/write synchronization loop, running inside its own background thread
     void run();
 
@@ -55,7 +58,7 @@ public:
     /*!
      * \brief DynamixelController constructor.
      * \param freq: This is the synchronization frequency between the controller and the servos devices. Range is [1;120], default is 30.
-     * \param servoSerie: The servo class to use with this instance (default is Dynamixel MX, the more capable of the Dynamixel v1 serie).
+     * \param servoSerie: The servo class to use with this instance (default is Dynamixel MX, the more 'capable' of the Dynamixel v1 serie).
      */
     DynamixelController(int freq = 30, int servoSerie = SERVO_MX);
 
@@ -69,6 +72,20 @@ public:
      * \param protocol: The Dynamixel communication protocol to use. Can be v1 or v2.
      */
     void changeProtocolVersion(int protocol);
+
+    /*!
+     * \brief Connect the controller to a serial port, if the connection is successfull start a synchronization thread.
+     * \param deviceName: The serial port device node.
+     * \param baud: The serial port speed, can be a baud rate or a 'baudnum'.
+     * \param serialDevice: If known, the serial adapter model used by this link.
+     * \return 1 if the connection is successfull, 0 otherwise.
+     */
+    int connect(std::string &deviceName, const int baud, const int serialDevice = SERIAL_UNKNOWN);
+
+    /*!
+     * \brief Stop the controller's thread, clean umessage queue, and close the serial connection.
+     */
+    void disconnect();
 
     /*!
      * \brief Scan a serial link for Dynamixel devices.
@@ -89,8 +106,6 @@ public:
     void autodetect_internal(int start = 0, int stop = 253);
 
     // Wrappers
-    int serialInitialize_wrapper(std::string &deviceName, const int baud, const int serialDevice = SERIAL_UNKNOWN);
-    void serialTerminate_wrapper();
     std::string serialGetCurrentDevice_wrapper();
     std::vector <std::string> serialGetAvailableDevices_wrapper();
     void serialSetLatency_wrapper(int latency);

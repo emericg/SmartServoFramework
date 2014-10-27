@@ -139,7 +139,7 @@ Dynamixel::Dynamixel():
     rxPacketSizeReceived(0),
     commLock(0),
     commStatus(COMM_RXSUCCESS),
-    serialDevice(0),
+    serialDevice(SERIAL_UNKNOWN),
     servoSerie(SERVO_MX),
     protocolVersion(1)
 {
@@ -152,21 +152,14 @@ Dynamixel::~Dynamixel()
     serialTerminate();
 }
 
-void Dynamixel::setProtocolVersion(int protocol)
-{
-    if (protocol == 1 || protocol == 2)
-    {
-        protocolVersion = protocol;
-    }
-    else
-    {
-        std::cerr << "Error: Unknown Dynamixel communication protocol version: '" << protocolVersion << "'" << std::endl;
-    }
-}
-
-int Dynamixel::serialInitialize(std::string &deviceName, const int baud, const int serialDevice)
+int Dynamixel::serialInitialize(std::string &deviceName, const int baud)
 {
     int status = 0;
+
+    if (serial != NULL)
+    {
+        serialTerminate();
+    }
 
     // Instanciate a different serial subclass, depending on the current OS
 #if defined(__linux__) || defined(__gnu_linux)

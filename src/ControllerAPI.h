@@ -37,17 +37,16 @@
 enum controllerState
 {
     state_stopped = 0,
+    state_paused,
     state_started,
     state_scanning,
     state_scanned,
     state_reading,
     state_ready,
-    state_paused,
 };
 
 /*!
  * \brief The ControllerAPI base class.
- * \note This API is considered UNSTABLE at the moment!
  *
  * A "controller" provide a high level API to handle several servos object at the
  * same time. A program must instanciate servos instances and register them to
@@ -78,7 +77,6 @@ protected:
 
     int controllerState;                //!< The current state of the controller, used by client apps to know.
 
-    bool syncloopRunning;
     int syncloopFrequency;              //!< Frequency of the synchronization loop, in Hz. May not be respected if there is too much traffic on the serial port.
     int syncloopCounter;
     double syncloopDuration;            //!< Maximum duration for the synchronization loop, in milliseconds.
@@ -104,8 +102,8 @@ protected:
      * \brief Internal thread messaging system.
      * \param m: A pointer to a miniMessages structure. Will be copied.
      *
-     * Push a message into the back of a deque if the thread is running, otherwise
-     * messages will be discarded.
+     * Push a message into the back of a deque (if the thread is running, otherwise
+     * messages will be discarded with an error).
      */
     void sendMessage(miniMessages *m);
 
@@ -116,12 +114,22 @@ protected:
     virtual void autodetect_internal(int start = 0, int stop = 253) = 0;
     void pauseThread_internal();
 
+    /*!
+     * \brief Start synchronization loop thread.
+     */
+    void startThread();
+
+    /*!
+     * \brief Stop synchronization loop thread. All servos are deleted from its internal lists.
+     */
+    void stopThread();
+
 public:
     /*!
      * \brief ControllerAPI constructor.
-     * \param freq: This is the synchronization frequency between the controller and the servos devices. Range is [1;120], default is 30.
+     * \param freq: This is the synchronization frequency between the controller and the servos devices. Range is [1;120].
      */
-    ControllerAPI(int freq = 30);
+    ControllerAPI(int freq);
 
     /*!
      * \brief ControllerAPI destructor. Stop the controller's thread and close the serial connection.
@@ -129,7 +137,21 @@ public:
     virtual ~ControllerAPI();
 
     /*!
-     * \brief getState
+     * \brief Connect the controller to a serial port, if the connection is successfull start a synchronization thread.
+     * \param deviceName: The serial port device node.
+     * \param baud: The serial port speed, can be a baud rate or a 'baudnum'.
+     * \param serialDevice: If known, the serial adapter model used by this link.
+     * \return 1 if the connection is successfull, 0 otherwise.
+     */
+    virtual int connect(std::string &deviceName, const int baud, const int serialDevice = 0) = 0;
+
+    /*!
+     * \brief Stop the controller's thread, clean umessage queue, and close the serial connection.
+     */
+    virtual void disconnect() = 0;
+
+    /*!
+     * \brief Read the current state of the controller.
      * \return The current state of the controller.
      */
     int getState() { return controllerState; }
@@ -140,7 +162,8 @@ public:
      *
      * You need to call this function after an autodetection or registering servos
      * manually, to let the controller some time to process new devices.
-     * This is a blocking function that only return after
+     * This is a blocking function that only return after the controller has been
+     * proven ready, or a 6s timeout hit.
      */
     bool waitUntilReady();
 
@@ -149,20 +172,15 @@ public:
      * \param start: First ID to be scanned.
      * \param stop: Last ID to be scanned.
      *
-     * Please be aware that this function will stop the controller thread and
-     * reset its servoList.
-     *
      * This scanning function will ping every device ID (from 'start' to 'stop',
      * default [0;253]) on a serial link, and use the status response to detect
      * the presence of a device.
      * When a device is being scanned, its LED is briefly switched on.
      *
-     * Every servo found will be registered to this controller.
+     * Every servo found will be automatically registered to this controller.
      */
     void autodetect(int start = 0, int stop = 253);
 
-    virtual int serialInitialize_wrapper(std::string &deviceName, const int baud, const int serialDevice = 0) = 0;
-    virtual void serialTerminate_wrapper() = 0;
     virtual std::string serialGetCurrentDevice_wrapper() = 0;
     virtual std::vector <std::string> serialGetAvailableDevices_wrapper() = 0;
     virtual void serialSetLatency_wrapper(int latency) = 0;
@@ -232,19 +250,9 @@ public:
     }
 
     /*!
-     * \brief Start synchronization loop thread.
-     */
-    void startThread();
-
-    /*!
      * \brief Pause/un-pause synchronization loop thread.
      */
     void pauseThread();
-
-    /*!
-     * \brief Stop synchronization loop thread. All servos are deleted from its internal lists.
-     */
-    void stopThread();
 };
 
 #endif /* CONTROLLER_API_H */

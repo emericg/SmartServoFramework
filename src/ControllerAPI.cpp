@@ -34,7 +34,6 @@
 
 ControllerAPI::ControllerAPI(int freq):
     controllerState(state_stopped),
-    syncloopRunning(false),
     syncloopCounter(0),
     errors(0)
 {
@@ -59,60 +58,62 @@ ControllerAPI::~ControllerAPI()
 
 void ControllerAPI::startThread()
 {
-    if (syncloopRunning == false && syncloopThread.joinable() == 0)
+    if (controllerState < state_started && syncloopThread.joinable() == 0)
     {
         errors = 0;
-        syncloopRunning = true;
-        syncloopThread = std::thread(&ControllerAPI::run, this);
         controllerState = state_started;
+        syncloopThread = std::thread(&ControllerAPI::run, this);
     }
 }
 
 void ControllerAPI::pauseThread_internal()
 {
-    if (syncloopRunning == true && syncloopThread.joinable() == 1)
+    if (controllerState >= state_started && syncloopThread.joinable() == 1)
     {
-        syncloopRunning = false;
-        syncloopThread.join();
         controllerState = state_paused;
+        syncloopThread.join();
     }
-    else if (syncloopRunning == false && syncloopThread.joinable() == 0)
+    else if (controllerState == state_paused && syncloopThread.joinable() == 0)
     {
-        syncloopRunning = true;
-        syncloopThread = std::thread(&ControllerAPI::run, this);
         controllerState = state_ready;
+        syncloopThread = std::thread(&ControllerAPI::run, this);
     }
 }
 
 void ControllerAPI::stopThread()
 {
-    unregisterServos_internal();
-    clearMessageQueue();
-
-    if (syncloopThread.joinable() == 1)
+    std::cout << "OMG STHAP" << std::endl;
+    if (controllerState != state_stopped && syncloopThread.joinable() == 1)
     {
         errors = 0;
-        syncloopRunning = false;
-        syncloopThread.join();
         controllerState = state_stopped;
+        syncloopThread.join();
     }
+    std::cout << "OMG STHAPPED" << std::endl;
 }
 
 /* ************************************************************************** */
 
 bool ControllerAPI::waitUntilReady()
 {
+    // First, check if the controller is running, otherwise there is not point waiting for it to be ready...
+    if (controllerState < state_started)
+    {
+        std::cerr << "waitUntilReady(): controller is not running!" << std::endl;
+        return false;
+    }
+
     std::chrono::seconds timeout(static_cast<int>(6));
     std::chrono::milliseconds waittime(static_cast<int>(2));
     std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
 
-    // Wait until the controller is in scanned state, but not ready
+    // Wait until the controller is at least in 'scanned' state, but not ready
     // because if there is no results and hence it will never be ready
     while (getState() < state_scanned)
     {
-        // timeout ?
         if ((start + timeout) < std::chrono::system_clock::now())
         {
+            std::cerr << "waitUntilReady(): timeout!" << std::endl;
             return false;
         }
 
@@ -125,9 +126,9 @@ bool ControllerAPI::waitUntilReady()
         // Wait until the controller is in 'ready' state
         while (getState() < state_ready)
         {
-            // timeout ?
             if ((start + timeout) < std::chrono::system_clock::now())
             {
+                std::cerr << "waitUntilReady(): timeout!" << std::endl;
                 return false;
             }
 
@@ -142,34 +143,41 @@ bool ControllerAPI::waitUntilReady()
 
 void ControllerAPI::registerServo_internal(Servo *servo)
 {
-    if (controllerState != state_scanning)
+    if (controllerState >= state_started)
     {
-        // Lock servoList
-        std::lock_guard <std::mutex> lock(servoListLock);
-
-        // Check if the servo is already registered
-        for (std::vector <Servo *>::iterator it = servoList.begin(); it != servoList.end(); it++)
+        if (controllerState != state_scanning)
         {
-            if ((*it)->getId() == (*servo).getId())
+            // Lock servoList
+            std::lock_guard <std::mutex> lock(servoListLock);
+
+            // Check if the servo is already registered
+            for (std::vector <Servo *>::iterator it = servoList.begin(); it != servoList.end(); it++)
             {
-                std::cerr << "Unable to register servo #" << (*servo).getId() << ": already registered!" << std::endl;
-                return;
+                if ((*it)->getId() == (*servo).getId())
+                {
+                    std::cerr << "Unable to register servo #" << (*servo).getId() << ": already registered!" << std::endl;
+                    return;
+                }
             }
+            std::cerr << "Registering servo #" << (*servo).getId() << std::endl;
+
+            // Add servo to the controller vector
+            servoList.push_back(servo);
+
+            // Mark it for an "initial read"
+            updateList.push_back((*servo).getId());
+
+            // Mark it for "sync"
+            syncList.push_back((*servo).getId());
         }
-        std::cerr << "Registering servo #" << (*servo).getId() << std::endl;
-
-        // Add servo to the controller vector
-        servoList.push_back(servo);
-
-        // Mark it for an "initial read"
-        updateList.push_back((*servo).getId());
-
-        // Mark it for "sync"
-        syncList.push_back((*servo).getId());
+        else
+        {
+            std::cerr << "Cannot register a device while scanning!" << std::endl;
+        }
     }
     else
     {
-        std::cerr << "Cannot register a device while scanning!" << std::endl;
+        std::cerr << "Cannot register a device: controller is not running!" << std::endl;
     }
 }
 
@@ -293,7 +301,7 @@ const std::vector <Servo *> ControllerAPI::getServos()
 
 void ControllerAPI::sendMessage(miniMessages *m)
 {
-    if (syncloopRunning == true)
+    if (controllerState >= state_started)
     {
         //std::cout << "> sendMiniMessage() " << std::endl;
 
@@ -302,7 +310,7 @@ void ControllerAPI::sendMessage(miniMessages *m)
     }
     else
     {
-        //std::cerr << "> sendMiniMessage() error: thread not running" << std::endl;
+        std::cerr << "> sendMiniMessage() error: controller's thread not running!" << std::endl;
     }
 }
 
@@ -312,6 +320,8 @@ void ControllerAPI::clearMessageQueue()
     m_queue.clear();
     m_mutex.unlock();
 }
+
+/* ************************************************************************** */
 
 void ControllerAPI::autodetect(int start, int stop)
 {
@@ -374,14 +384,7 @@ void ControllerAPI::unregisterServo(int id)
 }
 
 void ControllerAPI::pauseThread()
-{/*
-    miniMessages m;
-    memset(&m, 0, sizeof(m));
-
-    m.msg = ctrl_pause;
-
-    sendMessage(&m);
-*/
+{
     pauseThread_internal();
 }
 
