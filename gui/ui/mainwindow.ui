@@ -18,6 +18,9 @@
    <iconset resource="../resources/resources.qrc">
     <normaloff>:/icons/icons/emblem-system.svg</normaloff>:/icons/icons/emblem-system.svg</iconset>
   </property>
+  <property name="locale">
+   <locale language="English" country="UnitedStates"/>
+  </property>
   <property name="iconSize">
    <size>
     <width>32</width>
@@ -122,39 +125,15 @@
               <height>16777215</height>
              </size>
             </property>
+            <property name="toolTip">
+             <string notr="true"/>
+            </property>
+            <property name="accessibleName">
+             <string notr="true"/>
+            </property>
             <item>
              <property name="text">
               <string>auto</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>DXL v1 | 1 Mb/s</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>DXL v1 | 57.2 Kb/s</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>DXL v2 | 1 Mb/s</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>DXL v2 | 57.2 Kb/s</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>HKX 115.7 Kb/s</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>HKX 115.7 Kb/s</string>
              </property>
             </item>
            </widget>
@@ -173,6 +152,9 @@
               <height>32</height>
              </size>
             </property>
+            <property name="accessibleName">
+             <string notr="true"/>
+            </property>
             <property name="text">
              <string/>
             </property>
@@ -184,8 +166,14 @@
           </item>
           <item row="2" column="0">
            <widget class="QCheckBox" name="p2_checkBox">
+            <property name="toolTip">
+             <string notr="true"/>
+            </property>
+            <property name="accessibleName">
+             <string notr="true"/>
+            </property>
             <property name="text">
-             <string>/dev/tty0</string>
+             <string notr="true">/dev/tty0</string>
             </property>
            </widget>
           </item>
@@ -207,7 +195,7 @@
 background: rgba(255, 170, 0, 128);</string>
          </property>
          <property name="text">
-          <string>No serial ports available...</string>
+          <string>No serial port available...</string>
          </property>
         </widget>
        </item>
@@ -234,6 +222,9 @@ background: rgba(255, 170, 0, 128);</string>
           </property>
           <item>
            <widget class="QSpinBox" name="rangeStart_spinBox">
+            <property name="toolTip">
+             <string notr="true"/>
+            </property>
             <property name="maximum">
              <number>252</number>
             </property>
@@ -247,6 +238,12 @@ background: rgba(255, 170, 0, 128);</string>
               <height>16777215</height>
              </size>
             </property>
+            <property name="toolTip">
+             <string notr="true"/>
+            </property>
+            <property name="accessibleName">
+             <string notr="true"/>
+            </property>
             <property name="text">
              <string> &gt; </string>
             </property>
@@ -257,6 +254,9 @@ background: rgba(255, 170, 0, 128);</string>
           </item>
           <item>
            <widget class="QSpinBox" name="rangeStop_spinBox">
+            <property name="toolTip">
+             <string notr="true"/>
+            </property>
             <property name="minimum">
              <number>1</number>
             </property>
@@ -264,7 +264,7 @@ background: rgba(255, 170, 0, 128);</string>
              <number>253</number>
             </property>
             <property name="value">
-             <number>253</number>
+             <number>20</number>
             </property>
            </widget>
           </item>
@@ -279,6 +279,9 @@ background: rgba(255, 170, 0, 128);</string>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="toolTip">
+          <string/>
+         </property>
          <column>
           <property name="text">
            <string>Device browser</string>
@@ -286,11 +289,11 @@ background: rgba(255, 170, 0, 128);</string>
          </column>
          <item>
           <property name="text">
-           <string>/dev/ttyUSB0</string>
+           <string notr="true">/dev/ttyUSB0</string>
           </property>
           <item>
            <property name="text">
-            <string>[#?] Servo</string>
+            <string notr="true">[#?] Servo</string>
            </property>
           </item>
          </item>
@@ -1900,7 +1903,7 @@ background: rgb(255, 255, 222);</string>
          <normaloff>:/icons/icons/controls.svg</normaloff>:/icons/icons/controls.svg</iconset>
        </attribute>
        <attribute name="title">
-        <string>Advance Control</string>
+        <string>Advanced Controls</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_3">
         <item row="0" column="0">
@@ -1916,7 +1919,7 @@ background: rgb(255, 255, 222);</string>
 background: rgba(255, 170, 0, 128);</string>
           </property>
           <property name="text">
-           <string>This functionnality will be available soon!</string>
+           <string>This functionality will be available soon!</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -1947,7 +1950,7 @@ background: rgba(255, 170, 0, 128);</string>
 background: rgba(255, 170, 0, 128);</string>
           </property>
           <property name="text">
-           <string>This functionnality will be available soon!</string>
+           <string>This functionality will be available soon!</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -2038,8 +2041,11 @@ background: rgba(85, 200, 0, 128);</string>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <property name="accessibleName">
+           <string notr="true"/>
+          </property>
           <property name="text">
-           <string>label_loading_img</string>
+           <string notr="true">label_loading_img</string>
           </property>
           <property name="scaledContents">
            <bool>true</bool>

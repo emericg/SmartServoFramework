@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Advance Scanner</string>
   </property>
+  <property name="locale">
+   <locale language="English" country="UnitedStates"/>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_4">
     <item row="1" column="0">
@@ -84,7 +87,7 @@
           <item row="2" column="0">
            <widget class="QPushButton" name="pushButton_ports">
             <property name="text">
-             <string>Update serial ports list</string>
+             <string>Update serial port(s) list</string>
             </property>
             <property name="icon">
              <iconset resource="../resources/resources.qrc">
@@ -119,6 +122,9 @@
           </item>
           <item>
            <widget class="QSpinBox" name="spinBox_minid">
+            <property name="toolTip">
+             <string notr="true"/>
+            </property>
             <property name="maximum">
              <number>252</number>
             </property>
@@ -133,6 +139,9 @@
           </item>
           <item>
            <widget class="QSpinBox" name="spinBox_maxid">
+            <property name="toolTip">
+             <string notr="true"/>
+            </property>
             <property name="minimum">
              <number>1</number>
             </property>
@@ -362,7 +371,7 @@
 background: rgba(255, 170, 0, 128);</string>
          </property>
          <property name="text">
-          <string>Scanning completed, but some speeds couldn't be used with your serial port and have been skipped.</string>
+          <string>Scanning completed, but some speeds couldn't be used with your serial port and have been skipped...</string>
          </property>
         </widget>
        </item>

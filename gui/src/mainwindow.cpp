@@ -187,7 +187,7 @@ void MainWindow::scanSerialPorts()
         ui->serialPortErrors_label->show();
 
         QTreeWidgetItem *port = new QTreeWidgetItem();
-        port->setText(0, "No serial port available!");
+        port->setText(0, tr("No serial port available!"));
         ui->deviceTreeWidget->addTopLevelItem(port);
     }
     else
@@ -300,7 +300,7 @@ void MainWindow::scanServos(QString port_qstring)
             ui->centralWidget->setMaximumSize(this->size());
 
             // "Scanning..." tree item
-            QString scan_entry_txt = "Scanning...";
+            QString scan_entry_txt = tr("Scanning...");
             QTreeWidgetItem *scan_entry = new QTreeWidgetItem();
             scan_entry->setText(0, scan_entry_txt);
 
@@ -490,7 +490,7 @@ void MainWindow::scanServos(QString port_qstring)
 
                 // Indicate we did not found any device
                 QTreeWidgetItem *nodevice = new QTreeWidgetItem();
-                nodevice->setText(0, "No device available!");
+                nodevice->setText(0, tr("No device available!"));
                 port->addChild(nodevice);
             }
 
@@ -967,7 +967,7 @@ void MainWindow::servoSelection()
         }
         else
         {
-            ui->textBrowser_spec->setText("No documentation available...");
+            ui->textBrowser_spec->setText(tr("No documentation available..."));
         }
 
         // Read register values and stuff
@@ -1106,8 +1106,8 @@ void MainWindow::updateRegisterTableHerkuleX(Servo *servo_hkx, const int servoSe
     ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_MAX_POSITION),2)->setText(QString::number(servo->getCcwAngleLimit(REGISTER_RAM)));
     ui->cwlimit->setValue(cwlimit);
     ui->ccwlimit->setValue(ccwlimit);
-    ui->cwlimit_label->setText("MIN position (" + QString::number(cwlimit) + ")");
-    ui->ccwlimit_label->setText("MAX position (" + QString::number(ccwlimit) + ")");
+    ui->cwlimit_label->setText(tr("MIN position (") + QString::number(cwlimit) + ")");
+    ui->ccwlimit_label->setText(tr("MAX position (") + QString::number(ccwlimit) + ")");
     if (cwlimit == 0 && ccwlimit == 0) // FIXME change these test conditions, they are for dynamixel
     {
         // wheel mode
@@ -1202,7 +1202,7 @@ void MainWindow::updateRegisterTableHerkuleX(Servo *servo_hkx, const int servoSe
     ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_CALIBRATED_POSITION),2)->setText(QString::number(servo->getValue(REG_CALIBRATED_POSITION)));
     int cpos = servo->getValue(REG_ABSOLUTE_POSITION);
     ui->cpos->setValue(cpos);
-    ui->cpos_label->setText("Current (" + QString::number(cpos) + ")");
+    ui->cpos_label->setText(tr("Current (") + QString::number(cpos) + ")");
     ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_ABSOLUTE_POSITION),2)->setText(QString::number(cpos));
     ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_DIFFERENTIAL_POSITION),2)->setText(QString::number(servo->getValue(REG_DIFFERENTIAL_POSITION)));
     ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_PWM),2)->setText(QString::number(servo->getValue(REG_PWM)));
@@ -1212,7 +1212,7 @@ void MainWindow::updateRegisterTableHerkuleX(Servo *servo_hkx, const int servoSe
     }
     int gpos = servo->getValue(REG_ABSOLUTE_GOAL_POSITION);
     ui->gpos->setValue(gpos);
-    ui->gpos_label->setText("Goal (" + QString::number(gpos) + ")");
+    ui->gpos_label->setText(tr("Goal (") + QString::number(gpos) + ")");
     ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_ABSOLUTE_GOAL_POSITION),2)->setText(QString::number(gpos));
     ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_GOAL_TRAJECTORY),2)->setText(QString::number(servo->getValue(REG_GOAL_TRAJECTORY)));
     ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_GOAL_VELOCITY),2)->setText(QString::number(servo->getValue(REG_GOAL_VELOCITY)));
@@ -1235,8 +1235,8 @@ void MainWindow::updateRegisterTableDynamixel(Servo *servo_dxl, const int servoS
     ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_MAX_POSITION),1)->setText(QString::number(ccwlimit));
     ui->cwlimit->setValue(cwlimit);
     ui->ccwlimit->setValue(ccwlimit);
-    ui->cwlimit_label->setText("MIN position (" + QString::number(cwlimit) + ")");
-    ui->ccwlimit_label->setText("MAX position (" + QString::number(ccwlimit) + ")");
+    ui->cwlimit_label->setText(tr("MIN position (") + QString::number(cwlimit) + ")");
+    ui->ccwlimit_label->setText(tr("MAX position (") + QString::number(ccwlimit) + ")");
     if (cwlimit == 0 && ccwlimit == 0)
     {
         // wheel mode
@@ -1306,7 +1306,7 @@ void MainWindow::updateRegisterTableDynamixel(Servo *servo_dxl, const int servoS
     int gpos = servo->getGoalPosition();
     ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_GOAL_POSITION),1)->setText(QString::number(gpos));
     ui->gpos->setValue(gpos);
-    ui->gpos_label->setText("Goal (" + QString::number(gpos) + ")");
+    ui->gpos_label->setText(tr("Goal (") + QString::number(gpos) + ")");
     int mspeed = servo->getMovingSpeed();
     ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_GOAL_SPEED),1)->setText(QString::number(mspeed));
     ui->movingSpeedSlider->setValue(mspeed);
@@ -1319,7 +1319,7 @@ void MainWindow::updateRegisterTableDynamixel(Servo *servo_dxl, const int servoS
     int cpos = servo->getCurrentPosition();
     ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_CURRENT_POSITION),1)->setText(QString::number(cpos));
     ui->cpos->setValue(cpos);
-    ui->cpos_label->setText("Current (" + QString::number(cpos) + ")");
+    ui->cpos_label->setText(tr("Current (") + QString::number(cpos) + ")");
 
     ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_CURRENT_SPEED),1)->setText(QString::number(servo->getCurrentSpeed()));
     ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_CURRENT_LOAD),1)->setText(QString::number(servo->getCurrentLoad()));
@@ -1641,8 +1641,8 @@ void MainWindow::generateRegisterTable(const int servo_serie, const int servo_mo
         if (servo_serie != tableServoSerie)
         {
             ui->tableWidget->setColumnHidden(2, false);
-            ui->tableWidget->horizontalHeaderItem(1)->setText("ROM Value");
-            ui->tableWidget->horizontalHeaderItem(2)->setText("RAM Value");
+            ui->tableWidget->horizontalHeaderItem(1)->setText(tr("ROM Value"));
+            ui->tableWidget->horizontalHeaderItem(2)->setText(tr("RAM Value"));
         }
 
         // Generate new table
@@ -2140,17 +2140,17 @@ void MainWindow::toggleServoPanel(bool status)
         ui->torqueLimitSlider->setValue(0);
         ui->movingSpeedSlider->setValue(0);
         ui->cwlimit->setValue(0);
-        ui->cwlimit_label->setText("MIN position");
+        ui->cwlimit_label->setText(tr("MIN position"));
         ui->ccwlimit->setValue(0);
-        ui->ccwlimit_label->setText("MAX position");
+        ui->ccwlimit_label->setText(tr("MAX position"));
         ui->cpos->setValue(0);
-        ui->cpos_label->setText("Current position");
+        ui->cpos_label->setText(tr("Current position"));
         ui->gpos->setValue(0);
-        ui->gpos_label->setText("Goal position");
+        ui->gpos_label->setText(tr("Goal position"));
 
         // Infos
         ui->servoPicture_label->setPixmap(QPixmap(QString::fromUtf8(":/icons/icons/emblem-unreadable.svg")));
-        ui->textBrowser_spec->setText("No documentation available...");
+        ui->textBrowser_spec->setText(tr("No documentation available..."));
         ui->servoManual_label->hide();
         ui->copyrightNotice_label->hide();
     }
@@ -2346,8 +2346,8 @@ void MainWindow::toggleRunningMode()
 
                 s->setCWLimit(0);
                 s->setCCWLimit(s->getSteps() - 1);
-                ui->cwlimit_label->setText("MIN position (" + QString::number(0) + ")");
-                ui->ccwlimit_label->setText("MAX position (" + QString::number(s->getSteps() - 1) + ")");
+                ui->cwlimit_label->setText(tr("MIN position (") + QString::number(0) + ")");
+                ui->ccwlimit_label->setText(tr("MAX position (") + QString::number(s->getSteps() - 1) + ")");
             }
         }
         else
@@ -2373,8 +2373,8 @@ void MainWindow::toggleRunningMode()
                 //s->setMovingSpeed(0);
                 s->setCWLimit(0);
                 s->setCCWLimit(0);
-                ui->cwlimit_label->setText("MIN position (" + QString::number(0) + ")");
-                ui->ccwlimit_label->setText("MAX position (" + QString::number(0) + ")");
+                ui->cwlimit_label->setText(tr("MIN position (") + QString::number(0) + ")");
+                ui->ccwlimit_label->setText(tr("MAX position (") + QString::number(0) + ")");
             }
         }
     }
@@ -2475,7 +2475,7 @@ void MainWindow::moveCWLimit(int limit)
         s->setValue(REG_MIN_POSITION, limit, REGISTER_BOTH);
 
         // Update label
-        ui->cwlimit_label->setText("MIN position (" + QString::number(limit) + ")");
+        ui->cwlimit_label->setText(tr("MIN position (") + QString::number(limit) + ")");
     }
 }
 
@@ -2491,7 +2491,7 @@ void MainWindow::moveCCWLimit(int limit)
         s->setValue(REG_MAX_POSITION, limit, REGISTER_BOTH);
 
         // Update label
-        ui->ccwlimit_label->setText("MAX position (" + QString::number(limit) + ")");
+        ui->ccwlimit_label->setText(tr("MAX position (") + QString::number(limit) + ")");
     }
 }
 
@@ -2507,7 +2507,7 @@ void MainWindow::moveServo(int goal)
         s->setGoalPosition(goal);
 
         // Update label
-        ui->gpos_label->setText("Goal (" + QString::number(goal) + ")");
+        ui->gpos_label->setText(tr("Goal (") + QString::number(goal) + ")");
     }
 }
 

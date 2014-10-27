@@ -44,15 +44,17 @@ win32 {
     }
 }
 
+# Smart Servo Framework sources
+SOURCES    += ../src/*.cpp
+
 # GUI application sources
 SOURCES    += src/main.cpp src/mainwindow.cpp src/advancescanner.cpp src/qabout.cpp
 HEADERS    += src/mainwindow.h src/advancescanner.h src/qabout.h
+
+TRANSLATIONS = resources/lang/es.ts resources/lang/fr.ts resources/lang/it.ts
 
 RESOURCES  += resources/resources.qrc
 
 FORMS      += ui/mainwindow.ui \
               ui/advancescanner.ui \
               ui/qabout.ui
-
-# Smart Servo Framework sources
-SOURCES    += ../src/*.cpp

@@ -21,15 +21,28 @@
  */
 
 #include "mainwindow.h"
-#include <QApplication>
-#include <vector>
 
-#include "../../src/DynamixelController.h"
+#include <QApplication>
+#include <QTranslator>
+#include <QLibraryInfo>
 
 int main(int argc, char *argv[])
 {
     Q_INIT_RESOURCE(resources);
     QApplication app(argc, argv);
+
+    // Handle Qt translation
+    QTranslator qtTranslator;
+    qtTranslator.load("qt_" + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    app.installTranslator(&qtTranslator);
+
+    // Handle SmartServoGui translation
+    QTranslator appTranslator;
+    QString locale = QLocale::system().name().section('_', 0, 0);
+    if (appTranslator.load("../resources/lang/" + locale) == true)
+    {
+        app.installTranslator(&appTranslator);
+    }
 
     // Initialize program window
     MainWindow w;

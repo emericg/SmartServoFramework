@@ -17,6 +17,7 @@ SmartServoFramework.creator*
 SmartServoFramework.files
 SmartServoFramework.includes
 
-# Qmake temporary project files (gui)
+# QMake temporary project files (gui)
 gui/SmartServoGui.pro.*
 gui/Makefile
+gui/resources/lang/*.qm
