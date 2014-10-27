@@ -82,14 +82,12 @@ void ControllerAPI::pauseThread_internal()
 
 void ControllerAPI::stopThread()
 {
-    std::cout << "OMG STHAP" << std::endl;
     if (controllerState != state_stopped && syncloopThread.joinable() == 1)
     {
         errors = 0;
         controllerState = state_stopped;
         syncloopThread.join();
     }
-    std::cout << "OMG STHAPPED" << std::endl;
 }
 
 /* ************************************************************************** */
