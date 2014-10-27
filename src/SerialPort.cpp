@@ -51,7 +51,42 @@ SerialPort::~SerialPort()
 
 int SerialPort::checkBaudRate(const int baud)
 {
-    int baudRate = 1000000;
+    int baudRate = 57600;
+
+    // Set default baudrates
+    if (servoDevices >= SERVO_HERKULEX)
+    {
+        // Default baudrate for HerkuleX devices
+        baudRate = 115200;
+    }
+    else if (servoDevices >= SERVO_DYNAMIXEL)
+    {
+        if (servoDevices >= SERVO_PRO)
+        {
+            // Default baudrate for Dynamixel PRO devices
+            baudRate = 57600;
+        }
+        else if (servoDevices >= SERVO_XL)
+        {
+            // Default baudrate for Dynamixel XL-320 devices
+            baudRate = 1000000;
+        }
+        else if (servoDevices >= SERVO_RX)
+        {
+            // Default baudrate for Dynamixel RX, EX and MX devices
+            baudRate = 57600;
+        }
+        else if (servoDevices >= SERVO_AX)
+        {
+            // Default baudrate for Dynamixel AX devices
+            baudRate = 1000000;
+        }
+        else if (servoDevices >= SERVO_DX)
+        {
+            // Default baudrate for Dynamixel DX devices
+            baudRate = 57600;
+        }
+    }
 
     if (baud >= 0)
     {

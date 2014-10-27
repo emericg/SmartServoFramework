@@ -96,7 +96,7 @@ protected:
     int ttyDeviceLatencyTime;      //!< The value of this timer (in millisecond) should be carefully choosed depending on your OS and the speed of your serial port implementation.
 
     int serialDevice;              //!< Specify (if known) what TTL converter is in use. This information will be used to compute correct baudrate.
-    int servoDevices;              //!< Specify if we use this serial port with Dynamixel or HerkuleX devices. This information will be used to compute correct baudrate.
+    int servoDevices;              //!< Specify if we use this serial port with Dynamixel or HerkuleX devices (using ServoDevices_e values). This information will be used to compute correct baudrate.
 
     double packetStartTime;        //!< Time (in millisecond) where the packet was sent.
     double packetWaitTime;         //!< Time (in millisecond) to wait for an answer.
@@ -119,14 +119,13 @@ protected:
      * \param baud: Can be a 'baudrate' in bps or a Dynamixel / HerkuleX 'baudnum'.
      * \return A valid 'baudrate' value in baud.
      *
-     * - If the input value is inferior to 255, we have a valid baudnum.
-     * - If its  superior or equal to 2400, we consider it to be a valid baudrate.
-     * - In case of an obviously wrong input value or a failed conversion, we set
-     *   the fallback speed to 1MB/s as it is the default speed value for all
-     *   Dynamixel / HerkuleX servos series.
+     * - If the input value is inferior to 255, we have a valid 'baudnum' and will use a conversion depending on the current 'servoSerie' value.
+     * - If its  superior or equal to 2400, we consider it to be a valid baudrate and will use it as it is.
+     * - In case of an obviously wrong input value or failed conversion, we will try default the fallback speed
+     *   depending on the current 'servoSerie' value.
      *
-     * This function also check the baudrate against maximum bandwith available
-     * depending on the serial device used (USB2Dynamixel, USB2AX, ...).
+     * If the 'serialDevice' value is set, this function will also check the baudrate
+     * against maximum bandwith available depending on the serial device used (USB2Dynamixel, USB2AX, ...).
      */
     int checkBaudRate(const int baud);
 
