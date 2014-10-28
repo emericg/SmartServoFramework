@@ -115,7 +115,7 @@ int SerialPortWindows::openLink()
     closeLink();
 
     // Open tty device
-    ttyDeviceFileDescriptor = CreateFile(strToLPCWSTR(ttyDeviceName), GENERIC_READ|GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    ttyDeviceFileDescriptor = CreateFile(stringToLPCWSTR(ttyDeviceName), GENERIC_READ|GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if (ttyDeviceFileDescriptor == INVALID_HANDLE_VALUE)
     {
         std::cerr << "Unable to open device: '" << ttyDeviceName << "'" << std::endl;
@@ -303,7 +303,7 @@ double SerialPortWindows::getTime()
 void SerialPortWindows::setTimeOut(int packetLength)
 {
     packetStartTime = getTime();
-    packetWaitTime  = (byteTransfertTime * static_cast<double>(packetLength) + 2.0 * static_cast<double>(latencyTime));
+    packetWaitTime  = (byteTransfertTime * static_cast<double>(packetLength) + 2.0 * static_cast<double>(ttyDeviceLatencyTime));
 }
 
 void SerialPortWindows::setTimeOut(double msec)

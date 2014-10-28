@@ -108,7 +108,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::loading(bool enabled)
 {
-    QTabBar *tabBar = qFindChild<QTabBar *>(ui->tabWidget);
+    QTabBar *tabBar = ui->tabWidget->findChild<QTabBar *>();
     tabBar->setVisible(!enabled);
     ui->tabWidget->setDocumentMode(enabled);
 
