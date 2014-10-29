@@ -34,7 +34,6 @@ HerkuleXController::HerkuleXController(int freq, int servoSerie):
     ControllerAPI(freq)
 {
     this->servoSerie = servoSerie;
-    updateInternalSettings();
 }
 
 HerkuleXController::~HerkuleXController()
@@ -99,6 +98,7 @@ void HerkuleXController::updateInternalSettings()
 int HerkuleXController::connect(std::string &deviceName, const int baud, const int serialDevice)
 {
     this->serialDevice = serialDevice;
+
     updateInternalSettings();
 
     int retcode = serialInitialize(deviceName, baud);

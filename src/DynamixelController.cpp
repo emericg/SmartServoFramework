@@ -34,7 +34,6 @@ DynamixelController::DynamixelController(int freq, int servoSerie):
     ControllerAPI(freq)
 {
     this->servoSerie = servoSerie;
-    updateInternalSettings();
 }
 
 DynamixelController::~DynamixelController()
@@ -130,6 +129,7 @@ void DynamixelController::changeProtocolVersion(int protocol)
 int DynamixelController::connect(std::string &deviceName, const int baud, const int serialDevice)
 {
     this->serialDevice = serialDevice;
+
     updateInternalSettings();
 
     int retcode = serialInitialize(deviceName, baud);
