@@ -55,6 +55,9 @@ enum controllerState
  */
 class ControllerAPI
 {
+    int controllerState;                //!< The current state of the controller, used by client apps to know.
+    std::mutex controllerStateLock;     //!< Lock for the controllerState.
+
 protected:
 
     enum controllerMessage
@@ -64,24 +67,25 @@ protected:
         ctrl_device_unregister,
         ctrl_device_unregister_all,
         ctrl_device_delayed_add,
+
+        ctrl_state_pause,
+        ctrl_state_stop,
     };
 
     struct miniMessages
     {
         controllerMessage msg;
-        std::chrono::time_point <std::chrono::system_clock> delay;
+        std::chrono::time_point <std::chrono::system_clock> delay; //!< Used to delay message parsing
         void *p;
         int p1;
         int p2;
     };
 
-    int controllerState;                //!< The current state of the controller, used by client apps to know.
-
     int syncloopFrequency;              //!< Frequency of the synchronization loop, in Hz. May not be respected if there is too much traffic on the serial port.
     int syncloopCounter;
     double syncloopDuration;            //!< Maximum duration for the synchronization loop, in milliseconds.
 
-    std::thread syncloopThread;
+    std::thread syncloopThread;         //!< Controller's thread.
 
     std::deque<struct miniMessages> m_queue; //!< Message queue.
     std::mutex m_mutex;                 //!< Lock for the message queue.
@@ -112,7 +116,6 @@ protected:
     void unregisterServos_internal();
     int delayedAddServos_internal(std::chrono::time_point<std::chrono::_V2::system_clock> delay, int id, int update);
     virtual void autodetect_internal(int start = 0, int stop = 253) = 0;
-    void pauseThread_internal();
 
     /*!
      * \brief Start synchronization loop thread.
@@ -123,6 +126,11 @@ protected:
      * \brief Stop synchronization loop thread. All servos are deleted from its internal lists.
      */
     void stopThread();
+
+    /*!
+     * \brief Change the current state of the controller.
+     */
+    void setState(const int state);
 
 public:
     /*!
@@ -154,7 +162,7 @@ public:
      * \brief Read the current state of the controller.
      * \return The current state of the controller.
      */
-    int getState() { return controllerState; }
+    int getState();
 
     /*!
      * \brief Wait until the controller is ready.

@@ -58,44 +58,85 @@ ControllerAPI::~ControllerAPI()
 
 void ControllerAPI::startThread()
 {
-    if (controllerState < state_started && syncloopThread.joinable() == 0)
+    if (getState() < state_started && syncloopThread.joinable() == 0)
     {
         errors = 0;
-        controllerState = state_started;
+        setState(state_started);
         syncloopThread = std::thread(&ControllerAPI::run, this);
     }
 }
 
-void ControllerAPI::pauseThread_internal()
+void ControllerAPI::pauseThread()
 {
-    if (controllerState >= state_started && syncloopThread.joinable() == 1)
+    int ctrlState = getState();
+
+    if (ctrlState >= state_started && syncloopThread.joinable() == 1)
     {
-        controllerState = state_paused;
+        std::cout << ">> Pausing thread (id: " << syncloopThread.get_id() << ")..." << std::endl;
+
+        miniMessages m;
+        memset(&m, 0, sizeof(m));
+        m.msg = ctrl_state_pause;
+        sendMessage(&m);
+
         syncloopThread.join();
+        setState(state_paused);
     }
-    else if (controllerState == state_paused && syncloopThread.joinable() == 0)
+    else if (ctrlState == state_paused && syncloopThread.joinable() == 0)
     {
-        controllerState = state_ready;
+        std::cout << ">> Unpausing thread..." << std::endl;
+
+        setState(state_ready);
         syncloopThread = std::thread(&ControllerAPI::run, this);
+    }
+    else
+    {
+        std::cerr << "Cannot pause/unpause thread (id: " << syncloopThread.get_id() << "): unknown state (" << ctrlState << ")" << std::endl;
     }
 }
 
 void ControllerAPI::stopThread()
 {
-    if (controllerState != state_stopped && syncloopThread.joinable() == 1)
+    if (getState() != state_stopped && syncloopThread.joinable() == 1)
     {
+        std::cout << ">> Stopping thread (id: " << syncloopThread.get_id() << ")..." << std::endl;
+
+        miniMessages m;
+        memset(&m, 0, sizeof(m));
+        m.msg = ctrl_state_stop;
+        sendMessage(&m);
+
         errors = 0;
-        controllerState = state_stopped;
         syncloopThread.join();
+        setState(state_stopped);
     }
 }
 
 /* ************************************************************************** */
 
+void ControllerAPI::setState(const int state)
+{
+    if (state >= state_stopped && state <= state_ready)
+    {
+        std::lock_guard <std::mutex> lock(controllerStateLock);
+        controllerState = state;
+    }
+    else
+    {
+        std::cerr << "setState(" << state << ") error: invalid state!" << std::endl;
+    }
+}
+
+int ControllerAPI::getState()
+{
+    std::lock_guard <std::mutex> lock(controllerStateLock);
+    return controllerState;
+}
+
 bool ControllerAPI::waitUntilReady()
 {
     // First, check if the controller is running, otherwise there is not point waiting for it to be ready...
-    if (controllerState < state_started)
+    if (getState() < state_started)
     {
         std::cerr << "waitUntilReady(): controller is not running!" << std::endl;
         return false;
@@ -141,9 +182,9 @@ bool ControllerAPI::waitUntilReady()
 
 void ControllerAPI::registerServo_internal(Servo *servo)
 {
-    if (controllerState >= state_started)
+    if (getState() >= state_started)
     {
-        if (controllerState != state_scanning)
+        if (getState() != state_scanning)
         {
             // Lock servoList
             std::lock_guard <std::mutex> lock(servoListLock);
@@ -223,7 +264,7 @@ void ControllerAPI::unregisterServo_internal(Servo *servo)
     if (servoList.empty() == true)
     {
         // No more device(s), nothing left to do, we set the controller state back to idle
-        controllerState = state_started;
+        setState(state_started);
     }
 }
 
@@ -244,7 +285,7 @@ void ControllerAPI::unregisterServos_internal()
     syncList.clear();
 
     // No more device(s), nothing left to do, we set the controller state back to idle
-    controllerState = state_started;
+    setState(state_started);
 }
 
 int ControllerAPI::delayedAddServos_internal(std::chrono::time_point <std::chrono::system_clock> delay, int id, int update)
@@ -299,7 +340,7 @@ const std::vector <Servo *> ControllerAPI::getServos()
 
 void ControllerAPI::sendMessage(miniMessages *m)
 {
-    if (controllerState >= state_started)
+    if (getState() >= state_started)
     {
         //std::cout << "> sendMiniMessage() " << std::endl;
 
@@ -379,11 +420,6 @@ void ControllerAPI::unregisterServo(int id)
 
     sendMessage(&m);
 */
-}
-
-void ControllerAPI::pauseThread()
-{
-    pauseThread_internal();
 }
 
 /* ************************************************************************** */

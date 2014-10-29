@@ -22,9 +22,10 @@
 
 #include "advancescanner.h"
 #include "ui_advancescanner.h"
-
 #include "mainwindow.h"
+
 #include <iostream>
+#include <QCloseEvent>
 
 AdvanceScanner::AdvanceScanner(QMainWindow *main, QWidget *parent) :
     QMainWindow(parent),
@@ -33,6 +34,7 @@ AdvanceScanner::AdvanceScanner(QMainWindow *main, QWidget *parent) :
     this->parent = main;
     ui->setupUi(this);
 
+    exit_programmed = false;
     scan_running = false;
     progress_global = 0.0;
     progress_current = 0.0;
@@ -43,7 +45,7 @@ AdvanceScanner::AdvanceScanner(QMainWindow *main, QWidget *parent) :
 
     QObject::connect(ui->actionStartScan, SIGNAL(triggered()), this, SLOT(startScan()));
     QObject::connect(ui->actionStopScan, SIGNAL(triggered()), this, SLOT(stopScan()));
-    QObject::connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
+    QObject::connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(exitScan()));
 
     QObject::connect(ui->pushButton_ports, SIGNAL(clicked()), this, SLOT(fillWidgets_ports()));
     QObject::connect(ui->pushButton_quickscan, SIGNAL(clicked()), this, SLOT(quickProfile()));
@@ -268,8 +270,13 @@ void AdvanceScanner::resizeEvent(QResizeEvent *event)
 
 void AdvanceScanner::closeEvent(QCloseEvent *event)
 {
-    scan_running = false;
-    emit exiting();
+	// If a scanning process is underway, it will need to stop itself before closing the window
+    if (scan_running == true)
+    {
+        event->ignore();
+    }
+
+    exitScan();
 }
 
 void AdvanceScanner::resizeTables()
@@ -501,6 +508,13 @@ void AdvanceScanner::startScan()
         }
     }
 
+    // Check if the scanning process has been aborted
+    if (exit_programmed == true)
+    {
+        emit exiting();
+        return;
+    }
+
     // Scan is stopped
     scan_running = false;
 
@@ -514,7 +528,7 @@ void AdvanceScanner::startScan()
     ui->label_progress->setText("");
     ui->progressBar_current->setValue(100);
 /*
-    // Handle errors?
+    // TODO // Handle errors?
     if (ui->progressBar_global->value() != 100)
     {
         if (ui->pushButton_quickscan->isChecked() == false && results = 0)
@@ -533,6 +547,21 @@ void AdvanceScanner::stopScan()
         // Stop scan
         scan_running = false;
     }
+}
+
+void AdvanceScanner::exitScan()
+{
+    // Check if a scanning process is running
+	// It will need to stop itself before closing the window
+    if (scan_running == true)
+    {
+        scan_running = false;
+        exit_programmed = true;
+        return;
+    }
+
+    // Otherwise just exit and destroy this window
+    emit exiting();
 }
 
 int AdvanceScanner::servoscan_dxl(DynamixelSimpleAPI *dxl, QTreeWidgetItem *port, int baudrate)
@@ -555,7 +584,7 @@ int AdvanceScanner::servoscan_dxl(DynamixelSimpleAPI *dxl, QTreeWidgetItem *port
     for (int id = start; id <= stop; id++)
     {
         // Check if the scanning process has been aborted
-        if (scan_running == false)
+        if (scan_running == false || exit_programmed == true)
         {
             return 0;
         }
@@ -620,7 +649,7 @@ int AdvanceScanner::servoscan_hkx(HerkuleXSimpleAPI *hkx, QTreeWidgetItem *port,
     for (int id = start; id <= stop; id++)
     {
         // Check if the scanning process has been aborted
-        if (scan_running == false)
+        if (scan_running == false || exit_programmed == true)
         {
             return 0;
         }

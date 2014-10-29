@@ -416,7 +416,8 @@ void MainWindow::scanServos(QString port_qstring)
                         h->deviceController->autodetect(ui->rangeStart_spinBox->value(), ui->rangeStop_spinBox->value());
 
                         // Wait until the controller is scanned (not ready, cause if there is no results it will never be ready)
-                        while (h->deviceController->getState() < state_scanned)
+                        while (h->deviceController->getState() >= state_started &&
+                               h->deviceController->getState() < state_scanned)
                         {
                             std::chrono::milliseconds waittime(static_cast<int>(4));
                             std::this_thread::sleep_for(waittime);
@@ -466,7 +467,8 @@ void MainWindow::scanServos(QString port_qstring)
                             }
 
                             // Wait until the controller is ready
-                            while (h->deviceController->getState() < state_ready)
+                            while (h->deviceController->getState() >= state_started &&
+                                   h->deviceController->getState() < state_ready)
                             {
                                 std::chrono::milliseconds waittime(static_cast<int>(4));
                                 std::this_thread::sleep_for(waittime);
@@ -2179,12 +2181,27 @@ void MainWindow::toggleServoPanel(bool status)
 
 void MainWindow::advanceScannerStart()
 {
+    for (auto p: serialPorts)
+    {
+        if (p->deviceController != NULL)
+        {
+            // Check if the controller is not currently stopped or scanning
+            if (!(p->deviceController->getState() == state_ready || p->deviceController->getState() == state_stopped))
+            {
+                return;
+            }
+        }
+    }
+
     if (as == NULL)
     {
         // Pause controllers
         for (auto p: serialPorts)
         {
-            p->deviceController->pauseThread();
+            if (p->deviceController != NULL)
+            {
+                p->deviceController->pauseThread();
+            }
         }
 
         // Lock current window

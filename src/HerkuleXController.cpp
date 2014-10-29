@@ -138,7 +138,7 @@ void HerkuleXController::serialSetLatency_wrapper(int latency)
 
 void HerkuleXController::autodetect_internal(int start, int stop)
 {
-    controllerState = state_scanning;
+    setState(state_scanning);
 
     // Prepare to scan
     unregisterServos_internal();
@@ -210,16 +210,15 @@ void HerkuleXController::autodetect_internal(int start, int stop)
     // Restore RX packet timeout
     setLatency(LATENCY_TIME_DEFAULT);
 
-    controllerState = state_scanned;
+    setState(state_scanned);
 }
 
 void HerkuleXController::run()
 {
     std::cout << "HerkuleXController::run(port: '" << serialGetCurrentDevice() << "' | tid: '" << std::this_thread::get_id() << "')" << std::endl;
-
     std::chrono::time_point<std::chrono::system_clock> start, end;
 
-    while (controllerState >= state_started)
+    while (getState() >= state_started)
     {
         // Loop timer
         start = std::chrono::system_clock::now();
@@ -259,15 +258,20 @@ void HerkuleXController::run()
                     sendMessage(&m);
                 }
                 break;
-/*
-            case ctrl_pause:
-            case ctrl_resume:
-                pauseThread_internal();
+
+            case ctrl_state_pause:
+                std::cout << ">> THREAD (tid: " << std::this_thread::get_id() << "') pause by message" << std::endl;
+                m_mutex.lock();
+                m_queue.pop_front();
+                return;
                 break;
-            case ctrl_stop:
-                stopThread_internal();
+            case ctrl_state_stop:
+                std::cout << ">> THREAD (tid: " << std::this_thread::get_id() << "') termination by 'stop message'" << std::endl;
+                m_mutex.lock();
+                m_queue.pop_front();
+                return;
                 break;
-*/
+
             default:
                 std::cerr << "[HKX] Unknown message type: '" << m.msg << "'" << std::endl;
                 break;
@@ -357,7 +361,7 @@ void HerkuleXController::run()
             std::vector <int>::iterator itr;
             for (itr = updateList.begin(); itr != updateList.end();)
             {
-                controllerState = state_reading;
+                setState(state_reading);
                 int id = (*itr);
 
                 for (auto s: servoList)
@@ -424,7 +428,7 @@ void HerkuleXController::run()
                     }
                 }
             }
-            controllerState = state_ready;
+            setState(state_ready);
         }
         servoListLock.unlock();
 
@@ -602,4 +606,6 @@ void HerkuleXController::run()
             std::this_thread::sleep_for(waittime);
         }
     }
+
+    std::cout << ">> THREAD (tid: " << std::this_thread::get_id() << "') termination by 'loop exit'" << std::endl;
 }

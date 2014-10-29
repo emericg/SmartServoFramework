@@ -46,6 +46,8 @@ class AdvanceScanner : public QMainWindow
     Ui::AdvanceScanner *ui;
     QWidget *parent;
 
+    bool exit_programmed;
+
     bool scan_running;
     int scans_rounds;
     int scans_id_interval;
@@ -67,6 +69,7 @@ public slots:
     void fillWidgets_speeds();
     void startScan();
     void stopScan();
+    void exitScan();
     void quickProfile();
     void fullProfile();
 
