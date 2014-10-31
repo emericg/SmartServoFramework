@@ -463,13 +463,13 @@ void SerialPortLinux::setLatency(int latency)
         }
     }
 
-    if (latency > 0)
+    if (latency > 0 && latency < 128)
     {
         ttyDeviceLatencyTime = latency;
     }
     else
     {
-        std::cerr << "Invalid latency value: " << latency << std::endl;
+        std::cerr << "Invalid latency value: '" << latency << "'', not in ]0;128[ range." << std::endl;
     }
 }
 

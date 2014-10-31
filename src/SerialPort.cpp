@@ -196,13 +196,13 @@ std::vector <std::string> SerialPort::scanSerialPorts()
 
 void SerialPort::setLatency(int latency)
 {
-    if (latency > 0 && latency < 256)
+    if (latency > 0 && latency < 128)
     {
         ttyDeviceLatencyTime = latency;
     }
     else
     {
-        std::cerr << "Invalid latency value: '" << latency << "'', not in ]0;256[ range." << std::endl;
+        std::cerr << "Invalid latency value: '" << latency << "'', not in ]0;128[ range." << std::endl;
     }
 }
 
