@@ -45,14 +45,45 @@ struct PingResponse {
     int firmware_version;
 };
 
+enum AckPolicy_e {
+    ACK_DEFAULT    = -1,
+
+    ACK_NO_REPLY   = 0,
+    ACK_REPLY_READ = 1,
+    ACK_REPLY_ALL  = 2
+};
+
 /*!
  * \brief Factory reset settings (only work with Dynamixel protocol v2 or HerkuleX).
  */
-enum ResetOptions {
+enum ResetOptions_e {
     RESET_ALL                       = 0xFF, //!< Reset all values to factory default
     RESET_ALL_EXCEPT_ID             = 0x01, //!< Reset all values except ID
     RESET_ALL_EXCEPT_ID_BAUDRATE    = 0x02  //!< Reset all values except ID and baud rate
 };
+
+/*!
+ * \brief Led color enum.
+ *
+ * Dynamixel AX / RX / EX / MX servos only support RED color.
+ * Only Dynamixel XL-320 and PRO supports RGB and composite colors.
+ * HerkuleX support separate red, green and blue leds but with a different order (G=0x01, B=0x02, R=0x04).
+ */
+enum LedColors_e
+{
+    // RGB LEDs
+    LED_RED     = 0x01,
+    LED_GREEN   = 0x02,
+    LED_BLUE    = 0x04,
+
+    // Composite colors, only for Dynamixel XL-320 and PRO
+    LED_WHITE       = LED_RED | LED_GREEN | LED_BLUE,
+    LED_PINK        = LED_RED | LED_BLUE,
+    LED_SOFT_BLUE   = LED_GREEN | LED_BLUE,
+    LED_YELLOW      = LED_RED | LED_GREEN,
+};
+
+/* ************************************************************************** */
 
 /*!
  * \brief Enum to define the various servos (and sensors) brands, series, and models.
@@ -284,27 +315,6 @@ enum RegisterNames_e
     REG_REMOCON_TX_DATA_1,
     REG_IR_DETECT_COMPARE,
     REG_LIGHT_DETECT_COMPARE
-};
-
-/*!
- * \brief Led color enum.
- *
- * Dynamixel AX / RX / EX / MX servos only support RED color.
- * Only Dynamixel XL-320 and PRO supports RGB and composite colors.
- * HerkuleX support separate red, green and blue leds but with a different order (G=0x01, B=0x02, R=0x04).
- */
-enum LedColors_e
-{
-    // RGB LEDs
-    LED_RED     = 0x01,
-    LED_GREEN   = 0x02,
-    LED_BLUE    = 0x04,
-
-    // Composite colors, only for Dynamixel XL-320 and PRO
-    LED_WHITE       = LED_RED | LED_GREEN | LED_BLUE,
-    LED_PINK        = LED_RED | LED_BLUE,
-    LED_SOFT_BLUE   = LED_GREEN | LED_BLUE,
-    LED_YELLOW      = LED_RED | LED_GREEN,
 };
 
 /* ************************************************************************** */
