@@ -64,7 +64,7 @@ private:
     // Serial communication methods, using one of the SerialPort[Linux/Mac/Windows] implementations.
     void hkx_tx_packet();
     void hkx_rx_packet();
-    void hkx_txrx_packet();
+    void hkx_txrx_packet(int ack);
 
 protected:
     HerkuleX();
@@ -95,8 +95,6 @@ protected:
 
     // Low level API
     ////////////////////////////////////////////////////////////////////////////
-
-    void setLatency(int latency);
 
     // TX packet building
     void hkx_set_txpacket_header();
@@ -130,17 +128,17 @@ protected:
     void printTxPacket();           //!< Print the TX buffer (last packet sent)
 
     // Instructions
-    bool hkx_ping(const int id, PingResponse *status = NULL);
-    void hkx_reset(const int id, int setting = RESET_ALL_EXCEPT_ID);
-    void hkx_reboot(const int id);
+    bool hkx_ping(const int id, PingResponse *status = NULL, const int ack = ACK_DEFAULT);
+    void hkx_reset(const int id, int setting = RESET_ALL_EXCEPT_ID, const int ack = ACK_DEFAULT);
+    void hkx_reboot(const int id, const int ack = ACK_DEFAULT);
 
     // DOCME // Read/write register instructions
-    int hkx_read_byte(const int id, const int address, const int register_type = REGISTER_RAM);
-    void hkx_write_byte(const int id, const int address, const int value, const int register_type = REGISTER_RAM);
-    int hkx_read_word(const int id, const int address, const int register_type = REGISTER_RAM);
-    void hkx_write_word(const int id, const int address, const int value, const int register_type = REGISTER_RAM);
-    void hkx_i_jog(const int id, const int mode, const int value);
-    void hkx_s_jog(const int id, const int mode, const int value);
+    int hkx_read_byte(const int id, const int address, const int register_type, const int ack = ACK_DEFAULT);
+    void hkx_write_byte(const int id, const int address, const int value, const int register_type, const int ack = ACK_DEFAULT);
+    int hkx_read_word(const int id, const int address, const int register_type, const int ack = ACK_DEFAULT);
+    void hkx_write_word(const int id, const int address, const int value, const int register_type, const int ack = ACK_DEFAULT);
+    void hkx_i_jog(const int id, const int mode, const int value, const int ack = ACK_DEFAULT);
+    void hkx_s_jog(const int id, const int mode, const int value, const int ack = ACK_DEFAULT);
 
 public:
     /*!
@@ -154,6 +152,18 @@ public:
      * \return The path to all the serial device nodes available (ex: "/dev/ttyUSB0").
      */
     std::vector <std::string> serialGetAvailableDevices();
+
+    /*!
+     * \brief setLatency
+     * \param latency
+     */
+    void setLatency(int latency);
+
+    /*!
+     * \brief setAckPolicy
+     * \param ack
+     */
+    void setAckPolicy(int ack);
 };
 
 #endif /* HERKULEX_H */

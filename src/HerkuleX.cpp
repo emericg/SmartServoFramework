@@ -179,6 +179,23 @@ std::vector <std::string> HerkuleX::serialGetAvailableDevices()
     return devices;
 }
 
+void HerkuleX::setLatency(int latency)
+{
+    serial->setLatency(latency);
+}
+
+void HerkuleX::setAckPolicy(int ack)
+{
+    if (ackPolicy >= ACK_NO_REPLY && ack <= ACK_REPLY_ALL)
+    {
+        ackPolicy = ack;
+    }
+    else
+    {
+        std::cerr << "Invalid ack policy: '" << ack << "'', not in [0;2] range." << std::endl;
+    }
+}
+
 void HerkuleX::hkx_tx_packet()
 {
     if (serial == NULL)
@@ -365,7 +382,7 @@ void HerkuleX::hkx_rx_packet()
     commLock = 0;
 }
 
-void HerkuleX::hkx_txrx_packet()
+void HerkuleX::hkx_txrx_packet(int ack)
 {
 #ifdef LATENCY_TIMER
     // Latency timer for a complete transaction (instruction sent and status received)
@@ -377,13 +394,39 @@ void HerkuleX::hkx_txrx_packet()
 
     if (commStatus != COMM_TXSUCCESS)
     {
+        std::cerr << "Unable to sent TX packet on serial link: " << serialGetCurrentDevice() << "'" << std::endl;
         return;
     }
 
-    do {
-        hkx_rx_packet();
+    // Depending on 'ackPolicy' value and current instruction, we wait for an answer to the packet we just sent
+    if (ack == ACK_DEFAULT)
+    {
+        ack = ackPolicy;
     }
-    while (commStatus == COMM_RXWAITING);
+
+    if (ack != ACK_NO_REPLY)
+    {
+        int cmd = txPacket[PKT_CMD];
+
+        if ((ack == ACK_REPLY_ALL) ||
+            (ack == ACK_REPLY_READ && (cmd == CMD_STAT || cmd == CMD_EEP_READ || cmd == CMD_RAM_READ)))
+        {
+            do {
+                hkx_rx_packet();
+            }
+            while (commStatus == COMM_RXWAITING);
+        }
+        else
+        {
+            commStatus = COMM_RXSUCCESS;
+            commLock = 0;
+        }
+    }
+    else
+    {
+        commStatus = COMM_RXSUCCESS;
+        commLock = 0;
+    }
 
 #ifdef PACKET_DEBUGGER
     printTxPacket();
@@ -399,11 +442,6 @@ void HerkuleX::hkx_txrx_packet()
 
 // Low level API
 ////////////////////////////////////////////////////////////////////////////////
-
-void HerkuleX::setLatency(int latency)
-{
-    serial->setLatency(latency);
-}
 
 void HerkuleX::hkx_set_txpacket_header()
 {
@@ -715,19 +753,20 @@ void HerkuleX::printTxPacket()
     printf("]\n");
 }
 
-bool HerkuleX::hkx_ping(const int id, PingResponse *status)
+bool HerkuleX::hkx_ping(const int id, PingResponse *status, const int ack)
 {
     bool retcode = false;
 
     while(commLock);
 
-    // TODO Read servo model directly and avoid a stat command?
+    // We do not use a READ instruction directly instead of STAT, because it may
+    // not receive an answer depending on ack policy value.
 
     txPacket[PKT_ID] = get_lowbyte(id);
     txPacket[PKT_CMD] = CMD_STAT;
     txPacket[PKT_LENGTH] = 7;
 
-    hkx_txrx_packet();
+    hkx_txrx_packet(ack);
 
     if (commStatus == COMM_RXSUCCESS)
     {
@@ -736,8 +775,8 @@ bool HerkuleX::hkx_ping(const int id, PingResponse *status)
         if (status != NULL)
         {
             // Emulate ping response from Dynamixel protocol v2
-            status->model_number = hkx_read_word(id, 0, REGISTER_ROM);
-            status->firmware_version = hkx_read_word(id, 2, REGISTER_ROM);
+            status->model_number = hkx_read_word(id, 0, REGISTER_ROM, ack);
+            status->firmware_version = hkx_read_word(id, 2, REGISTER_ROM, ack);
         }
         else
         {
@@ -748,7 +787,7 @@ bool HerkuleX::hkx_ping(const int id, PingResponse *status)
     return retcode;
 }
 
-void HerkuleX::hkx_reset(const int id, int setting)
+void HerkuleX::hkx_reset(const int id, int setting, const int ack)
 {
     while(commLock);
 
@@ -771,10 +810,10 @@ void HerkuleX::hkx_reset(const int id, int setting)
         // RESET_ALL
     }
 
-    hkx_txrx_packet();
+    hkx_txrx_packet(ack);
 }
 
-void HerkuleX::hkx_reboot(const int id)
+void HerkuleX::hkx_reboot(const int id, const int ack)
 {
     while(commLock);
 
@@ -782,16 +821,20 @@ void HerkuleX::hkx_reboot(const int id)
     txPacket[PKT_ID] = get_lowbyte(id);
     txPacket[PKT_CMD] = CMD_REBOOT;
 
-    hkx_txrx_packet();
+    hkx_txrx_packet(ack);
 }
 
-int HerkuleX::hkx_read_byte(const int id, const int address, const int register_type)
+int HerkuleX::hkx_read_byte(const int id, const int address, const int register_type, const int ack)
 {
     int value = -1;
 
     if (id == 254)
     {
         std::cerr << "Error! Cannot send 'Read' instruction to broadcast address!" << std::endl;
+    }
+    else if (ack == ACK_NO_REPLY)
+    {
+        std::cerr << "Error! Cannot send 'Read' instruction if ACK_NO_REPLY is set!" << std::endl;
     }
     else
     {
@@ -808,17 +851,21 @@ int HerkuleX::hkx_read_byte(const int id, const int address, const int register_
         txPacket[PKT_DATA+1] = 1;
     }
 
-    hkx_txrx_packet();
+    hkx_txrx_packet(ack);
 
-    if (commStatus == COMM_RXSUCCESS)
+    if ((ack == ACK_DEFAULT && ackPolicy > ACK_NO_REPLY) ||
+        (ack > ACK_NO_REPLY))
     {
-        value = static_cast<int>(rxPacket[PKT_DATA+2]);
+        if (commStatus == COMM_RXSUCCESS)
+        {
+            value = static_cast<int>(rxPacket[PKT_DATA+2]);
+        }
     }
 
     return value;
 }
 
-void HerkuleX::hkx_write_byte(const int id, const int address, const int value, const int register_type)
+void HerkuleX::hkx_write_byte(const int id, const int address, const int value, const int register_type, const int ack)
 {
     while(commLock);
 
@@ -833,16 +880,20 @@ void HerkuleX::hkx_write_byte(const int id, const int address, const int value, 
     txPacket[PKT_DATA+1] = 1;
     txPacket[PKT_DATA+2] = get_lowbyte(value);
 
-    hkx_txrx_packet();
+    hkx_txrx_packet(ack);
 }
 
-int HerkuleX::hkx_read_word(const int id, const int address, const int register_type)
+int HerkuleX::hkx_read_word(const int id, const int address, const int register_type, const int ack)
 {
     int value = -1;
 
     if (id == 254)
     {
         std::cerr << "Error! Cannot send 'Read' instruction to broadcast address!" << std::endl;
+    }
+    else if (ack == ACK_NO_REPLY)
+    {
+        std::cerr << "Error! Cannot send 'Read' instruction if ACK_NO_REPLY is set!" << std::endl;
     }
     else
     {
@@ -858,18 +909,22 @@ int HerkuleX::hkx_read_word(const int id, const int address, const int register_
         txPacket[PKT_DATA] = get_lowbyte(address);
         txPacket[PKT_DATA+1] = 2;
 
-        hkx_txrx_packet();
+        hkx_txrx_packet(ack);
 
-        if (commStatus == COMM_RXSUCCESS)
+        if ((ack == ACK_DEFAULT && ackPolicy > ACK_NO_REPLY) ||
+            (ack > ACK_NO_REPLY))
         {
-            value = make_short_word(rxPacket[PKT_DATA+2], rxPacket[PKT_DATA+3]);
+            if (commStatus == COMM_RXSUCCESS)
+            {
+                value = make_short_word(rxPacket[PKT_DATA+2], rxPacket[PKT_DATA+3]);
+            }
         }
     }
 
     return value;
 }
 
-void HerkuleX::hkx_write_word(const int id, const int address, const int value, const int register_type)
+void HerkuleX::hkx_write_word(const int id, const int address, const int value, const int register_type, const int ack)
 {
     while(commLock);
 
@@ -885,10 +940,10 @@ void HerkuleX::hkx_write_word(const int id, const int address, const int value, 
     txPacket[PKT_DATA+2] = get_lowbyte(value);
     txPacket[PKT_DATA+3] = get_highbyte(value);
 
-    hkx_txrx_packet();
+    hkx_txrx_packet(ack);
 }
 
-void HerkuleX::hkx_i_jog(const int id, const int mode, const int value)
+void HerkuleX::hkx_i_jog(const int id, const int mode, const int value, const int ack)
 {
     int JOG = 0;
     int SET = 0;
@@ -924,10 +979,10 @@ void HerkuleX::hkx_i_jog(const int id, const int mode, const int value)
     txPacket[PKT_DATA+3] = get_lowbyte(id); // id
     txPacket[PKT_DATA+4] = 0x3c; // playtime
 
-    hkx_txrx_packet();
+    hkx_txrx_packet(ack);
 }
 
-void HerkuleX::hkx_s_jog(const int id, const int mode, const int value)
+void HerkuleX::hkx_s_jog(const int id, const int mode, const int value, const int ack)
 {
     int JOG = 0;
     int SET = 0;
@@ -963,5 +1018,5 @@ void HerkuleX::hkx_s_jog(const int id, const int mode, const int value)
     txPacket[PKT_DATA+3] = get_lowbyte(SET);
     txPacket[PKT_DATA+4] = get_lowbyte(id); // id
 
-    hkx_txrx_packet();
+    hkx_txrx_packet(ack);
 }

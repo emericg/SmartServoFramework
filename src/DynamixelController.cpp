@@ -338,20 +338,23 @@ void DynamixelController::run()
         servoListLock.lock();
         for (auto s: servoList)
         {
+            int id = s->getId();
+            int ack = s->getStatusReturnLevel();
+
             int actionProgrammed, rebootProgrammed, refreshProgrammed, resetProgrammed;
             s->getActions(actionProgrammed, rebootProgrammed, refreshProgrammed, resetProgrammed);
 
             if (refreshProgrammed == 1)
             {
                 // Every servo register value will be updated
-                updateList.push_back(s->getId());
-                std::cout << "Refresh servo #" << s->getId() << " registers"<< std::endl;
+                updateList.push_back(id);
+                std::cout << "Refresh servo #" << id << " registers"<< std::endl;
             }
 
             if (actionProgrammed == 1)
             {
-                dxl_action(s->getId());
-                std::cout << "Action for servo #" << s->getId() << std::endl;
+                dxl_action(id, ack);
+                std::cout << "Action for servo #" << id << std::endl;
             }
 
             if (rebootProgrammed == 1)
@@ -359,24 +362,24 @@ void DynamixelController::run()
                 // Remove servo from sync/update lists; Need to be added again after reboot!
                 for (std::vector <int>::iterator it = updateList.begin(); it != updateList.end();)
                 {
-                    if (*it == s->getId())
+                    if (*it == id)
                     { updateList.erase(it); }
                     else
                     { it++; }
                 }
                 for (std::vector <int>::iterator it = syncList.begin(); it != syncList.end();)
                 {
-                    if (*it == s->getId())
+                    if (*it == id)
                     { syncList.erase(it); }
                     else
                     { it++; }
                 }
 
                 // Reboot
-                dxl_reboot(s->getId());
-                std::cout << "Rebooting servo #" << s->getId() << "..." << std::endl;
+                dxl_reboot(id, ack);
+                std::cout << "Rebooting servo #" << id << "..." << std::endl;
 
-                miniMessages m {ctrl_device_delayed_add, std::chrono::system_clock::now() + std::chrono::seconds(2), NULL, s->getId(), 0};
+                miniMessages m {ctrl_device_delayed_add, std::chrono::system_clock::now() + std::chrono::seconds(2), NULL, id, 0};
                 sendMessage(&m);
             }
 
@@ -385,24 +388,24 @@ void DynamixelController::run()
                 // Remove servo from sync/update lists; Need to be added again after reset!
                 for (std::vector <int>::iterator it = updateList.begin(); it != updateList.end();)
                 {
-                    if (*it == s->getId())
+                    if (*it == id)
                     { updateList.erase(it); }
                     else
                     { it++; }
                 }
                 for (std::vector <int>::iterator it = syncList.begin(); it != syncList.end();)
                 {
-                    if (*it == s->getId())
+                    if (*it == id)
                     { syncList.erase(it); }
                     else
                     { it++; }
                 }
 
                 // Reset
-                dxl_reset(s->getId(), resetProgrammed);
-                std::cout << "Resetting servo #" << s->getId() << " (setting: " << resetProgrammed << ")..." << std::endl;
+                dxl_reset(id, resetProgrammed, ack);
+                std::cout << "Resetting servo #" << id << " (setting: " << resetProgrammed << ")..." << std::endl;
 
-                miniMessages m {ctrl_device_delayed_add, std::chrono::system_clock::now() + std::chrono::seconds(2), NULL, s->getId(), 1};
+                miniMessages m {ctrl_device_delayed_add, std::chrono::system_clock::now() + std::chrono::seconds(2), NULL, id, 1};
                 sendMessage(&m);
             }
         }
@@ -418,12 +421,14 @@ void DynamixelController::run()
             for (itr = updateList.begin(); itr != updateList.end();)
             {
                 setState(state_reading);
-                int id = (*itr);
 
                 for (auto s: servoList)
                 {
-                    if (s->getId() == id)
+                    if (s->getId() == (*itr))
                     {
+                        int id = s->getId();
+                        int ack = s->getStatusReturnLevel();
+
                         for (int ctid = 1; ctid < s->getRegisterCount(); ctid++)
                         {
                             int regname = getRegisterName(s->getControlTable(), ctid);
@@ -435,11 +440,11 @@ void DynamixelController::run()
 
                             if (regsize == 1)
                             {
-                                s->updateValue(regname, dxl_read_byte(id, regaddr));
+                                s->updateValue(regname, dxl_read_byte(id, regaddr, ack));
                             }
                             else //if (regsize == 2)
                             {
-                                s->updateValue(regname, dxl_read_word(id, regaddr));
+                                s->updateValue(regname, dxl_read_word(id, regaddr, ack));
                             }
                             s->setError(dxl_get_rxpacket_error());
                             errors += dxl_get_com_error();
@@ -475,6 +480,9 @@ void DynamixelController::run()
 
                 if (s->getId() == id)
                 {
+                    int ack = s->getStatusReturnLevel();
+
+                    // Commit register modifications
                     for (int ctid = 0; ctid < s->getRegisterCount(); ctid++)
                     {
                         int regname = getRegisterName(s->getControlTable(), ctid);
@@ -491,11 +499,11 @@ void DynamixelController::run()
 
                                 if (regsize == 1)
                                 {
-                                    dxl_write_byte(id, regaddr, s->getValue(regname));
+                                    dxl_write_byte(id, regaddr, s->getValue(regname), ack);
                                 }
                                 else //if (regsize == 2)
                                 {
-                                    dxl_write_word(id, regaddr, s->getValue(regname));
+                                    dxl_write_word(id, regaddr, s->getValue(regname), ack);
                                 }
 
                                 s->commitValue(regname, 0);
@@ -506,37 +514,39 @@ void DynamixelController::run()
                         }
                     }
 
-                    // 1Hz "low priority" loop
-                    if ((syncloopCounter - cumulid) == 0)
+                    // 1 Hz "low priority" loop
+                    if (((syncloopCounter - cumulid) == 0) &&
+                        (ack != ACK_NO_REPLY))
                     {
                         // Read voltage
-                        s->updateValue(REG_CURRENT_VOLTAGE, dxl_read_byte(id, s->gaddr(REG_CURRENT_VOLTAGE)));
+                        s->updateValue(REG_CURRENT_VOLTAGE, dxl_read_byte(id, s->gaddr(REG_CURRENT_VOLTAGE), ack));
                         s->setError(dxl_get_rxpacket_error());
                         errors += dxl_get_com_error();
                         dxl_print_error();
 
                         // Read temp
-                        s->updateValue(REG_CURRENT_TEMPERATURE, dxl_read_byte(id, s->gaddr(REG_CURRENT_TEMPERATURE)));
+                        s->updateValue(REG_CURRENT_TEMPERATURE, dxl_read_byte(id, s->gaddr(REG_CURRENT_TEMPERATURE), ack));
                         s->setError(dxl_get_rxpacket_error());
                         errors += dxl_get_com_error();
                         dxl_print_error();
                     }
 
                     // x/4 Hz "feedback" loop
-                    if ((syncloopCounter - cumulid) % 4 == 0)
+                    if (((syncloopCounter - cumulid) % 4 == 0) &&
+                        (ack != ACK_NO_REPLY))
                     {
-                        s->updateValue(REG_CURRENT_SPEED, dxl_read_word(id, s->gaddr(REG_CURRENT_SPEED)));
+                        s->updateValue(REG_CURRENT_SPEED, dxl_read_word(id, s->gaddr(REG_CURRENT_SPEED), ack));
                         s->setError(dxl_get_rxpacket_error());
                         errors += dxl_get_com_error();
                         dxl_print_error();
 
-                        s->updateValue(REG_CURRENT_LOAD, dxl_read_word(id, s->gaddr(REG_CURRENT_LOAD)));
+                        s->updateValue(REG_CURRENT_LOAD, dxl_read_word(id, s->gaddr(REG_CURRENT_LOAD), ack));
                         s->setError(dxl_get_rxpacket_error());
                         errors += dxl_get_com_error();
                         dxl_print_error();
 
                         // Read moving
-                        s->updateValue(REG_MOVING, dxl_read_byte(id, s->gaddr(REG_MOVING)));
+                        s->updateValue(REG_MOVING, dxl_read_byte(id, s->gaddr(REG_MOVING), ack));
                         s->setError(dxl_get_rxpacket_error());
                         errors += dxl_get_com_error();
                         dxl_print_error();
@@ -544,8 +554,8 @@ void DynamixelController::run()
 
                     // x Hz "full speed" loop
                     {
-                        // Get "current" values from servo, and write them into obj
-                        int cpos = dxl_read_word(id, s->gaddr(REG_CURRENT_POSITION));
+                        // Get "current" values from devices, and write them into corresponding objects
+                        int cpos = dxl_read_word(id, s->gaddr(REG_CURRENT_POSITION), ack);
                         s->updateValue(REG_CURRENT_POSITION, cpos);
                         s->setError(dxl_get_rxpacket_error());
                         errors += dxl_get_com_error();
@@ -573,7 +583,7 @@ void DynamixelController::run()
                                     if (angle_abs > mot)
                                     {
                                         // SPEED
-                                        dxl_write_word(id, s->gaddr(REG_GOAL_SPEED), speed);
+                                        dxl_write_word(id, s->gaddr(REG_GOAL_SPEED), speed, ack);
                                         errors += dxl_get_com_error();
                                         dxl_print_error();
                                         s->setError(dxl_get_rxpacket_error());
@@ -581,14 +591,14 @@ void DynamixelController::run()
                                         // POS
                                         if (angle >= 0)
                                         {
-                                            dxl_write_word(id, s->gaddr(REG_GOAL_POSITION), s->getSteps() - 1);
+                                            dxl_write_word(id, s->gaddr(REG_GOAL_POSITION), s->getSteps() - 1, ack);
                                             s->setError(dxl_get_rxpacket_error());
                                             errors += dxl_get_com_error();
                                             dxl_print_error();
                                         }
                                         else
                                         {
-                                            dxl_write_word(id, s->gaddr(REG_GOAL_POSITION), 0);
+                                            dxl_write_word(id, s->gaddr(REG_GOAL_POSITION), 0, ack);
                                             s->setError(dxl_get_rxpacket_error());
                                             errors += dxl_get_com_error();
                                             dxl_print_error();
@@ -598,12 +608,12 @@ void DynamixelController::run()
                                     }
                                     else // STOP
                                     {
-                                        dxl_write_word(id, s->gaddr(REG_GOAL_SPEED), movingSpeed);
+                                        dxl_write_word(id, s->gaddr(REG_GOAL_SPEED), movingSpeed, ack);
                                         s->setError(dxl_get_rxpacket_error());
                                         errors += dxl_get_com_error();
                                         dxl_print_error();
 
-                                        dxl_write_word(id, s->gaddr(REG_GOAL_POSITION), s->getGoalPosition());
+                                        dxl_write_word(id, s->gaddr(REG_GOAL_POSITION), s->getGoalPosition(), ack);
                                         s->setError(dxl_get_rxpacket_error());
                                         errors += dxl_get_com_error();
                                         dxl_print_error();
@@ -628,7 +638,7 @@ void DynamixelController::run()
                                         if (angle >= 0)
                                         {
                                             // SPEED (counter clockwise)
-                                            dxl_write_word(id, s->gaddr(REG_GOAL_SPEED), speed);
+                                            dxl_write_word(id, s->gaddr(REG_GOAL_SPEED), speed, ack);
                                             s->setError(dxl_get_rxpacket_error());
                                             errors += dxl_get_com_error();
                                             dxl_print_error();
@@ -637,7 +647,7 @@ void DynamixelController::run()
                                         {
                                             // SPEED (clockwise)
                                             speed +=  1024;
-                                            dxl_write_word(id, s->gaddr(REG_GOAL_SPEED), speed);
+                                            dxl_write_word(id, s->gaddr(REG_GOAL_SPEED), speed, ack);
                                             s->setError(dxl_get_rxpacket_error());
                                             errors += dxl_get_com_error();
                                             dxl_print_error();
@@ -647,22 +657,22 @@ void DynamixelController::run()
                                     }
                                     else // STOP
                                     {
-                                        if (dxl_read_word(id, s->gaddr(REG_GOAL_SPEED)) >= 1024)
+                                        if (dxl_read_word(id, s->gaddr(REG_GOAL_SPEED), ack) >= 1024)
                                         {
-                                            dxl_write_word(id, s->gaddr(REG_GOAL_SPEED), 1024);
+                                            dxl_write_word(id, s->gaddr(REG_GOAL_SPEED), ack, 1024);
                                             s->setError(dxl_get_rxpacket_error());
                                             errors += dxl_get_com_error();
                                             dxl_print_error();
                                         }
                                         else
                                         {
-                                            dxl_write_word(id, s->gaddr(REG_GOAL_SPEED), 0);
+                                            dxl_write_word(id, s->gaddr(REG_GOAL_SPEED), 0, ack);
                                             s->setError(dxl_get_rxpacket_error());
                                             errors += dxl_get_com_error();
                                             dxl_print_error();
                                         }
 
-                                        dxl_write_word(id, s->gaddr(REG_GOAL_POSITION), s->getGoalPosition());
+                                        dxl_write_word(id, s->gaddr(REG_GOAL_POSITION), s->getGoalPosition(), ack);
                                         s->setError(dxl_get_rxpacket_error());
                                         errors += dxl_get_com_error();
                                         dxl_print_error();

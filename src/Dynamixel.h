@@ -64,7 +64,7 @@ private:
     // Serial communication methods, using one of the SerialPort[Linux/Mac/Windows] implementations.
     void dxl_tx_packet();
     void dxl_rx_packet();
-    void dxl_txrx_packet();
+    void dxl_txrx_packet(int ack);
 
 protected:
     Dynamixel();
@@ -95,8 +95,6 @@ protected:
 
     // Low level API
     ////////////////////////////////////////////////////////////////////////////
-
-    void setLatency(int latency);
 
     // TX packet building
     void dxl_set_txpacket_header();
@@ -131,7 +129,7 @@ protected:
     void printTxPacket();           //!< Print the TX buffer (last packet sent)
 
     // Instructions
-    bool dxl_ping(const int id, PingResponse *status = NULL);
+    bool dxl_ping(const int id, PingResponse *status = NULL, const int ack = ACK_DEFAULT);
 
     /*!
      * \brief Reset servo control table.
@@ -140,15 +138,15 @@ protected:
      *
      * Please note that when using protocol v1, the servo ID will be changed to 1.
      */
-    void dxl_reset(const int id, int setting);
-    void dxl_reboot(const int id);
-    void dxl_action(const int id);
+    void dxl_reset(const int id, int setting, const int ack = ACK_DEFAULT);
+    void dxl_reboot(const int id, const int ack = ACK_DEFAULT);
+    void dxl_action(const int id, const int ack = ACK_DEFAULT);
 
     // DOCME // Read/write register instructions
-    int dxl_read_byte(const int id, const int address);
-    void dxl_write_byte(const int id, const int address, const int value);
-    int dxl_read_word(const int id, const int address);
-    void dxl_write_word(const int id, const int address, const int value);
+    int dxl_read_byte(const int id, const int address, const int ack = ACK_DEFAULT);
+    void dxl_write_byte(const int id, const int address, const int value, const int ack = ACK_DEFAULT);
+    int dxl_read_word(const int id, const int address, const int ack = ACK_DEFAULT);
+    void dxl_write_word(const int id, const int address, const int value, const int ack = ACK_DEFAULT);
 /*
     // TODO // Reg write
     void dxl_reg_write(const int id, ???)
@@ -177,6 +175,18 @@ public:
      * \return The path to all the serial device nodes available (ex: "/dev/ttyUSB0").
      */
     std::vector <std::string> serialGetAvailableDevices();
+
+    /*!
+     * \brief setLatency
+     * \param latency
+     */
+    void setLatency(int latency);
+
+    /*!
+     * \brief setAckPolicy
+     * \param ack
+     */
+    void setAckPolicy(int ack);
 };
 
 #endif /* DYNAMIXEL_H */

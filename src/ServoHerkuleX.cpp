@@ -69,6 +69,11 @@ ServoHerkuleX::ServoHerkuleX(const int control_table[][8], int herkulex_id, int 
     {
         registerTableValues[gid(REG_ID)] = herkulex_id;
     }
+
+    // Set default value for ack policy, ACK_REPLY_READ for HerkuleX devices
+    // (will be overwritten when reading the real value from the device)
+    registerTableValues[gid(REG_STATUS_RETURN_LEVEL)] = ACK_REPLY_READ;
+    registerTableValuesRAM[gid(REG_STATUS_RETURN_LEVEL)] = ACK_REPLY_READ;
 }
 
 ServoHerkuleX::~ServoHerkuleX()

@@ -263,12 +263,14 @@ void HerkuleXController::run()
                 std::cout << ">> THREAD (tid: " << std::this_thread::get_id() << "') pause by message" << std::endl;
                 m_mutex.lock();
                 m_queue.pop_front();
+                m_mutex.unlock();
                 return;
                 break;
             case ctrl_state_stop:
                 std::cout << ">> THREAD (tid: " << std::this_thread::get_id() << "') termination by 'stop message'" << std::endl;
                 m_mutex.lock();
                 m_queue.pop_front();
+                m_mutex.unlock();
                 return;
                 break;
 
@@ -288,14 +290,17 @@ void HerkuleXController::run()
         servoListLock.lock();
         for (auto s: servoList)
         {
+            int id = s->getId();
+            int ack = s->getStatusReturnLevel();
+
             int actionProgrammed, rebootProgrammed, refreshProgrammed, resetProgrammed;
             s->getActions(actionProgrammed, rebootProgrammed, refreshProgrammed, resetProgrammed);
 
             if (refreshProgrammed == 1)
             {
                 // Every servo register value will be updated
-                updateList.push_back(s->getId());
-                std::cout << "Refresh servo #" << s->getId() << " registers"<< std::endl;
+                updateList.push_back(id);
+                std::cout << "Refresh servo #" << id << " registers"<< std::endl;
             }
 
             if (rebootProgrammed == 1)
@@ -303,24 +308,24 @@ void HerkuleXController::run()
                 // Remove servo from sync/update lists; Need to be added again after reboot!
                 for (std::vector <int>::iterator it = updateList.begin(); it != updateList.end();)
                 {
-                    if (*it == s->getId())
+                    if (*it == id)
                     { updateList.erase(it); }
                     else
                     { it++; }
                 }
                 for (std::vector <int>::iterator it = syncList.begin(); it != syncList.end();)
                 {
-                    if (*it == s->getId())
+                    if (*it == id)
                     { syncList.erase(it); }
                     else
                     { it++; }
                 }
 
                 // Reboot
-                hkx_reboot(s->getId());
-                std::cout << "Rebooting servo #" << s->getId() << "..." << std::endl;
+                hkx_reboot(id, ack);
+                std::cout << "Rebooting servo #" << id << "..." << std::endl;
 
-                miniMessages m {ctrl_device_delayed_add, std::chrono::system_clock::now() + std::chrono::seconds(2), NULL, s->getId(), 1};
+                miniMessages m {ctrl_device_delayed_add, std::chrono::system_clock::now() + std::chrono::seconds(2), NULL, id, 1};
                 sendMessage(&m);
             }
 
@@ -329,24 +334,24 @@ void HerkuleXController::run()
                 // Remove servo from sync/update lists; Need to be added again after reset!
                 for (std::vector <int>::iterator it = updateList.begin(); it != updateList.end();)
                 {
-                    if (*it == s->getId())
+                    if (*it == id)
                     { updateList.erase(it); }
                     else
                     { it++; }
                 }
                 for (std::vector <int>::iterator it = syncList.begin(); it != syncList.end();)
                 {
-                    if (*it == s->getId())
+                    if (*it == id)
                     { syncList.erase(it); }
                     else
                     { it++; }
                 }
 
                 // Reset
-                hkx_reset(s->getId(), resetProgrammed);
-                std::cout << "Resetting servo #" << s->getId() << " (setting: " << resetProgrammed << ")..." << std::endl;
+                hkx_reset(id, resetProgrammed, ack);
+                std::cout << "Resetting servo #" << id << " (setting: " << resetProgrammed << ")..." << std::endl;
 
-                miniMessages m {ctrl_device_delayed_add, std::chrono::system_clock::now() + std::chrono::seconds(2), NULL, s->getId(), 1};
+                miniMessages m {ctrl_device_delayed_add, std::chrono::system_clock::now() + std::chrono::seconds(2), NULL, id, 1};
                 sendMessage(&m);
             }
         }
@@ -362,12 +367,14 @@ void HerkuleXController::run()
             for (itr = updateList.begin(); itr != updateList.end();)
             {
                 setState(state_reading);
-                int id = (*itr);
 
                 for (auto s: servoList)
                 {
-                    if (s->getId() == id)
+                    if (s->getId() == (*itr))
                     {
+                        int id = s->getId();
+                        int ack = s->getStatusReturnLevel();
+
                         for (int ctid = 1; ctid < s->getRegisterCount(); ctid++)
                         {
                             struct RegisterInfos reg;
@@ -388,32 +395,32 @@ void HerkuleXController::run()
                             {
                                 if (reg_type == REGISTER_BOTH)
                                 {
-                                    s->updateValue(reg_name, hkx_read_byte(id, reg.reg_addr_rom, REGISTER_ROM), REGISTER_ROM);
-                                    s->updateValue(reg_name, hkx_read_byte(id, reg.reg_addr_ram, REGISTER_RAM), REGISTER_RAM);
+                                    s->updateValue(reg_name, hkx_read_byte(id, reg.reg_addr_rom, REGISTER_ROM, ack), REGISTER_ROM);
+                                    s->updateValue(reg_name, hkx_read_byte(id, reg.reg_addr_ram, REGISTER_RAM, ack), REGISTER_RAM);
                                 }
                                 else if (reg_type == REGISTER_ROM)
                                 {
-                                    s->updateValue(reg_name, hkx_read_byte(id, reg.reg_addr_rom, REGISTER_ROM), REGISTER_ROM);
+                                    s->updateValue(reg_name, hkx_read_byte(id, reg.reg_addr_rom, REGISTER_ROM, ack), REGISTER_ROM);
                                 }
                                 else if (reg_type == REGISTER_RAM)
                                 {
-                                    s->updateValue(reg_name, hkx_read_byte(id, reg.reg_addr_ram, REGISTER_RAM), REGISTER_RAM);
+                                    s->updateValue(reg_name, hkx_read_byte(id, reg.reg_addr_ram, REGISTER_RAM, ack), REGISTER_RAM);
                                 }
                             }
                             else //if (reg.reg_size == 2)
                             {
                                 if (reg_type == REGISTER_BOTH)
                                 {
-                                    s->updateValue(reg_name, hkx_read_word(id, reg.reg_addr_rom, REGISTER_ROM), REGISTER_ROM);
-                                    s->updateValue(reg_name, hkx_read_word(id, reg.reg_addr_ram, REGISTER_RAM), REGISTER_RAM);
+                                    s->updateValue(reg_name, hkx_read_word(id, reg.reg_addr_rom, REGISTER_ROM, ack), REGISTER_ROM);
+                                    s->updateValue(reg_name, hkx_read_word(id, reg.reg_addr_ram, REGISTER_RAM, ack), REGISTER_RAM);
                                 }
                                 else if (reg_type == REGISTER_ROM)
                                 {
-                                    s->updateValue(reg_name, hkx_read_word(id, reg.reg_addr_rom, REGISTER_ROM), REGISTER_ROM);
+                                    s->updateValue(reg_name, hkx_read_word(id, reg.reg_addr_rom, REGISTER_ROM, ack), REGISTER_ROM);
                                 }
                                 else if (reg_type == REGISTER_RAM)
                                 {
-                                    s->updateValue(reg_name, hkx_read_word(id, reg.reg_addr_ram, REGISTER_RAM), REGISTER_RAM);
+                                    s->updateValue(reg_name, hkx_read_word(id, reg.reg_addr_ram, REGISTER_RAM, ack), REGISTER_RAM);
                                 }
                             }
 
@@ -443,79 +450,82 @@ void HerkuleXController::run()
             cumulid++;
             cumulid %= syncloopFrequency;
 
-            for (auto s: servoList)
+            for (auto s_raw: servoList)
             {
                 servoListLock.unlock();
 
+                ServoHerkuleX *s = (ServoHerkuleX*)s_raw;
+
                 if (s->getId() == id)
                 {
-                    // Write
+                    int ack = s->getStatusReturnLevel();
+
+                    // Commit register modifications
                     for (int ctid = 0; ctid < s->getRegisterCount(); ctid++)
                     {
                         int regname = getRegisterName(s->getControlTable(), ctid);
                         int regsize = getRegisterSize(s->getControlTable(), regname);
 
+                        if (s->getValueCommit(regname, REGISTER_ROM) == 1)
                         {
-                            if (s->getValueCommit(regname, REGISTER_ROM) == 1)
+                            int regaddr = getRegisterAddr(s->getControlTable(), regname, REGISTER_ROM);
+
+                            //std::cout << "Writing ROM value '" << s->getValue(regname) << "' for reg [" << ctid << "] name: '" << getRegisterNameTxt(regname)
+                            //          << "' addr: '" << regaddr << "' size: '" << regsize << "'" << std::endl;
+
+                            if (regsize == 1)
                             {
-                                int regaddr = getRegisterAddr(s->getControlTable(), regname, REGISTER_ROM);
-
-                                //std::cout << "Writing ROM value '" << s->getValue(regname) << "' for reg [" << ctid << "] name: '" << getRegisterNameTxt(regname)
-                                //          << "' addr: '" << regaddr << "' size: '" << regsize << "'" << std::endl;
-
-                                if (regsize == 1)
-                                {
-                                    hkx_write_byte(id, regaddr, s->getValue(regname, REGISTER_ROM), REGISTER_ROM);
-                                }
-                                else //if (regsize == 2)
-                                {
-                                    hkx_write_word(id, regaddr, s->getValue(regname, REGISTER_ROM), REGISTER_ROM);
-                                }
-
-                                s->setError(hkx_get_rxpacket_error());
-                                s->setStatus(hkx_get_rxpacket_status_detail());
-                                s->commitValue(regname, 0, REGISTER_ROM);
-                                errors += hkx_get_com_error();
-                                hkx_print_error();
+                                hkx_write_byte(id, regaddr, s->getValue(regname, REGISTER_ROM), REGISTER_ROM, ack);
+                            }
+                            else //if (regsize == 2)
+                            {
+                                hkx_write_word(id, regaddr, s->getValue(regname, REGISTER_ROM), REGISTER_ROM, ack);
                             }
 
-                            if (s->getValueCommit(regname, REGISTER_RAM) == 1)
+                            s->setError(hkx_get_rxpacket_error());
+                            s->setStatus(hkx_get_rxpacket_status_detail());
+                            s->commitValue(regname, 0, REGISTER_ROM);
+                            errors += hkx_get_com_error();
+                            hkx_print_error();
+                        }
+
+                        if (s->getValueCommit(regname, REGISTER_RAM) == 1)
+                        {
+                            int regaddr = getRegisterAddr(s->getControlTable(), regname, REGISTER_RAM);
+
+                            //std::cout << "Writing RAM value '" << s->getValue(regname) << "' for reg [" << ctid << "] name: '" << getRegisterNameTxt(regname)
+                            //          << "' addr: '" << regaddr << "' size: '" << regsize << "'" << std::endl;
+
+                            if (regsize == 1)
                             {
-                                int regaddr = getRegisterAddr(s->getControlTable(), regname, REGISTER_RAM);
-
-                                //std::cout << "Writing RAM value '" << s->getValue(regname) << "' for reg [" << ctid << "] name: '" << getRegisterNameTxt(regname)
-                                //          << "' addr: '" << regaddr << "' size: '" << regsize << "'" << std::endl;
-
-                                if (regsize == 1)
-                                {
-                                    hkx_write_byte(id, regaddr, s->getValue(regname, REGISTER_RAM), REGISTER_RAM);
-                                }
-                                else //if (regsize == 2)
-                                {
-                                    hkx_write_word(id, regaddr, s->getValue(regname, REGISTER_RAM), REGISTER_RAM);
-                                }
-
-                                s->setError(hkx_get_rxpacket_error());
-                                s->setStatus(hkx_get_rxpacket_status_detail());
-                                s->commitValue(regname, 0, REGISTER_RAM);
-                                errors += hkx_get_com_error();
-                                hkx_print_error();
+                                hkx_write_byte(id, regaddr, s->getValue(regname, REGISTER_RAM), REGISTER_RAM, ack);
                             }
+                            else //if (regsize == 2)
+                            {
+                                hkx_write_word(id, regaddr, s->getValue(regname, REGISTER_RAM), REGISTER_RAM, ack);
+                            }
+
+                            s->setError(hkx_get_rxpacket_error());
+                            s->setStatus(hkx_get_rxpacket_status_detail());
+                            s->commitValue(regname, 0, REGISTER_RAM);
+                            errors += hkx_get_com_error();
+                            hkx_print_error();
                         }
                     }
 
-                    // 1Hz "low priority" loop
-                    if ((syncloopCounter - cumulid) == 0)
+                    // 1 Hz "low priority" loop
+                    if (((syncloopCounter - cumulid) == 0) &&
+                        (ack != ACK_NO_REPLY))
                     {
                         // Read voltage
-                        s->updateValue(REG_CURRENT_VOLTAGE, hkx_read_byte(id, s->gaddr(REG_CURRENT_VOLTAGE)));
+                        s->updateValue(REG_CURRENT_VOLTAGE, hkx_read_byte(id, s->gaddr(REG_CURRENT_VOLTAGE), REGISTER_RAM, ack));
                         s->setError(hkx_get_rxpacket_error());
                         s->setStatus(hkx_get_rxpacket_status_detail());
                         errors += hkx_get_com_error();
                         hkx_print_error();
 
                         // Read temp
-                        s->updateValue(REG_CURRENT_TEMPERATURE, hkx_read_byte(id, s->gaddr(REG_CURRENT_TEMPERATURE)));
+                        s->updateValue(REG_CURRENT_TEMPERATURE, hkx_read_byte(id, s->gaddr(REG_CURRENT_TEMPERATURE), REGISTER_RAM, ack));
                         s->setError(hkx_get_rxpacket_error());
                         s->setStatus(hkx_get_rxpacket_status_detail());
                         errors += hkx_get_com_error();
@@ -523,27 +533,28 @@ void HerkuleXController::run()
                     }
 
                     // x/4 Hz "feedback" loop
-                    if ((syncloopCounter - cumulid) % 4 == 0)
+                    if (((syncloopCounter - cumulid) % 4 == 0) &&
+                        (ack != ACK_NO_REPLY))
                     {
-                        s->updateValue(REG_STATUS_ERROR, hkx_read_byte(id, s->gaddr(REG_STATUS_ERROR)));
+                        s->updateValue(REG_STATUS_ERROR, hkx_read_byte(id, s->gaddr(REG_STATUS_ERROR), REGISTER_RAM, ack));
                         s->setError(hkx_get_rxpacket_error());
                         s->setStatus(hkx_get_rxpacket_status_detail());
                         errors += hkx_get_com_error();
                         hkx_print_error();
 
-                        s->updateValue(REG_STATUS_DETAIL, hkx_read_byte(id, s->gaddr(REG_STATUS_DETAIL)));
+                        s->updateValue(REG_STATUS_DETAIL, hkx_read_byte(id, s->gaddr(REG_STATUS_DETAIL), REGISTER_RAM, ack));
                         s->setError(hkx_get_rxpacket_error());
                         s->setStatus(hkx_get_rxpacket_status_detail());
                         errors += hkx_get_com_error();
                         hkx_print_error();
 /*
-                        s->updateCurrentSpeed(hkx_read_word(id, s->gaddr(SERVO_CURRENT_SPEED)));
+                        s->updateCurrentSpeed(hkx_read_word(id, s->gaddr(SERVO_CURRENT_SPEED), REGISTER_RAM, ack));
                         s->setError(hkx_get_rxpacket_error());
                         s->setStatus(hkx_get_rxpacket_status_detail());
                         errors += hkx_get_com_error();
                         hkx_print_error();
 
-                        s->updateCurrentLoad(hkx_read_word(id, s->gaddr(SERVO_CURRENT_LOAD)));
+                        s->updateCurrentLoad(hkx_read_word(id, s->gaddr(SERVO_CURRENT_LOAD), REGISTER_RAM, ack));
                         s->setError(hkx_get_rxpacket_error());
                         s->setStatus(hkx_get_rxpacket_status_detail());
                         errors += hkx_get_com_error();
@@ -553,26 +564,26 @@ void HerkuleXController::run()
 
                     // x Hz "full speed" loop
                     {
-                        // Get "current" values from servo, and write them into obj
-                        int cpos = hkx_read_word(id, s->gaddr(REG_ABSOLUTE_POSITION));
+                        // Get "current" values from devices, and write them into corresponding objects
+                        int cpos = hkx_read_word(id, s->gaddr(REG_ABSOLUTE_POSITION), REGISTER_RAM, ack);
                         s->updateValue(REG_ABSOLUTE_POSITION, cpos);
                         s->setError(hkx_get_rxpacket_error());
                         s->setStatus(hkx_get_rxpacket_status_detail());
                         errors += hkx_get_com_error();
                         hkx_print_error();
 
-                        if (((ServoDRS*)s)->getGoalPositionCommited() == 1)
+                        if (s->getGoalPositionCommited() == 1)
                         {
                             int gpos = s->getGoalPosition();
 
-                            hkx_i_jog(id, 0, gpos);
+                            hkx_i_jog(id, 0, gpos, ack);
                             if (hkx_print_error() == 0)
                             {
-                                ((ServoDRS*)s)->commitGoalPosition();
+                                s->commitGoalPosition();
                             }
                         }
 
-                        s->updateValue(REG_ABSOLUTE_GOAL_POSITION, hkx_read_word(id, s->gaddr(REG_ABSOLUTE_GOAL_POSITION)));
+                        s->updateValue(REG_ABSOLUTE_GOAL_POSITION, hkx_read_word(id, s->gaddr(REG_ABSOLUTE_GOAL_POSITION), REGISTER_RAM, ack));
                         s->setError(hkx_get_rxpacket_error());
                         s->setStatus(hkx_get_rxpacket_status_detail());
                         errors += hkx_get_com_error();

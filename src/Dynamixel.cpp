@@ -233,6 +233,23 @@ std::vector <std::string> Dynamixel::serialGetAvailableDevices()
     return devices;
 }
 
+void Dynamixel::setLatency(int latency)
+{
+    serial->setLatency(latency);
+}
+
+void Dynamixel::setAckPolicy(int ack)
+{
+    if (ackPolicy >= ACK_NO_REPLY && ack <= ACK_REPLY_ALL)
+    {
+        ackPolicy = ack;
+    }
+    else
+    {
+        std::cerr << "Invalid ack policy: '" << ack << "'', not in [0;2] range." << std::endl;
+    }
+}
+
 void Dynamixel::dxl_tx_packet()
 {
     if (serial == NULL)
@@ -476,7 +493,7 @@ void Dynamixel::dxl_rx_packet()
     commLock = 0;
 }
 
-void Dynamixel::dxl_txrx_packet()
+void Dynamixel::dxl_txrx_packet(int ack)
 {
 #ifdef LATENCY_TIMER
     // Latency timer for a complete transaction (instruction sent and status received)
@@ -488,13 +505,47 @@ void Dynamixel::dxl_txrx_packet()
 
     if (commStatus != COMM_TXSUCCESS)
     {
+        std::cerr << "Unable to sent TX packet on serial link: " << serialGetCurrentDevice() << "'" << std::endl;
         return;
     }
 
-    do {
-        dxl_rx_packet();
+    // Depending on 'ackPolicy' value and current instruction, we wait for an answer to the packet we just sent
+    if (ack == ACK_DEFAULT)
+    {
+        ack = ackPolicy;
     }
-    while (commStatus == COMM_RXWAITING);
+
+    if (ack != ACK_NO_REPLY)
+    {
+        int cmd = 0;
+        if (protocolVersion == 2)
+        {
+            cmd = txPacket[PKT2_INSTRUCTION];
+        }
+        else
+        {
+            cmd = txPacket[PKT1_INSTRUCTION];
+        }
+
+        if ((ack == ACK_REPLY_ALL) ||
+            (ack == ACK_REPLY_READ && cmd == INST_READ))
+        {
+            do {
+                dxl_rx_packet();
+            }
+            while (commStatus == COMM_RXWAITING);
+        }
+        else
+        {
+            commStatus = COMM_RXSUCCESS;
+            commLock = 0;
+        }
+    }
+    else
+    {
+        commStatus = COMM_RXSUCCESS;
+        commLock = 0;
+    }
 
 #ifdef PACKET_DEBUGGER
     printTxPacket();
@@ -511,19 +562,14 @@ void Dynamixel::dxl_txrx_packet()
 // Low level API
 ////////////////////////////////////////////////////////////////////////////////
 
-void Dynamixel::setLatency(int latency)
-{
-    serial->setLatency(latency);
-}
-
 void Dynamixel::dxl_set_txpacket_header()
 {
-    txPacket[0] = 0xFF;
-    txPacket[1] = 0xFF;
+    txPacket[PKT1_HEADER0] = 0xFF;
+    txPacket[PKT1_HEADER1] = 0xFF;
 
     if (protocolVersion == 2)
     {
-        txPacket[2] = 0xFD;
+        txPacket[PKT2_HEADER2] = 0xFD;
         txPacket[PKT2_RESERVED] = 0x00;
     }
 }
@@ -1016,7 +1062,7 @@ void Dynamixel::printTxPacket()
     printf("]\n");
 }
 
-bool Dynamixel::dxl_ping(const int id, PingResponse *status)
+bool Dynamixel::dxl_ping(const int id, PingResponse *status, const int ack)
 {
     bool retcode = false;
 
@@ -1036,7 +1082,7 @@ bool Dynamixel::dxl_ping(const int id, PingResponse *status)
         txPacket[PKT1_LENGTH] = 2;
     }
 
-    dxl_txrx_packet();
+    dxl_txrx_packet(ack);
 
     if (commStatus == COMM_RXSUCCESS)
     {
@@ -1052,8 +1098,8 @@ bool Dynamixel::dxl_ping(const int id, PingResponse *status)
             else
             {
                 // Emulate ping response from protocol v2
-                status->model_number = dxl_read_word(id, 0);
-                status->firmware_version = dxl_read_byte(id, 2);
+                status->model_number = dxl_read_word(id, 0, ack);
+                status->firmware_version = dxl_read_byte(id, 2, ack);
             }
         }
         else
@@ -1065,7 +1111,7 @@ bool Dynamixel::dxl_ping(const int id, PingResponse *status)
     return retcode;
 }
 
-void Dynamixel::dxl_reset(const int id, int setting)
+void Dynamixel::dxl_reset(const int id, int setting, const int ack)
 {
     while(commLock);
 
@@ -1093,10 +1139,10 @@ void Dynamixel::dxl_reset(const int id, int setting)
         txPacket[PKT1_LENGTH] = 2;
     }
 
-    dxl_txrx_packet();
+    dxl_txrx_packet(ack);
 }
 
-void Dynamixel::dxl_reboot(const int id)
+void Dynamixel::dxl_reboot(const int id, const int ack)
 {
     while(commLock);
 
@@ -1107,7 +1153,7 @@ void Dynamixel::dxl_reboot(const int id)
         txPacket[PKT2_LENGTH_L] = 3;
         txPacket[PKT2_LENGTH_H] = 0;
 
-        dxl_txrx_packet();
+        dxl_txrx_packet(ack);
     }
     else
     {
@@ -1116,7 +1162,7 @@ void Dynamixel::dxl_reboot(const int id)
     }
 }
 
-void Dynamixel::dxl_action(const int id)
+void Dynamixel::dxl_action(const int id, const int ack)
 {
     while(commLock);
 
@@ -1134,16 +1180,20 @@ void Dynamixel::dxl_action(const int id)
         txPacket[PKT1_LENGTH] = 2;
     }
 
-    dxl_txrx_packet();
+    dxl_txrx_packet(ack);
 }
 
-int Dynamixel::dxl_read_byte(const int id, const int address)
+int Dynamixel::dxl_read_byte(const int id, const int address, const int ack)
 {
     int value = -1;
 
     if (id == 254)
     {
         std::cerr << "Error! Cannot send 'Read' instruction to broadcast address!" << std::endl;
+    }
+    else if (ack == ACK_NO_REPLY)
+    {
+        std::cerr << "Error! Cannot send 'Read' instruction if ACK_NO_REPLY is set!" << std::endl;
     }
     else
     {
@@ -1169,17 +1219,21 @@ int Dynamixel::dxl_read_byte(const int id, const int address)
             txPacket[PKT1_LENGTH] = 4;
         }
 
-        dxl_txrx_packet();
+        dxl_txrx_packet(ack);
 
-        if (commStatus == COMM_RXSUCCESS)
+        if ((ack == ACK_DEFAULT && ackPolicy > ACK_NO_REPLY) ||
+            (ack > ACK_NO_REPLY))
         {
-            if (protocolVersion == 2)
+            if (commStatus == COMM_RXSUCCESS)
             {
-                value = static_cast<int>(rxPacket[PKT2_PARAMETER+1]);
-            }
-            else
-            {
-                value = static_cast<int>(rxPacket[PKT1_PARAMETER]);
+                if (protocolVersion == 2)
+                {
+                    value = static_cast<int>(rxPacket[PKT2_PARAMETER+1]);
+                }
+                else
+                {
+                    value = static_cast<int>(rxPacket[PKT1_PARAMETER]);
+                }
             }
         }
     }
@@ -1187,7 +1241,7 @@ int Dynamixel::dxl_read_byte(const int id, const int address)
     return value;
 }
 
-void Dynamixel::dxl_write_byte(const int id, const int address, const int value)
+void Dynamixel::dxl_write_byte(const int id, const int address, const int value, const int ack)
 {
     while(commLock);
 
@@ -1210,16 +1264,20 @@ void Dynamixel::dxl_write_byte(const int id, const int address, const int value)
         txPacket[PKT1_LENGTH] = 4;
     }
 
-    dxl_txrx_packet();
+    dxl_txrx_packet(ack);
 }
 
-int Dynamixel::dxl_read_word(const int id, const int address)
+int Dynamixel::dxl_read_word(const int id, const int address, const int ack)
 {
     int value = -1;
 
     if (id == 254)
     {
         std::cerr << "Error! Cannot send 'Read' instruction to broadcast address!" << std::endl;
+    }
+    else if (ack == ACK_NO_REPLY)
+    {
+        std::cerr << "Error! Cannot send 'Read' instruction if ACK_NO_REPLY is set!" << std::endl;
     }
     else
     {
@@ -1245,17 +1303,21 @@ int Dynamixel::dxl_read_word(const int id, const int address)
             txPacket[PKT1_LENGTH] = 4;
         }
 
-        dxl_txrx_packet();
+        dxl_txrx_packet(ack);
 
-        if (commStatus == COMM_RXSUCCESS)
+        if ((ack == ACK_DEFAULT && ackPolicy > ACK_NO_REPLY) ||
+            (ack > ACK_NO_REPLY))
         {
-            if (protocolVersion == 2)
+            if (commStatus == COMM_RXSUCCESS)
             {
-                value = make_short_word(rxPacket[PKT2_PARAMETER+1], rxPacket[PKT2_PARAMETER+2]);
-            }
-            else
-            {
-                value = make_short_word(rxPacket[PKT1_PARAMETER], rxPacket[PKT1_PARAMETER+1]);
+                if (protocolVersion == 2)
+                {
+                    value = make_short_word(rxPacket[PKT2_PARAMETER+1], rxPacket[PKT2_PARAMETER+2]);
+                }
+                else
+                {
+                    value = make_short_word(rxPacket[PKT1_PARAMETER], rxPacket[PKT1_PARAMETER+1]);
+                }
             }
         }
     }
@@ -1263,7 +1325,7 @@ int Dynamixel::dxl_read_word(const int id, const int address)
     return value;
 }
 
-void Dynamixel::dxl_write_word(const int id, const int address, const int value)
+void Dynamixel::dxl_write_word(const int id, const int address, const int value, const int ack)
 {
     while(commLock);
 
@@ -1288,5 +1350,5 @@ void Dynamixel::dxl_write_word(const int id, const int address, const int value)
         txPacket[PKT1_LENGTH] = 5;
     }
 
-    dxl_txrx_packet();
+    dxl_txrx_packet(ack);
 }
