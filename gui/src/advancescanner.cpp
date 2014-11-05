@@ -270,7 +270,7 @@ void AdvanceScanner::resizeEvent(QResizeEvent *event)
 
 void AdvanceScanner::closeEvent(QCloseEvent *event)
 {
-	// If a scanning process is underway, it will need to stop itself before closing the window
+    // If a scanning process is underway, it will need to stop itself before closing the window
     if (scan_running == true)
     {
         event->ignore();
@@ -552,7 +552,7 @@ void AdvanceScanner::stopScan()
 void AdvanceScanner::exitScan()
 {
     // Check if a scanning process is running
-	// It will need to stop itself before closing the window
+    // It will need to stop itself before closing the window
     if (scan_running == true)
     {
         scan_running = false;
@@ -578,6 +578,9 @@ int AdvanceScanner::servoscan_dxl(DynamixelSimpleAPI *dxl, QTreeWidgetItem *port
     if (stop < 1 || stop > 254 || stop < start)
         stop = 254;
 
+    // Set shorter timeout value to dramatically decrease scanning time
+    dxl->setLatency(6);
+
     std::cout << "> Scanning for Dynamixel devices on '" << dxl->serialGetCurrentDevice() << "'... Range is [" << start << "," << stop << "]" << std::endl;
 
     // Scan every IDs
@@ -586,7 +589,7 @@ int AdvanceScanner::servoscan_dxl(DynamixelSimpleAPI *dxl, QTreeWidgetItem *port
         // Check if the scanning process has been aborted
         if (scan_running == false || exit_programmed == true)
         {
-            return 0;
+            break;
         }
 
         // Process events to keep GUI interactive
@@ -626,6 +629,9 @@ int AdvanceScanner::servoscan_dxl(DynamixelSimpleAPI *dxl, QTreeWidgetItem *port
         progressbar();
     }
 
+    // Restore default timeout value
+    dxl->setLatency(LATENCY_TIME_DEFAULT);
+
     std::cout << std::endl;
     return results;
 }
@@ -644,6 +650,9 @@ int AdvanceScanner::servoscan_hkx(HerkuleXSimpleAPI *hkx, QTreeWidgetItem *port,
     if (stop < 1 || stop > 254 || stop < start)
         stop = 254;
 
+    // Set shorter timeout value to dramatically decrease scanning time
+    hkx->setLatency(6);
+
     std::cout << "> Scanning for HerkuleX devices on '" << hkx->serialGetCurrentDevice() << "'... Range is [" << start << "," << stop << "]" << std::endl;
 
     for (int id = start; id <= stop; id++)
@@ -651,7 +660,7 @@ int AdvanceScanner::servoscan_hkx(HerkuleXSimpleAPI *hkx, QTreeWidgetItem *port,
         // Check if the scanning process has been aborted
         if (scan_running == false || exit_programmed == true)
         {
-            return 0;
+            break;
         }
 
         // Process events to keep GUI interactive
@@ -690,6 +699,9 @@ int AdvanceScanner::servoscan_hkx(HerkuleXSimpleAPI *hkx, QTreeWidgetItem *port,
         // Update progressbar
         progressbar();
     }
+
+    // Restore default timeout value
+    hkx->setLatency(LATENCY_TIME_DEFAULT);
 
     std::cout << std::endl;
     return results;
