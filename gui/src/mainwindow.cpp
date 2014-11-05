@@ -2185,8 +2185,10 @@ void MainWindow::advanceScannerStart()
     {
         if (p->deviceController != NULL)
         {
-            // Check if the controller is not currently stopped or scanning
-            if (!(p->deviceController->getState() == state_ready || p->deviceController->getState() == state_stopped))
+            // Check if the controller is not currently busy scanning or reading
+            if (!(p->deviceController->getState() == state_stopped ||
+                  p->deviceController->getState() == state_scanned ||
+                  p->deviceController->getState() == state_ready))
             {
                 return;
             }
