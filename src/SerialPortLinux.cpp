@@ -339,9 +339,12 @@ bool SerialPortLinux::isOpen()
 {
     bool status = false;
 
-    if (ttyDeviceFileDescriptor > 1)
+    if (ttyDeviceFileDescriptor > 0) // device has been openend?
     {
-        status = true;
+        if (fcntl(ttyDeviceFileDescriptor, F_GETFD) != -1 || errno != EBADF) // device is still connected?
+        {
+            status = true;
+        }
     }
 
     return status;
@@ -349,7 +352,7 @@ bool SerialPortLinux::isOpen()
 
 void SerialPortLinux::closeLink()
 {
-    if (ttyDeviceFileDescriptor != -1)
+    if (isOpen() == true)
     {
         this->flush();
         close(ttyDeviceFileDescriptor);
@@ -361,7 +364,7 @@ int SerialPortLinux::tx(unsigned char *packet, int packetLength)
 {
     int status = -1;
 
-    if (ttyDeviceFileDescriptor != -1)
+    if (isOpen() == true)
     {
         if (packet != NULL && packetLength > 0)
         {
@@ -382,14 +385,19 @@ int SerialPortLinux::tx(unsigned char *packet, int packetLength)
 
 int SerialPortLinux::rx(unsigned char *packet, int packetLength)
 {
-    int status = -1;
+    int readStatus = -1;
 
-    if (ttyDeviceFileDescriptor != -1)
+    if (isOpen() == true)
     {
         if (packet != NULL && packetLength > 0)
         {
             memset(packet, 0, packetLength);
-            return read(ttyDeviceFileDescriptor, packet, packetLength);
+            readStatus = read(ttyDeviceFileDescriptor, packet, packetLength);
+
+            if (readStatus < 0)
+            {
+                std::cerr << "Cannot read from serial port '" << ttyDeviceName << "': error code '" << errno << "'" << std::endl;
+            }
         }
         else
         {
@@ -401,12 +409,12 @@ int SerialPortLinux::rx(unsigned char *packet, int packetLength)
         std::cerr << "Cannot read from serial port '" << ttyDeviceName << "': invalid device!" << std::endl;
     }
 
-    return status;
+    return readStatus;
 }
 
 void SerialPortLinux::flush()
 {
-    if (ttyDeviceFileDescriptor != -1)
+    if (isOpen() == true)
     {
         //TCIFLUSH: Flush received, but unread data
         //TCOFLUSH: Flush written, but not send data
@@ -426,14 +434,12 @@ double SerialPortLinux::getTime()
 
 bool SerialPortLinux::switchHighSpeed()
 {
-    bool success = false;
+    bool status = false;
 
-    // TODO
-
-    // enables "ASYNC_LOW_LATENCY" flag
+    // TODO // enables "ASYNC_LOW_LATENCY" flag
     // reduce the "/sys/bus/usb-serial/devices/ttyXXX/latency_timer" value
 
-    return success;
+    return status;
 }
 
 void SerialPortLinux::setLatency(int latency)

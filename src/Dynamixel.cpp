@@ -173,7 +173,7 @@ int Dynamixel::serialInitialize(std::string &deviceName, const int baud)
 #endif
 
     // Initialize the serial link
-    if (serial->openLink() == 1)
+    if (serial != NULL && serial->openLink() == 1)
     {
         status = 1;
         std::cout << "> Serial interface successfully opened on " << deviceName << " @ " << baud << std::endl;

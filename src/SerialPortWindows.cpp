@@ -206,11 +206,14 @@ bool SerialPortWindows::isOpen()
 {
     bool status = false;
 
-    DCB Dcb;
-    Dcb.DCBlength = sizeof(DCB);
-    if (GetCommState(ttyDeviceFileDescriptor, &Dcb) == TRUE)
+    if (ttyDeviceFileDescriptor != INVALID_HANDLE_VALUE)
     {
-        status = true;
+        DCB Dcb;
+        Dcb.DCBlength = sizeof(DCB);
+        if (GetCommState(ttyDeviceFileDescriptor, &Dcb) == TRUE)
+        {
+            status = true;
+        }
     }
 
     return status;
@@ -218,7 +221,7 @@ bool SerialPortWindows::isOpen()
 
 void SerialPortWindows::closeLink()
 {
-    if (ttyDeviceFileDescriptor != INVALID_HANDLE_VALUE)
+    if (isOpen())
     {
         this->flush();
         CloseHandle(ttyDeviceFileDescriptor);
@@ -230,7 +233,7 @@ int SerialPortWindows::tx(unsigned char *packet, int packetLength)
 {
     int status = -1;
 
-    if (ttyDeviceFileDescriptor != INVALID_HANDLE_VALUE)
+    if (isOpen())
     {
         if (packet != NULL && packetLength > 0)
         {
@@ -257,9 +260,9 @@ int SerialPortWindows::tx(unsigned char *packet, int packetLength)
 
 int SerialPortWindows::rx(unsigned char *packet, int packetLength)
 {
-    int status = -1;
+    int readStatus = -1;
 
-    if (ttyDeviceFileDescriptor != INVALID_HANDLE_VALUE)
+    if (isOpen())
     {
         if (packet != NULL && packetLength > 0)
         {
@@ -268,7 +271,7 @@ int SerialPortWindows::rx(unsigned char *packet, int packetLength)
 
             if (ReadFile(ttyDeviceFileDescriptor, packet, dwToRead, &dwRead, NULL) == TRUE)
             {
-                status = static_cast<int>(dwRead);
+                readStatus = static_cast<int>(dwRead);
             }
         }
         else
@@ -281,12 +284,12 @@ int SerialPortWindows::rx(unsigned char *packet, int packetLength)
         std::cerr << "Cannot read from serial port '" << ttyDeviceName << "': invalid device!" << std::endl;
     }
 
-    return status;
+    return readStatus;
 }
 
 void SerialPortWindows::flush()
 {
-    if (ttyDeviceFileDescriptor != INVALID_HANDLE_VALUE)
+    if (isOpen())
     {
         PurgeComm(ttyDeviceFileDescriptor, PURGE_RXABORT | PURGE_RXCLEAR);
     }
