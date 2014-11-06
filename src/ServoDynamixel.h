@@ -40,16 +40,16 @@ public:
     ServoDynamixel(const int control_table[][8], int dynamixel_id, int dynamixel_model, int speed_mode = SPEED_MANUAL);
     virtual ~ServoDynamixel() = 0;
 
+    // Helpers
     void status();
     int getSpeedMode();
     void setSpeedMode(int speed_mode);
+    std::string getModelString();
+    void getModelInfos(int &servo_serie, int &servo_model);
 
     // Getters
     int getBaudRate();
     int getReturnDelay();
-
-    std::string getModelString();
-    void getModelInfos(int &servo_serie, int &servo_model);
 
     double getHighestLimitTemp();
     double getLowestLimitVolt();

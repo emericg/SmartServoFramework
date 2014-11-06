@@ -27,6 +27,7 @@
 #include "ControlTablesDynamixel.h"
 
 #include <iostream>
+#include <thread>
 
 Servo::Servo()
 {
@@ -46,11 +47,13 @@ Servo::Servo()
     commError = 0;
     statusError = 0;
     statusDetail = 0;
-    valueError = 0;
+    valueErrors = 0;
+    errorCount = 0;
 
     actionProgrammed = 0;
-    resetProgrammed = 0;
     rebootProgrammed = 0;
+    refreshProgrammed = 0;
+    resetProgrammed = 0;
 }
 
 Servo::~Servo()
@@ -68,14 +71,84 @@ Servo::~Servo()
     }
 }
 
-void Servo::status()
+/* ************************************************************************** */
+
+const int (*(Servo::getControlTable()))[8]
+{
+    return ct;
+}
+
+int Servo::getRegisterCount()
+{
+    return registerTableSize;
+}
+
+int Servo::gid(const int reg)
+{
+    int id = getRegisterTableIndex(ct, reg);
+
+    // Set fallback id to 0, so nobody try to access negative table index.
+    if (id < 0)
+    {
+        id = 0;
+    }
+
+    return id;
+}
+
+int Servo::gaddr(const int reg, const int reg_mode)
+{
+    return getRegisterAddr(ct, reg, reg_mode);
+}
+
+/* ************************************************************************** */
+
+int Servo::getStatus()
+{
+    std::lock_guard <std::mutex> lock(access);
+    return statusDetail;
+}
+
+void Servo::setStatus(const int status)
+{
+    std::lock_guard <std::mutex> lock(access);
+    statusDetail = status;
+}
+
+int Servo::getError()
+{
+    std::lock_guard <std::mutex> lock(access);
+    return statusError;
+}
+
+void Servo::setError(const int error)
 {
     std::lock_guard <std::mutex> lock(access);
 
-    std::cout << "Basic status(#" << servoId << ")" << std::endl;
+    if (error > 0)
+    {
+        statusError += error;
+        errorCount++;
+    }
+}
 
-    std::cout << "> model      : " << servoModel << std::endl;
-    std::cout << "> firmware   : " << registerTableValues[gid(REG_FIRMWARE_VERSION)] << std::endl;
+void Servo::clearErrors()
+{
+    std::lock_guard <std::mutex> lock(access);
+
+    commError = 0;
+    statusError = 0;
+    statusDetail = 0;
+    valueErrors = 0;
+    errorCount = 0;
+}
+
+int Servo::getErrorCount()
+{
+    std::lock_guard <std::mutex> lock(access);
+
+    errorCount--;
+    return (errorCount + 1);
 }
 
 /* ************************************************************************** */
@@ -120,6 +193,18 @@ void Servo::getActions(int &action, int &reboot, int &refresh, int &reset)
     rebootProgrammed = 0;
     resetProgrammed = 0;
     refreshProgrammed = 0;
+}
+
+/* ************************************************************************** */
+
+void Servo::status()
+{
+    std::lock_guard <std::mutex> lock(access);
+
+    std::cout << "Basic status(#" << servoId << ")" << std::endl;
+
+    std::cout << "> model      : " << servoModel << std::endl;
+    std::cout << "> firmware   : " << registerTableValues[gid(REG_FIRMWARE_VERSION)] << std::endl;
 }
 
 /* ************************************************************************** */
@@ -388,6 +473,9 @@ void Servo::updateValue(int reg_name, int reg_value, int reg_type)
             }
             else
             {
+                valueErrors++;
+                errorCount++;
+
                 std::cerr << "[#" << servoId << "] updateValue(reg " << reg_name << "/" << getRegisterNameTxt(reg_name) << " to '" << reg_value
                           << "')  [VALUE ERROR]! min/max(" << infos.reg_value_min << "/" << infos.reg_value_max << ")" << std::endl;
             }
@@ -438,67 +526,6 @@ void Servo::commitValue(int reg_name, int commit, int reg_type)
     {
         std::cerr << "[#" << servoId << "] commitValue(reg " << reg_name << "/" << getRegisterNameTxt(reg_name) << ") [REGISTER NAME ERROR]" << std::endl;
     }
-}
-
-/* ************************************************************************** */
-
-int Servo::getStatus()
-{
-    return statusDetail;
-}
-
-void Servo::setStatus(const int status)
-{
-    statusDetail = status;
-}
-
-int Servo::getError()
-{
-    std::lock_guard <std::mutex> lock(access);
-    return statusError;
-}
-
-void Servo::setError(const int error)
-{
-    std::lock_guard <std::mutex> lock(access);
-    statusError += error;
-}
-
-void Servo::clearErrors()
-{
-    std::lock_guard <std::mutex> lock(access);
-    statusError = 0;
-    statusDetail = 0;
-}
-
-/* ************************************************************************** */
-
-const int (*(Servo::getControlTable()))[8]
-{
-    return ct;
-}
-
-int Servo::getRegisterCount()
-{
-    return registerTableSize;
-}
-
-int Servo::gid(const int reg)
-{
-    int id = getRegisterTableIndex(ct, reg);
-
-    // Set fallback id to 0, so nobody try to access negative table index.
-    if (id < 0)
-    {
-        id = 0;
-    }
-
-    return id;
-}
-
-int Servo::gaddr(const int reg, const int reg_mode)
-{
-    return getRegisterAddr(ct, reg, reg_mode);
 }
 
 /* ************************************************************************** */

@@ -103,6 +103,8 @@ ServoHerkuleX::~ServoHerkuleX()
     }
 }
 
+/* ************************************************************************** */
+
 void ServoHerkuleX::status()
 {
     std::lock_guard <std::mutex> lock(access);
@@ -134,6 +136,20 @@ void ServoHerkuleX::status()
     std::cout << "> punch           : " << registerTableValues[gid(REG_PUNCH)] << std::endl;
 }
 
+std::string ServoHerkuleX::getModelString()
+{
+    std::lock_guard <std::mutex> lock(access);
+    return hkx_get_model_name(registerTableValues[gid(REG_MODEL_NUMBER)]);
+}
+
+void ServoHerkuleX::getModelInfos(int &servo_serie, int &servo_model)
+{
+    std::lock_guard <std::mutex> lock(access);
+    int model_number = registerTableValues[gid(REG_MODEL_NUMBER)];
+
+    hkx_get_model_infos(model_number, servo_serie, servo_model);
+}
+
 /* ************************************************************************** */
 
 int ServoHerkuleX::getId(const int reg_type)
@@ -150,20 +166,6 @@ int ServoHerkuleX::getBaudRate()
 {
     std::lock_guard <std::mutex> lock(access);
     return hkx_get_baudrate(registerTableValues[gid(REG_BAUD_RATE)], servoSerie);
-}
-
-std::string ServoHerkuleX::getModelString()
-{
-    std::lock_guard <std::mutex> lock(access);
-    return hkx_get_model_name(registerTableValues[gid(REG_MODEL_NUMBER)]);
-}
-
-void ServoHerkuleX::getModelInfos(int &servo_serie, int &servo_model)
-{
-    std::lock_guard <std::mutex> lock(access);
-    int model_number = registerTableValues[gid(REG_MODEL_NUMBER)];
-
-    hkx_get_model_infos(model_number, servo_serie, servo_model);
 }
 
 int ServoHerkuleX::getCwAngleLimit(const int reg_type)
@@ -760,6 +762,9 @@ void ServoHerkuleX::updateValue(int reg_name, int value, int reg_type)
             }
             else
             {
+                valueErrors++;
+                errorCount++;
+
                 std::cerr << "[#" << servoId << "] updateValue(reg " << reg_name << "/" << getRegisterNameTxt(reg_name) << " to '" << value
                           << "')  [VALUE ERROR]! min/max(" << infos.reg_value_min << "/" << infos.reg_value_max << ")" << std::endl;
             }

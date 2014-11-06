@@ -92,6 +92,8 @@ ServoDynamixel::~ServoDynamixel()
     }
 }
 
+/* ************************************************************************** */
+
 void ServoDynamixel::status()
 {
     std::lock_guard <std::mutex> lock(access);
@@ -136,20 +138,6 @@ void ServoDynamixel::setSpeedMode(int speed_mode)
     }
 }
 
-/* ************************************************************************** */
-
-int ServoDynamixel::getBaudRate()
-{
-    std::lock_guard <std::mutex> lock(access);
-    return dxl_get_baudrate(registerTableValues[gid(REG_BAUD_RATE)], servoSerie);
-}
-
-int ServoDynamixel::getReturnDelay()
-{
-    std::lock_guard <std::mutex> lock(access);
-    return registerTableValues[gid(REG_RETURN_DELAY_TIME)];
-}
-
 std::string ServoDynamixel::getModelString()
 {
     std::lock_guard <std::mutex> lock(access);
@@ -162,6 +150,20 @@ void ServoDynamixel::getModelInfos(int &servo_serie, int &servo_model)
     int model_number = registerTableValues[gid(REG_MODEL_NUMBER)];
 
     dxl_get_model_infos(model_number, servo_serie, servo_model);
+}
+
+/* ************************************************************************** */
+
+int ServoDynamixel::getBaudRate()
+{
+    std::lock_guard <std::mutex> lock(access);
+    return dxl_get_baudrate(registerTableValues[gid(REG_BAUD_RATE)], servoSerie);
+}
+
+int ServoDynamixel::getReturnDelay()
+{
+    std::lock_guard <std::mutex> lock(access);
+    return registerTableValues[gid(REG_RETURN_DELAY_TIME)];
 }
 
 double ServoDynamixel::getHighestLimitTemp()

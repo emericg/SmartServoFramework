@@ -45,14 +45,14 @@ public:
     ServoHerkuleX(const int control_table[][8], int herkulex_id, int herkulex_model, int speed_mode = 0);
     virtual ~ServoHerkuleX() = 0;
 
+    // Helpers
     void status();
+    std::string getModelString();
+    void getModelInfos(int &servo_serie, int &servo_model);
 
     // Getters
     int getId(const int reg_type = REGISTER_ROM);
     int getBaudRate();
-
-    std::string getModelString();
-    void getModelInfos(int &servo_serie, int &servo_model);
 
     int getCwAngleLimit(const int reg_type = REGISTER_RAM); // min position
     int getCcwAngleLimit(const int reg_type = REGISTER_RAM); // max position

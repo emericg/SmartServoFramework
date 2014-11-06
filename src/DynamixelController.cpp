@@ -482,6 +482,15 @@ void DynamixelController::run()
                 {
                     int ack = s->getStatusReturnLevel();
 
+                    // Unregister device if it reach an error count too high
+                    // Count must be high enough to avoid "false positive": device producing a lot of errors but still present on the serial link
+                    if (s->getErrorCount() > 16)
+                    {
+                        std::cerr << "Device #" << id << " has an error count too high and is going to be unregistered from its controller on '" << serialGetCurrentDevice() << "'..." << std::endl;
+                        unregisterServo(s);
+                        continue;
+                    }
+
                     // Commit register modifications
                     for (int ctid = 0; ctid < s->getRegisterCount(); ctid++)
                     {
@@ -514,7 +523,7 @@ void DynamixelController::run()
                         }
                     }
 
-                    // 1 Hz "low priority" loop
+                    // 1 Hz "low priority" update loop
                     if (((syncloopCounter - cumulid) == 0) &&
                         (ack != ACK_NO_REPLY))
                     {
@@ -531,7 +540,7 @@ void DynamixelController::run()
                         dxl_print_error();
                     }
 
-                    // x/4 Hz "feedback" loop
+                    // x/4 Hz "feedback" update loop
                     if (((syncloopCounter - cumulid) % 4 == 0) &&
                         (ack != ACK_NO_REPLY))
                     {
@@ -552,7 +561,7 @@ void DynamixelController::run()
                         dxl_print_error();
                     }
 
-                    // x Hz "full speed" loop
+                    // x Hz "full speed" update loop
                     {
                         // Get "current" values from devices, and write them into corresponding objects
                         int cpos = dxl_read_word(id, s->gaddr(REG_CURRENT_POSITION), ack);

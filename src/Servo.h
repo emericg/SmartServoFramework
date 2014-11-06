@@ -61,10 +61,11 @@ protected:
     int steps;                  //!< Number of step the servo can handle (depends on the serie)
     int runningDegrees;         //!< The amplitude of movement (a device with less than 360 'running degree' has a dead zone)
 
-    int commError;              //!< Errors from serial link
-    int statusError;            //!< Errors from device
-    int statusDetail;           //!< Additional status from device
-    int valueError;             //!< Register value boundaries
+    int commError;              //!< Error code from the serial link (when communicating with this particular device)
+    int statusError;            //!< Error bitfield from the device
+    int statusDetail;           //!< Additional status bitfield from the device (only available on HerkuleX devices)
+    int valueErrors;            //!< Register value boundaries error count
+    int errorCount;             //!< Gloabl error count (but does not include valueErrors)
 
     int actionProgrammed;
     int rebootProgrammed;
@@ -75,7 +76,19 @@ public:
     Servo();
     virtual ~Servo() = 0;
 
-    virtual void status();
+    // Settings
+    const int (*getControlTable())[8];
+    int getRegisterCount();
+    int gid(const int reg);
+    int gaddr(const int reg, const int reg_mode = REGISTER_AUTO);
+
+    // Error handling
+    int getStatus();
+    virtual void setStatus(const int status);
+    int getError();
+    virtual void setError(const int error);
+    void clearErrors();
+    int getErrorCount();
 
     // Actions
     void action();
@@ -84,15 +97,17 @@ public:
     void refresh();
     void getActions(int &action, int &reboot, int &refresh, int &reset);
 
+    // Helpers
+    virtual void status();
+    virtual std::string getModelString() = 0;
+    virtual void getModelInfos(int &servo_serie, int &servo_model) = 0;
+
     // Getters
     virtual int getId();
     virtual int getModelNumber();
     virtual int getFirmwareVersion();
     virtual int getBaudNum();
     virtual int getBaudRate() = 0;
-
-    virtual std::string getModelString() = 0;
-    virtual void getModelInfos(int &servo_serie, int &servo_model) = 0;
 
     virtual int getCwAngleLimit(); // min position
     virtual int getCcwAngleLimit(); // max position
@@ -135,18 +150,6 @@ public:
     virtual void setValue(const int reg_reg, int reg_value, int reg_type = REGISTER_AUTO);
     virtual void updateValue(const int reg_reg, int reg_value, int reg_type = REGISTER_AUTO);
     virtual void commitValue(const int reg_reg, int commit, int reg_type = REGISTER_AUTO);
-
-    int getStatus();
-    virtual void setStatus(const int status);
-    int getError();
-    virtual void setError(const int error);
-    void clearErrors();
-
-    // Settings
-    const int (*getControlTable())[8];
-    int getRegisterCount();
-    int gid(const int reg);
-    int gaddr(const int reg, const int reg_mode = REGISTER_AUTO);
 };
 
 #endif /* SERVO_H */
