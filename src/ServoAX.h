@@ -29,6 +29,10 @@
 #include <map>
 #include <mutex>
 
+/** \addtogroup ControllerAPIs
+ *  @{
+ */
+
 /*!
  * \brief AX/DX/RX servo series.
  *
@@ -49,5 +53,7 @@ public:
     int getCwComplianceSlope();
     int getCcwComplianceSlope();
 };
+
+/** @}*/
 
 #endif /* SERVO_AX_H */

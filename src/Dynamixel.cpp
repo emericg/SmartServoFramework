@@ -1132,8 +1132,6 @@ void Dynamixel::dxl_reset(const int id, int setting, const int ack)
     }
     else
     {
-        // TODO emulate "RESET_ALL_EXCEPT_ID" and "RESET_ALL_EXCEPT_ID_BAUDRATE" settings?
-
         txPacket[PKT1_ID] = get_lowbyte(id);
         txPacket[PKT1_INSTRUCTION] = INST_FACTORY_RESET;
         txPacket[PKT1_LENGTH] = 2;

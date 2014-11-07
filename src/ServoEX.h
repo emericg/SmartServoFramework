@@ -29,6 +29,10 @@
 #include <map>
 #include <mutex>
 
+/** \addtogroup ControllerAPIs
+ *  @{
+ */
+
 /*!
  * \brief EX servo serie.
  *
@@ -51,5 +55,7 @@ public:
 
     int getSensedCurrent();
 };
+
+/** @}*/
 
 #endif /* SERVO_EX_H */

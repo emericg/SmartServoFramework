@@ -28,17 +28,23 @@
 #include <vector>
 #include <mutex>
 
+/** \addtogroup SimpleAPIs
+ *  @{
+ */
+
 /*!
  * \brief The DynamixelSimpleAPI class
  *
  * This class provide a high level API to handle servos with minimal efforts.
  * One "Simple API" instance can only be attached to ONE serial link at a time,
- * but you can create as many instances as you need.
+ * so you can create as many instances as you need on different ports.
  *
  * You must specify what device class you will be using for this API to operate
  * efficiently. If you want to use this API with multiple servo series at the
  * same time, just choose the more permissive serie. 'MX' should be fine for
- * almost every use case when using Dynamixel v1 devices.
+ * almost every use cases when using Dynamixel v1 devices.
+ * So for instance, if you want to use this API with XL-320 devices, you need
+ * to specify it when calling the constructor.
  *
  * The "getter" functions return the wanted value or '-1' if an error occurs.
  * The "setter" functions return '0' if an error occurs, '1' otherwise.
@@ -123,7 +129,7 @@ public:
     /*!
      * \brief Reset servo to factory settings.
      * \param id: The servo to reset.
-     * \param setting: You can control what to erase using the '::ResetOptions' enum.
+     * \param setting: You can control what to erase using the '::ResetOptions_e' enum.
      * \return 1 if reset successful.
      *
      * Be careful when resetting a Dynamixel 'v1' device, its ID will be reseted to 1.
@@ -181,5 +187,7 @@ public:
     int getSetting(const int id, const int reg_name, int reg_type = REGISTER_AUTO, const int device = SERVO_UNKNOWN);
     int setSetting(const int id, const int reg_name, const int reg_value, int reg_type = REGISTER_AUTO, const int device = SERVO_UNKNOWN);
 };
+
+/** @}*/
 
 #endif /* DYNAMIXEL_SIMPLE_API_H */

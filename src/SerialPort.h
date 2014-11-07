@@ -31,16 +31,17 @@
  * \brief Latency time (in milliseconds) on the serial port.
  *
  * This timer should be carefully choosed depending on your OS and the speed of
- * your serial port implementation.
+ * your serial port implementation. Default is set to a high value to avoid any problem.
  */
 #define LATENCY_TIME_DEFAULT    (48)
 
 /*!
- * Specify which TTL translation device we use.
+ * \brief Specify which serial device chip we are using.
+ *
  * This information will be used to access some extra features like SYNC_READ
  * for Dynamixels devices, and check maximum baudrate/latency available.
  */
-enum SerialDevices
+enum SerialDevices_e
 {
     SERIAL_UNKNOWN       = 0,
     SERIAL_USB2DYNAMIXEL = 1,
@@ -49,19 +50,20 @@ enum SerialDevices
     SERIAL_BT100         = 4,   //!< BT-100 / 110A
     SERIAL_BT210         = 5,
 
-    SERIAL_OTHER_FTDI    = 10,
-    SERIAL_OTHER_CP210x  = 11,
+    SERIAL_OTHER_FTDI    = 10,  //!< Devices based on FTDI chips
+    SERIAL_OTHER_CP210x  = 11,  //!< Devices based on CP210x chips
 };
 
 /*!
  * \brief The different return status code available for serial packet communication.
  */
-enum {
-    COMM_TXSUCCESS = 0,                     //!< Instruction was sent successfully
+enum SerialErrorCodes_e
+{
+    COMM_TXSUCCESS = 0,                     //!< Instruction packet was sent successfully
     COMM_RXSUCCESS,                         //!< Status packet was received successfully
-    COMM_TXFAIL,                            //!< Error when sending instruction
+    COMM_TXFAIL,                            //!< Error when sending instruction packet
     COMM_RXFAIL,                            //!< Error when receiving status packet
-    COMM_TXERROR,                           //!< Invalid instruction, nothing was sent
+    COMM_TXERROR,                           //!< Invalid instruction packet, nothing was sent
     COMM_RXWAITING,                         //!< Waiting for a status packet
     COMM_RXTIMEOUT,                         //!< Timeout reached while waiting for a status packet
     COMM_RXCORRUPT                          //!< Status packet corrupted

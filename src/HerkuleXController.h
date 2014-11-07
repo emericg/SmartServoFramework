@@ -33,6 +33,10 @@
 #include <mutex>
 #include <thread>
 
+/** \addtogroup ControllerAPIs
+ *  @{
+ */
+
 /*!
  * \brief The HerkuleXController class
  *
@@ -98,5 +102,7 @@ public:
     std::vector <std::string> serialGetAvailableDevices_wrapper();
     void serialSetLatency_wrapper(int latency);
 };
+
+/** @}*/
 
 #endif /* HERKULEX_CONTROLLER_H */

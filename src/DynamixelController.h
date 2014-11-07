@@ -36,6 +36,10 @@
 #include <mutex>
 #include <thread>
 
+/** \addtogroup ControllerAPIs
+ *  @{
+ */
+
 /*!
  * \brief The DynamixelController class
  *
@@ -110,5 +114,7 @@ public:
     std::vector <std::string> serialGetAvailableDevices_wrapper();
     void serialSetLatency_wrapper(int latency);
 };
+
+/** @}*/
 
 #endif /* DYNAMIXEL_CONTROLLER_H */

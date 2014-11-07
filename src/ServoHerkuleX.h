@@ -29,6 +29,10 @@
 #include <map>
 #include <mutex>
 
+/** \addtogroup ControllerAPIs
+ *  @{
+ */
+
 /*!
  * \brief The HerkuleX servo class.
  */
@@ -109,5 +113,7 @@ public:
     void updateValue(const int reg, int value, int reg_type = REGISTER_AUTO);
     void commitValue(const int reg, int commit, int reg_type = REGISTER_AUTO);
 };
+
+/** @}*/
 
 #endif /* SERVO_HERKULEX_H */

@@ -32,8 +32,8 @@ If you are running Linux, your user account will need to be in the _'dialout'_ a
 
 Latency over the serial port will limit the number of instructions you can send each second even more than bandwidth limitations.
 To minimize traffic on your serial port (if using FTDI chips):  
-- Make sure you have set the "Status Return Level" to '1' to minimize the number of response packets (if you do not need them), or even '2' to disable them all.  
-- If you are using Dynamixel devices, you may want to reduce the "Return Delay Time" value to a minimum, from the default of '250' to something like '5'.  
+- Make sure you have set the "Status Return Level" / "Ack Policy" to '1' to minimize the number of status packets (if you do not need them), or even '2' to disable them all.  
+- If you are using Dynamixel devices, you may want to reduce the "Return Delay Time" value to a minimum, from the default of '250' to something like '10'.  
 - You can also use [these tips](https://projectgus.com/2011/10/notes-on-ftdi-latency-with-arduino/) to reduce latency on serial ports!  
 
 #### Serial link (Dynamixel servos)
@@ -46,11 +46,11 @@ To minimize traffic on your serial port (if using FTDI chips):
 
 #### Serial link (HerkuleX servos)
 
-You need a serial port with a regular TTL converter to use HerkuleX devices.
+You need a serial port with a "regular" TTL converter to use HerkuleX devices.
 
 ## Framework
 
-This framework can be used with any Dynamixel or HerkuleX devices. Please note that the Dynamixel PRO serie has never been tested (because I have no testing devices).
+This framework can be used with any Dynamixel or HerkuleX devices. Please note that the Dynamixel PRO serie is not supported, as no test devices are available to us.
 
 * **Simple API:** Use this mode to get or set a value to a servo by sending a simple instruction and waiting for the answer.  
 * **Controller API:** Setup a controller and attach servo instances to it. Manipulate servo objects and let the controller sync its values with the actual servo hardware in a background thread with a fixed frequency.  
@@ -82,6 +82,6 @@ SmartServoGui is a fully featured Qt GUI application that helps you discover dev
 SmartServoFramework is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
 [Consult the licence on the FSF website](http://www.gnu.org/licenses/lgpl-3.0.txt).
 
-Copyright (c) 2014, INRIA, All rights reserved.
-Emeric Grange <emeric.grange@gmail.com>
-Dominique Vaufreydaz <dominique.vaufreydaz@inria.fr>
+Copyright (c) 2014, INRIA, All rights reserved.  
+Emeric Grange <emeric.grange@gmail.com>  
+Dominique Vaufreydaz <dominique.vaufreydaz@inria.fr>  

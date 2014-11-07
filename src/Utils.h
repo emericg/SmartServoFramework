@@ -27,6 +27,29 @@
 #include <string>
 
 /* ************************************************************************** */
+// Doxygen documentation groups
+
+/*!
+ * \defgroup SimpleAPIs Simple APIs
+ */
+
+/*!
+ * \defgroup ControllerAPIs Controller APIs
+ */
+
+/*!
+ * \defgroup tools Tools
+ */
+
+/*!
+ * \defgroup ControlTables Control Tables
+ */
+
+/* ************************************************************************** */
+
+/** \addtogroup tools
+ *  @{
+ */
 
 /*!
  * \brief Broadcast address.
@@ -38,25 +61,36 @@
 #define BROADCAST_ID          (254)
 
 /*!
- * \brief Ping response.
+ * \brief Ping response structure, filled by the "PING" or "STAT" function.
  */
-struct PingResponse {
+struct PingResponse
+{
     int model_number;
     int firmware_version;
 };
 
-enum AckPolicy_e {
-    ACK_DEFAULT    = -1,
+/*!
+ * \brief The AckPolicy_e enum indicate how a device will answer to an incoming packet.
+ *
+ * The functionnality is called "Status Return Level" for Dynamixel and "Ack Policy"
+ * for HerkuleX devices.
+ * It can be very usefull to disable status packet, at least to everything but
+ * "READ" commands to avoid overloading your serial link.
+ */
+enum AckPolicy_e
+{
+    ACK_DEFAULT    = -1,   //!< Use default policy for the device (ACK_REPLY_ALL for Dynamixel, ACK_REPLY_READ for HerkuleX)
 
-    ACK_NO_REPLY   = 0,
-    ACK_REPLY_READ = 1,
-    ACK_REPLY_ALL  = 2
+    ACK_NO_REPLY   = 0,    //!< Status packets are disabled (except to Dynamixel "PING" or HerkuleX "STAT" commands)
+    ACK_REPLY_READ = 1,    //!< Status packets are sent only to "READ" commands
+    ACK_REPLY_ALL  = 2     //!< Status packets are sent to every commands
 };
 
 /*!
- * \brief Factory reset settings (only work with Dynamixel protocol v2 or HerkuleX).
+ * \brief Factory reset settings (only work with Dynamixel protocol v2 or HerkuleX devices).
  */
-enum ResetOptions_e {
+enum ResetOptions_e
+{
     RESET_ALL                       = 0xFF, //!< Reset all values to factory default
     RESET_ALL_EXCEPT_ID             = 0x01, //!< Reset all values except ID
     RESET_ALL_EXCEPT_ID_BAUDRATE    = 0x02  //!< Reset all values except ID and baud rate
@@ -152,6 +186,9 @@ enum ServoDevices_e
             SERVO_DRS_0602  = 216,
 };
 
+/*!
+ * \brief The RegisterNames_e enum
+ */
 enum RegisterNames_e
 {
     // Generic registers
@@ -375,9 +412,20 @@ inline unsigned char get_highbyte(const int word)
 
 /* ************************************************************************** */
 
+/*!
+ * \brief Get register description.
+ * \param reg_name: Register name from '::RegisterNames_e' enum.
+ * \return A string containing a textual description of a register.
+ */
 std::string getRegisterDescriptionTxt(const int reg_name);
 
+/*!
+ * \brief Get register name.
+ * \param reg_name: Register name from '::RegisterNames_e' enum.
+ * \return A string containing the name of a register.
+ */
 std::string getRegisterNameTxt(const int reg_name);
 
 /* ************************************************************************** */
+/** @}*/
 #endif /* UTILS_H */

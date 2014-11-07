@@ -29,12 +29,16 @@
 #include <map>
 #include <mutex>
 
+/** \addtogroup ControllerAPIs
+ *  @{
+ */
+
 /*!
  * \brief The Dynamixel servo class.
  */
 class ServoDynamixel: public Servo
 {
-    int speedMode;              //!< Control the servo with manual or 'automatique' speed mode
+    int speedMode;  //!< Control the servo with manual or 'automatic' speed mode, using '::SpeedMode_e' enum.
 
 public:
     ServoDynamixel(const int control_table[][8], int dynamixel_id, int dynamixel_model, int speed_mode = SPEED_MANUAL);
@@ -86,5 +90,7 @@ public:
     void setLed(int led);
     void setTorqueEnabled(int torque);
 };
+
+/** @}*/
 
 #endif /* SERVO_DYNAMIXEL_H */

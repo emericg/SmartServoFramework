@@ -31,10 +31,14 @@
 #include <thread>
 #include <mutex>
 
-/*!
- * \brief The controllerState enum
+/** \addtogroup ControllerAPIs
+ *  @{
  */
-enum controllerState
+
+/*!
+ * \brief The controllerState enum.
+ */
+enum controllerState_e
 {
     state_stopped = 0,
     state_paused,
@@ -60,7 +64,7 @@ class ControllerAPI
 
 protected:
 
-    enum controllerMessage
+    enum controllerMessage_e
     {
         ctrl_device_autodetect = 0,
         ctrl_device_register,
@@ -74,7 +78,7 @@ protected:
 
     struct miniMessages
     {
-        controllerMessage msg;
+        controllerMessage_e msg;
         std::chrono::time_point <std::chrono::system_clock> delay; //!< Used to delay message parsing
         void *p;
         int p1;
@@ -262,5 +266,7 @@ public:
      */
     void pauseThread();
 };
+
+/** @}*/
 
 #endif /* CONTROLLER_API_H */

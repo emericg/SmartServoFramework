@@ -28,25 +28,30 @@
 #include <vector>
 #include <mutex>
 
+/** \addtogroup SimpleAPIs
+ *  @{
+ */
+
 /*!
  * \brief The HerkuleXSimpleAPI class
  *
  * This class provide a high level API to handle servos with minimal efforts.
  * One "Simple API" instance can only be attached to ONE serial link at a time,
- * but you can create as many instances as you need.
+ * so you can create as many instances as you need on different ports.
  *
  * You must specify what device class you will be using for this API to operate
  * efficiently. If you want to use this API with multiple servo series at the
- * same time, just choose the more permissive serie. 'SERVO_HERKULEX' should be
- * fine for almost every use case.
+ * same time, just choose the more permissive serie. 'SERVO_DRS' should be
+ * fine for almost every use cases.
  *
  * IMPORTANT NOTE:
  * HerkuleX devices operate differently than Dynamixel devices. A number of available
  * registers are present in both ROM and RAM memory. ROM values are copied to RAM
  * when a servo is powered-on.
- * - When reading that kind of register with this API, the RAM value will be returned.
+ * - When reading these register with helpers from this API, the RAM value will be returned by default.
  * - When writing, both ROM and RAM values will be written (if possible).
- * If you need a more finer grained control, you can use the getSetting and SetSetting functions.
+ * If you need a finer grained control, you can use the getSetting and SetSetting
+ * functions that will allow you to choose ROM or RAM targets.
  *
  * The "getter" functions return the wanted value or '-1' if an error occurs.
  * The "setter" functions return '0' if an error occurs, '1' otherwise.
@@ -68,7 +73,7 @@ public:
      * \brief HerkuleXSimpleAPI constructor.
      * \param servos: The servo class to use with this instance.
      */
-    HerkuleXSimpleAPI(int servos = SERVO_HERKULEX);
+    HerkuleXSimpleAPI(int servos = SERVO_DRS);
 
     /*!
      * \brief HerkuleXSimpleAPI destructor.
@@ -124,7 +129,7 @@ public:
     /*!
      * \brief Reset servo to factory settings.
      * \param id: The servo to reset.
-     * \param setting: You can control what to erase using the '::ResetOptions' enum.
+     * \param setting: You can control what to erase using the '::ResetOptions_e' enum.
      */
     void reset(const int id, const int setting);
 
@@ -172,5 +177,7 @@ public:
     int getSetting(const int id, const int reg_name, int reg_type = REGISTER_BOTH, const int device = SERVO_HERKULEX);
     int setSetting(const int id, const int reg_name, const int reg_value, int reg_type = REGISTER_BOTH, const int device = SERVO_HERKULEX);
 };
+
+/** @}*/
 
 #endif /* HERKULEX_SIMPLE_API_H */

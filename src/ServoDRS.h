@@ -29,6 +29,10 @@
 #include <map>
 #include <mutex>
 
+/** \addtogroup ControllerAPIs
+ *  @{
+ */
+
 /*!
  * \brief DRS servo serie.
  *
@@ -42,5 +46,7 @@ public:
     ServoDRS(int herkulex_id, int herkulex_model, int control_mode = 0);
     ~ServoDRS();
 };
+
+/** @}*/
 
 #endif /* SERVO_DRS_H */

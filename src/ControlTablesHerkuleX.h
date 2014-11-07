@@ -28,6 +28,10 @@
 
 /* ************************************************************************** */
 
+/** \addtogroup ControlTables
+ *  @{
+ */
+
 /*!
  * \brief DRS-0101 / DRS-0201 servo series control table.
  *
@@ -249,6 +253,8 @@ const int DRS0x02_control_table[54][8] =
     { REG_GOAL_VELOCITY           , 2, READ_ONLY,  -1, 72,   -1,   -1,   -1 }, // DESIRED VELOCITY
     { 999 , 999, 999, 999, 999, 999, 999, 999 },
 };
+
+/** @}*/
 
 /* ************************************************************************** */
 #endif /* CONTROL_TABLES_HERKULEX_H */

@@ -29,19 +29,23 @@
 #include <map>
 #include <mutex>
 
+/** \addtogroup ControllerAPIs
+ *  @{
+ */
+
 /*!
  * \brief The SpeedMode enum
  *
  * Used to indicate if we want "automatic" or manual speed control. Automatic
  * speed control regulate the speed relative to the movment amplitude.
  */
-enum SpeedMode {
+enum SpeedMode_e {
     SPEED_MANUAL = 0,
     SPEED_AUTO   = 1
 };
 
 /*!
- * \brief The "Servo" base class.
+ * \brief The "Servo" device base class.
  */
 class Servo
 {
@@ -65,7 +69,7 @@ protected:
     int statusError;            //!< Error bitfield from the device
     int statusDetail;           //!< Additional status bitfield from the device (only available on HerkuleX devices)
     int valueErrors;            //!< Register value boundaries error count
-    int errorCount;             //!< Gloabl error count (but does not include valueErrors)
+    int errorCount;             //!< Global error count
 
     int actionProgrammed;
     int rebootProgrammed;
@@ -151,5 +155,7 @@ public:
     virtual void updateValue(const int reg_reg, int reg_value, int reg_type = REGISTER_AUTO);
     virtual void commitValue(const int reg_reg, int commit, int reg_type = REGISTER_AUTO);
 };
+
+/** @}*/
 
 #endif /* SERVO_H */

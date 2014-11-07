@@ -70,12 +70,12 @@ protected:
     Dynamixel();
     virtual ~Dynamixel() = 0;
 
-    int serialDevice;                           //!< Serial device in use (if known). Can affect link speed and latency.
-    int servoSerie;                             //!< Servo serie in use. Can affect everything.
+    int serialDevice;                           //!< Serial device in use (if known) using '::SerialDevices_e' enum. Can affect link speed and latency.
+    int servoSerie;                             //!< Servo serie using '::ServoDevices_e' enum. Used internally to setup some parameters like maxID, ackPolicy and protocolVersion.
 
     int protocolVersion;                        //!< Version of the communication protocol in use.
     int maxId;                                  //!< Store in the maximum value for servo IDs.
-    int ackPolicy;                              //!< Set the status/ack packet return policy (0: No return; 1: Return for READ commands; 2: Return for all commands).
+    int ackPolicy;                              //!< Set the status/ack packet return policy using '::AckPolicy_e' (0: No return; 1: Return for READ commands; 2: Return for all commands).
 
     // Handle serial link
     ////////////////////////////////////////////////////////////////////////////
@@ -135,7 +135,9 @@ protected:
      * \brief Reset servo control table.
      * \param id: The servo to reset to factory default settings.
      * \param setting: If protocol v2 is used, you can control what to erase using the 'ResetOptions' enum.
+     * \param ack: Ack policy in effect.
      *
+     * \todo emulate "RESET_ALL_EXCEPT_ID" and "RESET_ALL_EXCEPT_ID_BAUDRATE" settings when using protocol v1?
      * Please note that when using protocol v1, the servo ID will be changed to 1.
      */
     void dxl_reset(const int id, int setting, const int ack = ACK_DEFAULT);
@@ -172,19 +174,19 @@ public:
 
     /*!
      * \brief Get the available serial devices.
-     * \return The path to all the serial device nodes available (ex: "/dev/ttyUSB0").
+     * \return A list of path to all the serial device nodes available (ex: "/dev/ttyUSB0").
      */
     std::vector <std::string> serialGetAvailableDevices();
 
     /*!
      * \brief setLatency
-     * \param latency
+     * \param latency: Latency value in milliseconds.
      */
     void setLatency(int latency);
 
     /*!
      * \brief setAckPolicy
-     * \param ack
+     * \param ack: Ack policy value, using '::AckPolicy_e' enum.
      */
     void setAckPolicy(int ack);
 };

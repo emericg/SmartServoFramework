@@ -29,6 +29,10 @@
 #include <map>
 #include <mutex>
 
+/** \addtogroup ControllerAPIs
+ *  @{
+ */
+
 /*!
  * \brief XL servo serie.
  *
@@ -60,5 +64,7 @@ public:
     void setId(int id); //! XL-320 ids are in range [0;252] instead of [0;253]
     void setError(const int error);
 };
+
+/** @}*/
 
 #endif /* SERVO_XL_H */

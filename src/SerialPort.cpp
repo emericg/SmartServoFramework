@@ -142,12 +142,13 @@ int SerialPort::checkBaudRate(const int baud)
         std::cerr << "Invalid baudnum (" << baud << "), using default baudrate value of: '" << baudRate << "'" << std::endl;
     }
 
-    if (serialDevice == SERIAL_USB2DYNAMIXEL)
+    // Apply bandwith restriction depending on the adapter chip
+    if (serialDevice == SERIAL_USB2DYNAMIXEL || serialDevice == SERIAL_OTHER_FTDI)
     {
         if (baudRate > 4500000)
         {
             baudRate = 4500000;
-            std::cerr << "Invalid baudrate ('" << baud << "' > 4500000): too high for SERIAL_USB2DYNAMIXEL device, using default baudrate value of: '1000000'" << std::endl;
+            std::cerr << "Invalid baudrate ('" << baud << "' > 4500000): too high for SERIAL_USB2DYNAMIXEL or or FTDI based device, using default baudrate value of: '1000000'" << std::endl;
         }
     }
     else if (serialDevice == SERIAL_USB2AX)

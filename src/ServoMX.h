@@ -29,6 +29,10 @@
 #include <map>
 #include <mutex>
 
+/** \addtogroup ControllerAPIs
+ *  @{
+ */
+
 /*!
  * \brief MX servo serie.
  *
@@ -55,5 +59,7 @@ public:
     int getGoalTorque(); // Only on MX-64 and MX-106
     int getGoalAccel();
 };
+
+/** @}*/
 
 #endif /* SERVO_MX_H */
