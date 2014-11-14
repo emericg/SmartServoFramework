@@ -40,6 +40,7 @@ AdvanceScanner::AdvanceScanner(QMainWindow *main, QWidget *parent) :
     progress_current = 0.0;
 
     ui->label_scan_errors->setVisible(false);
+    ui->actionStartScan->setEnabled(false);
     ui->actionStopScan->setEnabled(false);
     ui->frame_scan->hide();
 
@@ -84,6 +85,8 @@ void AdvanceScanner::fillWidgets_ports()
     }
     else
     {
+        ui->actionStartScan->setEnabled(true);
+
         int row = 0;
         for (auto p: availablePorts)
         {
