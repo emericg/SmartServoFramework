@@ -62,6 +62,9 @@ class ControllerAPI
     int controllerState;                //!< The current state of the controller, used by client apps to know.
     std::mutex controllerStateLock;     //!< Lock for the controllerState.
 
+    int errorCount;                     //!< Store the number of transmission errors.
+    std::mutex errorCountLock;          //!< Lock for the error count.
+
 protected:
 
     enum controllerMessage_e
@@ -100,9 +103,6 @@ protected:
     std::vector <int> updateList;       //!< List of device object marked for a "full" register update.
     std::vector <int> syncList;         //!< List of device object to keep in sync.
 
-    //! Store the number of transmission errors (should be reseted every X seconds?)
-    int errors;
-
     //! Read/write synchronization loop, running inside its own background thread
     virtual void run() = 0;
 
@@ -136,6 +136,12 @@ protected:
      */
     void setState(const int state);
 
+    /*!
+     * \brief Increment the number of error logged on the serial link associated with this controller.
+     * \param error: Number of error to add to the counter.
+     */
+    void updateErrorCount(int error);
+
 public:
     /*!
      * \brief ControllerAPI constructor.
@@ -163,21 +169,15 @@ public:
     virtual void disconnect() = 0;
 
     /*!
+     * \brief Pause/un-pause synchronization loop thread.
+     */
+    void pauseThread();
+
+    /*!
      * \brief Read the current state of the controller.
      * \return The current state of the controller.
      */
     int getState();
-
-    /*!
-     * \brief Wait until the controller is ready.
-     * \return true if the controller is ready, false if timeout has been hit and the controller status is unknown.
-     *
-     * You need to call this function after an autodetection or registering servos
-     * manually, to let the controller some time to process new devices.
-     * This is a blocking function that only return after the controller has been
-     * proven ready, or a 6s timeout hit.
-     */
-    bool waitUntilReady();
 
     /*!
      * \brief Scan a serial link for servo or sensor devices.
@@ -193,6 +193,17 @@ public:
      */
     void autodetect(int start = 0, int stop = 253);
 
+    /*!
+     * \brief Wait until the controller is ready.
+     * \return true if the controller is ready, false if timeout has been hit and the controller status is unknown.
+     *
+     * You need to call this function after an autodetection or registering servos
+     * manually, to let the controller some time to process new devices.
+     * This is a blocking function that only return after the controller has been
+     * proven ready, or a 6s timeout hit.
+     */
+    bool waitUntilReady();
+
     virtual std::string serialGetCurrentDevice_wrapper() = 0;
     virtual std::vector <std::string> serialGetAvailableDevices_wrapper() = 0;
     virtual void serialSetLatency_wrapper(int latency) = 0;
@@ -201,6 +212,16 @@ public:
      * \brief clearMessageQueue
      */
     void clearMessageQueue();
+
+    /*!
+     * \brief Return the number of error logged on the serial link associated with this controller.
+     */
+    int getErrorCount();
+
+    /*!
+     * \brief Reset error count for this controller.
+     */
+    void clearErrorCount();
 
     /*!
      * \brief Register a servo given in argument.
@@ -244,27 +265,6 @@ public:
      * \return A read only list of servo instances registered to this controller.
      */
     const std::vector <Servo *> getServos();
-
-    /*!
-     * \brief Return the number of error logged on the serial link associated with this controller.
-     */
-    int getErrorCount()
-    {
-        return errors;
-    }
-
-    /*!
-     * \brief Reset error count for this controller.
-     */
-    void clearErrors()
-    {
-        errors = 0;
-    }
-
-    /*!
-     * \brief Pause/un-pause synchronization loop thread.
-     */
-    void pauseThread();
 };
 
 /** @}*/

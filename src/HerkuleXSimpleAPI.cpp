@@ -626,7 +626,7 @@ int HerkuleXSimpleAPI::readCurrentPosition(const int id)
     {
         int addr = getRegisterAddr(ct, REG_CURRENT_TEMPERATURE, REGISTER_RAM);
 
-        value = (double)hkx_read_byte(id, addr, REGISTER_RAM);
+        value = static_cast<double>(hkx_read_byte(id, addr, REGISTER_RAM));
         if (hkx_print_error() != 0)
         {
             value = -1;
@@ -668,7 +668,7 @@ double HerkuleXSimpleAPI::readCurrentTemperature(const int id)
     {
         int addr = getRegisterAddr(ct, REG_CURRENT_TEMPERATURE, REGISTER_RAM);
 
-        value = (double)hkx_read_byte(id, addr, REGISTER_RAM);
+        value = static_cast<double>(hkx_read_byte(id, addr, REGISTER_RAM));
         if (hkx_print_error() == 0)
         {
             // FIXME temperature is using a non linear scale
@@ -691,7 +691,7 @@ double HerkuleXSimpleAPI::readCurrentVoltage(const int id)
     {
         int addr = getRegisterAddr(ct, REG_CURRENT_VOLTAGE, REGISTER_RAM);
 
-        value = (double)hkx_read_byte(id, addr, REGISTER_RAM);
+        value = static_cast<double>(hkx_read_byte(id, addr, REGISTER_RAM));
         if (hkx_print_error() == 0)
         {
             value *= 0.074074;

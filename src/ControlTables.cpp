@@ -249,7 +249,7 @@ int getRegisterName(const int ct[][8], const int reg_index)
 
     if (ct != NULL)
     {
-        if (reg_index >= 0 && reg_index < (int)getRegisterCount(ct))
+        if (reg_index >= 0 && reg_index < static_cast<int>(getRegisterCount(ct)))
         {
             name = ct[reg_index][0];
         }

@@ -242,10 +242,10 @@ void HerkuleXController::run()
 
             case ctrl_device_register:
                 // handle registering servo by "id"?
-                registerServo_internal((Servo *)(m.p));
+                registerServo_internal(static_cast<Servo *>(m.p));
                 break;
             case ctrl_device_unregister:
-                unregisterServo_internal((Servo *)(m.p));
+                unregisterServo_internal(static_cast<Servo *>(m.p));
                 break;
             case ctrl_device_unregister_all:
                 unregisterServos_internal();
@@ -311,14 +311,14 @@ void HerkuleXController::run()
                     if (*it == id)
                     { updateList.erase(it); }
                     else
-                    { it++; }
+                    { ++it; }
                 }
                 for (std::vector <int>::iterator it = syncList.begin(); it != syncList.end();)
                 {
                     if (*it == id)
                     { syncList.erase(it); }
                     else
-                    { it++; }
+                    { ++it; }
                 }
 
                 // Reboot
@@ -337,14 +337,14 @@ void HerkuleXController::run()
                     if (*it == id)
                     { updateList.erase(it); }
                     else
-                    { it++; }
+                    { ++it; }
                 }
                 for (std::vector <int>::iterator it = syncList.begin(); it != syncList.end();)
                 {
                     if (*it == id)
                     { syncList.erase(it); }
                     else
-                    { it++; }
+                    { ++it; }
                 }
 
                 // Reset
@@ -426,7 +426,7 @@ void HerkuleXController::run()
 
                             s->setError(hkx_get_rxpacket_error());
                             s->setStatus(hkx_get_rxpacket_status_detail());
-                            errors += hkx_get_com_error();
+                            updateErrorCount(hkx_get_com_error());
                             hkx_print_error();
                         }
 
@@ -454,7 +454,7 @@ void HerkuleXController::run()
             {
                 servoListLock.unlock();
 
-                ServoHerkuleX *s = (ServoHerkuleX*)s_raw;
+                ServoHerkuleX *s = static_cast<ServoHerkuleX*>(s_raw);
 
                 if (s->getId() == id)
                 {
@@ -494,7 +494,7 @@ void HerkuleXController::run()
                             s->setError(hkx_get_rxpacket_error());
                             s->setStatus(hkx_get_rxpacket_status_detail());
                             s->commitValue(regname, 0, REGISTER_ROM);
-                            errors += hkx_get_com_error();
+                            updateErrorCount(hkx_get_com_error());
                             hkx_print_error();
                         }
 
@@ -517,7 +517,7 @@ void HerkuleXController::run()
                             s->setError(hkx_get_rxpacket_error());
                             s->setStatus(hkx_get_rxpacket_status_detail());
                             s->commitValue(regname, 0, REGISTER_RAM);
-                            errors += hkx_get_com_error();
+                            updateErrorCount(hkx_get_com_error());
                             hkx_print_error();
                         }
                     }
@@ -530,14 +530,14 @@ void HerkuleXController::run()
                         s->updateValue(REG_CURRENT_VOLTAGE, hkx_read_byte(id, s->gaddr(REG_CURRENT_VOLTAGE), REGISTER_RAM, ack));
                         s->setError(hkx_get_rxpacket_error());
                         s->setStatus(hkx_get_rxpacket_status_detail());
-                        errors += hkx_get_com_error();
+                        updateErrorCount(hkx_get_com_error());
                         hkx_print_error();
 
                         // Read temp
                         s->updateValue(REG_CURRENT_TEMPERATURE, hkx_read_byte(id, s->gaddr(REG_CURRENT_TEMPERATURE), REGISTER_RAM, ack));
                         s->setError(hkx_get_rxpacket_error());
                         s->setStatus(hkx_get_rxpacket_status_detail());
-                        errors += hkx_get_com_error();
+                        updateErrorCount(hkx_get_com_error());
                         hkx_print_error();
                     }
 
@@ -548,25 +548,25 @@ void HerkuleXController::run()
                         s->updateValue(REG_STATUS_ERROR, hkx_read_byte(id, s->gaddr(REG_STATUS_ERROR), REGISTER_RAM, ack));
                         s->setError(hkx_get_rxpacket_error());
                         s->setStatus(hkx_get_rxpacket_status_detail());
-                        errors += hkx_get_com_error();
+                        updateErrorCount(hkx_get_com_error());
                         hkx_print_error();
 
                         s->updateValue(REG_STATUS_DETAIL, hkx_read_byte(id, s->gaddr(REG_STATUS_DETAIL), REGISTER_RAM, ack));
                         s->setError(hkx_get_rxpacket_error());
                         s->setStatus(hkx_get_rxpacket_status_detail());
-                        errors += hkx_get_com_error();
+                        updateErrorCount(hkx_get_com_error());
                         hkx_print_error();
 /*
                         s->updateCurrentSpeed(hkx_read_word(id, s->gaddr(SERVO_CURRENT_SPEED), REGISTER_RAM, ack));
                         s->setError(hkx_get_rxpacket_error());
                         s->setStatus(hkx_get_rxpacket_status_detail());
-                        errors += hkx_get_com_error();
+                        updateErrorCount(hkx_get_com_error());
                         hkx_print_error();
 
                         s->updateCurrentLoad(hkx_read_word(id, s->gaddr(SERVO_CURRENT_LOAD), REGISTER_RAM, ack));
                         s->setError(hkx_get_rxpacket_error());
                         s->setStatus(hkx_get_rxpacket_status_detail());
-                        errors += hkx_get_com_error();
+                        updateErrorCount(hkx_get_com_error());
                         hkx_print_error();
 */
                     }
@@ -578,7 +578,7 @@ void HerkuleXController::run()
                         s->updateValue(REG_ABSOLUTE_POSITION, cpos);
                         s->setError(hkx_get_rxpacket_error());
                         s->setStatus(hkx_get_rxpacket_status_detail());
-                        errors += hkx_get_com_error();
+                        updateErrorCount(hkx_get_com_error());
                         hkx_print_error();
 
                         if (s->getGoalPositionCommited() == 1)
@@ -595,7 +595,7 @@ void HerkuleXController::run()
                         s->updateValue(REG_ABSOLUTE_GOAL_POSITION, hkx_read_word(id, s->gaddr(REG_ABSOLUTE_GOAL_POSITION), REGISTER_RAM, ack));
                         s->setError(hkx_get_rxpacket_error());
                         s->setStatus(hkx_get_rxpacket_status_detail());
-                        errors += hkx_get_com_error();
+                        updateErrorCount(hkx_get_com_error());
                         hkx_print_error();
                     }
                 }

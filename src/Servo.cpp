@@ -123,10 +123,9 @@ int Servo::getError()
 
 void Servo::setError(const int error)
 {
-    std::lock_guard <std::mutex> lock(access);
-
     if (error > 0)
     {
+        std::lock_guard <std::mutex> lock(access);
         statusError += error;
         errorCount++;
     }

@@ -34,8 +34,8 @@
 
 ControllerAPI::ControllerAPI(int freq):
     controllerState(state_stopped),
-    syncloopCounter(0),
-    errors(0)
+    errorCount(0),
+    syncloopCounter(0)
 {
     if (freq < 1 || freq > 120)
     {
@@ -60,7 +60,7 @@ void ControllerAPI::startThread()
 {
     if (getState() < state_started && syncloopThread.joinable() == 0)
     {
-        errors = 0;
+        clearErrorCount();
         setState(state_started);
         syncloopThread = std::thread(&ControllerAPI::run, this);
     }
@@ -106,7 +106,7 @@ void ControllerAPI::stopThread()
         m.msg = ctrl_state_stop;
         sendMessage(&m);
 
-        errors = 0;
+        clearErrorCount();
         syncloopThread.join();
         setState(state_stopped);
     }
@@ -180,6 +180,29 @@ bool ControllerAPI::waitUntilReady()
 
 /* ************************************************************************** */
 
+void ControllerAPI::updateErrorCount(int error)
+{
+    std::lock_guard <std::mutex> lock(errorCountLock);
+    errorCount += error;
+}
+
+int ControllerAPI::getErrorCount()
+{
+    std::lock_guard <std::mutex> lock(errorCountLock);
+    return errorCount;
+}
+
+/*!
+ * \brief Reset error count for this controller.
+ */
+void ControllerAPI::clearErrorCount()
+{
+    std::lock_guard <std::mutex> lock(errorCountLock);
+    errorCount = 0;
+}
+
+/* ************************************************************************** */
+
 void ControllerAPI::registerServo_internal(Servo *servo)
 {
     if (getState() >= state_started)
@@ -190,7 +213,7 @@ void ControllerAPI::registerServo_internal(Servo *servo)
             std::lock_guard <std::mutex> lock(servoListLock);
 
             // Check if the servo is already registered
-            for (std::vector <Servo *>::iterator it = servoList.begin(); it != servoList.end(); it++)
+            for (std::vector <Servo *>::iterator it = servoList.begin(); it != servoList.end(); ++it)
             {
                 if ((*it)->getId() == (*servo).getId())
                 {
@@ -233,7 +256,7 @@ void ControllerAPI::unregisterServo_internal(Servo *servo)
         }
         else
         {
-            it++;
+            ++it;
         }
     }
 
@@ -245,7 +268,7 @@ void ControllerAPI::unregisterServo_internal(Servo *servo)
         }
         else
         {
-            it++;
+            ++it;
         }
     }
 
@@ -257,7 +280,7 @@ void ControllerAPI::unregisterServo_internal(Servo *servo)
         }
         else
         {
-            it++;
+            ++it;
         }
     }
 
@@ -273,12 +296,12 @@ void ControllerAPI::unregisterServos_internal()
     // Lock servoList
     std::lock_guard <std::mutex> lock(servoListLock);
 
-    for (std::vector <Servo *>::iterator it = servoList.begin(); it != servoList.end(); it++)
+    for (std::vector <Servo *>::iterator it = servoList.begin(); it != servoList.end(); ++it)
     {
         delete *it;
     }
 
-    errors = 0;
+    clearErrorCount();
 
     servoList.clear();
     updateList.clear();
@@ -315,7 +338,7 @@ Servo *ControllerAPI::getServo(const int id)
     // Lock servoList
     std::lock_guard <std::mutex> lock(servoListLock);
 
-    for (std::vector <Servo *>::iterator it = servoList.begin(); it != servoList.end(); it++)
+    for (std::vector <Servo *>::iterator it = servoList.begin(); it != servoList.end(); ++it)
     {
         if ((*it)->getId() == id)
         {
