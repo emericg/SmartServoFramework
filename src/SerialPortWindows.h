@@ -28,6 +28,7 @@
 #include "SerialPort.h"
 
 // Windows specific
+#define NOMINMAX // Not sure if really needed when building the framework without Qt...
 #include <windows.h>
 
 /*!
@@ -37,7 +38,7 @@ LPCWSTR stringToLPCWSTR(const std::string &s);
 
 /*!
  * \brief The serial ports scanner function.
- * \param[out] availableSerialPorts: A list of serial port nodes (ex: \\.\COM1).
+ * \param[out] availableSerialPorts: A list of serial port nodes (ex: "\\.\COM1").
  * \return The number of serial ports found.
  *
  * Perform a "reverse" scan, from high port numbers to low numbers, as high numbers
@@ -67,7 +68,7 @@ class SerialPortWindows: public SerialPort
 public:
     /*!
      * \brief SerialPortWindows constructor will only init some variables to default values.
-     * \param deviceId: The serial device id, will be used to build a device path.
+     * \param deviceName: The serial port (ex: "\\\\.\\COM1"), will be used to build a device path (the string needs to be escaped).
      * \param baud: Can be a 'baudrate' (in bps) or a Dynamixel / HerkuleX 'baudnum'.
      * \param serialDevice: Specify (if known) what TTL converter is in use.
      * \param servoDevices: Specify if we use this serial port with Dynamixel or HerkuleX devices.

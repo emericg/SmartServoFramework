@@ -118,7 +118,7 @@ protected:
     void registerServo_internal(Servo *servo);
     void unregisterServo_internal(Servo *servo);
     void unregisterServos_internal();
-    int delayedAddServos_internal(std::chrono::time_point<std::chrono::_V2::system_clock> delay, int id, int update);
+    int delayedAddServos_internal(std::chrono::time_point<std::chrono::system_clock> delay, int id, int update);
     virtual void autodetect_internal(int start = 0, int stop = 253) = 0;
 
     /*!
