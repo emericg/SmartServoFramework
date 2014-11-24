@@ -133,7 +133,12 @@ std::vector <std::string> HerkuleXController::serialGetAvailableDevices_wrapper(
 
 void HerkuleXController::serialSetLatency_wrapper(int latency)
 {
-    setLatency(latency);
+    serialSetLatency(latency);
+}
+
+void HerkuleXController::serialLockInterface_wrapper()
+{
+    serialLockInterface();
 }
 
 void HerkuleXController::autodetect_internal(int start, int stop)
@@ -151,7 +156,7 @@ void HerkuleXController::autodetect_internal(int start, int stop)
         stop = maxId;
 
     // Bring RX packet timeout down to scan way faster
-    setLatency(8);
+    serialSetLatency(8);
 
     std::cout << "HKX ctrl_device_autodetect(port: '" << serialGetCurrentDevice() << "' | tid: '" << std::this_thread::get_id() << "')" << std::endl;
 
@@ -208,7 +213,7 @@ void HerkuleXController::autodetect_internal(int start, int stop)
     std::cout << std::endl;
 
     // Restore RX packet timeout
-    setLatency(LATENCY_TIME_DEFAULT);
+    serialSetLatency(LATENCY_TIME_DEFAULT);
 
     setState(state_scanned);
 }

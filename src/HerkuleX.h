@@ -154,10 +154,15 @@ public:
     std::vector <std::string> serialGetAvailableDevices();
 
     /*!
-     * \brief setLatency
+     * \brief Lock serial interface using a temporary file.
+     */
+    void serialLockInterface();
+
+    /*!
+     * \brief serialSetLatency
      * \param latency: Latency value in milliseconds.
      */
-    void setLatency(int latency);
+    void serialSetLatency(int latency);
 
     /*!
      * \brief setAckPolicy

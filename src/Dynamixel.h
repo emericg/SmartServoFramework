@@ -179,10 +179,15 @@ public:
     std::vector <std::string> serialGetAvailableDevices();
 
     /*!
+     * \brief Lock serial interface using a temporary file.
+     */
+    void serialLockInterface();
+
+    /*!
      * \brief setLatency
      * \param latency: Latency value in milliseconds.
      */
-    void setLatency(int latency);
+    void serialSetLatency(int latency);
 
     /*!
      * \brief setAckPolicy

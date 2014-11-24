@@ -207,6 +207,7 @@ public:
     virtual std::string serialGetCurrentDevice_wrapper() = 0;
     virtual std::vector <std::string> serialGetAvailableDevices_wrapper() = 0;
     virtual void serialSetLatency_wrapper(int latency) = 0;
+    virtual void serialLockInterface_wrapper() = 0;
 
     /*!
      * \brief clearMessageQueue

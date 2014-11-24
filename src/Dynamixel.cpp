@@ -233,7 +233,12 @@ std::vector <std::string> Dynamixel::serialGetAvailableDevices()
     return devices;
 }
 
-void Dynamixel::setLatency(int latency)
+void Dynamixel::serialLockInterface()
+{
+    serial->setLock();
+}
+
+void Dynamixel::serialSetLatency(int latency)
 {
     serial->setLatency(latency);
 }

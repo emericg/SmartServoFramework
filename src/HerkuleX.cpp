@@ -179,7 +179,12 @@ std::vector <std::string> HerkuleX::serialGetAvailableDevices()
     return devices;
 }
 
-void HerkuleX::setLatency(int latency)
+void HerkuleX::serialLockInterface()
+{
+    serial->setLock();
+}
+
+void HerkuleX::serialSetLatency(int latency)
 {
     serial->setLatency(latency);
 }
