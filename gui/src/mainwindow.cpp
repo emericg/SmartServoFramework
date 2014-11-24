@@ -2322,7 +2322,7 @@ void MainWindow::clearErrors()
 
     if (getCurrentController(c) > 0)
     {
-        c->clearErrors();
+        c->clearErrorCount();
     }
 
     Servo *s = NULL;
