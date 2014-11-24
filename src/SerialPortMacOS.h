@@ -47,7 +47,12 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts);
  */
 class SerialPortMacOS: public SerialPortLinux
 {
+    SerialPortMacOS(std::string &deviceName, const int baud, const int serialDevice = SERIAL_UNKNOWN, const int servoDevices = SERVO_UNKNOWN);
+    ~SerialPortMacOS();
+
     // TODO
+
+    void setLatency(int latency);
 };
 
 #endif /* defined(__APPLE__) || defined(__MACH__) */

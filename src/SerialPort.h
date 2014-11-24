@@ -44,6 +44,7 @@
 enum SerialDevices_e
 {
     SERIAL_UNKNOWN       = 0,
+
     SERIAL_USB2DYNAMIXEL = 1,
     SERIAL_USB2AX        = 2,
     SERIAL_ZIG100        = 3,   //!< ZIG-100 / 110A
@@ -61,6 +62,7 @@ enum SerialErrorCodes_e
 {
     COMM_TXSUCCESS = 0,                     //!< Instruction packet was sent successfully
     COMM_RXSUCCESS,                         //!< Status packet was received successfully
+
     COMM_TXFAIL,                            //!< Error when sending instruction packet
     COMM_RXFAIL,                            //!< Error when receiving status packet
     COMM_TXERROR,                           //!< Invalid instruction packet, nothing was sent
@@ -96,9 +98,10 @@ protected:
     std::string ttyDeviceName;     //!< The path to the serial device (ex: "/dev/ttyUSB0").
     int ttyDeviceBaudRate;         //!< Speed of the serial link in baud. Default is 1M/s.
     int ttyDeviceLatencyTime;      //!< The value of this timer (in millisecond) should be carefully choosed depending on your OS and the speed of your serial port implementation.
+    bool ttyDeviceLocked;          //!< Set to true if a "lock file" has been set by this SerialPort instance.
 
     int serialDevice;              //!< Specify (if known) what TTL converter is in use. This information will be used to compute correct baudrate.
-    int servoDevices;              //!< Specify if we use this serial port with Dynamixel or HerkuleX devices (using ServoDevices_e values). This information will be used to compute correct baudrate.
+    int servoDevices;              //!< Specify if we use this serial port with Dynamixel or HerkuleX devices (using ::ServoDevices_e values). This information will be used to compute correct baudrate.
 
     double packetStartTime;        //!< Time (in millisecond) where the packet was sent.
     double packetWaitTime;         //!< Time (in millisecond) to wait for an answer.
@@ -111,13 +114,16 @@ protected:
     virtual double getTime() = 0;
 
     /*!
-     * \brief This function makes sure the baudrate is correctly set to a plausible value.
+     * \brief Set baudrate for this interface.
      * \param baud: Can be a 'baudrate' (in bps) or a Dynamixel / HerkuleX 'baudnum'.
+     *
+     * Must be called before openLink(), otherwise it will have no effect until the
+     * next connection.
      */
     virtual void setBaudRate(const int baud) = 0;
 
     /*!
-     * \brief Check and convert (if needed) a Dynamixel / HerkuleX 'baudnum' into a regular 'baudrate'.
+     * \brief Check and convert (if needed) a Dynamixel / HerkuleX 'baudnum' into a regular 'baudrate' with a plausible value.
      * \param baud: Can be a 'baudrate' in bps or a Dynamixel / HerkuleX 'baudnum'.
      * \return A valid 'baudrate' value in baud.
      *
@@ -130,6 +136,14 @@ protected:
      * against maximum bandwith available depending on the serial device used (USB2Dynamixel, USB2AX, ...).
      */
     int checkBaudRate(const int baud);
+
+    /*!
+     * \brief Check if the serial link has been "file locked" by another instance.
+     * \return True is a file lock has been found for this serial link, false otherwise.
+     *
+     * \note This functionnality is only implemented on the Linux backend.
+     */
+    virtual bool isLocked();
 
 public:
     /*!
@@ -193,6 +207,14 @@ public:
      * \brief Flush non-transmitted output data, non-read input data or both.
      */
     virtual void flush() = 0;
+
+    /*!
+     * \brief Set a "file lock" for this serial link.
+     * \return True is a file lock has been created successfully this serial link, false otherwise.
+     *
+     * \note This functionnality is only implemented on the Linux backend.
+     */
+    virtual bool setLock();
 
     /*!
      * \brief Set the serial port latency for packet reception timeout.

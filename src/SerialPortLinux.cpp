@@ -31,13 +31,16 @@
 #include <sys/ioctl.h>
 #include <sys/time.h>
 
+// "open" and "close" calls
 #include <unistd.h>
 
 // C++ standard libraries
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <cstring>
 #include <string>
-#include <fstream>
+#include <thread>
 
 int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
 {
@@ -248,13 +251,87 @@ int SerialPortLinux::convertBaudRateFlag(int baudrate)
     return baudRateFlag;
 }
 
+bool SerialPortLinux::setLock()
+{
+    bool status = false;
+    std::string ttyDeviceLockPath = "/tmp";
+
+    size_t found = ttyDeviceName.rfind("/");
+    if (found != std::string::npos && found != ttyDeviceName.size())
+    {
+        ttyDeviceLockPath += ttyDeviceName.substr(found);
+        ttyDeviceLockPath += ".lock";
+
+        FILE *lock = std::fopen(ttyDeviceLockPath.c_str(), "w");
+        if (lock)
+        {
+            std::stringstream ss;
+            ss << std::this_thread::get_id();
+            fputs(ss.str().c_str(), lock);
+            ttyDeviceLocked = true;
+            status = true;
+
+            std::cout << "Lock set at: '" << ttyDeviceLockPath << "' for tid: '" << std::this_thread::get_id() << "'" << std::endl;
+            std::fclose(lock);
+        }
+    }
+
+    return status;
+}
+
+bool SerialPortLinux::isLocked()
+{
+    bool status = false;
+    std::string ttyDeviceLockPath = "/tmp";
+
+    size_t found = ttyDeviceName.rfind("/");
+    if (found != std::string::npos && found != ttyDeviceName.size())
+    {
+        ttyDeviceLockPath += ttyDeviceName.substr(found);
+        ttyDeviceLockPath += ".lock";
+
+        FILE *lock = std::fopen(ttyDeviceLockPath.c_str(), "r");
+        if (lock)
+        {
+            char buf[16] = {0};
+            if (std::fgets(buf, sizeof buf, lock) != NULL)
+            {
+                std::stringstream ss;
+                ss << std::this_thread::get_id();
+
+                if (strcmp(buf, ss.str().c_str()) != 0)
+                {
+                    std::cout << "Lock from another instance found at: '" << ttyDeviceLockPath << "'" << std::endl;
+                    status = true;
+                }
+            }
+            else
+            {
+                std::cout << "Lock found at: '" << ttyDeviceLockPath << "'" << std::endl;
+                status = true;
+            }
+
+            std::fclose(lock);
+        }
+    }
+
+    return status;
+}
+
 int SerialPortLinux::openLink()
 {
     struct termios tty;
     memset(&tty, 0, sizeof(tty));
 
-    // Make sure no tty connection is already running
+    // Make sure no tty connection is already running (in that case, openLink() will do a reconnection)
     closeLink();
+
+    // Check if another instance is using this port
+    if (isLocked() == true)
+    {
+        std::cerr << "Cannot connect to serial port: '" << ttyDeviceName << "': interface is locked!" << std::endl;
+        goto OPEN_LINK_ERROR;
+    }
 
     // O_RDWR: ?
     // O_NOCTTY: if the named file is a terminal device, don't make it the controlling terminal for the process
@@ -357,6 +434,19 @@ void SerialPortLinux::closeLink()
         this->flush();
         close(ttyDeviceFileDescriptor);
         ttyDeviceFileDescriptor = -1;
+
+        if (ttyDeviceLocked == true)
+        {
+            std::string ttyDeviceLockPath = "/tmp";
+            size_t found = ttyDeviceName.rfind("/");
+            if (found != std::string::npos && found != ttyDeviceName.size())
+            {
+                ttyDeviceLockPath += ttyDeviceName.substr(found);
+                ttyDeviceLockPath += ".lock";
+
+                std::remove(ttyDeviceLockPath.c_str());
+            }
+        }
     }
 }
 

@@ -45,8 +45,8 @@ class SerialPortLinux: public SerialPort
 {
     int ttyDeviceFileDescriptor;   //!< The file descriptor that will be used to write to the serial device.
     int ttyDeviceBaudRateFlag;     //!< Speed of the serial device, from a <termios.h> enum.
-    bool ttyCustomSpeed;           //!< Try to set custom speed on the serial port
-    bool ttyLowLatency;            //!< Try to set low latency flag on the serial port (works only on FTDI based adapters)
+    bool ttyCustomSpeed;           //!< Try to set custom speed on the serial port.
+    bool ttyLowLatency;            //!< Try to set low latency flag on the serial port (works only on FTDI based adapters).
 
     /*!
      * \brief Get current time since the Epoch.
@@ -55,8 +55,11 @@ class SerialPortLinux: public SerialPort
     double getTime();
 
     /*!
-     * \brief SerialPortLinux::setBaudRate.
+     * \brief Set baudrate for this interface.
      * \param baud: Can be a 'baudrate' (in bps) or a Dynamixel / HerkuleX 'baudnum'.
+     *
+     * Must be called before openLink(), otherwise it will have no effect until the 
+     * next connection.
      */
     void setBaudRate(const int baud);
 
@@ -70,6 +73,14 @@ class SerialPortLinux: public SerialPort
      * flag is set, and the openLink() function will try to set a custom speed.
      */
     int convertBaudRateFlag(int baudrate);
+
+    /*!
+     * \brief Check if the serial link has been "file locked" by another instance.
+     * \return True is a file lock has been found for this serial link, false otherwise.
+     *
+     * Use /tmp directory for lock storage.
+     */
+    bool isLocked();
 
 public:
     /*!
@@ -92,6 +103,13 @@ public:
 
     bool switchHighSpeed();
 
+    /*!
+     * \brief Set a "file lock" for this serial link.
+     * \return True is a file lock has been created successfully this serial link, false otherwise.
+     *
+     * Use /tmp directory for lock storage.
+     */
+    bool setLock();
     void setLatency(int latency);
     void setTimeOut(int packetLength);
     void setTimeOut(double msec);

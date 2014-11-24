@@ -60,8 +60,11 @@ class SerialPortWindows: public SerialPort
     double getTime();
 
     /*!
-     * \brief SerialPortWindows::setBaudRate.
+     * \brief Set baudrate for this interface.
      * \param baud: Can be a 'baudrate' (in bps) or a Dynamixel / HerkuleX 'baudnum'.
+     *
+     * Must be called before openLink(), otherwise it will have no effect until the
+     * next connection.
      */
     void setBaudRate(const int baud);
 

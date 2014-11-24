@@ -195,6 +195,16 @@ std::vector <std::string> SerialPort::scanSerialPorts()
     return availableSerialPorts;
 }
 
+bool SerialPort::isLocked()
+{
+    return false;
+}
+
+bool SerialPort::setLock()
+{
+    return false;
+}
+
 void SerialPort::setLatency(int latency)
 {
     if (latency > 0 && latency < 128)
