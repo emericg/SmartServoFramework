@@ -23,10 +23,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-
 #include "advancescanner.h"
+#include "settings.h"
+
 #include "../../src/ControllerAPI.h"
+
+#include <QMainWindow>
 
 class QCheckBox;
 class QComboBox;
@@ -47,11 +49,15 @@ class MainWindow : public QMainWindow
     QTimer *selfRefreshTimer;
     QWidget *loadingTabWidget;
 
-    //! Advance Scanner window
-    AdvanceScanner *as;
+    //! "Advance Scanner" window
+    AdvanceScanner *asw;
 
-    struct SerialPortHelper {
-        // GUI
+    //! "Settings" window
+    Settings *stw;
+
+    struct SerialPortHelper
+    {
+        // GUI elements
         QCheckBox *deviceName;
         QComboBox *deviceProtocol;
         QPushButton *deviceScan;
@@ -60,7 +66,7 @@ class MainWindow : public QMainWindow
         ControllerAPI *deviceController;
     };
 
-    //! List of serial ports (and their settings) handled by the application
+    //! List of all serial ports (gui elements, controller) handled by the application
     std::vector <SerialPortHelper *> serialPorts;
 
     int tableServoSerie;
@@ -84,6 +90,8 @@ class MainWindow : public QMainWindow
     void toggleServoPanel(bool status);
 
     void resizeEvent(QResizeEvent *event);
+
+    void changeEvent(QEvent *event);
 
 private slots:
     void about();
@@ -124,6 +132,9 @@ public slots:
     void advanceScannerStart();
     void advanceScannerStop();
 
+    void settingsStart();
+    void settingsStop();
+
     void scanSerialPorts();
     void scanServos();
 
@@ -132,7 +143,8 @@ public slots:
      * If scan set to "auto", we try DynamixelController first (protocol v1, then v2)
      * at available default speeds (1Mb/s and 57.6kb/s).
      * If no success with Dynamixel, try with HerkuleXController at 115.2kb/s.
-     * Note: Controllers use 10Hz refresh rates only to avoid using too much CPU.
+     * Note: Controllers are using 10Hz default refresh rates only, to avoid
+     * wasting CPU resources.
      *
      * If successfull, add the newly created controller to the corresponding entry
      * into the SerialPortHelper vector.

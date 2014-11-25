@@ -60,9 +60,14 @@ MainWindow::MainWindow(QWidget *parent):
     ui->frame_err_hkx->hide();
     ui->frameStatus->hide();
 
-    as = NULL;
+    asw = NULL;
+    stw = new Settings();
+    stw->readSettings();
+    stw->loadSettings();
+
     tableServoSerie = 0;
     tableServoModel = 0;
+    tableAutoSelection = false;
 
     // Force custom window size
     setGeometry(0, 0, 1200, 640);
@@ -81,6 +86,7 @@ MainWindow::MainWindow(QWidget *parent):
 
     // Connect various UI slots
     QObject::connect(ui->actionAdvance_Scanner, SIGNAL(triggered()), this, SLOT(advanceScannerStart()));
+    QObject::connect(ui->actionSettings, SIGNAL(triggered()), this, SLOT(settingsStart()));
     QObject::connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(about()));
     QObject::connect(ui->actionAboutQt, SIGNAL(triggered()), this, SLOT(aboutQt()));
     QObject::connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
@@ -102,8 +108,30 @@ MainWindow::MainWindow(QWidget *parent):
 
 MainWindow::~MainWindow()
 {
+    if (asw)
+        asw->close();
+
+    if (stw)
+        stw->close();
+
     delete ui;
     delete selfRefreshTimer;
+
+    // Clean controllers list
+    for (auto p: serialPorts)
+    {
+        if (p != NULL)
+        {
+            if (p->deviceController != NULL)
+            {
+                delete p->deviceController;
+                p->deviceController = NULL;
+            }
+
+            delete p;
+            p = NULL;
+        }
+    }
 }
 
 void MainWindow::loading(bool enabled)
@@ -151,10 +179,16 @@ void MainWindow::loading(bool enabled)
 void MainWindow::scanSerialPorts()
 {
     // Clean the UI, indicate we are starting to scan
-    ui->deviceTreeWidget->clear();
     ui->pushScanSerial->setDisabled(true);
     ui->pushScanServo->setDisabled(true);
     loading(true);
+
+    // Clean the deviceTreeWidget content
+    while (QWidget *item = ui->deviceTreeWidget->childAt(0,0))
+    {
+        delete item;
+    }
+    ui->deviceTreeWidget->clear();
 
     // Clean the "scan group box" widgets
     while (QLayoutItem *item = ui->groupPorts->layout()->takeAt(0))
@@ -170,9 +204,16 @@ void MainWindow::scanSerialPorts()
     // Clean controllers list
     for (auto p: serialPorts)
     {
-        if (p->deviceController != NULL)
+        if (p != NULL)
         {
-            delete p->deviceController;
+            if (p->deviceController != NULL)
+            {
+                delete p->deviceController;
+                p->deviceController = NULL;
+            }
+
+            delete p;
+            p = NULL;
         }
     }
     serialPorts.clear();
@@ -277,6 +318,9 @@ void MainWindow::scanServos(QString port_qstring)
     ui->pushScanSerial->setDisabled(true);
     ui->pushScanServo->setDisabled(true);
 
+    bool ctrl_locks = stw->getLock();
+    int ctrl_freq = stw->getFreq();
+
     for (struct SerialPortHelper *h: serialPorts)
     {
         if (h->deviceName->text() == port_qstring)
@@ -313,7 +357,9 @@ void MainWindow::scanServos(QString port_qstring)
                     port = ui->deviceTreeWidget->topLevelItem(i);
                     while (port->childCount() > 0)
                     {
-                        port->removeChild(ui->deviceTreeWidget->topLevelItem(i)->child(0));
+                        QTreeWidgetItem *child = ui->deviceTreeWidget->topLevelItem(i)->child(0);
+                        port->removeChild(child);
+                        delete child;
                     }
                 }
             }
@@ -324,9 +370,9 @@ void MainWindow::scanServos(QString port_qstring)
                 port = new QTreeWidgetItem();
                 ui->deviceTreeWidget->addTopLevelItem(port);
                 port->setText(0, port_qstring);
-                port->setExpanded(true);
             }
             // Indicate we are scanning on this port
+            port->setExpanded(true);
             port->addChild(scan_entry);
 
             // Delete "old" controller (if needed)
@@ -358,51 +404,51 @@ void MainWindow::scanServos(QString port_qstring)
                 // DXL v1
                 case 1:
                     h->deviceControllerProtocol = 1;
-                    h->deviceController = new DynamixelController(10, SERVO_MX);
+                    h->deviceController = new DynamixelController(ctrl_freq, SERVO_MX);
                     speed = 1000000;
                     break;
                 case 2:
                     h->deviceControllerProtocol = 1;
-                    h->deviceController = new DynamixelController(10, SERVO_MX);
+                    h->deviceController = new DynamixelController(ctrl_freq, SERVO_MX);
                     speed = 115200;
                     break;
                 case 3:
                     h->deviceControllerProtocol = 1;
-                    h->deviceController = new DynamixelController(10, SERVO_MX);
+                    h->deviceController = new DynamixelController(ctrl_freq, SERVO_MX);
                     speed = 57600;
                     break;
 
                 // DXL v2
                 case 4:
                     h->deviceControllerProtocol = 2;
-                    h->deviceController = new DynamixelController(10, SERVO_XL);
+                    h->deviceController = new DynamixelController(ctrl_freq, SERVO_XL);
                     speed = 1000000;
                     break;
                 case 5:
                     h->deviceControllerProtocol = 2;
-                    h->deviceController = new DynamixelController(10, SERVO_XL);
+                    h->deviceController = new DynamixelController(ctrl_freq, SERVO_XL);
                     speed = 115200;
                     break;
                 case 6:
                     h->deviceControllerProtocol = 2;
-                    h->deviceController = new DynamixelController(10, SERVO_XL);
+                    h->deviceController = new DynamixelController(ctrl_freq, SERVO_XL);
                     speed = 57600;
                     break;
 
                 // HKX
                 case 7:
                     h->deviceControllerProtocol = 3;
-                    h->deviceController = new HerkuleXController(10, SERVO_DRS);
+                    h->deviceController = new HerkuleXController(ctrl_freq, SERVO_DRS);
                     speed = 115200;
                     break;
                 case 8:
                     h->deviceControllerProtocol = 3;
-                    h->deviceController = new HerkuleXController(10, SERVO_DRS);
+                    h->deviceController = new HerkuleXController(ctrl_freq, SERVO_DRS);
                     speed = 57600;
                     break;
                 case 9:
                     h->deviceControllerProtocol = 3;
-                    h->deviceController = new HerkuleXController(10, SERVO_DRS);
+                    h->deviceController = new HerkuleXController(ctrl_freq, SERVO_DRS);
                     speed = 1000000;
                     break;
                 }
@@ -412,6 +458,12 @@ void MainWindow::scanServos(QString port_qstring)
                 {
                     if (h->deviceController->connect(port_stdstring, speed) == 1)
                     {
+                        // Lock it
+                        if (ctrl_locks)
+                        {
+                            h->deviceController->serialLockInterface_wrapper();
+                        }
+
                         // Scan for servo(s)
                         h->deviceController->autodetect(ui->rangeStart_spinBox->value(), ui->rangeStop_spinBox->value());
 
@@ -433,9 +485,6 @@ void MainWindow::scanServos(QString port_qstring)
                             for (auto s: servos)
                             {
                                 scan_results++;
-
-                                // Remove the "Scanning..." entry
-                                port->removeChild(scan_entry);
 
                                 // Add it to the device tree widget
                                 QString device_txt = "[#" + QString::number(s->getId()) + "]  " + QString::fromStdString(s->getModelString());
@@ -479,22 +528,44 @@ void MainWindow::scanServos(QString port_qstring)
                             break;
                         }
                     }
+                    else
+                    {
+                        scan_results = -1;
+                    }
                 }
             }
 
             // Indicate that we are no longer scanning
             ui->frame_loading->hide();
-            // Do that only once, not every time we try a new serial port configuration
-            if (scan_results == 0)
-            {
-                // Remove the "Scanning..." entry
-                port->removeChild(scan_entry);
 
-                // Indicate we did not found any device
-                QTreeWidgetItem *nodevice = new QTreeWidgetItem();
-                nodevice->setText(0, tr("No device available!"));
-                port->addChild(nodevice);
+            // Do that only once, not every time we try a new serial port configuration
+            if (scan_results <= 0)
+            {
+                if (scan_results == -1)
+                {
+                    // Put an 'error' icon
+                    QString achtung_txt = "Interface is locked!";
+                    QTreeWidgetItem *achtung = new QTreeWidgetItem();
+                    port->addChild(achtung);
+                    achtung->setText(0, achtung_txt);
+                    achtung->setIcon(0, QIcon(":/icons/icons/emblem-readonly.svg"));
+                }
+                else if (scan_results == 0)
+                {
+                    // Indicate we did not found any device
+                    QTreeWidgetItem *nodevice = new QTreeWidgetItem();
+                    nodevice->setText(0, tr("No device available!"));
+                    port->addChild(nodevice);
+                }
+
+                // No need to keep this "empty" controller working
+                delete h->deviceController;
+                h->deviceController = NULL;
             }
+
+            // Remove the "Scanning..." entry
+            port->removeChild(scan_entry);
+            delete scan_entry;
 
             // Unlock windows size
             this->setMinimumSize(0, 0);
@@ -586,14 +657,17 @@ int MainWindow::getCurrentServo(ControllerAPI *&ctrl, int &id)
             for (auto p: serialPorts)
             {
                 // We have the port
-                if (p->deviceName->text().toStdString() == port)
+                if (p != NULL && p->deviceName->text().toStdString() == port)
                 {
                     // We have the servo
                     if (sid >= 0 && sid < 254)
                     {
-                        ctrl = p->deviceController;
-                        id = sid;
-                        retcode = 1;
+                        if (p->deviceController != NULL)
+                        {
+                            ctrl = p->deviceController;
+                            id = sid;
+                            retcode = 1;
+                        }
                     }
                 }
             }
@@ -640,15 +714,18 @@ int MainWindow::getCurrentServo(Servo *&servo)
             for (auto p: serialPorts)
             {
                 // We found the port
-                if (p->deviceName->text().toStdString() == port)
+                if (p != NULL && p->deviceName->text().toStdString() == port)
                 {
                     // We found the servo
                     if (sid >= 0 && sid < 254)
                     {
-                        servo = p->deviceController->getServo(sid);
-                        if (servo != NULL)
+                        if (p->deviceController != NULL)
                         {
-                            retcode = 1;
+                            servo = p->deviceController->getServo(sid);
+                            if (servo != NULL)
+                            {
+                                retcode = 1;
+                            }
                         }
                     }
                 }
@@ -662,6 +739,25 @@ int MainWindow::getCurrentServo(Servo *&servo)
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
     resizeTabWidgetContent();
+}
+
+void MainWindow::changeEvent(QEvent *event)
+{
+    if (event->type() == QEvent::WindowStateChange)
+    {
+        if (stw->getPause() == true)
+        {
+            //std::cout << "Windows focus changed: pausing controllers threads" << std::endl;
+
+            for (SerialPortHelper *p: serialPorts)
+            {
+                if (p->deviceController)
+                {
+                    p->deviceController->pauseThread();
+                }
+            }
+        }
+    }
 }
 
 void MainWindow::resizeTabWidgetContent()
@@ -678,7 +774,7 @@ void MainWindow::resizeTabWidgetContent()
         int width_available = ui->tableWidget->size().width();
         int width_header = ui->tableWidget->verticalHeader()->size().width();
 
-        // Scale egister table
+        // Scale register table
         if (tableServoSerie >= SERVO_HERKULEX)
         {
             int width_value_col = 90;
@@ -1569,7 +1665,7 @@ int MainWindow::getRegisterNameFromTableIndex(const int servo_serie, const int s
     // Perform reverse lookup
     const int (*ct)[8] = getRegisterTable(servo_serie, servo_model);
 
-    for (int i = 0; i < (int)getRegisterCount(ct); i++)
+    for (int i = 0; i < static_cast<int>(getRegisterCount(ct)); i++)
     {
         int reg_name_tmp = getRegisterName(ct, i);
 
@@ -1708,7 +1804,7 @@ void MainWindow::generateRegisterTableHerkuleX(const int servo_serie, const int 
     }
 
     // Add 'EEPROM ONLY' registers
-    for (int i = 0; i < (int)getRegisterCount(ct); i++)
+    for (int i = 0; i < static_cast<int>(getRegisterCount(ct)); i++)
     {
         int reg_name = getRegisterName(ct, i);
         if (reg_name < 0)
@@ -1797,7 +1893,7 @@ void MainWindow::generateRegisterTableHerkuleX(const int servo_serie, const int 
     }
 
     // Add 'EEPROM' and 'RAM' registers
-    for (int i = 0; i < (int)getRegisterCount(ct); i++)
+    for (int i = 0; i < static_cast<int>(getRegisterCount(ct)); i++)
     {
         int reg_name = getRegisterName(ct, i);
         if (reg_name < 0)
@@ -1883,7 +1979,7 @@ void MainWindow::generateRegisterTableHerkuleX(const int servo_serie, const int 
     }
 
     // Add 'RAM ONLY' registers
-    for (int i = 0; i < (int)getRegisterCount(ct); i++)
+    for (int i = 0; i < static_cast<int>(getRegisterCount(ct)); i++)
     {
         int reg_name = getRegisterName(ct, i);
         if (reg_name < 0)
@@ -1981,7 +2077,7 @@ void MainWindow::generateRegisterTableDynamixel(const int servo_serie, const int
     }
 
     // Add ROM row registers
-    for (int i = 0; i < (int)getRegisterCount(ct); i++)
+    for (int i = 0; i < static_cast<int>(getRegisterCount(ct)); i++)
     {
         int reg_name = getRegisterName(ct, i);
         if (reg_name < 0)
@@ -2054,7 +2150,7 @@ void MainWindow::generateRegisterTableDynamixel(const int servo_serie, const int
     }
 
     // Add RAM registers
-    for (int i = 0; i < (int)getRegisterCount(ct); i++)
+    for (int i = 0; i < static_cast<int>(getRegisterCount(ct)); i++)
     {
         int reg_name = getRegisterName(ct, i);
         if (reg_name < 0)
@@ -2181,11 +2277,11 @@ void MainWindow::toggleServoPanel(bool status)
 
 void MainWindow::advanceScannerStart()
 {
+    // Check if a controller is not currently busy scanning or reading
     for (auto p: serialPorts)
     {
         if (p->deviceController != NULL)
         {
-            // Check if the controller is not currently busy scanning or reading
             if (!(p->deviceController->getState() == state_stopped ||
                   p->deviceController->getState() == state_scanned ||
                   p->deviceController->getState() == state_ready))
@@ -2195,7 +2291,7 @@ void MainWindow::advanceScannerStart()
         }
     }
 
-    if (as == NULL)
+    if (asw == NULL)
     {
         // Pause controllers
         for (auto p: serialPorts)
@@ -2210,28 +2306,54 @@ void MainWindow::advanceScannerStart()
         this->setDisabled(true);
 
         // Start an advance scanner window, lock current windows
-        as = new AdvanceScanner(this);
-        as->show();
-        as->resizeTables();
+        asw = new AdvanceScanner(this);
+        asw->show();
+        asw->resizeTables();
     }
 }
 
 void MainWindow::advanceScannerStop()
 {
-    if (as != NULL)
+    if (asw != NULL)
     {
         // Un-pause controllers
         for (auto p: serialPorts)
         {
-            p->deviceController->pauseThread();
+            if (p->deviceController != NULL)
+            {
+                p->deviceController->pauseThread();
+            }
         }
 
         // Un-lock current window
         this->setDisabled(false);
 
         // Delete the advance scanner window
-        delete as;
-        as = NULL;
+        delete asw;
+        asw = NULL;
+    }
+}
+
+/* ************************************************************************** */
+
+void MainWindow::settingsStart()
+{
+    if (stw == NULL)
+    {
+        stw = new Settings();
+        stw->show();
+    }
+    else
+    {
+        stw->show();
+    }
+}
+
+void MainWindow::settingsStop()
+{
+    if (asw != NULL)
+    {
+        asw->hide();
     }
 }
 
