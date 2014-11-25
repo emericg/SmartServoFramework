@@ -582,7 +582,7 @@ int AdvanceScanner::servoscan_dxl(DynamixelSimpleAPI *dxl, QTreeWidgetItem *port
         stop = 254;
 
     // Set shorter timeout value to dramatically decrease scanning time
-    dxl->setLatency(6);
+    dxl->serialSetLatency(6);
 
     std::cout << "> Scanning for Dynamixel devices on '" << dxl->serialGetCurrentDevice() << "'... Range is [" << start << "," << stop << "]" << std::endl;
 
@@ -633,7 +633,7 @@ int AdvanceScanner::servoscan_dxl(DynamixelSimpleAPI *dxl, QTreeWidgetItem *port
     }
 
     // Restore default timeout value
-    dxl->setLatency(LATENCY_TIME_DEFAULT);
+    dxl->serialSetLatency(LATENCY_TIME_DEFAULT);
 
     std::cout << std::endl;
     return results;
@@ -654,7 +654,7 @@ int AdvanceScanner::servoscan_hkx(HerkuleXSimpleAPI *hkx, QTreeWidgetItem *port,
         stop = 254;
 
     // Set shorter timeout value to dramatically decrease scanning time
-    hkx->setLatency(6);
+    hkx->serialSetLatency(6);
 
     std::cout << "> Scanning for HerkuleX devices on '" << hkx->serialGetCurrentDevice() << "'... Range is [" << start << "," << stop << "]" << std::endl;
 
@@ -704,7 +704,7 @@ int AdvanceScanner::servoscan_hkx(HerkuleXSimpleAPI *hkx, QTreeWidgetItem *port,
     }
 
     // Restore default timeout value
-    hkx->setLatency(LATENCY_TIME_DEFAULT);
+    hkx->serialSetLatency(LATENCY_TIME_DEFAULT);
 
     std::cout << std::endl;
     return results;
