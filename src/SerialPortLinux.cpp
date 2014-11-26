@@ -67,6 +67,8 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
                 availableSerialPorts.push_back(port);
                 retcode++;
             }
+
+            close(fd);
         }
     }
 
@@ -85,6 +87,8 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
                 availableSerialPorts.push_back(port);
                 retcode++;
             }
+
+            close(fd);
         }
     }
 /*
@@ -103,6 +107,8 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
                 availableSerialPorts.push_back(port);
                 retcode++;
             }
+
+            close(fd);
         }
     }
 
@@ -121,33 +127,46 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
                 availableSerialPorts.push_back(port);
                 retcode++;
             }
+
+            close(fd);
         }
     }
 */
     return retcode;
 }
 
-SerialPortLinux::SerialPortLinux(std::string &deviceName, const int baud, const int serialDevice, const int servoDevices):
+SerialPortLinux::SerialPortLinux(std::string &devicePath, const int baud, const int serialDevice, const int servoDevices):
     SerialPort(serialDevice, servoDevices),
     ttyDeviceFileDescriptor(-1),
     ttyDeviceBaudRateFlag(B1000000),
     ttyCustomSpeed(false),
     ttyLowLatency(false)
 {
-    if (deviceName.empty() == 1 || deviceName == "auto")
+    if (devicePath.empty() == 1 || devicePath == "auto")
     {
-        ttyDeviceName = autoselectSerialPort();
+        ttyDevicePath = autoselectSerialPort();
     }
     else
     {
-        ttyDeviceName = deviceName;
+        ttyDevicePath = devicePath;
     }
 
-    if (ttyDeviceName != "null")
+    if (ttyDevicePath != "null")
     {
-        std::cout << "- Device node has been set to: '" << ttyDeviceName << "'" << std::endl;
+        size_t found = ttyDevicePath.rfind("/");
+        if (found != std::string::npos && found != ttyDevicePath.size())
+        {
+            ttyDeviceName = ttyDevicePath.substr(found + 1);
+
+            ttyDeviceLockPath = "/tmp/";
+            ttyDeviceLockPath += ttyDeviceName;
+            ttyDeviceLockPath += ".lock";
+        }
 
         setBaudRate(baud);
+
+        std::cout << "- Device name has been set to: '" << ttyDeviceName << "'" << std::endl;
+        std::cout << "- Device node has been set to: '" << ttyDevicePath << "'" << std::endl;
         std::cout << "- Device baud rate has been set to: '" << ttyDeviceBaudRate << "'" << std::endl;
     }
 /*
@@ -254,14 +273,9 @@ int SerialPortLinux::convertBaudRateFlag(int baudrate)
 bool SerialPortLinux::setLock()
 {
     bool status = false;
-    std::string ttyDeviceLockPath = "/tmp";
 
-    size_t found = ttyDeviceName.rfind("/");
-    if (found != std::string::npos && found != ttyDeviceName.size())
+    if (ttyDeviceLockPath != "null")
     {
-        ttyDeviceLockPath += ttyDeviceName.substr(found);
-        ttyDeviceLockPath += ".lock";
-
         FILE *lock = std::fopen(ttyDeviceLockPath.c_str(), "w");
         if (lock)
         {
@@ -282,14 +296,9 @@ bool SerialPortLinux::setLock()
 bool SerialPortLinux::isLocked()
 {
     bool status = false;
-    std::string ttyDeviceLockPath = "/tmp";
 
-    size_t found = ttyDeviceName.rfind("/");
-    if (found != std::string::npos && found != ttyDeviceName.size())
+    if (ttyDeviceLockPath != "null")
     {
-        ttyDeviceLockPath += ttyDeviceName.substr(found);
-        ttyDeviceLockPath += ".lock";
-
         FILE *lock = std::fopen(ttyDeviceLockPath.c_str(), "r");
         if (lock)
         {
@@ -329,7 +338,7 @@ int SerialPortLinux::openLink()
     // Check if another instance is using this port
     if (isLocked() == true)
     {
-        std::cerr << "Cannot connect to serial port: '" << ttyDeviceName << "': interface is locked!" << std::endl;
+        std::cerr << "Cannot connect to serial port: '" << ttyDevicePath << "': interface is locked!" << std::endl;
         goto OPEN_LINK_ERROR;
     }
 
@@ -338,10 +347,10 @@ int SerialPortLinux::openLink()
     // O_NONBLOCK: non-blocking reads
 
     // Open tty device
-    ttyDeviceFileDescriptor = open(ttyDeviceName.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
+    ttyDeviceFileDescriptor = open(ttyDevicePath.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
     if (ttyDeviceFileDescriptor < 0)
     {
-        std::cerr << "Unable to open device on serial port '" << ttyDeviceName << "'" << std::endl;
+        std::cerr << "Unable to open device on serial port '" << ttyDevicePath << "'" << std::endl;
         goto OPEN_LINK_ERROR;
     }
 
@@ -377,7 +386,7 @@ int SerialPortLinux::openLink()
         // Get current serial_struct values
         if (ioctl(ttyDeviceFileDescriptor, TIOCGSERIAL, &serinfo) < 0)
         {
-            std::cerr << "Cannot get serial infos structure from serial port: '" << ttyDeviceName << "'!" << std::endl;
+            std::cerr << "Cannot get serial infos structure from serial port: '" << ttyDevicePath << "'!" << std::endl;
             goto OPEN_LINK_ERROR;
         }
 
@@ -400,7 +409,7 @@ int SerialPortLinux::openLink()
         // Set serial_struct
         if (ioctl(ttyDeviceFileDescriptor, TIOCSSERIAL, &serinfo) < 0)
         {
-            std::cerr << "Cannot set serial infos structure with custom baud divisor (" << ttyDeviceBaudRate << ") to serial port: '" << ttyDeviceName << "'!" << std::endl;
+            std::cerr << "Cannot set serial infos structure with custom baud divisor (" << ttyDeviceBaudRate << ") to serial port: '" << ttyDevicePath << "'!" << std::endl;
             goto OPEN_LINK_ERROR;
         }
     }
@@ -435,17 +444,9 @@ void SerialPortLinux::closeLink()
         close(ttyDeviceFileDescriptor);
         ttyDeviceFileDescriptor = -1;
 
-        if (ttyDeviceLocked == true)
+        if (ttyDeviceLocked == true && ttyDeviceLockPath != "null")
         {
-            std::string ttyDeviceLockPath = "/tmp";
-            size_t found = ttyDeviceName.rfind("/");
-            if (found != std::string::npos && found != ttyDeviceName.size())
-            {
-                ttyDeviceLockPath += ttyDeviceName.substr(found);
-                ttyDeviceLockPath += ".lock";
-
-                std::remove(ttyDeviceLockPath.c_str());
-            }
+            std::remove(ttyDeviceLockPath.c_str());
         }
     }
 }
@@ -462,12 +463,12 @@ int SerialPortLinux::tx(unsigned char *packet, int packetLength)
         }
         else
         {
-            std::cerr << "Cannot write to serial port '" << ttyDeviceName << "': invalid packet buffer or size!" << std::endl;
+            std::cerr << "Cannot write to serial port '" << ttyDevicePath << "': invalid packet buffer or size!" << std::endl;
         }
     }
     else
     {
-        std::cerr << "Cannot write to serial port '" << ttyDeviceName << "': invalid device!" << std::endl;
+        std::cerr << "Cannot write to serial port '" << ttyDevicePath << "': invalid device!" << std::endl;
     }
 
     return status;
@@ -486,17 +487,17 @@ int SerialPortLinux::rx(unsigned char *packet, int packetLength)
 
             if (readStatus < 0)
             {
-                std::cerr << "Cannot read from serial port '" << ttyDeviceName << "': error code '" << errno << "'" << std::endl;
+                std::cerr << "Cannot read from serial port '" << ttyDevicePath << "': error code '" << errno << "'" << std::endl;
             }
         }
         else
         {
-            std::cerr << "Cannot read from serial port '" << ttyDeviceName << "': invalid packet buffer or size!" << std::endl;
+            std::cerr << "Cannot read from serial port '" << ttyDevicePath << "': invalid packet buffer or size!" << std::endl;
         }
     }
     else
     {
-        std::cerr << "Cannot read from serial port '" << ttyDeviceName << "': invalid device!" << std::endl;
+        std::cerr << "Cannot read from serial port '" << ttyDevicePath << "': invalid device!" << std::endl;
     }
 
     return readStatus;
@@ -538,11 +539,11 @@ void SerialPortLinux::setLatency(int latency)
     // note: this doesn't really produce expected results yet..
     if (latency == 0)
     {
-        size_t lastbackslash = ttyDeviceName.find_last_of('/');
+        size_t lastbackslash = ttyDevicePath.find_last_of('/');
 
         if (lastbackslash != std::string::npos)
         {
-            std::string latency_path = "/sys/bus/usb-serial/devices/" + ttyDeviceName.substr(lastbackslash+1) + "/latency_timer";
+            std::string latency_path = "/sys/bus/usb-serial/devices/" + ttyDevicePath.substr(lastbackslash+1) + "/latency_timer";
             std::ifstream latency_file(latency_path);
 
             if (latency_file.good())
@@ -555,7 +556,7 @@ void SerialPortLinux::setLatency(int latency)
         }
         else
         {
-            std::cerr << "Unable to find latency info for the current device: '" << ttyDeviceName.substr(lastbackslash+1) << "'" << std::endl;
+            std::cerr << "Unable to find latency info for the current device: '" << ttyDevicePath.substr(lastbackslash+1) << "'" << std::endl;
         }
     }
 

@@ -33,8 +33,11 @@
 
 SerialPort::SerialPort(const int serialDevice, const int servoDevices):
     ttyDeviceName("null"),
+    ttyDevicePath("null"),
     ttyDeviceBaudRate(1000000),
     ttyDeviceLatencyTime(LATENCY_TIME_DEFAULT),
+    ttyDeviceLockPath("null"),
+    ttyDeviceLocked(false),
     serialDevice(serialDevice),
     servoDevices(servoDevices),
     packetStartTime(0.0),
@@ -216,10 +219,15 @@ void SerialPort::setLatency(int latency)
         std::cerr << "Invalid latency value: '" << latency << "'', not in ]0;128[ range." << std::endl;
     }
 }
-
+/*
 std::string SerialPort::getDeviceName()
 {
-    return ttyDeviceName;
+    return getDeviceName;
+}
+*/
+std::string SerialPort::getDevicePath()
+{
+    return ttyDevicePath;
 }
 
 int SerialPort::getDeviceBaudRate()

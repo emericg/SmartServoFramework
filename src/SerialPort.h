@@ -95,9 +95,12 @@ enum SerialErrorCodes_e
 class SerialPort
 {
 protected:
-    std::string ttyDeviceName;     //!< The path to the serial device (ex: "/dev/ttyUSB0").
+    std::string ttyDeviceName;     //!< The name of the serial device computed from ttyDevicePath (ex: "ttyUSB0" or "COM1").
+    std::string ttyDevicePath;     //!< The path to the serial device (ex: "/dev/ttyUSB0" or "\\.\COM1").
     int ttyDeviceBaudRate;         //!< Speed of the serial link in baud. Default is 1M/s.
     int ttyDeviceLatencyTime;      //!< The value of this timer (in millisecond) should be carefully choosed depending on your OS and the speed of your serial port implementation.
+
+    std::string ttyDeviceLockPath; //!< The path to a "lock file" to lock serial interface against concurrent use by multiple programs.
     bool ttyDeviceLocked;          //!< Set to true if a "lock file" has been set by this SerialPort instance.
 
     int serialDevice;              //!< Specify (if known) what TTL converter is in use. This information will be used to compute correct baudrate.
@@ -148,8 +151,8 @@ protected:
 public:
     /*!
      * \brief SerialPort constructor will only init some variables to default values.
-     * \param serialDevice: Specify (if known) what TTL converter is in use.
-     * \param servoDevices: Specify if we use this serial port with Dynamixel or HerkuleX devices.
+     * \param serialDevice: Specify (if known) what TTL converter is in use (using ::SerialDevices_e).
+     * \param servoDevices: Specify if we use this serial port with Dynamixel or HerkuleX devices (using ::ServoDevices_e).
      */
     SerialPort(const int serialDevice, const int servoDevices);
 
@@ -241,10 +244,16 @@ public:
     virtual int checkTimeOut() = 0;
 
     /*!
-     * \brief Get serial device name / path currently is use.
+     * \brief Get serial device name.
      * \return A string containing the device name.
      */
     std::string getDeviceName();
+
+    /*!
+     * \brief Get serial device path currently is use.
+     * \return A string containing the device path.
+     */
+    std::string getDevicePath();
 
     /*!
      * \brief Get serial device baudrate currently is use.

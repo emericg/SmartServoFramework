@@ -95,13 +95,13 @@ void HerkuleXController::updateInternalSettings()
     }
 }
 
-int HerkuleXController::connect(std::string &deviceName, const int baud, const int serialDevice)
+int HerkuleXController::connect(std::string &devicePath, const int baud, const int serialDevice)
 {
     this->serialDevice = serialDevice;
 
     updateInternalSettings();
 
-    int retcode = serialInitialize(deviceName, baud);
+    int retcode = serialInitialize(devicePath, baud);
 
     if (retcode == 1)
     {
@@ -155,11 +155,15 @@ void HerkuleXController::autodetect_internal(int start, int stop)
     if (stop < 1 || stop > maxId || stop < start)
         stop = maxId;
 
+#if defined(_WIN32) || defined(_WIN64)
+    // Bring RX packet timeout down to scan faster
+    serialSetLatency(12);
+#else
     // Bring RX packet timeout down to scan way faster
     serialSetLatency(8);
+#endif
 
     std::cout << "HKX ctrl_device_autodetect(port: '" << serialGetCurrentDevice() << "' | tid: '" << std::this_thread::get_id() << "')" << std::endl;
-
     std::cout << "> THREADED Scanning for HKX devices on '" << serialGetCurrentDevice() << "', Range is [" << start << "," << stop << "[" << std::endl;
 
     for (int id = start; id <= stop; id++)

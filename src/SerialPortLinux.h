@@ -58,7 +58,7 @@ class SerialPortLinux: public SerialPort
      * \brief Set baudrate for this interface.
      * \param baud: Can be a 'baudrate' (in bps) or a Dynamixel / HerkuleX 'baudnum'.
      *
-     * Must be called before openLink(), otherwise it will have no effect until the 
+     * Must be called before openLink(), otherwise it will have no effect until the
      * next connection.
      */
     void setBaudRate(const int baud);
@@ -85,12 +85,15 @@ class SerialPortLinux: public SerialPort
 public:
     /*!
      * \brief SerialPortLinux constructor will only init some variables to default values.
-     * \param deviceName: The path to the device node.
+     * \param devicePath: The path to the serial device (ex: /dev/ttyUSB0") (cannot be changed after the constructor).
      * \param baud: Can be a 'baudrate' (in bps) or a Dynamixel / HerkuleX 'baudnum'.
      * \param serialDevice: Specify (if known) what TTL converter is in use.
      * \param servoDevices: Specify if we use this serial port with Dynamixel or HerkuleX devices.
+     *
+     * \note: devicePath can be set to "auto", serial port autodetection will be
+     * triggered, and the first serial port available will be used.
      */
-    SerialPortLinux(std::string &deviceName, const int baud, const int serialDevice = SERIAL_UNKNOWN, const int servoDevices = SERVO_UNKNOWN);
+    SerialPortLinux(std::string &devicePath, const int baud, const int serialDevice = SERIAL_UNKNOWN, const int servoDevices = SERVO_UNKNOWN);
     ~SerialPortLinux();
 
     int openLink();

@@ -116,10 +116,10 @@ HerkuleXSimpleAPI::~HerkuleXSimpleAPI()
     disconnect();
 }
 
-int HerkuleXSimpleAPI::connect(std::string &deviceName, const int baud, const int serialDevice)
+int HerkuleXSimpleAPI::connect(std::string &devicePath, const int baud, const int serialDevice)
 {
     this->serialDevice = serialDevice;
-    return serialInitialize(deviceName, baud);
+    return serialInitialize(devicePath, baud);
 }
 
 void HerkuleXSimpleAPI::disconnect()

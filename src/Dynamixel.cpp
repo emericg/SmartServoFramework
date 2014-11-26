@@ -152,7 +152,7 @@ Dynamixel::~Dynamixel()
     serialTerminate();
 }
 
-int Dynamixel::serialInitialize(std::string &deviceName, const int baud)
+int Dynamixel::serialInitialize(std::string &devicePath, const int baud)
 {
     int status = 0;
 
@@ -163,11 +163,11 @@ int Dynamixel::serialInitialize(std::string &deviceName, const int baud)
 
     // Instanciate a different serial subclass, depending on the current OS
 #if defined(__linux__) || defined(__gnu_linux)
-    serial = new SerialPortLinux(deviceName, baud, serialDevice, servoSerie);
+    serial = new SerialPortLinux(devicePath, baud, serialDevice, servoSerie);
 #elif defined(_WIN32) || defined(_WIN64)
-    serial = new SerialPortWindows(deviceName, baud, serialDevice, servoSerie);
+    serial = new SerialPortWindows(devicePath, baud, serialDevice, servoSerie);
 #elif defined(__APPLE__) || defined(__MACH__)
-    serial = new SerialPortMacOS(deviceName, baud, serialDevice, servoSerie);
+    serial = new SerialPortMacOS(devicePath, baud, serialDevice, servoSerie);
 #else
     #error "No compatible operating system detected!"
 #endif
@@ -176,11 +176,11 @@ int Dynamixel::serialInitialize(std::string &deviceName, const int baud)
     if (serial != NULL && serial->openLink() == 1)
     {
         status = 1;
-        std::cout << "> Serial interface successfully opened on " << deviceName << " @ " << baud << std::endl;
+        std::cout << "> Serial interface successfully opened on " << devicePath << " @ " << baud << std::endl;
     }
     else
     {
-        std::cerr << "> Failed to open serial interface on " << deviceName << " @ " << baud << ". Exiting..." << std::endl;
+        std::cerr << "> Failed to open serial interface on " << devicePath << " @ " << baud << ". Exiting..." << std::endl;
     }
 
     return status;
@@ -207,7 +207,7 @@ std::string Dynamixel::serialGetCurrentDevice()
 
     if (serial != NULL)
     {
-        serialName = serial->getDeviceName();
+        serialName = serial->getDevicePath();
     }
     else
     {

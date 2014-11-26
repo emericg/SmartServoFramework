@@ -35,9 +35,11 @@
 
 // C++ standard libraries
 #include <iostream>
+#include <fstream>
+#include <cstdio>
 #include <cstring>
 #include <string>
-#include <fstream>
+#include <vector>
 
 int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
 {
@@ -64,6 +66,8 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
                 availableSerialPorts.push_back(port);
                 retcode++;
             }
+
+            close(fd);
         }
     }
 
@@ -82,6 +86,8 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
                 availableSerialPorts.push_back(port);
                 retcode++;
             }
+
+            close(fd);
         }
     }
 /*
@@ -100,6 +106,8 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
                 availableSerialPorts.push_back(port);
                 retcode++;
             }
+
+            close(fd);
         }
     }
 
@@ -118,31 +126,52 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
                 availableSerialPorts.push_back(port);
                 retcode++;
             }
+
+            close(fd);
         }
     }
 */
     return retcode;
 }
 
-SerialPortMacOS::SerialPortMacOS(std::string &deviceName, const int baud, const int serialDevice, const int servoDevices):
+SerialPortMacOS::SerialPortMacOS(std::string &devicePath, const int baud, const int serialDevice, const int servoDevices):
     SerialPort(serialDevice, servoDevices),
     ttyDeviceFileDescriptor(-1),
     ttyDeviceBaudRateFlag(B1000000),
     ttyCustomSpeed(false),
     ttyLowLatency(false)
 {
-    if (deviceName.empty() == 1 || deviceName == "auto")
+    if (devicePath.empty() == 1 || devicePath == "auto")
     {
-        ttyDeviceName = autoselectSerialPort();
+        ttyDevicePath = autoselectSerialPort();
     }
     else
     {
-        ttyDeviceName = deviceName;
+        ttyDevicePath = devicePath;
     }
 
-    if (ttyDeviceName != "null")
+    if (ttyDevicePath != "null")
     {
-        std::cout << "- Device node has been set to: '" << ttyDeviceName << "'" << std::endl;
+        size_t found = ttyDevicePath.rfind("/");
+        if (found != std::string::npos && found != ttyDevicePath.size())
+        {
+            ttyDeviceName = ttyDevicePath.substr(found + 1);
+
+            ttyDeviceLockPath = "/tmp/";
+            ttyDeviceLockPath += ttyDeviceName;
+            ttyDeviceLockPath += ".lock";
+        }
+
+        setBaudRate(baud);
+
+        std::cout << "- Device name has been set to: '" << ttyDeviceName << "'" << std::endl;
+        std::cout << "- Device node has been set to: '" << ttyDevicePath << "'" << std::endl;
+        std::cout << "- Device baud rate has been set to: '" << ttyDeviceBaudRate << "'" << std::endl;
+    }
+
+    if (ttyDevicePath != "null")
+    {
+        std::cout << "- Device node has been set to: '" << ttyDevicePath << "'" << std::endl;
 
         setBaudRate(baud);
         std::cout << "- Device baud rate has been set to: '" << ttyDeviceBaudRate << "'" << std::endl;

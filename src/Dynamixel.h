@@ -82,11 +82,11 @@ protected:
 
     /*!
      * \brief Open a serial link with the given parameters.
-     * \param deviceName: The name of the device OR the path to the device node.
+     * \param devicePath: The path to the serial device node.
      * \param baud: The baudrate or Dynamixel 'baudnum'.
      * \return 1 if success, 0 otherwise.
      */
-    int serialInitialize(std::string &deviceName, const int baud);
+    int serialInitialize(std::string &devicePath, const int baud);
 
     /*!
      * \brief Make sure the serial link is properly closed.

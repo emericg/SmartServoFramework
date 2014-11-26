@@ -28,7 +28,9 @@
 #include "SerialPort.h"
 
 // Windows specific
-#define NOMINMAX // Not sure if really needed when building the framework without Qt...
+#define NOMINMAX // Not sure if really needed when building the framework without Qt, but still...
+#undef UNICODE // Avoid runtime errors when building with MSVC...
+
 #include <windows.h>
 
 /*!
@@ -71,12 +73,15 @@ class SerialPortWindows: public SerialPort
 public:
     /*!
      * \brief SerialPortWindows constructor will only init some variables to default values.
-     * \param deviceName: The serial port (ex: "\\\\.\\COM1"), will be used to build a device path (the string needs to be escaped).
+     * \param devicePath: The path to the serial device (ex: "\\\\.\\COM1") (the string needs to be escaped) (cannot be changed after the constructor).
      * \param baud: Can be a 'baudrate' (in bps) or a Dynamixel / HerkuleX 'baudnum'.
      * \param serialDevice: Specify (if known) what TTL converter is in use.
      * \param servoDevices: Specify if we use this serial port with Dynamixel or HerkuleX devices.
+     *
+     * \note: devicePath can be set to "auto", serial port autodetection will be
+     * triggered, and the first serial port available will be used.
      */
-    SerialPortWindows(std::string &deviceName, const int baud, const int serialDevice = SERIAL_UNKNOWN, const int servoDevices = SERVO_UNKNOWN);
+    SerialPortWindows(std::string &devicePath, const int baud, const int serialDevice = SERIAL_UNKNOWN, const int servoDevices = SERVO_UNKNOWN);
     ~SerialPortWindows();
 
     int openLink();

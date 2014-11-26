@@ -41,13 +41,13 @@
 int serialPortsScanner(std::vector <std::string> &availableSerialPorts);
 
 /*!
- * \brief The SerialPortMacOS class.
+ * \brief The SerialPortMacOS class, based on the Linux version.
  * \todo The MacOS port is widely untested.
  * \todo Reimplement the auto-detection methods from the SerialPortLinux class.
  */
 class SerialPortMacOS: public SerialPortLinux
 {
-    SerialPortMacOS(std::string &deviceName, const int baud, const int serialDevice = SERIAL_UNKNOWN, const int servoDevices = SERVO_UNKNOWN);
+    SerialPortMacOS(std::string &devicePath, const int baud, const int serialDevice = SERIAL_UNKNOWN, const int servoDevices = SERVO_UNKNOWN);
     ~SerialPortMacOS();
 
     // TODO

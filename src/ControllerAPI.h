@@ -156,12 +156,12 @@ public:
 
     /*!
      * \brief Connect the controller to a serial port, if the connection is successfull start a synchronization thread.
-     * \param deviceName: The serial port device node.
+     * \param devicePath: The serial port device path.
      * \param baud: The serial port speed, can be a baud rate or a 'baudnum'.
      * \param serialDevice: If known, the serial adapter model used by this link.
      * \return 1 if the connection is successfull, 0 otherwise.
      */
-    virtual int connect(std::string &deviceName, const int baud, const int serialDevice = 0) = 0;
+    virtual int connect(std::string &devicePath, const int baud, const int serialDevice = 0) = 0;
 
     /*!
      * \brief Stop the controller's thread, clean umessage queue, and close the serial connection.
