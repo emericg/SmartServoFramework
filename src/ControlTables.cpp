@@ -227,7 +227,7 @@ int getRegisterInfos(const int ct[][8], const int reg_name, RegisterInfos &infos
                 {
                     if (ct[i][1] < 5)
                     {
-                        infos.reg_value_max = pow(2, infos.reg_size*8);
+                        infos.reg_value_max = static_cast<int>(pow(2, infos.reg_size*8));
                     }
                     else
                     {
@@ -392,7 +392,7 @@ int getRegisterBounds(const int ct[][8], const int reg_name, int &min, int &max)
                 {
                     if (ct[i][1] < 5)
                     {
-                        max = pow(2, (ct[i][1])*8);
+                        max = static_cast<int>(pow(2, (ct[i][1])*8));
                     }
                     else
                     {

@@ -626,7 +626,7 @@ int HerkuleXSimpleAPI::readCurrentPosition(const int id)
     {
         int addr = getRegisterAddr(ct, REG_CURRENT_TEMPERATURE, REGISTER_RAM);
 
-        value = static_cast<double>(hkx_read_byte(id, addr, REGISTER_RAM));
+        value = hkx_read_byte(id, addr, REGISTER_RAM);
         if (hkx_print_error() != 0)
         {
             value = -1;

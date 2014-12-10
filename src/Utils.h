@@ -24,10 +24,7 @@
 #define UTILS_H
 /* ************************************************************************** */
 
-#include <string>
-
-/* ************************************************************************** */
-// Doxygen documentation groups
+// Doxygen documentation groups:
 
 /*!
  * \defgroup SimpleAPIs Simple APIs
@@ -411,6 +408,8 @@ inline unsigned char get_highbyte(const int word)
 }
 
 /* ************************************************************************** */
+
+#include <string>
 
 /*!
  * \brief Get register description.
