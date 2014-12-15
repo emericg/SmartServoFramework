@@ -3,11 +3,11 @@ SmartServoFramework 0.9
 
 ## Introduction
 
-This is a C++ multiplatform framework used to drive "smart servos" device like Dynamixel or HerkuleX actuators.
+This is a C++ multiplatform framework used to drive "smart servos" devices like Dynamixel or HerkuleX actuators.
 Linux, Mac OS and Windows operating systems are supported. All you need to begin moving stuff around is at least one servo, a serial port adapter and a C++/11 compiler!
 
 > Dynamixel devices from [Robotis](http://www.robotis.com/) and HerkuleX devices from [Dongbu Robot](http://www.dongburobot.com/) are high-performance networked actuators for robots available in wide range of sizes and strengths.  
-> They provide adjustable torque, speed, and response, various feedback like position, load, voltage and temperature...
+> They have adjustable torque, speed, angle limits, and provide various feedback like position, load, voltage and temperature...
 
 ## Prerequisite
 
@@ -27,7 +27,7 @@ This framework can use any combination of RS-232 ports, USB to TTL adapters, RS-
 First make sure that you can access your serial port:
 If you are running Windows you will need to install the [FTDI driver for the USB2Dynamixel device](http://www.robotis.com/xe/download_en/646927) or the official [FTDI driver](http://www.ftdichip.com/FTDrivers.htm).
 You may also need other drivers depending on your adapter (like the [CP210x](http://www.silabs.com/products/mcu/pages/usbtouartbridgevcpdrivers.aspx)).
-If you are running Linux, your user account will need to be in the _'dialout'_ and/or _'uucp'_ groups to access serial port:
+If you are running Linux, your user account will need to be in the `dialout` and/or `uucp` groups to access serial port:
 > $ sudo useradd -G dialout,uucp $USER
 
 Latency over the serial port will limit the number of instructions you can send each second even more than bandwidth limitations.
@@ -38,11 +38,11 @@ To minimize traffic on your serial port (if using FTDI chips):
 
 #### Serial link (Dynamixel servos)
 
-* USB2Dynamixel: Official device that can manage regular RS232, RS485 and TTL communications.  
-* USB2AX: Unofficial device designed to manage TTL communication only.  
+* [USB2Dynamixel](http://support.robotis.com/en/product/auxdevice/interface/usb2dxl_manual.htm): Official device that can manage regular RS232, RS485 and TTL communications.  
+* [USB2AX](http://www.xevelabs.com/doku.php?id=product:usb2ax:usb2ax): Unofficial device designed to manage TTL communication only.  
 * "Home made" TTL half-duplex device: (LINK?)  
 
-> Note: Regular "full-duplex TTL" converters will NOT do the trick for "half-duplex TTL" Dynamixel servos (AX series, MX "T" series, XL-320).
+> Note: Regular "full-duplex TTL" converters will NOT do the trick for "half-duplex TTL" Dynamixel servos (AX series, MX "T" series, XL-320, ...).
 
 #### Serial link (HerkuleX servos)
 
@@ -76,6 +76,13 @@ Various examples programs are available:
 ### GUI software
 
 SmartServoGui is a fully featured Qt GUI application that helps you discover devices on available serial links, get an overview of all of their registers, and easily changes their settings!
+
+#### Building SmartServoGui
+
+> $ cd SmartServoFramework/gui/  
+> $ qmake-qt${4-5}  
+> $ make  
+> $ ./bin/SmartServoGui  
 
 ## Licensing
 
