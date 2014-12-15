@@ -194,6 +194,15 @@ void Servo::getActions(int &action, int &reboot, int &refresh, int &reset)
     refreshProgrammed = 0;
 }
 
+int Servo::changeInternalId(int newId)
+{
+    if (newId > 0 && newId < 254)
+    {
+        std::lock_guard <std::mutex> lock(access);
+        servoId = newId;
+    }
+}
+
 /* ************************************************************************** */
 
 void Servo::status()
@@ -206,12 +215,45 @@ void Servo::status()
     std::cout << "> firmware   : " << registerTableValues[gid(REG_FIRMWARE_VERSION)] << std::endl;
 }
 
+int Servo::getDeviceBrand()
+{
+    int brand = SERVO_UNKNOWN;
+
+    if (servoModel)
+    {
+        if (servoModel > SERVO_HERKULEX)
+        {
+            brand = SERVO_HERKULEX;
+        }
+        else if (servoModel > SERVO_DYNAMIXEL)
+        {
+            brand = SERVO_DYNAMIXEL;
+        }
+    }
+
+    return brand;
+}
+
+int Servo::getDeviceSerie()
+{
+    return servoSerie;
+}
+
+int Servo::getDeviceModel()
+{
+    return servoModel;
+}
+
 /* ************************************************************************** */
 
 int Servo::getId()
 {
+    // This function return the ID currently in use for the servo, and so not
+    // the one in registerTableValues[gid(REG_ID)], which could be set to a new
+    // value not yet commited to the device.
+
     std::lock_guard <std::mutex> lock(access);
-    return registerTableValues[gid(REG_ID)];
+    return servoId;
 }
 
 int Servo::getModelNumber()
@@ -314,7 +356,7 @@ int Servo::getCurrentLoad()
 
 void Servo::setId(int id)
 {
-    //std::cout << "[#" << servoId << "] setId(" << getId() << ", " << id << ")" << std::endl;
+    //std::cout << "[#" << servoId << "] setId(from " << servoId << " to " << id << ")" << std::endl;
 
     if (id > -1 && id < 254)
     {
@@ -328,7 +370,7 @@ void Servo::setId(int id)
 
 void Servo::setCWLimit(int limit)
 {
-    //std::cout << "[#" << servoId << "] setCWLimit(" << getId() << ", " << limit << ")" << std::endl;
+    //std::cout << "[#" << servoId << "] setCWLimit(" << limit << ")" << std::endl;
 
     if (limit > -1 && limit < steps)
     {
@@ -341,7 +383,7 @@ void Servo::setCWLimit(int limit)
 
 void Servo::setCCWLimit(int limit)
 {
-    //std::cout << "[#" << servoId << "] setCCWLimit(" << getId() << ", " << limit << ")" << std::endl;
+    //std::cout << "[#" << servoId << "] setCCWLimit(" << limit << ")" << std::endl;
 
     if (limit > -1 && limit < steps)
     {

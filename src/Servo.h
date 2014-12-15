@@ -101,10 +101,16 @@ public:
     void refresh();
     void getActions(int &action, int &reboot, int &refresh, int &reset);
 
+    int changeInternalId(int newId);
+
     // Helpers
     virtual void status();
     virtual std::string getModelString() = 0;
     virtual void getModelInfos(int &servo_serie, int &servo_model) = 0;
+
+    int getDeviceBrand();
+    int getDeviceSerie();
+    int getDeviceModel();
 
     // Getters
     virtual int getId();

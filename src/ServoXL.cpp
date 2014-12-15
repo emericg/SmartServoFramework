@@ -108,7 +108,7 @@ int ServoXL::getHardwareErrorStatus()
 
 void ServoXL::setId(int id)
 {
-    //std::cout << "setId(" << getId() << ", " << id << ")" << std::endl;
+    //std::cout << "[#" << servoId << "] setId(from " << servoId << " to " << id << ")" << std::endl;
 
     if (id > -1 && id < 253)
     {

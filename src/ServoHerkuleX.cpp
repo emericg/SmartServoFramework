@@ -156,10 +156,17 @@ int ServoHerkuleX::getId(const int reg_type)
 {
     std::lock_guard <std::mutex> lock(access);
 
-    if (reg_type == REGISTER_RAM)
-        return registerTableValuesRAM[gid(REG_ID)];
-    else
-        return registerTableValues[gid(REG_ID)];
+    // If asked for (reg_type == REGISTER_RAM), this function return the ID currently
+    // in use for the servo, and so not the one in registerTableValuesRAM[gid(REG_ID)],
+    // which could be set to a new value not yet commited to the device.
+    int id = servoId;
+
+    if (reg_type == REGISTER_ROM)
+    {
+        id = registerTableValues[gid(REG_ID)];
+    }
+
+    return id;
 }
 
 int ServoHerkuleX::getBaudRate()
@@ -400,7 +407,7 @@ int ServoHerkuleX::getMoving()
 
 void ServoHerkuleX::setId(int id)
 {
-    //std::cout << "[#" << servoId << "] setId(" << getId() << ", " << id << ")" << std::endl;
+    //std::cout << "[#" << servoId << "] setId(from " << servoId << " to " << id << ")" << std::endl;
 
     // TODO use maxId
     if (id > -1 && id < 254)
@@ -415,7 +422,7 @@ void ServoHerkuleX::setId(int id)
 
 void ServoHerkuleX::setCWLimit(int limit, const int reg_type)
 {
-    //std::cout << "[#" << servoId << "] setCWLimit(" << getId() << ", " << limit << ")" << std::endl;
+    //std::cout << "[#" << servoId << "] setCWLimit(" << limit << ")" << std::endl;
 
     if (limit > -1 && limit < steps)
     {
@@ -428,7 +435,7 @@ void ServoHerkuleX::setCWLimit(int limit, const int reg_type)
 
 void ServoHerkuleX::setCCWLimit(int limit, const int reg_type)
 {
-    //std::cout << "[#" << servoId << "] setCCWLimit(" << getId() << ", " << limit << ")" << std::endl;
+    //std::cout << "[#" << servoId << "] setCCWLimit(" << limit << ")" << std::endl;
 
     if (limit > -1 && limit < steps)
     {
@@ -441,7 +448,7 @@ void ServoHerkuleX::setCCWLimit(int limit, const int reg_type)
 
 void ServoHerkuleX::setGoalPosition(int pos)
 {
-    //std::cout << "[#" << servoId << "] HKX setGoalPosition(" << getId() << ", " << pos << ")" << std::endl;
+    //std::cout << "[#" << servoId << "] HKX setGoalPosition(" << pos << ")" << std::endl;
 
     if (pos > -1 && pos < steps)
     {
@@ -459,7 +466,7 @@ void ServoHerkuleX::setGoalPosition(int pos)
 
 void ServoHerkuleX::setLed(int led)
 {
-    //std::cout << "[#" << servoId << "] setLed(" << getId() << ", " << led << ")" << std::endl;
+    //std::cout << "[#" << servoId << "] setLed(" << led << ")" << std::endl;
     int color = 0;
 
     // Normalize value
@@ -485,7 +492,7 @@ void ServoHerkuleX::setLed(int led)
 
 void ServoHerkuleX::setTorqueEnabled(int torque)
 {
-    //std::cout << "[#" << servoId << "] setTorqueEnabled(" << getId() << ", " << torque << ")" << std::endl;
+    //std::cout << "[#" << servoId << "] setTorqueEnabled(" << torque << ")" << std::endl;
 
     // Normalize value, 1 means 'torque on' for Dynamixel devices
     if (torque == 1)
@@ -510,7 +517,7 @@ void ServoHerkuleX::setTorqueEnabled(int torque)
 void ServoHerkuleX::moveGoalPosition(int move)
 {
 /*
-    std::cout << "[#" << servoId << "] moveGoalPosition(" << getId() << ", " << torque << ")" << std::endl;
+    std::cout << "[#" << servoId << "] moveGoalPosition(" << torque << ")" << std::endl;
 
     std::lock_guard <std::mutex> lock(access);
     int curr = registerTableValues[gid(SERVO_CURRENT_POSITION)];
@@ -541,7 +548,7 @@ void ServoHerkuleX::moveGoalPosition(int move)
 /*
 void ServoHerkuleX::setMovingSpeed(int speed)
 {
-    //std::cout << "setMovingSpeed(" << getId() << ", " << speed << ")" << std::endl;
+    //std::cout << "setMovingSpeed(" << speed << ")" << std::endl;
     std::lock_guard <std::mutex> lock(access);
 
     if (registerTableValues[gid(SERVO_MIN_POSITION)] == 0 &&
@@ -565,7 +572,7 @@ void ServoHerkuleX::setMovingSpeed(int speed)
 
 void ServoHerkuleX::setMaxTorque(int torque)
 {
-    //std::cout << "[#" << servoId << "] setMaxTorque(" << getId() << ", " << torque << ")" << std::endl;
+    //std::cout << "[#" << servoId << "] setMaxTorque(" << torque << ")" << std::endl;
     std::lock_guard <std::mutex> lock(access);
 
     if (torque < 1024)

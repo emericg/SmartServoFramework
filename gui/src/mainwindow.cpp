@@ -1162,8 +1162,8 @@ void MainWindow::updateRegisterTableHerkuleX(Servo *servo_hkx, const int servoSe
 //RESERVED
 
     // EEPROM and RAM
-    ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_ID),1)->setText(QString::number(servo->getId(REGISTER_ROM)));
-    ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_ID),2)->setText(QString::number(servo->getId(REGISTER_RAM)));
+    ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_ID),1)->setText(QString::number(servo->getValue(REG_ID, REGISTER_ROM)));
+    ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_ID),2)->setText(QString::number(servo->getValue(REG_ID, REGISTER_RAM)));
     ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_STATUS_RETURN_LEVEL),1)->setText(QString::number(servo->getStatusReturnLevel(REGISTER_ROM)));
     ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_STATUS_RETURN_LEVEL),2)->setText(QString::number(servo->getStatusReturnLevel(REGISTER_RAM)));
     ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_ALARM_LED),1)->setText(QString::number(servo->getAlarmLed(REGISTER_ROM)));
@@ -1323,7 +1323,7 @@ void MainWindow::updateRegisterTableDynamixel(Servo *servo_dxl, const int servoS
     // EEPROM
     ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_MODEL_NUMBER),1)->setText(QString::fromStdString(servo->getModelString()));
     ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_FIRMWARE_VERSION),1)->setText(QString::number(servo->getFirmwareVersion()));
-    ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_ID),1)->setText(QString::number(servo->getId()));
+    ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_ID),1)->setText(QString::number(servo->getValue(REG_ID)));
     ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_BAUD_RATE),1)->setText(QString::number(servo->getBaudRate()));
     ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_RETURN_DELAY_TIME),1)->setText(QString::number(servo->getReturnDelay()));
 
@@ -2672,6 +2672,32 @@ void MainWindow::modifier(int row, int column)
         }
 
         //std::cout << "MODIFIER (" << row << " x " << column << ") name: " << getRegisterNameTxt(reg_name) << "  value: " << reg_value << "  (ROM/RAM: " << reg_type << ")" << std::endl;
+
         s->setValue(reg_name, reg_value, reg_type);
+
+        // Changing the ID of a device mean special treatment...
+        if (reg_name == REG_ID)
+        {
+            // Proceed in every case except if we are trying to change a ROM ID for an HerkuleX device
+            if (s->getDeviceBrand() == SERVO_HERKULEX && reg_type == REGISTER_ROM)
+            {
+                return;
+            }
+
+            // Get selected item, and change its text
+            // It's important because we rely on this text to parse ID from the deviceTreeWidget
+            if (ui->deviceTreeWidget->selectedItems().size() > 0)
+            {
+                QTreeWidgetItem *item = ui->deviceTreeWidget->selectedItems().at(0);
+
+                // Check if the item exist, plus if this a device and not a port
+                if (item != NULL && item->parent() != NULL)
+                {
+                    // Finaly change the item text
+                    QString device_txt = "[#" + QString::number(reg_value) + "]  " + QString::fromStdString(s->getModelString());
+                    item->setText(0, device_txt);
+                }
+            }
+        }
     }
 }

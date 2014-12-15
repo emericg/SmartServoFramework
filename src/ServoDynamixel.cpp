@@ -272,7 +272,7 @@ int ServoDynamixel::getPunch()
 
 void ServoDynamixel::setId(int id)
 {
-    //std::cout << "[#" << servoId << "] setId(" << getId() << ", " << id << ")" << std::endl;
+    //std::cout << "[#" << servoId << "] setId(from " << servoId << " to " << id << ")" << std::endl;
 
     if (id > -1 && id < 254)
     {
@@ -286,7 +286,7 @@ void ServoDynamixel::setId(int id)
 
 void ServoDynamixel::setCWLimit(int limit)
 {
-    //std::cout << "[#" << servoId << "] setCWLimit(" << getId() << ", " << limit << ")" << std::endl;
+    //std::cout << "[#" << servoId << "] setCWLimit(" << limit << ")" << std::endl;
 
     if (limit > -1 && limit < steps)
     {
@@ -299,7 +299,7 @@ void ServoDynamixel::setCWLimit(int limit)
 
 void ServoDynamixel::setCCWLimit(int limit)
 {
-    //std::cout << "[#" << servoId << "] setCCWLimit(" << getId() << ", " << limit << ")" << std::endl;
+    //std::cout << "[#" << servoId << "] setCCWLimit(" << limit << ")" << std::endl;
 
     if (limit > -1 && limit < steps)
     {
@@ -312,7 +312,7 @@ void ServoDynamixel::setCCWLimit(int limit)
 
 void ServoDynamixel::setGoalPosition(int pos)
 {
-    //std::cout << "[#" << servoId << "] DXL setGoalPosition(" << getId() << ", " << pos << ")" << std::endl;
+    //std::cout << "[#" << servoId << "] DXL setGoalPosition(" << pos << ")" << std::endl;
 
     if (pos > -1 && pos < steps)
     {
@@ -329,7 +329,7 @@ void ServoDynamixel::setGoalPosition(int pos)
 
 void ServoDynamixel::moveGoalPosition(int move)
 {
-    //std::cout << "moveGoalPosition(" << getId() << ", " << move << ")" << std::endl;
+    //std::cout << "moveGoalPosition(" << move << ")" << std::endl;
     std::lock_guard <std::mutex> lock(access);
 
     int curr = registerTableValues[gid(REG_CURRENT_POSITION)];
@@ -359,7 +359,7 @@ void ServoDynamixel::moveGoalPosition(int move)
 
 void ServoDynamixel::setMovingSpeed(int speed)
 {
-    //std::cout << "setMovingSpeed(" << getId() << ", " << speed << ")" << std::endl;
+    //std::cout << "setMovingSpeed(" << speed << ")" << std::endl;
     std::lock_guard <std::mutex> lock(access);
 
     if (registerTableValues[gid(REG_MIN_POSITION)] == 0 &&
@@ -383,7 +383,7 @@ void ServoDynamixel::setMovingSpeed(int speed)
 
 void ServoDynamixel::setMaxTorque(int torque)
 {
-    //std::cout << "[#" << servoId << "] setMaxTorque(" << getId() << ", " << torque << ")" << std::endl;
+    //std::cout << "[#" << servoId << "] setMaxTorque(" << torque << ")" << std::endl;
 
     if (torque < 1024)
     {
@@ -396,7 +396,7 @@ void ServoDynamixel::setMaxTorque(int torque)
 
 void ServoDynamixel::setLed(int led)
 {
-    //std::cout << "[#" << servoId << "] setLed(" << getId() << ", " << led << ")" << std::endl;
+    //std::cout << "[#" << servoId << "] setLed(" << led << ")" << std::endl;
     std::lock_guard <std::mutex> lock(access);
 
     // Normalize value
@@ -415,7 +415,7 @@ void ServoDynamixel::setLed(int led)
 
 void ServoDynamixel::setTorqueEnabled(int torque)
 {
-    //std::cout << "[#" << servoId << "] setTorqueEnabled(" << getId() << ", " << torque << ")" << std::endl;
+    //std::cout << "[#" << servoId << "] setTorqueEnabled(" << torque << ")" << std::endl;
     std::lock_guard <std::mutex> lock(access);
 
     // Normalize value

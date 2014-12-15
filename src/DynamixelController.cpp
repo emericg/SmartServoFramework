@@ -505,13 +505,13 @@ void DynamixelController::run()
                     {
                         int regname = getRegisterName(s->getControlTable(), ctid);
 
-                        if ((s->getSpeedMode() == SPEED_AUTO && (regname != REG_GOAL_POSITION && regname != REG_GOAL_SPEED)) == false)
+                        if (s->getValueCommit(regname) == 1)
                         {
-                            if (s->getValueCommit(regname) == 1)
-                            {
-                                int regaddr = getRegisterAddr(s->getControlTable(), regname);
-                                int regsize = getRegisterSize(s->getControlTable(), regname);
+                            int regaddr = getRegisterAddr(s->getControlTable(), regname);
+                            int regsize = getRegisterSize(s->getControlTable(), regname);
 
+                            if ((s->getSpeedMode() == SPEED_AUTO && (regname != REG_GOAL_POSITION && regname != REG_GOAL_SPEED)) == false)
+                            {
                                 //std::cout << "Writing value '" << s->getValue(regname) << "' for reg [" << ctid << "] name: '" << getRegisterNameTxt(regname)
                                 //          << "' addr: '" << regaddr << "' size: '" << regsize << "'" << std::endl;
 
@@ -528,6 +528,12 @@ void DynamixelController::run()
                                 s->setError(dxl_get_rxpacket_error());
                                 updateErrorCount(dxl_get_com_error());
                                 dxl_print_error();
+
+                                if (regname == REG_ID)
+                                {
+                                    s->changeInternalId(s->getValue(regname));
+                                    s->reboot();
+                                }
                             }
                         }
                     }
@@ -596,7 +602,7 @@ void DynamixelController::run()
                                     double step = static_cast<double>(s->getRunningDegrees()) / s->getSteps();
                                     double angle = static_cast<double>(gpos - cpos) * step;
                                     double angle_abs = abs(angle);
-                                    int speed = (movingSpeed + (k * angle_abs));
+                                    int speed = (movingSpeed + static_cast<int>(k * angle_abs));
 
                                     if (angle_abs > mot)
                                     {
@@ -649,7 +655,7 @@ void DynamixelController::run()
                                     else if (angle < -180) angle += 360;
                                     double angle_abs = abs(angle);
 
-                                    int speed = (movingSpeed + (k * angle_abs));
+                                    int speed = (movingSpeed + static_cast<int>(k * angle_abs));
 
                                     if (angle_abs > mot)
                                     {

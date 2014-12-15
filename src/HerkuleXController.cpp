@@ -505,6 +505,12 @@ void HerkuleXController::run()
                             s->commitValue(regname, 0, REGISTER_ROM);
                             updateErrorCount(hkx_get_com_error());
                             hkx_print_error();
+
+                            if (regname == REG_ID)
+                            {
+                                s->changeInternalId(s->getValue(regname));
+                                s->reboot();
+                            }
                         }
 
                         if (s->getValueCommit(regname, REGISTER_RAM) == 1)
@@ -528,6 +534,13 @@ void HerkuleXController::run()
                             s->commitValue(regname, 0, REGISTER_RAM);
                             updateErrorCount(hkx_get_com_error());
                             hkx_print_error();
+
+                            if (regname == REG_ID)
+                            {
+                                // FIXME
+                                //s->changeInternalId(s->getValue(regname));
+                                //s->reboot();
+                            }
                         }
                     }
 
