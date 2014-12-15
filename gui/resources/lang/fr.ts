@@ -19,11 +19,11 @@
     </message>
     <message>
         <source>Min ID</source>
-        <translation type="unfinished">ID min</translation>
+        <translation>ID min</translation>
     </message>
     <message>
         <source>Max ID</source>
-        <translation type="unfinished">ID max</translation>
+        <translation>ID max</translation>
     </message>
     <message>
         <source>Protocols:</source>
@@ -545,7 +545,7 @@ background: rgba(85, 200, 0, 128);</source>
     </message>
     <message>
         <source>EEPROM registers</source>
-        <translation type="unfinished">Registres EPROM</translation>
+        <translation type="unfinished">Registres EEPROM</translation>
     </message>
     <message>
         <source>Registers</source>
@@ -669,6 +669,77 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Cantarell&apos;; font-size:12pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;; font-size:12pt;&quot;&gt;This software is released under the &lt;/span&gt;&lt;a href=&quot;http://www.gnu.org/licenses/lgpl.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;; font-size:12pt; text-decoration: underline; color:#0000ff;&quot;&gt;GNU Lesser General Public License version 3&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;; font-size:12pt;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Settings</name>
+    <message>
+        <source>Settings</source>
+        <translation>Paramètres</translation>
+    </message>
+    <message>
+        <source>UI</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pause controllers when SmartServoGUI window is out of focus.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Device Controllers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Synchronization frequency between controllers and devices.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use &quot;file locks&quot; to avoid concurent use of the serial ports.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Serial port(s)</source>
+        <translation type="unfinished">Port(s) série</translation>
+    </message>
+    <message>
+        <source>You can use these fields to pre-configure serial ports. Just tick the &quot;enable&quot; box to use them.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>/dev/ttyUSB0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dynamixel v1</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Dynamixel v2</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>HerkuleX</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>/dev/ttyUSB1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>/dev/ttyACM0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>/dev/ttyACM1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exit</source>
+        <translation>Quitter</translation>
+    </message>
+    <message>
+        <source>Save and exit</source>
+        <translation>Sauvegarder et quitter</translation>
     </message>
 </context>
 </TS>

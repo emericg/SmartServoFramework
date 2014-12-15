@@ -671,4 +671,75 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
 </context>
+<context>
+    <name>Settings</name>
+    <message>
+        <source>Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>UI</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pause controllers when SmartServoGUI window is out of focus.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Device Controllers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Synchronization frequency between controllers and devices.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use &quot;file locks&quot; to avoid concurent use of the serial ports.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Serial port(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You can use these fields to pre-configure serial ports. Just tick the &quot;enable&quot; box to use them.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>/dev/ttyUSB0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dynamixel v1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dynamixel v2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HerkuleX</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>/dev/ttyUSB1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>/dev/ttyACM0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>/dev/ttyACM1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save and exit</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
 </TS>

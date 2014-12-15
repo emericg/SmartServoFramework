@@ -45,13 +45,11 @@ win32 {
 }
 
 # SmartServoFramework sources
-SOURCES    += ../src/*.cpp
+#SOURCES    += ../src/*.cpp
 
 # GUI application sources
 SOURCES    += src/main.cpp src/mainwindow.cpp src/advancescanner.cpp src/qabout.cpp src/settings.cpp
 HEADERS    += src/mainwindow.h src/advancescanner.h src/qabout.h src/settings.h
-
-TRANSLATIONS = resources/lang/es.ts resources/lang/fr.ts resources/lang/it.ts
 
 RESOURCES  += resources/resources.qrc
 
@@ -59,3 +57,7 @@ FORMS      += ui/mainwindow.ui \
               ui/advancescanner.ui \
               ui/qabout.ui \
               ui/settings.ui
+
+# Use "lupdate SmartServoGui.pro" to update translation files
+# Then "lrelease SmartServoGui.pro" to build translated files
+TRANSLATIONS = resources/lang/es.ts resources/lang/fr.ts resources/lang/it.ts
