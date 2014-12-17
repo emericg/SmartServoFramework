@@ -639,7 +639,10 @@ void HerkuleXController::run()
         double waitd = (syncloopDuration * 1000.0) - loopd;
 
 #ifdef LATENCY_TIMER
-        std::cout << "Sync loop duration: " << (loopd / 1000.0) << "ms of the " << syncloopDuration << "ms budget." << std::endl;
+        if ((loopd / 1000.0) > syncloopDuration)
+            std::cerr << "Sync loop duration: " << (loopd / 1000.0) << "ms of the " << syncloopDuration << "ms budget." << std::endl;
+        else
+            std::cout << "Sync loop duration: " << (loopd / 1000.0) << "ms of the " << syncloopDuration << "ms budget." << std::endl;
 #endif
 
         if (waitd > 0.0)
