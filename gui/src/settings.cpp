@@ -61,7 +61,6 @@ Settings::Settings(QWidget *parent) :
     char *env = getenv("HOME");
     if (env)
     {
-        std::cout << "home is : " << env << std::endl;
         filepath = env;
         filepath += "/.config/SmartServoGUI";
         mkdir(filepath.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
@@ -162,7 +161,7 @@ std::vector <struct portconfig_s> Settings::getSerialPortsConfig()
 int Settings::readSettings()
 {
     int retcode = 0;
-    std::cout << "readSettings()" << std::endl;
+    //std::cout << "readSettings()" << std::endl;
 
     FILE *fp = std::fopen(filepath.c_str(), "r");
 
@@ -180,7 +179,7 @@ int Settings::readSettings()
         }
         else
         {
-            std::cout << "Parsing from file to document succeeded." << std::endl;
+            //std::cout << "Parsing from file to document succeeded." << std::endl;
             retcode = 1;
         }
 
@@ -211,7 +210,6 @@ int Settings::readSettings()
             if ((*parser)["ui"].HasMember("pause"))
             {
                 ui_pause = (*parser)["ui"]["pause"].GetBool();
-                std::cout << "ok, pause value: " << ui_pause << std::endl;
             }
         }
 
@@ -220,7 +218,6 @@ int Settings::readSettings()
             if ((*parser)["ctrl"].HasMember("locks"))
             {
                 ctrl_locks = (*parser)["ctrl"]["locks"].GetBool();
-                std::cout << "ok, lock value: " << ctrl_locks << std::endl;
             }
             if ((*parser)["ctrl"].HasMember("freq"))
             {
@@ -228,7 +225,6 @@ int Settings::readSettings()
                 if (ctrl_freq_temp > 0 && ctrl_freq_temp < 121)
                 {
                     ctrl_freq = ctrl_freq_temp;
-                    std::cout << "ok, freq value: " << ctrl_freq << std::endl;
                 }
             }
         }
@@ -241,7 +237,6 @@ int Settings::readSettings()
 
                 if (p.IsArray())
                 {
-                    std::cout << "ok, serial ports array " << p.Size() << std::endl;
                     serial_ports.clear();
 
                     for (SizeType i = 0; i < p.Size(); i++)
@@ -252,12 +247,6 @@ int Settings::readSettings()
                         port.protocol = p[i]["protocol"].GetString();
                         port.speed = p[i]["speed"].GetInt();
                         serial_ports.push_back(port);
-
-                        std::cout << "[" << i << "] ";
-                        std::cout << p[i]["on"].GetBool() << " ";
-                        std::cout << p[i]["path"].GetString() << " ";
-                        std::cout << p[i]["protocol"].GetString() << " ";
-                        std::cout << p[i]["speed"].GetInt() << " " << std::endl;
                     }
                 }
             }
@@ -270,7 +259,7 @@ int Settings::readSettings()
 int Settings::writeSettings()
 {
     int retcode = 0;
-    std::cout << "writeSettings() " << std::endl;
+    //std::cout << "writeSettings() " << std::endl;
 
     FILE *fp = std::fopen(filepath.c_str(), "w");
 
@@ -293,31 +282,6 @@ int Settings::writeSettings()
 
         std::fclose(fp);
     }
-/*
-    StringBuffer s;
-    Writer<StringBuffer> writer(s);
 
-    writer.StartObject();
-    writer.String("hello");
-    writer.String("world");
-    writer.String("t");
-    writer.Bool(true);
-    writer.String("f");
-    writer.Bool(false);
-    writer.String("n");
-    writer.Null();
-    writer.String("i");
-    writer.Uint(123);
-    writer.String("pi");
-    writer.Double(3.1416);
-    writer.String("a");
-    writer.StartArray();
-    for (unsigned i = 0; i < 4; i++)
-        writer.Uint(i);
-    writer.EndArray();
-    writer.EndObject();
-
-    std::cout << s.GetString() << std::endl;
-*/
     return retcode;
 }
