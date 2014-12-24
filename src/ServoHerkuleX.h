@@ -49,10 +49,13 @@ public:
     ServoHerkuleX(const int control_table[][8], int herkulex_id, int herkulex_model, int speed_mode = 0);
     virtual ~ServoHerkuleX() = 0;
 
-    // Helpers
+    // Device
     void status();
     std::string getModelString();
     void getModelInfos(int &servo_serie, int &servo_model);
+
+    // Helpers
+    void waitMovmentCompletion(int timeout_ms = 4000);
 
     // Getters
     int getId(const int reg_type = REGISTER_ROM);
@@ -96,6 +99,7 @@ public:
     void setCWLimit(int limit, const int reg_type = REGISTER_RAM);
     void setCCWLimit(int limit, const int reg_type = REGISTER_RAM);
     void setGoalPosition(int pos);
+    void setGoalPosition(int pos, int time_budget_ms);
     // TODO //void setGoalPosition(int pos, int speed);
     // TODO //void setGoalPosition(int pos, int int max_speed, int accel_ratio);
     void moveGoalPosition(int move);

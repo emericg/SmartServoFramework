@@ -86,6 +86,14 @@ public:
     int gid(const int reg);
     int gaddr(const int reg, const int reg_mode = REGISTER_AUTO);
 
+    // Device
+    virtual void status();
+    virtual std::string getModelString() = 0;
+    virtual void getModelInfos(int &servo_serie, int &servo_model) = 0;
+    int getDeviceBrand();
+    int getDeviceSerie();
+    int getDeviceModel();
+
     // Error handling
     int getStatus();
     virtual void setStatus(const int status);
@@ -101,16 +109,10 @@ public:
     void refresh();
     void getActions(int &action, int &reboot, int &refresh, int &reset);
 
-    int changeInternalId(int newId);
-
     // Helpers
-    virtual void status();
-    virtual std::string getModelString() = 0;
-    virtual void getModelInfos(int &servo_serie, int &servo_model) = 0;
-
-    int getDeviceBrand();
-    int getDeviceSerie();
-    int getDeviceModel();
+    int changeInternalId(int newId);
+    virtual void setGoalPosition(int pos, int time_budget_ms) = 0;
+    virtual void waitMovmentCompletion(int timeout_ms = 4000) = 0;
 
     // Getters
     virtual int getId();

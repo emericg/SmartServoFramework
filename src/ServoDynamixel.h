@@ -44,12 +44,15 @@ public:
     ServoDynamixel(const int control_table[][8], int dynamixel_id, int dynamixel_model, int speed_mode = SPEED_MANUAL);
     virtual ~ServoDynamixel() = 0;
 
-    // Helpers
+    // Device
     void status();
-    int getSpeedMode();
-    void setSpeedMode(int speed_mode);
     std::string getModelString();
     void getModelInfos(int &servo_serie, int &servo_model);
+
+    // Helpers
+    int getSpeedMode();
+    void setSpeedMode(int speed_mode);
+    void waitMovmentCompletion(int timeout_ms = 4000);
 
     // Getters
     int getBaudRate();
@@ -81,6 +84,7 @@ public:
     void setCWLimit(int limit);
     void setCCWLimit(int limit);
     void setGoalPosition(int pos);
+    void setGoalPosition(int pos, int time_budget_ms);
     // TODO //void setGoalPosition(int pos, int speed);
     // TODO //void setGoalPosition(int pos, int int max_speed, int accel_ratio);
     void moveGoalPosition(int move);

@@ -152,6 +152,13 @@ void ServoHerkuleX::getModelInfos(int &servo_serie, int &servo_model)
 
 /* ************************************************************************** */
 
+void ServoHerkuleX::waitMovmentCompletion(int timeout_ms)
+{
+    // TODO
+}
+
+/* ************************************************************************** */
+
 int ServoHerkuleX::getId(const int reg_type)
 {
     std::lock_guard <std::mutex> lock(access);
@@ -463,6 +470,10 @@ void ServoHerkuleX::setGoalPosition(int pos)
     }
 }
 
+void ServoHerkuleX::setGoalPosition(int pos, int time_budget_ms)
+{
+    // TODO
+}
 
 void ServoHerkuleX::setLed(int led)
 {

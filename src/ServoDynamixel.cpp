@@ -27,7 +27,8 @@
 #include "ControlTablesDynamixel.h"
 
 #include <iostream>
-#include <string.h>
+#include <thread>
+#include <cstring>
 
 ServoDynamixel::ServoDynamixel(const int control_table[][8], int dynamixel_id, int dynamixel_model, int speed_mode):
     Servo()
@@ -125,6 +126,22 @@ void ServoDynamixel::status()
     std::cout << "> punch           : " << registerTableValues[gid(REG_PUNCH)] << std::endl;
 }
 
+std::string ServoDynamixel::getModelString()
+{
+    std::lock_guard <std::mutex> lock(access);
+    return dxl_get_model_name(registerTableValues[gid(REG_MODEL_NUMBER)]);
+}
+
+void ServoDynamixel::getModelInfos(int &servo_serie, int &servo_model)
+{
+    std::lock_guard <std::mutex> lock(access); // ?
+    int model_number = registerTableValues[gid(REG_MODEL_NUMBER)];
+
+    dxl_get_model_infos(model_number, servo_serie, servo_model);
+}
+
+/* ************************************************************************** */
+
 int ServoDynamixel::getSpeedMode()
 {
     return speedMode;
@@ -138,18 +155,38 @@ void ServoDynamixel::setSpeedMode(int speed_mode)
     }
 }
 
-std::string ServoDynamixel::getModelString()
+void ServoDynamixel::waitMovmentCompletion(int timeout_ms)
 {
-    std::lock_guard <std::mutex> lock(access);
-    return dxl_get_model_name(registerTableValues[gid(REG_MODEL_NUMBER)]);
-}
+    std::chrono::milliseconds timeout_duration(static_cast<int>(timeout_ms));
+    std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
 
-void ServoDynamixel::getModelInfos(int &servo_serie, int &servo_model)
-{
-    std::lock_guard <std::mutex> lock(access); // ?
-    int model_number = registerTableValues[gid(REG_MODEL_NUMBER)];
+    access.lock();
 
-    dxl_get_model_infos(model_number, servo_serie, servo_model);
+    int c = registerTableValues[gid(REG_CURRENT_POSITION)];
+    int g = registerTableValues[gid(REG_GOAL_POSITION)];
+
+    //std::cout << "waitMovmentCompletion (c: " << c << " g: " << g << ")" << std::endl;
+
+    // Margin is set to 3%
+    while (c > (g * 1.03) || c < (g * 0.97))
+    {
+        access.unlock();
+
+        if ((start + timeout_duration) < std::chrono::system_clock::now())
+        {
+            std::cerr << "waitMovmentCompletion(): timeout!" << std::endl;
+            return;
+        }
+
+        std::chrono::milliseconds loopwait(2);
+        std::this_thread::sleep_for(loopwait);
+
+        access.lock();
+
+        c = registerTableValues[gid(REG_CURRENT_POSITION)];
+        g = registerTableValues[gid(REG_GOAL_POSITION)];
+    }
+    access.unlock();
 }
 
 /* ************************************************************************** */
@@ -318,6 +355,17 @@ void ServoDynamixel::setGoalPosition(int pos)
     {
         std::lock_guard <std::mutex> lock(access);
 
+        // Check min/max positions
+        if (pos < registerTableValues[gid(REG_MIN_POSITION)])
+        {
+            pos = registerTableValues[gid(REG_MIN_POSITION)];
+        }
+        if (pos > registerTableValues[gid(REG_MAX_POSITION)])
+        {
+            pos = registerTableValues[gid(REG_MAX_POSITION)];
+        }
+
+        // Set position
         registerTableValues[gid(REG_GOAL_POSITION)] = pos;
         registerTableCommits[gid(REG_GOAL_POSITION)] = 1;
     }
@@ -327,10 +375,57 @@ void ServoDynamixel::setGoalPosition(int pos)
     }
 }
 
+void ServoDynamixel::setGoalPosition(int pos, int time_budget_ms)
+{
+    //std::cout << "[#" << servoId << "] DXL setGoalPosition(" << pos << " in " << time_budget_ms <<  "ms)" << std::endl;
+
+    if (time_budget_ms > 0)
+    {
+        if (pos > -1 && pos < steps)
+        {
+            std::lock_guard <std::mutex> lock(access);
+
+            // Check min/max positions
+            if (pos < registerTableValues[gid(REG_MIN_POSITION)])
+            {
+                pos = registerTableValues[gid(REG_MIN_POSITION)];
+            }
+            if (pos > registerTableValues[gid(REG_MAX_POSITION)])
+            {
+                pos = registerTableValues[gid(REG_MAX_POSITION)];
+            }
+
+            // Compute movment amplitude and necessary speed to meet time budget
+            int amp = 0;
+            int pos_curr = registerTableValues[gid(REG_CURRENT_POSITION)];
+
+            if (pos > pos_curr)
+                amp = pos - pos_curr;
+            else
+                amp = pos_curr - pos;
+
+            double speed = ((double)(60 * amp) / (double)(steps * 0.114 * ((double)(time_budget_ms)/1000.0)));
+            if (speed < 1.0)
+                speed = 1;
+
+            // Set position and speed
+            registerTableValues[gid(REG_GOAL_POSITION)] = pos;
+            registerTableCommits[gid(REG_GOAL_POSITION)] = 1;
+
+            registerTableValues[gid(REG_GOAL_SPEED)] = speed;
+            registerTableCommits[gid(REG_GOAL_SPEED)] = 1;
+        }
+        else
+        {
+            std::cerr << "[#" << servoId << "] setGoalPosition(" << registerTableValues[gid(REG_CURRENT_POSITION)] << " > " << pos << ") [VALUE ERROR]" << std::endl;
+        }
+    }
+}
+
 void ServoDynamixel::moveGoalPosition(int move)
 {
     //std::cout << "moveGoalPosition(" << move << ")" << std::endl;
-    std::lock_guard <std::mutex> lock(access);
+    access.lock();
 
     int curr = registerTableValues[gid(REG_CURRENT_POSITION)];
     int newpos = registerTableValues[gid(REG_CURRENT_POSITION)] + move;
@@ -346,15 +441,9 @@ void ServoDynamixel::moveGoalPosition(int move)
         }
     }
 
-    if (newpos > 0 && newpos < steps)
-    {
-        registerTableValues[gid(REG_GOAL_POSITION)] = registerTableValues[gid(REG_CURRENT_POSITION)] + move;
-        registerTableCommits[gid(REG_GOAL_POSITION)] = 1;
-    }
-    else
-    {
-        std::cerr << "[#" << servoId << "]  moveGoalPosition([" << curr << " > " << newpos << "] [VALUE ERROR]" <<  std::endl;
-    }
+    access.unlock();
+
+    setGoalPosition(newpos);
 }
 
 void ServoDynamixel::setMovingSpeed(int speed)
@@ -415,11 +504,12 @@ void ServoDynamixel::setLed(int led)
 
 void ServoDynamixel::setTorqueEnabled(int torque)
 {
-    //std::cout << "[#" << servoId << "] setTorqueEnabled(" << torque << ")" << std::endl;
-    std::lock_guard <std::mutex> lock(access);
-
     // Normalize value
     (torque > 0) ? torque = 1 : torque = 0;
+
+    //std::cout << "[#" << servoId << "] setTorqueEnabled(" << torque << ")" << std::endl;
+
+    std::lock_guard <std::mutex> lock(access);
 
     registerTableValues[gid(REG_TORQUE_ENABLE)] = torque;
     registerTableCommits[gid(REG_TORQUE_ENABLE)] = 1;
