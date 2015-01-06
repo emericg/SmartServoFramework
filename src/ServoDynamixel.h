@@ -52,7 +52,7 @@ public:
     // Helpers
     int getSpeedMode();
     void setSpeedMode(int speed_mode);
-    void waitMovmentCompletion(int timeout_ms = 4000);
+    void waitMovmentCompletion(int timeout_ms = 2000);
 
     // Getters
     int getBaudRate();

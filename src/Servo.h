@@ -112,7 +112,7 @@ public:
     // Helpers
     int changeInternalId(int newId);
     virtual void setGoalPosition(int pos, int time_budget_ms) = 0;
-    virtual void waitMovmentCompletion(int timeout_ms = 4000) = 0;
+    virtual void waitMovmentCompletion(int timeout_ms = 2000) = 0;
 
     // Getters
     virtual int getId();
