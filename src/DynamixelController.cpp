@@ -531,8 +531,10 @@ void DynamixelController::run()
 
                                 if (regname == REG_ID)
                                 {
-                                    s->changeInternalId(s->getValue(regname));
-                                    s->reboot();
+                                    if (s->changeInternalId(s->getValue(regname)) == 1)
+                                    {
+                                        s->reboot();
+                                    }
                                 }
                             }
                         }

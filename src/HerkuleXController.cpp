@@ -508,8 +508,10 @@ void HerkuleXController::run()
 
                             if (regname == REG_ID)
                             {
-                                s->changeInternalId(s->getValue(regname));
-                                s->reboot();
+                                if (s->changeInternalId(s->getValue(regname)) == 1)
+                                {
+                                    s->reboot();
+                                }
                             }
                         }
 
@@ -535,11 +537,14 @@ void HerkuleXController::run()
                             updateErrorCount(hkx_get_com_error());
                             hkx_print_error();
 
+                            // FIXME: probably doesn't work...
                             if (regname == REG_ID)
                             {
-                                // FIXME
-                                //s->changeInternalId(s->getValue(regname));
-                                //s->reboot();
+                                unregisterServo(s);
+                                if (s->changeInternalId(s->getValue(regname)) == 1)
+                                {
+                                    registerServo(s);
+                                }
                             }
                         }
                     }
