@@ -196,11 +196,16 @@ void Servo::getActions(int &action, int &reboot, int &refresh, int &reset)
 
 int Servo::changeInternalId(int newId)
 {
+    int retcode = 0;
+
     if (newId > 0 && newId < 254)
     {
         std::lock_guard <std::mutex> lock(access);
         servoId = newId;
+        retcode = 1;
     }
+
+    return retcode;
 }
 
 /* ************************************************************************** */
