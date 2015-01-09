@@ -180,7 +180,7 @@ int SerialPortWindows::openLink()
         std::cerr << "Unable to set communication mask on '" << ttyDevicePath << "'" << std::endl;
         goto OPEN_LINK_ERROR;
     }
-    if (SetupComm(ttyDeviceFileDescriptor, 4096, 4096) == FALSE) // Buffer size (Rx,Tx)
+    if (SetupComm(ttyDeviceFileDescriptor, 8192, 8192) == FALSE) // Buffer size (Rx,Tx)
     {
         std::cerr << "Unable to setup communication on '" << ttyDevicePath << "'" << std::endl;
         goto OPEN_LINK_ERROR;
@@ -264,6 +264,10 @@ int SerialPortWindows::tx(unsigned char *packet, int packetLength)
             {
                 status = static_cast<int>(dwWritten);
             }
+            else
+            {
+                std::cerr << "Cannot write to serial port '" << ttyDevicePath << "': WriteFile() failed!" << std::endl;
+            }
         }
         else
         {
@@ -293,6 +297,10 @@ int SerialPortWindows::rx(unsigned char *packet, int packetLength)
             {
                 readStatus = static_cast<int>(dwRead);
             }
+            else
+            {
+                std::cerr << "Cannot read from serial port '" << ttyDevicePath << "': ReadFile() failed!" << std::endl;
+            }
         }
         else
         {
@@ -311,6 +319,11 @@ void SerialPortWindows::flush()
 {
     if (isOpen())
     {
+        //PURGE_RXABORT: Terminates all outstanding overlapped read operations and returns immediately, even if the read operations have not been completed.
+        //PURGE_RXCLEAR: Clears the input buffer (if the device driver has one).
+        //PURGE_TXABORT: Terminates all outstanding overlapped write operations and returns immediately, even if the write operations have not been completed.
+        //PURGE_TXCLEAR: Clears the output buffer (if the device driver has one).
+
         PurgeComm(ttyDeviceFileDescriptor, PURGE_RXABORT | PURGE_RXCLEAR);
     }
 }

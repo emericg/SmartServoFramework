@@ -219,12 +219,12 @@ void SerialPort::setLatency(int latency)
         std::cerr << "Invalid latency value: '" << latency << "'', not in ]0;128[ range." << std::endl;
     }
 }
-/*
+
 std::string SerialPort::getDeviceName()
 {
-    return getDeviceName;
+    return ttyDeviceName;
 }
-*/
+
 std::string SerialPort::getDevicePath()
 {
     return ttyDevicePath;

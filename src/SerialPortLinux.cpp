@@ -453,13 +453,18 @@ void SerialPortLinux::closeLink()
 
 int SerialPortLinux::tx(unsigned char *packet, int packetLength)
 {
-    int status = -1;
+    int writeStatus = -1;
 
     if (isOpen() == true)
     {
         if (packet != NULL && packetLength > 0)
         {
-            status = write(ttyDeviceFileDescriptor, packet, packetLength);
+            writeStatus = write(ttyDeviceFileDescriptor, packet, packetLength);
+
+            if (writeStatus < 0)
+            {
+                std::cerr << "Cannot write to serial port '" << ttyDevicePath << "': write() failed with error code '" << errno << "'" << std::endl;
+            }
         }
         else
         {
@@ -471,7 +476,7 @@ int SerialPortLinux::tx(unsigned char *packet, int packetLength)
         std::cerr << "Cannot write to serial port '" << ttyDevicePath << "': invalid device!" << std::endl;
     }
 
-    return status;
+    return writeStatus;
 }
 
 int SerialPortLinux::rx(unsigned char *packet, int packetLength)
@@ -487,7 +492,7 @@ int SerialPortLinux::rx(unsigned char *packet, int packetLength)
 
             if (readStatus < 0)
             {
-                std::cerr << "Cannot read from serial port '" << ttyDevicePath << "': error code '" << errno << "'" << std::endl;
+                std::cerr << "Cannot read from serial port '" << ttyDevicePath << "': read() failed with error code '" << errno << "'" << std::endl;
             }
         }
         else
@@ -507,9 +512,9 @@ void SerialPortLinux::flush()
 {
     if (isOpen() == true)
     {
-        //TCIFLUSH: Flush received, but unread data
-        //TCOFLUSH: Flush written, but not send data
-        //TCIOFLUSH: Flush both
+        //TCIFLUSH: Flushes data received but not read.
+        //TCOFLUSH: Flushes data written but not transmitted.
+        //TCIOFLUSH: Flushes both data received but not read and data written but not transmitted.
 
         tcflush(ttyDeviceFileDescriptor, TCIFLUSH);
     }

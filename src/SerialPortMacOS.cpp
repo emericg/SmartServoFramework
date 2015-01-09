@@ -185,7 +185,7 @@ SerialPortMacOS::~SerialPortMacOS()
 
 void SerialPortMacOS::setLatency(int latency)
 {
-    // void
+    // TODO
 }
 
 #endif /* defined(__APPLE__) || defined(__MACH__) */

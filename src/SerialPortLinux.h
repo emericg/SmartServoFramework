@@ -104,15 +104,22 @@ public:
     int rx(unsigned char *packet, int packetLength);
     void flush();
 
+    /*!
+     * \brief switchHighSpeed() should enable ASYNC_LOW_LATENCY flag and reduce latency_timer per tty device (need root credential)
+     * \return True in case of success.
+     * \todo This function is not implemented yet.
+     */
     bool switchHighSpeed();
 
     /*!
      * \brief Set a "file lock" for this serial link.
      * \return True is a file lock has been created successfully this serial link, false otherwise.
+     * \todo latency_timer value auto-detection doesn't produce intended result yet.
      *
      * Use /tmp directory for lock storage.
      */
     bool setLock();
+
     void setLatency(int latency);
     void setTimeOut(int packetLength);
     void setTimeOut(double msec);

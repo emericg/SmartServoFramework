@@ -31,7 +31,8 @@
  * \brief Latency time (in milliseconds) on the serial port.
  *
  * This timer should be carefully choosed depending on your OS and the speed of
- * your serial port implementation. Default is set to a high value to avoid any problem.
+ * your serial port implementation. Default is set to a high value to avoid any
+ * problem.
  */
 #define LATENCY_TIME_DEFAULT    (48)
 
@@ -76,9 +77,10 @@ enum SerialErrorCodes_e
  *
  * This class provide abstraction to use the serial port across Linux, Windows
  * and Mac OS operating systems. Almost all of this code is heavily OS dependent,
- * and therefore most functions are virtual pure and implemented only in child classes.
+ * and therefore most functions are "virtual pure" and implemented only in child
+ * classes.
  *
- * Both Dynamixel and HerkuleX devices are using the same parameters:
+ * Both Dynamixel and HerkuleX devices are using the same settings:
  * - Data Bit: 8
  * - Stop Bit: 1
  * - No parity
@@ -207,7 +209,7 @@ public:
     virtual int rx(unsigned char *packet, int packetLength) = 0;
 
     /*!
-     * \brief Flush non-transmitted output data, non-read input data or both.
+     * \brief Flush non-read input data.
      */
     virtual void flush() = 0;
 
