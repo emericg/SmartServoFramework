@@ -165,12 +165,20 @@ void ServoDynamixel::waitMovmentCompletion(int timeout_ms)
     int c = registerTableValues[gid(REG_CURRENT_POSITION)];
     int g = registerTableValues[gid(REG_GOAL_POSITION)];
 
-    //std::cout << "waitMovmentCompletion (c: " << c << " g: " << g << ")" << std::endl;
+    // Margin is set to 3% of servo steps
+    int margin = static_cast<int>(static_cast<double>(steps) * 0.03 / 2.0);
+    int margin_up = g + margin;
+    int margin_dw = g - margin;
 
-    // Margin is set to 3%
-    while (c > (g * 1.03) || c < (g * 0.97))
+    if (margin_up > steps) margin_up = steps;
+    if (margin_dw < 0) margin_dw = 0;
+
+    // Wait until the current pos is within margin of the goal pos, or wait for the timeout
+    while (!(c < margin_up && c > margin_dw))
     {
         access.unlock();
+
+        //std::cout << "waitMovmentCompletion (" << margin_dw << " <  pos:" << c << "  < " << margin_up << ")" << std::endl;
 
         if ((start + timeout_duration) < std::chrono::system_clock::now())
         {
@@ -178,7 +186,7 @@ void ServoDynamixel::waitMovmentCompletion(int timeout_ms)
             return;
         }
 
-        std::chrono::milliseconds loopwait(2);
+        std::chrono::milliseconds loopwait(4);
         std::this_thread::sleep_for(loopwait);
 
         access.lock();

@@ -55,7 +55,7 @@ public:
     void getModelInfos(int &servo_serie, int &servo_model);
 
     // Helpers
-    void waitMovmentCompletion(int timeout_ms = 2000);
+    void waitMovmentCompletion(int timeout_ms = 5000);
 
     // Getters
     int getId(const int reg_type = REGISTER_ROM);
