@@ -260,6 +260,18 @@ int SerialPortWindows::tx(unsigned char *packet, int packetLength)
             DWORD dwToWrite = (DWORD)packetLength;
             DWORD dwWritten = 0;
 
+            // Error handling
+            DWORD dwError = 0;
+            COMSTAT comstat;
+
+            dwError = GetLastError();
+            if (dwError)
+            {
+                std::cerr << "SerialPortWindows::tx(dwError: " << dwError << ")" << std::endl;
+                ClearCommError(ttyDeviceFileDescriptor, &dwError, &comstat);
+            }
+
+            // Send
             if (WriteFile(ttyDeviceFileDescriptor, packet, dwToWrite, &dwWritten, NULL) == TRUE)
             {
                 status = static_cast<int>(dwWritten);
@@ -293,6 +305,18 @@ int SerialPortWindows::rx(unsigned char *packet, int packetLength)
             DWORD dwToRead = (DWORD)packetLength;
             DWORD dwRead = 0;
 
+            // Error handling
+            DWORD dwError = 0;
+            COMSTAT comstat;
+
+            dwError = GetLastError();
+            if (dwError)
+            {
+                std::cerr << "SerialPortWindows::rx(dwError: " << dwError << ")" << std::endl;
+                ClearCommError(ttyDeviceFileDescriptor, &dwError, &comstat);
+            }
+
+            // Receive
             if (ReadFile(ttyDeviceFileDescriptor, packet, dwToRead, &dwRead, NULL) == TRUE)
             {
                 readStatus = static_cast<int>(dwRead);
