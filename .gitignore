@@ -1,0 +1,22 @@
+# Build artifacts
+*.o
+
+# Binaries
+build/*
+gui/build/*
+
+# Scons temporary files
+.scon*
+
+# Doxygen
+doc/html
+
+# QtCreator temporary project files
+SmartServoFramework.config
+SmartServoFramework.creator*
+SmartServoFramework.files
+SmartServoFramework.includes
+
+# Qmake temporary project files (gui)
+gui/SmartServoGui.pro.*
+gui/Makefile

@@ -1,0 +1,69 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>icons/controls.svg</file>
+        <file>icons/dialog-error.svg</file>
+        <file>icons/dialog-information.svg</file>
+        <file>icons/dialog-question.svg</file>
+        <file>icons/dialog-warning.svg</file>
+        <file>icons/emblem-default.svg</file>
+        <file>icons/emblem-new.svg</file>
+        <file>icons/emblem-readonly.svg</file>
+        <file>icons/emblem-system.svg</file>
+        <file>icons/emblem-ubuntuone-synchronized.svg</file>
+        <file>icons/emblem-ubuntuone-unsynchronized.svg</file>
+        <file>icons/emblem-ubuntuone-updating.svg</file>
+        <file>icons/emblem-unreadable.svg</file>
+        <file>icons/hardinfo.svg</file>
+        <file>icons/network-error.svg</file>
+        <file>icons/package-install.svg</file>
+        <file>icons/package-remove.svg</file>
+        <file>icons/package-upgrade.svg</file>
+         <file>icons/utilities-system-monitor.svg</file>
+        <file>icons/scanner.svg</file>
+    </qresource>
+    <qresource prefix="/devices">
+        <file>devices/DXL.svg</file>
+        <file>devices/DXLv1.svg</file>
+        <file>devices/DXLv2.svg</file>
+        <file>devices/HKX.svg</file>
+        <file>devices/AX-12A.jpg</file>
+        <file>devices/AX-12W.jpg</file>
+        <file>devices/AX-18A.jpg</file>
+        <file>devices/DX-117.jpg</file>
+        <file>devices/EX-106.jpg</file>
+        <file>devices/EX-106p.jpg</file>
+        <file>devices/MX-28.jpg</file>
+        <file>devices/MX-64.jpg</file>
+        <file>devices/MX-106.jpg</file>
+        <file>devices/RX-24.jpg</file>
+        <file>devices/RX-28.jpg</file>
+        <file>devices/RX-64.jpg</file>
+        <file>devices/XL-320.jpg</file>
+        <file>devices/AX-S1.jpg</file>
+        <file>devices/IR-SENSORS.jpg</file>
+        <file>devices/DRS-0101.jpg</file>
+        <file>devices/DRS-0201.jpg</file>
+        <file>devices/DRS-0401.jpg</file>
+        <file>devices/DRS-0402.jpg</file>
+        <file>devices/DRS-0601.jpg</file>
+        <file>devices/DRS-0602.jpg</file>
+    </qresource>
+    <qresource prefix="/help">
+        <file>help/Dynamixel_help.png</file>
+        <file>help/HerkuleX_help.png</file>
+    </qresource>
+    <qresource prefix="/specs">
+        <file>specs/AX-12W.html</file>
+        <file>specs/AX-12A.html</file>
+        <file>specs/AX-18A.html</file>
+        <file>specs/EX-106.html</file>
+        <file>specs/EX-106p.html</file>
+        <file>specs/MX-12W.html</file>
+        <file>specs/MX-28.html</file>
+        <file>specs/MX-64.html</file>
+        <file>specs/MX-106.html</file>
+        <file>specs/XL-320.html</file>
+        <file>specs/DRS-0101.html</file>
+        <file>specs/DRS-0201.html</file>
+    </qresource>
+</RCC>
