@@ -871,7 +871,7 @@ void MainWindow::servoSelection()
                 }
 
                 ui->servoManual_label->setText("<html><head/><body><p><a href=\"http://support.robotis.com/en/\"><span style=\" text-decoration: underline; color:#ffffff;\">Consult the online manuals on Robotis website</span></a></p></body></html>");
-                ui->copyrightNotice_label->setText("<html><head/><body><p>Pictures and technical specifications provided by <a href=\"www.robotis.com\"><span style=\" text-decoration: underline; color:#0000ff;\">robotis.com</span></a> website.</p></body></html>");
+                ui->copyrightNotice_label->setText("<html><head/><body><p>Pictures and technical specifications courtesy of <a href=\"www.robotis.com\"><span style=\" text-decoration: underline; color:#0000ff;\">robotis.com</span></a></p></body></html>");
             }
         }
 /*
