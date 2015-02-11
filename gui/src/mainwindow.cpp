@@ -163,7 +163,8 @@ void MainWindow::loading(bool enabled)
         }
         else
         {
-            QPixmap load(QPixmap(":/help/help/HerkuleX_help.png"));
+            //QPixmap load(QPixmap(":/help/help/HerkuleX_help.png"));
+            QPixmap load(QPixmap(":/help/help/Dynamixel_help.png"));
             ui->label_loading_img->setPixmap(load);
         }
     }
