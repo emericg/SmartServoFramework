@@ -853,7 +853,7 @@ void MainWindow::servoSelection()
                 ui->frame_err_hkx->show();
 
                 ui->servoManual_label->setText("<html><head/><body><p><a href=\"http://hovis.co.kr/guide/herkulex_eng.html\"><span style=\" text-decoration: underline; color:#ffffff;\">Download manuals on Dongbu Robot website</span></a></p></body></html>");
-                ui->copyrightNotice_label->setText("<html><head/><body><p>Pictures and technical specifications provided by <a href=\"www.dongburobot.com\"><span style=\" text-decoration: underline; color:#0000ff;\">dongburobot.com</span></a> website.</p></body></html>");
+                ui->copyrightNotice_label->setText("<html><head/><body><p>Technical specifications provided by <a href=\"www.dongburobot.com\"><span style=\" text-decoration: underline; color:#0000ff;\">dongburobot.com</span></a> website.</p></body></html>");
             }
             else
             {
