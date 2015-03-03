@@ -50,7 +50,7 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
     std::cout << "serialPortsScanner() [Windows variant]" << std::endl;
 
     // Serial ports
-    for (int i = 16; i > 0; i--)
+    for (int i = 32; i > 0; i--)
     {
         std::string port = basePort + std::to_string(i);
 
