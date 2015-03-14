@@ -1107,10 +1107,6 @@ bool Dynamixel::dxl_ping(const int id, PingResponse *status, const int ack)
                 status->firmware_version = dxl_read_byte(id, 2, ack);
             }
         }
-        else
-        {
-            std::cerr << "Warning! 'Advance Ping' instruction was successfull but cannot return status !" << std::endl;
-        }
     }
 
     return retcode;

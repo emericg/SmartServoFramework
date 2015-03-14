@@ -783,10 +783,6 @@ bool HerkuleX::hkx_ping(const int id, PingResponse *status, const int ack)
             status->model_number = hkx_read_word(id, 0, REGISTER_ROM, ack);
             status->firmware_version = hkx_read_word(id, 2, REGISTER_ROM, ack);
         }
-        else
-        {
-            std::cerr << "Warning! 'Advance Ping' instruction was successfull but cannot return status !" << std::endl;
-        }
     }
 
     return retcode;
