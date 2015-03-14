@@ -101,7 +101,7 @@ const int DRS0101_control_table[50][8] =
     { REG_ABSOLUTE_GOAL_POSITION  , 2, READ_ONLY,  -1, 68,   -1,   -1,   -1 },
     { REG_GOAL_TRAJECTORY         , 2, READ_ONLY,  -1, 70,   -1,   -1,   -1 }, // ABSOLUTE DESIRED TRAJECTORY POSITION
     { REG_GOAL_VELOCITY           , 2, READ_ONLY,  -1, 72,   -1,   -1,   -1 }, // DESIRED VELOCITY
-    { 999 , 999, 999, 999, 999, 999, 999, 999 },
+    { 999, 999, 999, 999, 999, 999, 999, 999 },
 };
 
 /* ************************************************************************** */
@@ -175,7 +175,7 @@ const int DRS0x01_control_table[50][8] =
     { REG_ABSOLUTE_GOAL_POSITION  , 2, READ_ONLY,  -1, 68,   -1,   -1,   -1 },
     { REG_GOAL_TRAJECTORY         , 2, READ_ONLY,  -1, 70,   -1,   -1,   -1 }, // ABSOLUTE DESIRED TRAJECTORY POSITION
     { REG_GOAL_VELOCITY           , 2, READ_ONLY,  -1, 72,   -1,   -1,   -1 }, // DESIRED VELOCITY
-    { 999 , 999, 999, 999, 999, 999, 999, 999 },
+    { 999, 999, 999, 999, 999, 999, 999, 999 },
 };
 
 /* ************************************************************************** */
@@ -251,7 +251,7 @@ const int DRS0x02_control_table[54][8] =
     { REG_ABSOLUTE_GOAL_POSITION  , 2, READ_ONLY,  -1, 68,   -1,   -1,   -1 },
     { REG_GOAL_TRAJECTORY         , 2, READ_ONLY,  -1, 70,   -1,   -1,   -1 }, // ABSOLUTE DESIRED TRAJECTORY POSITION
     { REG_GOAL_VELOCITY           , 2, READ_ONLY,  -1, 72,   -1,   -1,   -1 }, // DESIRED VELOCITY
-    { 999 , 999, 999, 999, 999, 999, 999, 999 },
+    { 999, 999, 999, 999, 999, 999, 999, 999 },
 };
 
 /** @}*/

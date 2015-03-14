@@ -80,7 +80,7 @@ const int AXDXRX_control_table[33][8] =
     { REG_MOVING               , 1, READ_ONLY,  -1, 46,    0,   -1,   -1 },
     { REG_LOCK                 , 1, READ_WRITE, -1, 47,    0,    0,    1 },
     { REG_PUNCH                , 2, READ_WRITE, -1, 48,   32,    0, 1023 },
-    { 999 , 999, 999, 999, 999, 999, 999, 999 },
+    { 999, 999, 999, 999, 999, 999, 999, 999 },
 };
 
 /*!
@@ -129,7 +129,7 @@ const int EX_control_table[35][8] =
     { REG_LOCK                 , 1, READ_WRITE, -1, 47,    0,    0,    1 },
     { REG_PUNCH                , 2, READ_WRITE, -1, 48,    0,    0, 1023 },
     { REG_CURRENT_CURRENT      , 2, READ_ONLY,  -1, 56,    0,    0, 1023 },
-    { 999 , 999, 999, 999, 999, 999, 999, 999 },
+    { 999, 999, 999, 999, 999, 999, 999, 999 },
 };
 
 /*!
@@ -182,7 +182,7 @@ const int MX_control_table[39][8] =
     { REG_CONTROL_MODE         , 1, READ_WRITE, -1, 70,    0,    0,    1 },
     { REG_GOAL_TORQUE          , 2, READ_WRITE, -1, 71,    0,    0, 2047 },
     { REG_GOAL_ACCELERATION    , 2, READ_WRITE, -1, 72,    0,    0,  254 },
-    { 999 , 999, 999, 999, 999, 999, 999, 999 },
+    { 999, 999, 999, 999, 999, 999, 999, 999 },
 };
 
 /*!
@@ -228,7 +228,7 @@ const int XL320_control_table[32][8] =
     { REG_MOVING               , 1, READ_ONLY,  -1, 49,    0,   -1,   -1 },
     { REG_HW_ERROR_STATUS      , 1, READ_ONLY,  -1, 50,    0,   -1,   -1 },
     { REG_PUNCH                , 2, READ_WRITE, -1, 51,   32,    0, 1023 },
-    { 999 , 999, 999, 999, 999, 999, 999, 999 },
+    { 999, 999, 999, 999, 999, 999, 999, 999 },
 };
 
 /*!
@@ -275,7 +275,7 @@ const int AXS1_control_table[30][8] =
     { REG_REMOCON_TX_DATA_1    , 1, READ_WRITE, -1, 51,   -1,    0,  255 },
     { REG_IR_DETECT_COMPARE    , 1, READ_WRITE, -1, 52,   -1,    0,  255 },
     { REG_LIGHT_DETECT_COMPARE , 1, READ_WRITE, -1, 53,   -1,    0,  255 },
-    { 999 , 999, 999, 999, 999, 999, 999, 999 },
+    { 999, 999, 999, 999, 999, 999, 999, 999 },
 };
 
 /*!
@@ -319,7 +319,7 @@ const int IR_ARRAY_control_table[28][8] =
     { REG_IR_OBSTACLE_DETECTED , 1, READ_ONLY,  -1, 43,   -1,    0,   64 },
     { REG_REGISTERED           , 1, READ_ONLY,  -1, 44,    0,    0,    1 },
     { REG_LOCK                 , 1, READ_WRITE, -1, 47,    0,    0,    1 },
-    { 999 , 999, 999, 999, 999, 999, 999, 999 },
+    { 999, 999, 999, 999, 999, 999, 999, 999 },
 };
 
 /*!
@@ -383,7 +383,7 @@ const int PRO_control_table[49][8] =
     { REG_REGISTERED           , 1, READ_ONLY,  -1, 890,    0,   -1,   -1 },
     { REG_STATUS_RETURN_LEVEL  , 1, READ_WRITE, -1, 891,    2,   -1,   -1 },
     { REG_HW_ERROR_STATUS      , 2, READ_ONLY,  -1, 892,    0,   -1,   -1 },
-    { 999 , 999, 999, 999, 999, 999, 999, 999 },
+    { 999, 999, 999, 999, 999, 999, 999, 999 },
 };
 
 /** @}*/
