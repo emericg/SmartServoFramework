@@ -17,7 +17,7 @@
  *
  * \file mainwindow.h
  * \date 27/03/2014
- * \author Emeric Grange <emeric.grange@inria.fr>
+ * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
 #ifndef MAINWINDOW_H

@@ -17,7 +17,7 @@
  *
  * \file ServoDRS.cpp
  * \date 25/08/2014
- * \author Emeric Grange <emeric.grange@inria.fr>
+ * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
 #include "ServoDRS.h"

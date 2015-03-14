@@ -17,7 +17,7 @@
  *
  * \file main.cpp
  * \date 27/03/2014
- * \author Emeric Grange <emeric.grange@inria.fr>
+ * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
 #include "mainwindow.h"

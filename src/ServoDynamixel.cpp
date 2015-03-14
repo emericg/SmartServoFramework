@@ -17,7 +17,7 @@
  *
  * \file ServoDynamixel.cpp
  * \date 13/03/2014
- * \author Emeric Grange <emeric.grange@inria.fr>
+ * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
 #include "ServoDynamixel.h"

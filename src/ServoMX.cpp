@@ -17,7 +17,7 @@
  *
  * \file ServoMX.cpp
  * \date 23/04/2014
- * \author Emeric Grange <emeric.grange@inria.fr>
+ * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
 #include "ServoMX.h"

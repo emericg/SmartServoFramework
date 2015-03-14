@@ -17,7 +17,7 @@
  *
  * \file DynamixelController.cpp
  * \date 14/03/2014
- * \author Emeric Grange <emeric.grange@inria.fr>
+ * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
 #include "DynamixelController.h"

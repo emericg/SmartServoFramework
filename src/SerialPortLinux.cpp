@@ -17,7 +17,7 @@
  *
  * \file SerialPortLinux.cpp
  * \date 05/03/2014
- * \author Emeric Grange <emeric.grange@inria.fr>
+ * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
 #if defined(__linux__) || defined(__gnu_linux)

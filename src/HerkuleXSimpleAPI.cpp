@@ -17,7 +17,7 @@
  *
  * \file HerkuleXSimpleAPI.cpp
  * \date 19/08/2014
- * \author Emeric Grange <emeric.grange@inria.fr>
+ * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
 #include "HerkuleXSimpleAPI.h"

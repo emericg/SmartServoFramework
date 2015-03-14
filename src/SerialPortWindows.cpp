@@ -17,7 +17,7 @@
  *
  * \file SerialPortWindows.cpp
  * \date 05/03/2014
- * \author Emeric Grange <emeric.grange@inria.fr>
+ * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
 #if defined(_WIN32) || defined(_WIN64)

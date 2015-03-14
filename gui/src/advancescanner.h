@@ -17,7 +17,7 @@
  *
  * \file AdvanceScanner.h
  * \date 5/09/2014
- * \author Emeric Grange <emeric.grange@inria.fr>
+ * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
 #ifndef ADVANCESCANNER_H

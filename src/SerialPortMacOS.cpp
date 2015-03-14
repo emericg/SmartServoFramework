@@ -17,7 +17,7 @@
  *
  * \file SerialPortMacOS.cpp
  * \date 25/09/2014
- * \author Emeric Grange <emeric.grange@inria.fr>
+ * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
 #if defined(__APPLE__) || defined(__MACH__)

@@ -17,7 +17,7 @@
  *
  * \file ServoXL.cpp
  * \date 08/07/2014
- * \author Emeric Grange <emeric.grange@inria.fr>
+ * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
 #include "ServoXL.h"

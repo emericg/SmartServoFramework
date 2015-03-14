@@ -17,7 +17,7 @@
  *
  * \file settings.cpp
  * \date 05/11/2014
- * \author Emeric Grange <emeric.grange@inria.fr>
+ * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
 #include "settings.h"

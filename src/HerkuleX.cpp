@@ -17,7 +17,7 @@
  *
  * \file HerkuleX.cpp
  * \date 07/07/2014
- * \author Emeric Grange <emeric.grange@inria.fr>
+ * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
 #include "HerkuleX.h"
