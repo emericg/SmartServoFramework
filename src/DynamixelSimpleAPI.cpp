@@ -386,13 +386,13 @@ int DynamixelSimpleAPI::setMinMaxPositions(const int id, const int min, const in
             if (dxl_print_error() == 0)
             {
                 status = 1;
+            }
 
-                // Write max value
-                dxl_write_word(id, addr_max, max);
-                if (dxl_print_error() == 0)
-                {
-                    status = 1;
-                }
+            // Write max value
+            dxl_write_word(id, addr_max, max);
+            if (dxl_print_error() == 0)
+            {
+                status = 1;
             }
         }
     }

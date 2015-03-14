@@ -392,13 +392,13 @@ int HerkuleXSimpleAPI::setMinMaxPositions(const int id, const int min, const int
                 if (hkx_print_error() == 0)
                 {
                     status = 1;
+                }
 
-                    // Write max value
-                    hkx_write_word(id, addr_max_rom, max, REGISTER_ROM);
-                    if (hkx_print_error() == 0)
-                    {
-                        status = 1;
-                    }
+                // Write max value
+                hkx_write_word(id, addr_max_rom, max, REGISTER_ROM);
+                if (hkx_print_error() == 0)
+                {
+                    status = 1;
                 }
             }
 
@@ -412,13 +412,13 @@ int HerkuleXSimpleAPI::setMinMaxPositions(const int id, const int min, const int
                 if (hkx_print_error() == 0)
                 {
                     status = 1;
+                }
 
-                    // Write max value
-                    hkx_write_word(id, addr_max_ram, max, REGISTER_RAM);
-                    if (hkx_print_error() == 0)
-                    {
-                        status = 1;
-                    }
+                // Write max value
+                hkx_write_word(id, addr_max_ram, max, REGISTER_RAM);
+                if (hkx_print_error() == 0)
+                {
+                    status = 1;
                 }
             }
         }
