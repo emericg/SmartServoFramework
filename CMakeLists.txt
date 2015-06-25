@@ -53,6 +53,9 @@ ENDIF(CMAKE_BUILD_TYPE STREQUAL "Release")
 ###############################################################################
 
 SET(SmartServoFramework_SRC
+    src/minitraces.cpp
+    src/minitraces_conf.h
+    src/minitraces.h
     src/ControllerAPI.cpp
     src/ControllerAPI.h
     src/ControlTables.cpp

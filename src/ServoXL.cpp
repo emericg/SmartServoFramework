@@ -28,6 +28,8 @@
 #include "ControlTables.h"
 #include "ControlTablesDynamixel.h"
 
+#include "minitraces.h"
+
 ServoXL::ServoXL(int dynamixel_id, int dynamixel_model, int control_mode):
     ServoDynamixel(XL320_control_table, dynamixel_id, dynamixel_model, control_mode)
 {
@@ -108,7 +110,7 @@ int ServoXL::getHardwareErrorStatus()
 
 void ServoXL::setId(int id)
 {
-    //std::cout << "[#" << servoId << "] setId(from " << servoId << " to " << id << ")" << std::endl;
+    TRACE_1(SERVO, "[#%i] setId(from %i to %i)\n", servoId, servoId, id);
 
     if (id > -1 && id < 253)
     {
@@ -122,13 +124,12 @@ void ServoXL::setId(int id)
 
 void ServoXL::setError(const int error)
 {
-    std::lock_guard <std::mutex> lock(access);
-
     // On protocol v2, the error is not a bitfield but a simple error number,
     // so we cannot keep adding errors fields
 
     if (error != 0)
     {
+        std::lock_guard <std::mutex> lock(access);
         statusError = error;
     }
 }

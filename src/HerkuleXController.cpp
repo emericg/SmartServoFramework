@@ -21,6 +21,7 @@
  */
 
 #include "HerkuleXController.h"
+#include "minitraces.h"
 
 // C++ standard libraries
 #include <iostream>
@@ -45,15 +46,13 @@ void HerkuleXController::updateInternalSettings()
 {
     if (servoSerie != SERVO_UNKNOWN)
     {
-        std::cout << std::endl;
-
         if (servoSerie >= SERVO_HERKULEX)
         {
             ackPolicy = 1;
             maxId = 253;
 
             protocolVersion = 1;
-            std::cout << "- Using HerkuleX communication protocol" << std::endl;
+            TRACE_INFO(CAPI, "- Using HerkuleX communication protocol\n");
         }
         else if (servoSerie >= SERVO_DYNAMIXEL)
         {
@@ -70,7 +69,7 @@ void HerkuleXController::updateInternalSettings()
 
                 if (serialDevice == SERIAL_USB2AX)
                 {
-                    // The USB2AX device uses the ID 253 for itself
+                    // The USB2AX adapter reserves the ID 253 for itself
                     maxId = 252;
                 }
                 else
@@ -81,17 +80,17 @@ void HerkuleXController::updateInternalSettings()
 
             if (protocolVersion == 2)
             {
-                std::cout << "- Using Dynamixel communication protocol version 2" << std::endl;
+                TRACE_INFO(CAPI, "- Using Dynamixel communication protocol version 2\n");
             }
             else
             {
-                std::cout << "- Using Dynamixel communication protocol version 1" << std::endl;
+                TRACE_INFO(CAPI, "- Using Dynamixel communication protocol version 1\n");
             }
         }
     }
     else
     {
-        std::cerr << "Warning: Unknown servo serie!" << std::endl;
+        TRACE_WARNING(CAPI, "Warning: Unknown servo serie!\n");
     }
 }
 

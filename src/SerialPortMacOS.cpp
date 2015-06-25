@@ -23,6 +23,7 @@
 #if defined(__APPLE__) || defined(__MACH__)
 
 #include "SerialPortMacOS.h"
+#include "minitraces.h"
 
 // Linux specifics
 #include <fcntl.h>
@@ -31,10 +32,10 @@
 #include <sys/ioctl.h>
 #include <sys/time.h>
 
+// "open" and "close" calls
 #include <unistd.h>
 
 // C++ standard libraries
-#include <iostream>
 #include <fstream>
 #include <cstdio>
 #include <cstring>
@@ -49,7 +50,7 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
     // Used to validate existing serial port availability (currently disabled)
     //struct serial_struct serinfo;
 
-    std::cout << "serialPortsScanner() [MacOS variant]" << std::endl;
+    TRACE_INFO(SERIAL, "serialPortsScanner() [MacOS variant]\n");
 
     // Serial ports from USB adapters (ftdi or other chips)
     for (int i = 0; i < 8; i++)
@@ -62,7 +63,6 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
             // Try to get serial infos
             //if (ioctl(fd, TIOCGSERIAL, &serinfo) > -1)
             {
-                std::cout << "- Scanning for serial port on '" << port << "' > FOUND" << std::endl;
                 availableSerialPorts.push_back(port);
                 retcode++;
             }
@@ -82,7 +82,7 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
             // Try to get serial infos
             //if (ioctl(fd, TIOCGSERIAL, &serinfo) > -1)
             {
-                std::cout << "- Scanning for serial port on '" << port << "' > FOUND" << std::endl;
+                TRACE_1(SERIAL, "- Scanning for serial port on '%s' > FOUND\n", port.c_str());
                 availableSerialPorts.push_back(port);
                 retcode++;
             }
@@ -102,7 +102,7 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
             // Try to get serial infos
             //if (ioctl(fd, TIOCGSERIAL, &serinfo) > -1)
             {
-                std::cout << "- Scanning for serial port on '" << port << "' > FOUND" << std::endl;
+                TRACE_1(SERIAL, "- Scanning for serial port on '%s' > FOUND\n", port.c_str());
                 availableSerialPorts.push_back(port);
                 retcode++;
             }
@@ -122,7 +122,7 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
             // Try to get serial infos
             //if (ioctl(fd, TIOCGSERIAL, &serinfo) > -1)
             {
-                std::cout << "- Scanning for serial port on '" << port << "' > FOUND" << std::endl;
+                TRACE_1(SERIAL, "- Scanning for serial port on '%s' > FOUND\n", port.c_str());
                 availableSerialPorts.push_back(port);
                 retcode++;
             }
@@ -164,17 +164,9 @@ SerialPortMacOS::SerialPortMacOS(std::string &devicePath, const int baud, const 
 
         setBaudRate(baud);
 
-        std::cout << "- Device name has been set to: '" << ttyDeviceName << "'" << std::endl;
-        std::cout << "- Device node has been set to: '" << ttyDevicePath << "'" << std::endl;
-        std::cout << "- Device baud rate has been set to: '" << ttyDeviceBaudRate << "'" << std::endl;
-    }
-
-    if (ttyDevicePath != "null")
-    {
-        std::cout << "- Device node has been set to: '" << ttyDevicePath << "'" << std::endl;
-
-        setBaudRate(baud);
-        std::cout << "- Device baud rate has been set to: '" << ttyDeviceBaudRate << "'" << std::endl;
+        TRACE_INFO(SERIAL, "- Device name has been set to: '%s'\n", ttyDeviceName.c_str());
+        TRACE_INFO(SERIAL, "- Device node has been set to: '%s'\n", ttyDevicePath.c_str());
+        TRACE_INFO(SERIAL, "- Device baud rate has been set to: '%i'\n", ttyDeviceBaudRate);
     }
 }
 

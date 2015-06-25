@@ -46,6 +46,7 @@ win32 {
 
 # SmartServoFramework sources
 SOURCES    += ../src/*.cpp
+HEADERS    += ../src/*.h
 
 # GUI application sources
 SOURCES    += src/main.cpp src/mainwindow.cpp src/advancescanner.cpp src/qabout.cpp src/settings.cpp

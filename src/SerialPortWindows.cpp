@@ -23,10 +23,11 @@
 #if defined(_WIN32) || defined(_WIN64)
 
 #include "SerialPortWindows.h"
+#include "minitraces.h"
 
 // C++ standard library
-#include <iostream>
 #include <string>
+#include <iostream>
 
 LPCWSTR stringToLPCWSTR(const std::string &s)
 {
@@ -47,7 +48,7 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
     int retcode = 0;
     std::string basePort = "\\\\.\\COM";
 
-    std::cout << "serialPortsScanner() [Windows variant]" << std::endl;
+    TRACE_INFO(SERIAL, "serialPortsScanner() [Windows variant]\n");
 
     // Serial ports
     for (int i = 32; i > 0; i--)
@@ -63,7 +64,7 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
         {
             CloseHandle(ghSerial_Handle);
 
-            std::cout << "- Scanning for serial port on '" << port << "' > FOUND" << std::endl;
+            TRACE_1(SERIAL, "- Scanning for serial port on '%s' > FOUND\n", port.c_str());
             availableSerialPorts.push_back(port);
             retcode++;
         }

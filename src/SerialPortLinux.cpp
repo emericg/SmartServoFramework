@@ -23,6 +23,7 @@
 #if defined(__linux__) || defined(__gnu_linux)
 
 #include "SerialPortLinux.h"
+#include "minitraces.h"
 
 // Linux specifics
 #include <fcntl.h>
@@ -35,7 +36,6 @@
 #include <unistd.h>
 
 // C++ standard libraries
-#include <iostream>
 #include <fstream>
 #include <sstream>
 #include <cstring>
@@ -50,7 +50,7 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
     // Used to validate existing serial port availability (currently disabled)
     //struct serial_struct serinfo;
 
-    std::cout << "serialPortsScanner() [Linux variant]" << std::endl;
+    TRACE_INFO(SERIAL, "serialPortsScanner() [Linux variant]\n");
 
     // Serial ports from USB adapters (/dev/ttyUSB*) (ftdi or other chips)
     for (int i = 0; i < 8; i++)
@@ -63,7 +63,7 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
             // Try to get serial infos
             //if (ioctl(fd, TIOCGSERIAL, &serinfo) > -1)
             {
-                std::cout << "- Scanning for serial port on '" << port << "' > FOUND" << std::endl;
+                TRACE_1(SERIAL, "- Scanning for serial port on '%s' > FOUND\n", port.c_str());
                 availableSerialPorts.push_back(port);
                 retcode++;
             }
@@ -83,7 +83,7 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
             // Try to get serial infos
             //if (ioctl(fd, TIOCGSERIAL, &serinfo) > -1)
             {
-                std::cout << "- Scanning for serial port on '" << port << "' > FOUND" << std::endl;
+                TRACE_1(SERIAL, "- Scanning for serial port on '%s' > FOUND\n", port.c_str());
                 availableSerialPorts.push_back(port);
                 retcode++;
             }
@@ -103,7 +103,7 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
             // Try to get serial infos
             //if (ioctl(fd, TIOCGSERIAL, &serinfo) > -1)
             {
-                std::cout << "- Scanning for serial port on '" << port << "' > FOUND" << std::endl;
+                TRACE_1(SERIAL, "- Scanning for serial port on '%s' > FOUND\n", port.c_str());
                 availableSerialPorts.push_back(port);
                 retcode++;
             }
@@ -123,7 +123,7 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
             // Try to get serial infos
             //if (ioctl(fd, TIOCGSERIAL, &serinfo) > -1)
             {
-                std::cout << "- Scanning for serial port on '" << port << "' > FOUND" << std::endl;
+                TRACE_1(SERIAL, "- Scanning for serial port on '%s' > FOUND\n", port.c_str());
                 availableSerialPorts.push_back(port);
                 retcode++;
             }
@@ -165,16 +165,16 @@ SerialPortLinux::SerialPortLinux(std::string &devicePath, const int baud, const 
 
         setBaudRate(baud);
 
-        std::cout << "- Device name has been set to: '" << ttyDeviceName << "'" << std::endl;
-        std::cout << "- Device node has been set to: '" << ttyDevicePath << "'" << std::endl;
-        std::cout << "- Device baud rate has been set to: '" << ttyDeviceBaudRate << "'" << std::endl;
+        TRACE_INFO(SERIAL, "- Device name has been set to: '%s'\n", ttyDeviceName.c_str());
+        TRACE_INFO(SERIAL, "- Device node has been set to: '%s'\n", ttyDevicePath.c_str());
+        TRACE_INFO(SERIAL, "- Device baud rate has been set to: '%i'\n", ttyDeviceBaudRate);
     }
 /*
     // Autodetect latency time value for FTDI based devices
     if (serialDevice == SERIAL_USB2DYNAMIXEL || serialDevice == SERIAL_OTHER_FTDI)
     {
         setLatency(0);
-        std::cout << "- Device latency time has been set to: '" << ttyDeviceLatencyTime << "'" << std::endl;
+        TRACE_INFO(SERIAL, "- Device latency time has been set to: '%i'\n", ttyDeviceLatencyTime);
     }
 */
 }
@@ -239,7 +239,7 @@ int SerialPortLinux::convertBaudRateFlag(int baudrate)
                 if ((baudrate > (static_cast<double>(speeds[i]) * 98.5 / 100.0)) && (baudrate < (static_cast<double>(speeds[i]) * 101.5 / 100.0)))
                 {
                     baudRateFlag = rate_to_constant(speeds[i]);
-                    std::cout << "convertBaudRateFlag(" << baudrate << ") has been set to B" << speeds[i] << " (close enough match, ±1.5%)" << std::endl;
+                    TRACE_WARNING(SERIAL, "convertBaudRateFlag(%i) has been set to B%i (close enough match, ±1.5%)\n", baudrate, speeds[i]);
 
                     break;
                 }
@@ -250,21 +250,21 @@ int SerialPortLinux::convertBaudRateFlag(int baudrate)
             {
                 ttyCustomSpeed = true;
                 baudRateFlag = B38400;
-                std::cout << "convertBaudRateFlag(" << baudrate << ") has been set to B38400 (custom speed will be used)" << std::endl;
+                TRACE_WARNING(SERIAL, "convertBaudRateFlag(%i) has been set to B38400 (custom speed will be used)\n", baudrate);
             }
         }
     }
     else
     {
-        std::cerr << "Invalid baudrate, using default value of: B1000000" << std::endl;
+        TRACE_ERROR(SERIAL, "Invalid baudrate, using default value of: B1000000\n");
     }
 
     // Fallback
     if (baudRateFlag == 0)
     {
         baudRateFlag = B1000000;
-        std::cerr << "Unable to set baud speed at " << baudrate << ": too slow!" << std::endl;
-        std::cerr << "Invalid baudrate, using default value of: B1000000" << std::endl;
+        TRACE_ERROR(SERIAL, "Unable to set baud speed at %i: too slow!\n", baudrate);
+        TRACE_ERROR(SERIAL, "Invalid baudrate, using default value of: B1000000\n");
     }
 
     return baudRateFlag;
@@ -285,7 +285,7 @@ bool SerialPortLinux::setLock()
             ttyDeviceLocked = true;
             status = true;
 
-            std::cout << "Lock set at: '" << ttyDeviceLockPath << "' for tid: '" << std::this_thread::get_id() << "'" << std::endl;
+            TRACE_INFO(SERIAL, "Lock set at: '%s' for tid: '%i'\n", ttyDeviceLockPath.c_str(), std::this_thread::get_id());
             std::fclose(lock);
         }
     }
@@ -310,13 +310,13 @@ bool SerialPortLinux::isLocked()
 
                 if (strcmp(buf, ss.str().c_str()) != 0)
                 {
-                    std::cout << "Lock from another instance found at: '" << ttyDeviceLockPath << "'" << std::endl;
+                    TRACE_WARNING(SERIAL, "Lock from another instance found at: '%s'\n", ttyDeviceLockPath.c_str());
                     status = true;
                 }
             }
             else
             {
-                std::cout << "Lock found at: '" << ttyDeviceLockPath << "'" << std::endl;
+                TRACE_WARNING(SERIAL, "Lock found at: '%s'\n", ttyDeviceLockPath.c_str());
                 status = true;
             }
 
@@ -338,7 +338,7 @@ int SerialPortLinux::openLink()
     // Check if another instance is using this port
     if (isLocked() == true)
     {
-        std::cerr << "Cannot connect to serial port: '" << ttyDevicePath << "': interface is locked!" << std::endl;
+        TRACE_ERROR(SERIAL, "Cannot connect to serial port: '%s': interface is locked!\n", ttyDevicePath.c_str());
         goto OPEN_LINK_ERROR;
     }
 
@@ -350,7 +350,7 @@ int SerialPortLinux::openLink()
     ttyDeviceFileDescriptor = open(ttyDevicePath.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
     if (ttyDeviceFileDescriptor < 0)
     {
-        std::cerr << "Unable to open device on serial port '" << ttyDevicePath << "'" << std::endl;
+        TRACE_ERROR(SERIAL, "Unable to open device on serial port: '%s'\n", ttyDevicePath.c_str());
         goto OPEN_LINK_ERROR;
     }
 
@@ -373,7 +373,7 @@ int SerialPortLinux::openLink()
 
     if (ttyDeviceBaudRate < 1)
     {
-        std::cerr << "Unable to set baud rate to '" << ttyDeviceBaudRate << "': invalid!" << std::endl;
+        TRACE_ERROR(SERIAL, "Unable to set baud rate to '%i'bps: invalid value\n", ttyDeviceBaudRate);
         goto OPEN_LINK_ERROR;
     }
 
@@ -386,7 +386,7 @@ int SerialPortLinux::openLink()
         // Get current serial_struct values
         if (ioctl(ttyDeviceFileDescriptor, TIOCGSERIAL, &serinfo) < 0)
         {
-            std::cerr << "Cannot get serial infos structure from serial port: '" << ttyDevicePath << "'!" << std::endl;
+            TRACE_ERROR(SERIAL, "Cannot get serial infos structure from serial port: '%s'\n", ttyDevicePath.c_str());
             goto OPEN_LINK_ERROR;
         }
 
@@ -409,7 +409,7 @@ int SerialPortLinux::openLink()
         // Set serial_struct
         if (ioctl(ttyDeviceFileDescriptor, TIOCSSERIAL, &serinfo) < 0)
         {
-            std::cerr << "Cannot set serial infos structure with custom baud divisor (" << ttyDeviceBaudRate << ") to serial port: '" << ttyDevicePath << "'!" << std::endl;
+            TRACE_ERROR(SERIAL, "Cannot set serial infos structure with custom baud divisor (%s) to serial port: '%s'\n", ttyDeviceBaudRate, ttyDevicePath.c_str());
             goto OPEN_LINK_ERROR;
         }
     }
@@ -463,17 +463,17 @@ int SerialPortLinux::tx(unsigned char *packet, int packetLength)
 
             if (writeStatus < 0)
             {
-                std::cerr << "Cannot write to serial port '" << ttyDevicePath << "': write() failed with error code '" << errno << "'" << std::endl;
+                TRACE_ERROR(SERIAL, "Cannot write to serial port '%s': write() failed with error code '%i'!\n", ttyDevicePath.c_str(), errno);
             }
         }
         else
         {
-            std::cerr << "Cannot write to serial port '" << ttyDevicePath << "': invalid packet buffer or size!" << std::endl;
+            TRACE_ERROR(SERIAL, "Cannot write to serial port '%s': invalid packet buffer or size!\n", ttyDevicePath.c_str());
         }
     }
     else
     {
-        std::cerr << "Cannot write to serial port '" << ttyDevicePath << "': invalid device!" << std::endl;
+        TRACE_ERROR(SERIAL, "Cannot write to serial port '%s': invalid device!\n", ttyDevicePath.c_str());
     }
 
     return writeStatus;
@@ -492,17 +492,17 @@ int SerialPortLinux::rx(unsigned char *packet, int packetLength)
 
             if (readStatus < 0)
             {
-                std::cerr << "Cannot read from serial port '" << ttyDevicePath << "': read() failed with error code '" << errno << "'" << std::endl;
+                TRACE_ERROR(SERIAL, "Cannot read from serial port '%s': read() failed with error code '%i'!\n", ttyDevicePath.c_str(), errno);
             }
         }
         else
         {
-            std::cerr << "Cannot read from serial port '" << ttyDevicePath << "': invalid packet buffer or size!" << std::endl;
+            TRACE_ERROR(SERIAL, "Cannot read from serial port '%s': invalid packet buffer or size!\n", ttyDevicePath.c_str());
         }
     }
     else
     {
-        std::cerr << "Cannot read from serial port '" << ttyDevicePath << "': invalid device!" << std::endl;
+        TRACE_ERROR(SERIAL, "Cannot read from serial port '%s': invalid device!\n", ttyDevicePath.c_str());
     }
 
     return readStatus;
@@ -561,7 +561,7 @@ void SerialPortLinux::setLatency(int latency)
         }
         else
         {
-            std::cerr << "Unable to find latency info for the current device: '" << ttyDevicePath.substr(lastbackslash+1) << "'" << std::endl;
+            TRACE_ERROR(SERIAL, "Unable to find latency info for the current device: '%s'\n", ttyDevicePath.substr(lastbackslash+1).c_str());
         }
     }
 
@@ -571,7 +571,7 @@ void SerialPortLinux::setLatency(int latency)
     }
     else
     {
-        std::cerr << "Invalid latency value: '" << latency << "'', not in ]0;128[ range." << std::endl;
+        TRACE_ERROR(SERIAL, "Invalid latency value: '%i', not in ]0;128[ range.\n", latency);
     }
 }
 

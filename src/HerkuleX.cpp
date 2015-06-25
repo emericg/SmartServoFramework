@@ -21,10 +21,10 @@
  */
 
 #include "HerkuleX.h"
+#include "minitraces.h"
 
 // C++ standard libraries
 #include <cstring>
-#include <iostream>
 #include <map>
 #include <mutex>
 
@@ -122,11 +122,11 @@ int HerkuleX::serialInitialize(std::string &devicePath, const int baud)
     if (serial != NULL && serial->openLink() == 1)
     {
         status = 1;
-        std::cout << "> Serial interface successfully opened on " << devicePath << " @ " << baud << std::endl;
+        TRACE_INFO(HKX, "> Serial interface successfully opened on '%s' @ %i bps\n", devicePath.c_str(), baud);
     }
     else
     {
-        std::cerr << "> Failed to open serial interface on " << devicePath << " @ " << baud << ". Exiting..." << std::endl;
+        TRACE_ERROR(HKX, "> Failed to open serial interface on '%s' @ %i bps. Exiting...\n", devicePath.c_str(), baud);
     }
 
     return status;
@@ -169,7 +169,7 @@ std::vector <std::string> HerkuleX::serialGetAvailableDevices()
 
     if (serial == NULL)
     {
-        std::cerr << "Serial interface is not initialized!" << std::endl;
+        TRACE_ERROR(HKX, "Serial interface is not initialized!\n");
     }
     else
     {
@@ -197,7 +197,7 @@ void HerkuleX::setAckPolicy(int ack)
     }
     else
     {
-        std::cerr << "Invalid ack policy: '" << ack << "'', not in [0;2] range." << std::endl;
+        TRACE_ERROR(HKX, "Invalid ack policy: '%i', not in [0;2] range.\n", ack);
     }
 }
 
@@ -205,7 +205,7 @@ void HerkuleX::hkx_tx_packet()
 {
     if (serial == NULL)
     {
-        std::cerr << "Serial interface is not initialized!" << std::endl;
+        TRACE_ERROR(HKX, "Serial interface is not initialized!\n");
         return;
     }
 
@@ -264,7 +264,7 @@ void HerkuleX::hkx_rx_packet()
 {
     if (serial == NULL)
     {
-        std::cerr << "Serial interface is not initialized!" << std::endl;
+        TRACE_ERROR(HKX, "Serial interface is not initialized!\n");
         return;
     }
 
@@ -399,7 +399,7 @@ void HerkuleX::hkx_txrx_packet(int ack)
 
     if (commStatus != COMM_TXSUCCESS)
     {
-        std::cerr << "Unable to sent TX packet on serial link: " << serialGetCurrentDevice() << "'" << std::endl;
+        TRACE_ERROR(HKX, "Unable to sent TX packet on serial link: '%s'\n", serialGetCurrentDevice().c_str());
         return;
     }
 
@@ -441,7 +441,7 @@ void HerkuleX::hkx_txrx_packet(int ack)
 #ifdef LATENCY_TIMER
     end = std::chrono::high_resolution_clock::now();
     int loopd = std::chrono::duration_cast<std::chrono::microseconds>(end-start).count();
-    std::cout << "TX > RX loop: " << loopd << "µs ("<< 0 << ")" << std::endl;
+    TRACE_1(HKX, "TX > RX loop: %iµs\n", loopd);
 #endif
 }
 
@@ -618,61 +618,61 @@ int HerkuleX::hkx_print_error()
         error = hkx_get_rxpacket_error();
 
         if (error & ERRBIT_VOLTAGE)
-            std::cerr << "[#" << id << "] Protocol Error: ERRBIT_VOLTAGE" << std::endl;
+            TRACE_ERROR(HKX, "[#%i] Protocol Error: ERRBIT_VOLTAGE\n", id);
         if (error & ERRBIT_ALLOWED_POT)
-            std::cerr << "[#" << id << "] Protocol Error: ERRBIT_ALLOWED_POT" << std::endl;
+            TRACE_ERROR(HKX, "[#%i] Protocol Error: ERRBIT_ALLOWED_POT\n", id);
         if (error & ERRBIT_OVERHEAT)
-            std::cerr << "[#" << id << "] Protocol Error: ERRBIT_OVERHEAT" << std::endl;
+            TRACE_ERROR(HKX, "[#%i] Protocol Error: ERRBIT_OVERHEAT\n", id);
         if (error & ERRBIT_INVALID_PKT)
         {
-            std::cerr << "[#" << id << "] Protocol Error: ERRBIT_INVALID_PKT:" << std::endl;
+            TRACE_ERROR(HKX, "[#%i] Protocol Error: ERRBIT_INVALID_PKT:\n", id);
 
             // Get status bitfield
             status = hkx_get_rxpacket_status_detail();
 
             if (status & STATBIT_CHECKSUM_FLAG)
-                std::cerr << "[#" << id << "]   Packet Error: STATBIT_CHECKSUM_FLAG" << std::endl;
+                TRACE_ERROR(HKX, "[#%i]   Packet Error: STATBIT_CHECKSUM_FLAG\n", id);
             if (status & STATBIT_UNKWOWN_CMD)
-                std::cerr << "[#" << id << "]   Packet Error: STATBIT_UNKWOWN_CMD" << std::endl;
+                TRACE_ERROR(HKX, "[#%i]   Packet Error: STATBIT_UNKWOWN_CMD\n", id);
             if (status & STATBIT_RANGE)
-                std::cerr << "[#" << id << "]   Packet Error: STATBIT_RANGE" << std::endl;
+                TRACE_ERROR(HKX, "[#%i]   Packet Error: STATBIT_RANGE\n", id);
             if (status & STATBIT_GARBAGE)
-                std::cerr << "[#" << id << "]   Packet Error: STATBIT_GARBAGE" << std::endl;
+                TRACE_ERROR(HKX, "[#%i]   Packet Error: STATBIT_GARBAGE\n", id);
         }
         if (error & ERRBIT_OVERLOAD)
-            std::cerr << "[#" << id << "] Protocol Error: ERRBIT_OVERLOAD" << std::endl;
+            TRACE_ERROR(HKX, "[#%i] Protocol Error: ERRBIT_OVERLOAD\n", id);
         if (error & ERRBIT_DRIVER_FAULT)
-            std::cerr << "[#" << id << "] Protocol Error: ERRBIT_DRIVER_FAULT" << std::endl;
+            TRACE_ERROR(HKX, "[#%i] Protocol Error: ERRBIT_DRIVER_FAULT\n", id);
         if (error & ERRBIT_EEP_REG_DIST)
-            std::cerr << "[#" << id << "] Protocol Error: ERRBIT_EEP_REG_DIST" << std::endl;
+            TRACE_ERROR(HKX, "[#%i] Protocol Error: ERRBIT_EEP_REG_DIST\n", id);
         break;
 
     case COMM_TXFAIL:
-        std::cerr << "[#" << id << "] COMM_TXFAIL: Failed transmit instruction packet!" << std::endl;
+        TRACE_ERROR(HKX, "[#%i] COMM_TXFAIL: Failed transmit instruction packet!\n", id);
         break;
 
     case COMM_TXERROR:
-        std::cerr << "[#" << id << "] COMM_TXERROR: Incorrect instruction packet!" << std::endl;
+        TRACE_ERROR(HKX, "[#%i] COMM_TXERROR: Incorrect instruction packet!\n", id);
         break;
 
     case COMM_RXFAIL:
-        std::cerr << "[#" << id << "] COMM_RXFAIL: Failed get status packet from device!" << std::endl;
+        TRACE_ERROR(HKX, "[#%i] COMM_RXFAIL: Failed get status packet from device!\n", id);
         break;
 
     case COMM_RXWAITING:
-        std::cerr << "[#" << id << "] COMM_RXWAITING: Now recieving status packet!" << std::endl;
+        TRACE_ERROR(HKX, "[#%i] COMM_RXWAITING: Now recieving status packet!\n", id);
         break;
 
     case COMM_RXTIMEOUT:
-        std::cerr << "[#" << id << "] COMM_RXTIMEOUT: Timeout reached while waiting for a status packet!" << std::endl;
+        TRACE_ERROR(HKX, "[#%i] COMM_RXTIMEOUT: Timeout reached while waiting for a status packet!\n", id);
         break;
 
     case COMM_RXCORRUPT:
-        std::cerr << "[#" << id << "] COMM_RXCORRUPT: Status packet is corrupted!" << std::endl;
+        TRACE_ERROR(HKX, "[#%i] COMM_RXCORRUPT: Status packet is corrupted!\n", id);
         break;
 
     default:
-        std::cerr << "[#" << id << "] commStatus has an unknown error code: "<< commStatus << std::endl;
+        TRACE_ERROR(HKX, "[#%i] commStatus has an unknown error code: '%i'\n", id, commStatus);
         break;
     }
 
@@ -693,34 +693,34 @@ int HerkuleX::hkx_print_status()
         status = hkx_get_rxpacket_status_detail();
 
         if (error & ERRBIT_VOLTAGE)
-            std::cerr << "[#" << id << "] Protocol Error: ERRBIT_VOLTAGE" << std::endl;
+            TRACE_ERROR(HKX, "[#%i] Protocol Error: ERRBIT_VOLTAGE\n", id);
         if (error & ERRBIT_ALLOWED_POT)
-            std::cerr << "[#" << id << "] Protocol Error: ERRBIT_ALLOWED_POT" << std::endl;
+            TRACE_ERROR(HKX, "[#%i] Protocol Error: ERRBIT_ALLOWED_POT\n", id);
         if (error & ERRBIT_OVERHEAT)
-            std::cerr << "[#" << id << "] Protocol Error: ERRBIT_OVERHEAT" << std::endl;
+            TRACE_ERROR(HKX, "[#%i] Protocol Error: ERRBIT_OVERHEAT\n", id);
         if (error & ERRBIT_INVALID_PKT)
-            std::cerr << "[#" << id << "] Protocol Error: ERRBIT_INVALID_PKT" << std::endl;
+            TRACE_ERROR(HKX, "[#%i] Protocol Error: ERRBIT_INVALID_PKT\n", id);
         if (error & ERRBIT_OVERLOAD)
-            std::cerr << "[#" << id << "] Protocol Error: ERRBIT_OVERLOAD" << std::endl;
+            TRACE_ERROR(HKX, "[#%i] Protocol Error: ERRBIT_OVERLOAD\n", id);
         if (error & ERRBIT_DRIVER_FAULT)
-            std::cerr << "[#" << id << "] Protocol Error: ERRBIT_DRIVER_FAULT" << std::endl;
+            TRACE_ERROR(HKX, "[#%i] Protocol Error: ERRBIT_DRIVER_FAULT\n", id);
         if (error & ERRBIT_EEP_REG_DIST)
-            std::cerr << "[#" << id << "] Protocol Error: ERRBIT_EEP_REG_DIST" << std::endl;
+            TRACE_ERROR(HKX, "[#%i] Protocol Error: ERRBIT_EEP_REG_DIST\n", id);
 
         if (status & STATBIT_MOVING)
-            std::cout << "[#" << id << "] Protocol Status: STATBIT_MOVING" << std::endl;
+            TRACE_INFO(HKX, "[#%i] Protocol Status: STATBIT_MOVING\n", id);
         if (status & STATBIT_INPOSITION)
-            std::cout << "[#" << id << "] Protocol Status: STATBIT_INPOSITION" << std::endl;
+            TRACE_INFO(HKX, "[#%i] Protocol Status: STATBIT_INPOSITION\n", id);
         if (status & STATBIT_CHECKSUM_FLAG)
-            std::cerr << "[#" << id << "] Packet Status: STATBIT_CHECKSUM_FLAG" << std::endl;
+            TRACE_ERROR(HKX, "[#%i] Packet Status: STATBIT_CHECKSUM_FLAG\n", id);
         if (status & STATBIT_UNKWOWN_CMD)
-            std::cerr << "[#" << id << "] Packet Status: STATBIT_UNKWOWN_CMD" << std::endl;
+            TRACE_ERROR(HKX, "[#%i] Packet Status: STATBIT_UNKWOWN_CMD\n", id);
         if (status & STATBIT_RANGE)
-            std::cerr << "[#" << id << "] Packet Status: STATBIT_RANGE" << std::endl;
+            TRACE_ERROR(HKX, "[#%i] Packet Status: STATBIT_RANGE\n", id);
         if (status & STATBIT_GARBAGE)
-            std::cerr << "[#" << id << "] Packet Status: STATBIT_GARBAGE" << std::endl;
+            TRACE_ERROR(HKX, "[#%i] Packet Status: STATBIT_GARBAGE\n", id);
         if (status & STATBIT_TORQUE_ON)
-            std::cout << "[#" << id << "] Protocol Status: STATBIT_TORQUE_ON" << std::endl;
+            TRACE_INFO(HKX, "[#%i] Protocol Status: STATBIT_TORQUE_ON\n", id);
         break;
     }
 
@@ -831,11 +831,11 @@ int HerkuleX::hkx_read_byte(const int id, const int address, const int register_
 
     if (id == 254)
     {
-        std::cerr << "Error! Cannot send 'Read' instruction to broadcast address!" << std::endl;
+        TRACE_ERROR(HKX, "Cannot send 'Read' instruction to broadcast address!\n");
     }
     else if (ack == ACK_NO_REPLY)
     {
-        std::cerr << "Error! Cannot send 'Read' instruction if ACK_NO_REPLY is set!" << std::endl;
+        TRACE_ERROR(HKX, "Cannot send 'Read' instruction if ACK_NO_REPLY is set!\n");
     }
     else
     {
@@ -890,11 +890,11 @@ int HerkuleX::hkx_read_word(const int id, const int address, const int register_
 
     if (id == 254)
     {
-        std::cerr << "Error! Cannot send 'Read' instruction to broadcast address!" << std::endl;
+        TRACE_ERROR(HKX, "Cannot send 'Read' instruction to broadcast address!\n");
     }
     else if (ack == ACK_NO_REPLY)
     {
-        std::cerr << "Error! Cannot send 'Read' instruction if ACK_NO_REPLY is set!" << std::endl;
+        TRACE_ERROR(HKX, "Cannot send 'Read' instruction if ACK_NO_REPLY is set!\n");
     }
     else
     {

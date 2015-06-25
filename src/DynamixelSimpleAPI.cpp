@@ -24,6 +24,7 @@
 #include "ControlTables.h"
 #include "ControlTablesDynamixel.h"
 #include "ControlTablesHerkuleX.h"
+#include "minitraces.h"
 
 // C++ standard libraries
 #include <cstring>
@@ -35,8 +36,6 @@ DynamixelSimpleAPI::DynamixelSimpleAPI(int servos)
 {
     if (servos != SERVO_UNKNOWN)
     {
-        std::cout << std::endl;
-
         if (servos >= SERVO_HERKULEX)
         {
             ackPolicy = 1;
@@ -58,7 +57,7 @@ DynamixelSimpleAPI::DynamixelSimpleAPI(int servos)
                 ct = DRS0101_control_table;
             }
 
-            std::cout << "- Using HerkuleX communication protocol" << std::endl;
+            TRACE_INFO(DAPI, "- Using HerkuleX communication protocol\n");
         }
         else //if (servos >= SERVO_DYNAMIXEL)
         {
@@ -97,17 +96,17 @@ DynamixelSimpleAPI::DynamixelSimpleAPI(int servos)
 
             if (protocolVersion == 2)
             {
-                std::cout << "- Using Dynamixel communication protocol version 2" << std::endl;
+                TRACE_INFO(DAPI, "- Using Dynamixel communication protocol version 2\n");
             }
             else
             {
-                std::cout << "- Using Dynamixel communication protocol version 1" << std::endl;
+                TRACE_INFO(DAPI, "- Using Dynamixel communication protocol version 1\n");
             }
         }
     }
     else
     {
-        std::cerr << "Warning: Unknown servo serie!" << std::endl;
+        TRACE_WARNING(DAPI, "Warning: Unknown servo serie!\n");
     }
 }
 
