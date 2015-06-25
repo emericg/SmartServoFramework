@@ -5,11 +5,14 @@
 build/*
 gui/build/*
 
-# Scons temporary files
-.scon*
-
 # Doxygen
 doc/html
+
+# Scons temporary project files
+.scon*
+
+# CMake temporary project files
+CMakeLists.txt.*
 
 # QtCreator temporary project files
 SmartServoFramework.config
