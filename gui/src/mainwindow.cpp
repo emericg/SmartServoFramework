@@ -41,6 +41,7 @@
 #include <QTextBrowser>
 #include <QMessageBox>
 #include <QSignalMapper>
+#include <QCloseEvent>
 
 // C++ standard libraries
 #include <iostream>
@@ -109,10 +110,18 @@ MainWindow::MainWindow(QWidget *parent):
 MainWindow::~MainWindow()
 {
     if (asw)
+    {
         asw->close();
+        delete asw;
+        asw = NULL;
+    }
 
     if (stw)
+    {
         stw->close();
+        delete stw;
+        stw = NULL;
+    }
 
     delete ui;
     delete selfRefreshTimer;
@@ -300,14 +309,21 @@ void MainWindow::scanServos()
     ui->pushScanSerial->setDisabled(true);
     ui->pushScanServo->setDisabled(true);
 
+    scan_running = true;
+
     for (SerialPortHelper *h: serialPorts)
     {
-        // Process the device only if its GUI element is 'checked'
-        if (h->deviceName->isChecked() == true)
+        if (scan_running == true)
         {
-            scanServos(h->deviceName->text());
+            // Process the device only if its GUI element is 'checked'
+            if (h->deviceName->isChecked() == true)
+            {
+                scanServos(h->deviceName->text());
+            }
         }
     }
+
+    scan_running = false;
 
     ui->pushScanSerial->setEnabled(true);
     ui->pushScanServo->setEnabled(true);
@@ -455,16 +471,10 @@ void MainWindow::scanServos(QString port_qstring)
                 }
 
                 // Scan
-                if (h->deviceController != NULL)
+                if (scan_running == true && h->deviceController != NULL)
                 {
                     if (h->deviceController->connect(port_stdstring, speed) == 1)
                     {
-                        // Lock it
-                        if (ctrl_locks)
-                        {
-                            h->deviceController->serialLockInterface_wrapper();
-                        }
-
                         // Scan for servo(s)
                         h->deviceController->autodetect(ui->rangeStart_spinBox->value(), ui->rangeStop_spinBox->value());
 
@@ -472,6 +482,11 @@ void MainWindow::scanServos(QString port_qstring)
                         while (h->deviceController->getState() >= state_started &&
                                h->deviceController->getState() < state_scanned)
                         {
+                            if (scan_running == false)
+                            {
+                                h->deviceController->disconnect();
+                            }
+
                             std::chrono::milliseconds waittime(static_cast<int>(4));
                             std::this_thread::sleep_for(waittime);
                             qApp->processEvents();
@@ -528,12 +543,21 @@ void MainWindow::scanServos(QString port_qstring)
                             // Exit 'scan_rounds'
                             break;
                         }
+                        else
+                        {
+                            h->deviceController->disconnect();
+                        }
                     }
                     else
                     {
                         scan_results = -1;
                     }
                 }
+            }
+
+            if (scan_running == false)
+            {
+                h->deviceController->disconnect();
             }
 
             // Indicate that we are no longer scanning
@@ -750,14 +774,42 @@ void MainWindow::changeEvent(QEvent *event)
         {
             //std::cout << "Windows focus changed: pausing controllers threads" << std::endl;
 
+            // Pause controllers
             for (SerialPortHelper *p: serialPorts)
             {
-                if (p->deviceController)
+                if (p->deviceController != NULL)
                 {
                     p->deviceController->pauseThread();
                 }
             }
         }
+    }
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    bool ready = true;
+
+    // Check if a controller is not currently busy scanning
+    for (auto p: serialPorts)
+    {
+        if (p->deviceController != NULL)
+        {
+            if (!(p->deviceController->getState() == state_stopped ||
+                  p->deviceController->getState() == state_ready ||
+                  p->deviceController->getState() == state_ready))
+            {
+                ready = false;
+                scan_running = false;
+            }
+        }
+    }
+
+    // If a scan is in progress, ignore the close event until the scanning has stopped
+    if (ready == false)
+    {
+        event->ignore();
+        scan_running = false;
     }
 }
 
