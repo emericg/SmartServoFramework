@@ -66,6 +66,8 @@ class MainWindow : public QMainWindow
         ControllerAPI *deviceController;
     };
 
+    bool scan_running = false;
+
     //! List of all serial ports (gui elements, controller) handled by the application
     std::vector <SerialPortHelper *> serialPorts;
 
@@ -90,8 +92,8 @@ class MainWindow : public QMainWindow
     void toggleServoPanel(bool status);
 
     void resizeEvent(QResizeEvent *event);
-
     void changeEvent(QEvent *event);
+    void closeEvent(QCloseEvent *event);
 
 private slots:
     void about();

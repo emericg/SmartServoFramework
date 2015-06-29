@@ -102,8 +102,8 @@ protected:
     int ttyDeviceBaudRate;         //!< Speed of the serial link in baud. Default is 1M/s.
     int ttyDeviceLatencyTime;      //!< The value of this timer (in millisecond) should be carefully choosed depending on your OS and the speed of your serial port implementation.
 
+    int ttyDeviceLockMode;         //!< Method used to lock a serial device.
     std::string ttyDeviceLockPath; //!< The path to a "lock file" to lock serial interface against concurrent use by multiple programs.
-    bool ttyDeviceLocked;          //!< Set to true if a "lock file" has been set by this SerialPort instance.
 
     int serialDevice;              //!< Specify (if known) what TTL converter is in use. This information will be used to compute correct baudrate.
     int servoDevices;              //!< Specify if we use this serial port with Dynamixel or HerkuleX devices (using ::ServoDevices_e values). This information will be used to compute correct baudrate.
@@ -143,12 +143,28 @@ protected:
     int checkBaudRate(const int baud);
 
     /*!
-     * \brief Check if the serial link has been "file locked" by another instance.
-     * \return True is a file lock has been found for this serial link, false otherwise.
+     * \brief Check if the serial device has been locked by another instance or program.
+     * \return True if a lock has been found for this serial device, false otherwise.
      *
-     * \note This functionnality is only implemented on the Linux backend.
+     * \note This functionnality is (currently) only implemented on the Linux backend.
      */
     virtual bool isLocked();
+
+    /*!
+     * \brief Set a lock for this serial device.
+     * \return True if a lock has been placed successfully for this serial device, false otherwise.
+     *
+     * \note This functionnality is (currently) only implemented on the Linux backend.
+     */
+    virtual bool setLock();
+
+    /*!
+     * \brief Remove the lock we put on this serial device.
+     * \return True if the lock has been removed successfully for this serial device, false otherwise.
+     *
+     * \note This functionnality is (currently) only implemented on the Linux backend.
+     */
+    virtual bool removeLock();
 
 public:
     /*!
@@ -212,14 +228,6 @@ public:
      * \brief Flush non-read input data.
      */
     virtual void flush() = 0;
-
-    /*!
-     * \brief Set a "file lock" for this serial link.
-     * \return True is a file lock has been created successfully this serial link, false otherwise.
-     *
-     * \note This functionnality is only implemented on the Linux backend.
-     */
-    virtual bool setLock();
 
     /*!
      * \brief Set the serial port latency for packet reception timeout.

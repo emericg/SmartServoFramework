@@ -179,11 +179,6 @@ std::vector <std::string> HerkuleX::serialGetAvailableDevices()
     return devices;
 }
 
-void HerkuleX::serialLockInterface()
-{
-    serial->setLock();
-}
-
 void HerkuleX::serialSetLatency(int latency)
 {
     serial->setLatency(latency);
@@ -227,16 +222,24 @@ void HerkuleX::hkx_tx_packet()
         return;
     }
 
-    // Generate a checksum and write in into the packet
     int txPacketSize = hkx_get_txpacket_size();
-    unsigned short crc = hkx_checksum_packet(txPacket, txPacketSize);
+    unsigned char txPacketSizeSent = 0;
 
-    // Write checksum into the last two bytes of the packet
+    // Generate a checksum and write it into the last two bytes of the packet
+    unsigned short crc = hkx_checksum_packet(txPacket, txPacketSize);
     txPacket[PKT_CHECKSUM1] = get_lowbyte(crc);
     txPacket[PKT_CHECKSUM2] = get_highbyte(crc);
 
     // Send packet
-    unsigned char txPacketSizeSent = serial->tx(txPacket, txPacketSize);
+    if (serial != NULL)
+    {
+        txPacketSizeSent = serial->tx(txPacket, txPacketSize);
+    }
+    else
+    {
+        TRACE_ERROR(HKX, "Serial interface has been destroyed!\n");
+        return;
+    }
 
     // Check if we send the whole packet
     if (txPacketSize != txPacketSizeSent)
@@ -291,26 +294,35 @@ void HerkuleX::hkx_rx_packet()
     }
 
     // Receive packet
-    int nRead = serial->rx((unsigned char*)&rxPacket[rxPacketSizeReceived], rxPacketSize - rxPacketSizeReceived);
-    rxPacketSizeReceived += nRead;
-
-    // Check if we received the whole packet
-    if (rxPacketSizeReceived < rxPacketSize)
+    int nRead = 0;
+    if (serial != NULL)
     {
-        if (serial->checkTimeOut() == 1)
-        {
-            if (rxPacketSizeReceived == 0)
-            {
-                commStatus = COMM_RXTIMEOUT;
-            }
-            else
-            {
-                commStatus = COMM_RXCORRUPT;
-            }
+        nRead = serial->rx((unsigned char*)&rxPacket[rxPacketSizeReceived], rxPacketSize - rxPacketSizeReceived);
+        rxPacketSizeReceived += nRead;
 
-            commLock = 0;
-            return;
+        // Check if we received the whole packet
+        if (rxPacketSizeReceived < rxPacketSize)
+        {
+            if (serial->checkTimeOut() == 1)
+            {
+                if (rxPacketSizeReceived == 0)
+                {
+                    commStatus = COMM_RXTIMEOUT;
+                }
+                else
+                {
+                    commStatus = COMM_RXCORRUPT;
+                }
+
+                commLock = 0;
+                return;
+            }
         }
+    }
+    else
+    {
+        TRACE_ERROR(HKX, "Serial interface has been destroyed!\n");
+        return;
     }
 
     // Find packet header
@@ -399,7 +411,7 @@ void HerkuleX::hkx_txrx_packet(int ack)
 
     if (commStatus != COMM_TXSUCCESS)
     {
-        TRACE_ERROR(HKX, "Unable to sent TX packet on serial link: '%s'\n", serialGetCurrentDevice().c_str());
+        TRACE_ERROR(HKX, "Unable to send TX packet on serial link: '%s'\n", serialGetCurrentDevice().c_str());
         return;
     }
 

@@ -113,7 +113,6 @@ public:
     std::string serialGetCurrentDevice_wrapper();
     std::vector <std::string> serialGetAvailableDevices_wrapper();
     void serialSetLatency_wrapper(int latency);
-    void serialLockInterface_wrapper();
 };
 
 /** @}*/

@@ -30,7 +30,7 @@ IF(CMAKE_BUILD_TYPE STREQUAL "Release")
     MESSAGE(STATUS "* This is a RELEASE build. You can change it using -DCMAKE_BUILD_TYPE=Debug.")
     SET(ENABLE_DEBUG 0)
     SET(CMAKE_BUILD_TYPE release)
-    # Custom cflags? Use "release mode" and "-O2" for maximum speed.
+    # Custom cflags? Use "release mode" and "-O2" for better speed.
     SET(CMAKE_CXX_FLAGS "-O2 -Wall -std=c++11 -Wno-unused -Wno-unused-parameter")
 
 ELSE(CMAKE_BUILD_TYPE STREQUAL "Release")
@@ -111,19 +111,19 @@ SET(SmartServoFramework_SRC
 
 # Build library
 ADD_LIBRARY(SmartServoFramework_shared SHARED ${SmartServoFramework_SRC})
-#TARGET_LINK_LIBRARIES(SmartServoFramework_shared)
+TARGET_LINK_LIBRARIES(SmartServoFramework_shared lockdev)
 SET_TARGET_PROPERTIES(SmartServoFramework_shared PROPERTIES OUTPUT_NAME SmartServoFramework)
 
 #IF(CMAKE_BUILD_MODE STREQUAL "Static")
 #    MESSAGE("** Static library will be built")
 #    ADD_LIBRARY(SmartServoFramework_static STATIC ${SmartServoFramework_SRC})
-#    TARGET_LINK_LIBRARIES(SmartServoFramework_static ${JPEG_LIBRARY} ${PNG_LIBRARY})
+#    TARGET_LINK_LIBRARIES(SmartServoFramework_static lockdev)
 #    SET_TARGET_PROPERTIES(SmartServoFramework_static PROPERTIES OUTPUT_NAME SmartServoFramework)
 #ENDIF(CMAKE_BUILD_MODE STREQUAL "Static")
 
 # Install the shared library and its header into the system (optional step, requires root credentials)
 ###############################################################################
 
-# relative to $<INSTALL_PREFIX>
+# Relative to $<INSTALL_PREFIX>
 INSTALL(TARGETS SmartServoFramework_shared DESTINATION lib/)
 INSTALL(DIRECTORY src/ DESTINATION include/SmartServoFramework FILES_MATCHING PATTERN "*.h")

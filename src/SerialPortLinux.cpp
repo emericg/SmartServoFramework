@@ -32,6 +32,11 @@
 #include <sys/ioctl.h>
 #include <sys/time.h>
 
+// Locks support
+#include <lockdev.h>
+#include <sys/file.h>
+#define LOCK_LOCKDEV
+
 // "open" and "close" calls
 #include <unistd.h>
 
@@ -45,93 +50,54 @@
 int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
 {
     int retcode = 0;
-    std::string basePort = "/dev/tty";
-
-    // Used to validate existing serial port availability (currently disabled)
-    //struct serial_struct serinfo;
+    std::string portBase = "/dev/tty";
+    std::string portVariations[4] = {"USB", "ACM", "S", ""};
 
     TRACE_INFO(SERIAL, "serialPortsScanner() [Linux variant]\n");
 
     // Serial ports from USB adapters (/dev/ttyUSB*) (ftdi or other chips)
-    for (int i = 0; i < 8; i++)
-    {
-        std::string port = basePort + "USB" + std::to_string(i);
-
-        int fd = open(port.c_str(), O_RDWR | O_NONBLOCK);
-        if (fd > 0)
-        {
-            // Try to get serial infos
-            //if (ioctl(fd, TIOCGSERIAL, &serinfo) > -1)
-            {
-                TRACE_1(SERIAL, "- Scanning for serial port on '%s' > FOUND\n", port.c_str());
-                availableSerialPorts.push_back(port);
-                retcode++;
-            }
-
-            close(fd);
-        }
-    }
-
     // Serial ports from USB adapters (/dev/ttyACM*) ("abstract control model")
-    for (int i = 0; i < 8; i++)
-    {
-        std::string port = basePort + "ACM" + std::to_string(i);
-
-        int fd = open(port.c_str(), O_RDWR | O_NONBLOCK);
-        if (fd > 0)
-        {
-            // Try to get serial infos
-            //if (ioctl(fd, TIOCGSERIAL, &serinfo) > -1)
-            {
-                TRACE_1(SERIAL, "- Scanning for serial port on '%s' > FOUND\n", port.c_str());
-                availableSerialPorts.push_back(port);
-                retcode++;
-            }
-
-            close(fd);
-        }
-    }
-/*
     // Regular Serial ports from motherboards (/dev/ttyS*)
-    for (int i = 0; i < 8; i++)
-    {
-        std::string port = basePort + "S" + std::to_string(i);
-
-        int fd = open(port.c_str(), O_RDWR | O_NONBLOCK);
-        if (fd > 0)
-        {
-            // Try to get serial infos
-            //if (ioctl(fd, TIOCGSERIAL, &serinfo) > -1)
-            {
-                TRACE_1(SERIAL, "- Scanning for serial port on '%s' > FOUND\n", port.c_str());
-                availableSerialPorts.push_back(port);
-                retcode++;
-            }
-
-            close(fd);
-        }
-    }
-
     // Regular Serial ports from motherboards (/dev/tty*)
-    for (int i = 0; i < 8; i++)
+
+    for (int i = 0; i < 2; i++)
     {
-        std::string port = basePort + std::to_string(i);
-
-        int fd = open(port.c_str(), O_RDWR | O_NONBLOCK);
-        if (fd > 0)
+        for (int j = 0; j < 8; j++)
         {
-            // Try to get serial infos
-            //if (ioctl(fd, TIOCGSERIAL, &serinfo) > -1)
-            {
-                TRACE_1(SERIAL, "- Scanning for serial port on '%s' > FOUND\n", port.c_str());
-                availableSerialPorts.push_back(port);
-                retcode++;
-            }
+            std::string portPath = portBase + portVariations[i] + std::to_string(j);
+            std::string portName = "tty" + portVariations[i] + std::to_string(j);
 
-            close(fd);
+            // Open arguments:
+            // O_RDONLY: Request opening the file read/write
+            // O_NOCTTY: If the named file is a terminal device, don't make it the controlling terminal for the process
+
+            int fd = open(portPath.c_str(), O_RDONLY | O_NOCTTY);
+            if (fd > 0)
+            {
+#ifdef LOCK_LOCKDEV
+                if (dev_testlock(portName.c_str()) == 0)
+#endif
+                {
+                    // Used to validate existing serial port availability (currently disabled)
+                    //struct serial_struct serinfo;
+                    //if (ioctl(fd, TIOCGSERIAL, &serinfo) > -1)
+                    {
+                        TRACE_INFO(SERIAL, "- Scanning for serial port on '%s' > FOUND\n", portPath.c_str());
+                        availableSerialPorts.push_back(portPath);
+                        retcode++;
+                    }
+                }
+#ifdef LOCK_LOCKDEV
+                else
+                {
+                    TRACE_WARNING(SERIAL, "- Scanning for serial port on '%s' > LOCKED\n", portPath.c_str());
+                }
+#endif
+                close(fd);
+            }
         }
     }
-*/
+
     return retcode;
 }
 
@@ -158,9 +124,9 @@ SerialPortLinux::SerialPortLinux(std::string &devicePath, const int baud, const 
         {
             ttyDeviceName = ttyDevicePath.substr(found + 1);
 
-            ttyDeviceLockPath = "/tmp/";
+            //ttyDeviceLockPath = "/var/lock/lockdev/LCK..";
+            ttyDeviceLockPath = "/tmp/LCK..";
             ttyDeviceLockPath += ttyDeviceName;
-            ttyDeviceLockPath += ".lock";
         }
 
         setBaudRate(baud);
@@ -270,34 +236,12 @@ int SerialPortLinux::convertBaudRateFlag(int baudrate)
     return baudRateFlag;
 }
 
-bool SerialPortLinux::setLock()
-{
-    bool status = false;
-
-    if (ttyDeviceLockPath != "null")
-    {
-        FILE *lock = std::fopen(ttyDeviceLockPath.c_str(), "w");
-        if (lock)
-        {
-            std::stringstream ss;
-            ss << std::this_thread::get_id();
-            fputs(ss.str().c_str(), lock);
-            ttyDeviceLocked = true;
-            status = true;
-
-            TRACE_INFO(SERIAL, "Lock set at: '%s' for tid: '%i'\n", ttyDeviceLockPath.c_str(), std::this_thread::get_id());
-            std::fclose(lock);
-        }
-    }
-
-    return status;
-}
-
 bool SerialPortLinux::isLocked()
 {
     bool status = false;
 
-    if (ttyDeviceLockPath != "null")
+#ifdef LOCK_LOCKFILE
+    if (ttyDeviceLockPath != "null" && ttyDeviceLockPath.empty() == false)
     {
         FILE *lock = std::fopen(ttyDeviceLockPath.c_str(), "r");
         if (lock)
@@ -310,19 +254,177 @@ bool SerialPortLinux::isLocked()
 
                 if (strcmp(buf, ss.str().c_str()) != 0)
                 {
-                    TRACE_WARNING(SERIAL, "Lock from another instance found at: '%s'\n", ttyDeviceLockPath.c_str());
+                    TRACE_WARNING(SERIAL, "- Device '%s' is LOCKED\n", ttyDevicePath.c_str());
+                    std::cout << "Lock from another instance or program found at: '" << ttyDeviceLockPath << "'" << std::endl;
                     status = true;
                 }
             }
             else
             {
-                TRACE_WARNING(SERIAL, "Lock found at: '%s'\n", ttyDeviceLockPath.c_str());
+                TRACE_WARNING(SERIAL, "- Device '%s' is LOCKED\n", ttyDevicePath.c_str());
+                std::cout << "Lock found at: '" << ttyDeviceLockPath << "'" << std::endl;
                 status = true;
             }
 
             std::fclose(lock);
         }
     }
+#endif
+
+#ifdef LOCK_LOCKDEV
+    if (dev_testlock(ttyDeviceName.c_str()) != 0)
+    {
+        status = true;
+        TRACE_WARNING(SERIAL, "- Device '%s' is LOCKED\n", ttyDevicePath.c_str());
+    }
+#endif
+
+#ifdef LOCK_FLOCK
+    int fd = open(ttyDevicePath.c_str(), O_RDONLY);
+    if (fd > 0)
+    {
+        close(fd);
+    }
+    else
+    {
+        status = true;
+        TRACE_WARNING(SERIAL, "- Device '%s' is LOCKED\n", ttyDevicePath.c_str());
+    }
+#endif
+
+    return status;
+}
+
+bool SerialPortLinux::setLock()
+{
+    bool status = false;
+
+    // First, check if device locking has been enabled for this link
+    if (ttyDeviceLockMode > 0)
+    {
+#ifdef LOCK_LOCKFILE
+        if (ttyDeviceLockPath != "null")
+        {
+            // Write file
+            FILE *lock = std::fopen(ttyDeviceLockPath.c_str(), "w");
+            if (lock)
+            {
+                // Write PID inside
+                std::stringstream ss;
+                ss << std::this_thread::get_id(); // use pid_t/getpid() instead?
+                std::fputs(ss.str().c_str(), lock);
+                std::fclose(lock);
+
+                status = true;
+                TRACE_INFO(SERIAL, "- Device lock set at: '%s' for tid: '%i'\n", ttyDeviceLockPath.c_str(), std::this_thread::get_id());
+            }
+            else
+            {
+                TRACE_ERROR(SERIAL, "- Unable to set lockfile '%s':  do you have necessary permissions to write in this directory?\n", ttyDeviceLockPath.c_str());
+            }
+        }
+#endif
+
+#ifdef LOCK_LOCKDEV
+        if (dev_lock(ttyDeviceName.c_str()) == 0)
+        {
+            status = true;
+            TRACE_INFO(SERIAL, "- Device lock set at: '%s' for tid: '%i'\n", ttyDeviceLockPath.c_str(), std::this_thread::get_id());
+        }
+        else
+        {
+            TRACE_ERROR(SERIAL, "- Unable to use lockdev for '%s':  do you have necessary permissions?\n", ttyDevicePath.c_str());
+
+        }
+#endif
+
+#ifdef LOCK_FLOCK
+        //LOCK_EX: Place an exclusive lock. Only one process may hold an exclusive lock for a given file at a given time.
+        //LOCK_NB: A call to flock() may block if an incompatible lock is held by another process. To make a nonblocking request, include LOCK_NB (by ORing) with any of the above operations.
+
+        if (flock(ttyDeviceFileDescriptor, LOCK_EX | LOCK_NB) == 0)
+        {
+            status = true;
+            TRACE_INFO(SERIAL, "- Device lock set for '%s'\n", ttyDevicePath.c_str());
+        }
+        else
+        {
+            TRACE_ERROR(SERIAL, "- Unable to use flock for '%s':  do you have necessary permissions?\n", ttyDevicePath.c_str());
+
+            if (errno == EBADF)
+            {
+                std::cerr << "EBADF" << std::endl;
+            }
+            if (errno == EINTR)
+            {
+                std::cerr << "EINTR" << std::endl;
+            }
+            if (errno == EINVAL)
+            {
+                std::cerr << "EINVAL" << std::endl;
+            }
+            if (errno == ENOLCK)
+            {
+                std::cerr << "ENOLCK" << std::endl;
+            }
+            if (errno == EWOULDBLOCK)
+            {
+                std::cerr << "EWOULDBLOCK" << std::endl;
+            }
+        }
+#endif
+    }
+
+    return status;
+}
+
+bool SerialPortLinux::removeLock()
+{
+    bool status = false;
+
+#ifdef LOCK_LOCKFILE
+    if (ttyDeviceLockPath != "null" && ttyDeviceLockPath.empty() == false)
+    {
+        if (std::remove(ttyDeviceLockPath.c_str()) == 0)
+        {
+            status = true;
+            TRACE_INFO(SERIAL, "Lock removed for device '%s'\n", ttyDevicePath.c_str());
+        }
+        else
+        {
+            TRACE_ERROR(SERIAL, "Error when unlocking port '%s'!\n", ttyDevicePath.c_str());
+        }
+    }
+#endif
+
+#ifdef LOCK_LOCKDEV
+    pid_t pid = getpid();
+    if (dev_unlock(ttyDeviceName.c_str(), pid) == 0)
+    {
+        status = true;
+        TRACE_INFO(SERIAL, "Lock removed for device '%s'\n", ttyDevicePath.c_str());
+
+    }
+    else
+    {
+        TRACE_ERROR(SERIAL, "Error when unlocking port '%s'! error: %i!\n", ttyDevicePath.c_str(), errno);
+    }
+#endif
+
+#ifdef LOCK_FLOCK
+    //LOCK_UN: Remove an existing lock held by this process.
+    //LOCK_NB: A call to flock() may block if an incompatible lock is held by another process. To make a nonblocking request, include LOCK_NB (by ORing) with any of the above operations.
+
+    if (flock(ttyDeviceFileDescriptor, LOCK_UN | LOCK_NB) == 0)
+    {
+        status = true;
+        TRACE_INFO(SERIAL, "Lock removed for device '%s'\n", ttyDevicePath);
+    }
+    else
+    {
+        TRACE_ERROR(SERIAL, "Error when unlocking port '%s'! error: %i!\n", ttyDevicePath, errno);
+    }
+#endif
 
     return status;
 }
@@ -342,17 +444,20 @@ int SerialPortLinux::openLink()
         goto OPEN_LINK_ERROR;
     }
 
-    // O_RDWR: ?
-    // O_NOCTTY: if the named file is a terminal device, don't make it the controlling terminal for the process
-    // O_NONBLOCK: non-blocking reads
-
     // Open tty device
-    ttyDeviceFileDescriptor = open(ttyDevicePath.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
+    // O_RDWR: Request opening the file read/write
+    // O_NOCTTY: If the named file is a terminal device, don't make it the controlling terminal for the process
+    // O_EXLOCK: Acquire an exclusive lock on the file. Note: not available on linux.
+
+    ttyDeviceFileDescriptor = open(ttyDevicePath.c_str(), O_RDWR | O_NOCTTY);
     if (ttyDeviceFileDescriptor < 0)
     {
         TRACE_ERROR(SERIAL, "Unable to open device on serial port: '%s'\n", ttyDevicePath.c_str());
         goto OPEN_LINK_ERROR;
     }
+
+    // Lock device
+    setLock();
 
     // ttyDeviceBaudRateFlag: flag from termios.h
     // CS8: setting the character size
@@ -444,10 +549,7 @@ void SerialPortLinux::closeLink()
         close(ttyDeviceFileDescriptor);
         ttyDeviceFileDescriptor = -1;
 
-        if (ttyDeviceLocked == true && ttyDeviceLockPath != "null")
-        {
-            std::remove(ttyDeviceLockPath.c_str());
-        }
+        removeLock();
     }
 }
 

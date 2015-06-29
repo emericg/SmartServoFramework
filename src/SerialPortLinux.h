@@ -32,6 +32,8 @@
  * \param[out] availableSerialPorts: A list of serial port nodes (ex: /dev/ttyUSB0).
  * \return The number of serial ports found.
  *
+ * \todo Use stat() instead of open().
+ *
  * Scans for /dev/ttyUSB* and /dev/ttyACM* ports. Regular serial devices on
  * /dev/ttyS* are not scanned as they are always considered as valid even with
  * no USB2Dynamixel / USB2AX or TTL adapter attached.
@@ -75,12 +77,28 @@ class SerialPortLinux: public SerialPort
     int convertBaudRateFlag(int baudrate);
 
     /*!
-     * \brief Check if the serial link has been "file locked" by another instance.
-     * \return True is a file lock has been found for this serial link, false otherwise.
-     *
-     * Use /tmp directory for lock storage.
+     * \brief Check if the serial device has been locked by another instance or program.
+     * \return True if a lock has been found for this serial device, false otherwise.
      */
     bool isLocked();
+
+    /*!
+     * \brief Set a lock for this serial device.
+     * \return True if a lock has been placed successfully for this serial device, false otherwise.
+     *
+     * We have several ways of doing that:
+     * - Use a file lock in "/tmp" directory. Will only work accross SmartServoFramework instances.
+     * - Use a file lock in "/var/lock/lockdev" directory. Almost standard way of locking devices, but need "lock" group credential.
+     * - Use a file lock with lockdev library. Standard way of locking devices, but need "lockdev" library.
+     * - Use flock(). Should work on Linux and Mac if carefully implemented. Not working ATM.
+     */
+    bool setLock();
+
+    /*!
+     * \brief Remove the lock we put on this serial device.
+     * \return True if the lock has been removed successfully for this serial device, false otherwise.
+     */
+    bool removeLock();
 
 public:
     /*!
@@ -108,17 +126,9 @@ public:
      * \brief switchHighSpeed() should enable ASYNC_LOW_LATENCY flag and reduce latency_timer per tty device (need root credential)
      * \return True in case of success.
      * \todo This function is not implemented yet.
+     * \todo latency_timer value auto-detection doesn't produce intended result yet.
      */
     bool switchHighSpeed();
-
-    /*!
-     * \brief Set a "file lock" for this serial link.
-     * \return True is a file lock has been created successfully this serial link, false otherwise.
-     * \todo latency_timer value auto-detection doesn't produce intended result yet.
-     *
-     * Use /tmp directory for lock storage.
-     */
-    bool setLock();
 
     void setLatency(int latency);
     void setTimeOut(int packetLength);

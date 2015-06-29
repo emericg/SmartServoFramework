@@ -96,10 +96,14 @@ void HerkuleXController::updateInternalSettings()
 
 int HerkuleXController::connect(std::string &devicePath, const int baud, const int serialDevice)
 {
-    this->serialDevice = serialDevice;
+    // Make sure the serial link is not already connected
+    disconnect();
 
+    // Update device infos
+    this->serialDevice = serialDevice;
     updateInternalSettings();
 
+    // Connection
     int retcode = serialInitialize(devicePath, baud);
 
     if (retcode == 1)
@@ -113,10 +117,6 @@ int HerkuleXController::connect(std::string &devicePath, const int baud, const i
 void HerkuleXController::disconnect()
 {
     stopThread();
-
-    unregisterServos_internal();
-    clearMessageQueue();
-
     serialTerminate();
 }
 
@@ -133,11 +133,6 @@ std::vector <std::string> HerkuleXController::serialGetAvailableDevices_wrapper(
 void HerkuleXController::serialSetLatency_wrapper(int latency)
 {
     serialSetLatency(latency);
-}
-
-void HerkuleXController::serialLockInterface_wrapper()
-{
-    serialLockInterface();
 }
 
 void HerkuleXController::autodetect_internal(int start, int stop)

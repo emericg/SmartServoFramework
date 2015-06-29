@@ -127,10 +127,14 @@ void DynamixelController::changeProtocolVersion(int protocol)
 
 int DynamixelController::connect(std::string &devicePath, const int baud, const int serialDevice)
 {
-    this->serialDevice = serialDevice;
+    // Make sure the serial link is not already connected
+    disconnect();
 
+    // Update device infos
+    this->serialDevice = serialDevice;
     updateInternalSettings();
 
+    // Connection
     int retcode = serialInitialize(devicePath, baud);
 
     if (retcode == 1)
@@ -144,10 +148,6 @@ int DynamixelController::connect(std::string &devicePath, const int baud, const 
 void DynamixelController::disconnect()
 {
     stopThread();
-
-    unregisterServos_internal();
-    clearMessageQueue();
-
     serialTerminate();
 }
 
@@ -164,11 +164,6 @@ std::vector <std::string> DynamixelController::serialGetAvailableDevices_wrapper
 void DynamixelController::serialSetLatency_wrapper(int latency)
 {
     serialSetLatency(latency);
-}
-
-void DynamixelController::serialLockInterface_wrapper()
-{
-    serialLockInterface();
 }
 
 void DynamixelController::autodetect_internal(int start, int stop)

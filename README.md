@@ -68,7 +68,7 @@ This framework can be used with any combination of RS-232 ports, USB to TTL adap
 
 First make sure that you can access your serial port:
 * If you are running Windows you will need to install the [FTDI driver for the USB2Dynamixel device](http://www.robotis.com/xe/download_en/646927). You may also need other drivers depending on your adapter (like the [CP210x driver](http://www.silabs.com/products/mcu/pages/usbtouartbridgevcpdrivers.aspx), the [USB2AX driver](https://raw.githubusercontent.com/Xevel/usb2ax/master/firmware/lufa_usb2ax/USB2AX.inf), or maybe the official [FTDI driver](http://www.ftdichip.com/FTDrivers.htm)).
-* If you are running Linux, your will need to add your user account in the `dialout` and/or `uucp` groups in order to access serial port with this command (and root credentials): `# useradd -G dialout,uucp $USER`
+* If you are running Linux, you will need special permissions from the `uucp` and/or `dialout` groups in order to access serial ports. You can add your user account to these groups with this command (you'll need root credentials for this operation): `# useradd -G uucp,dialout $USER`
 
 Latency over the serial port will limit the number of instructions you can send each second even more than bandwidth limitations.
 To minimize traffic on your serial port:  
