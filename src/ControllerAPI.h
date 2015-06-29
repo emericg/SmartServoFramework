@@ -200,14 +200,14 @@ public:
      * You need to call this function after an autodetection or registering servos
      * manually, to let the controller some time to process new devices.
      * This is a blocking function that only return after the controller has been
-     * proven ready, or a 6s timeout hit.
+     * proven ready, or a custom duration timeout hit.
      */
     bool waitUntilReady();
+    bool waitUntil(int state, int timeout = 4);
 
     virtual std::string serialGetCurrentDevice_wrapper() = 0;
     virtual std::vector <std::string> serialGetAvailableDevices_wrapper() = 0;
     virtual void serialSetLatency_wrapper(int latency) = 0;
-    virtual void serialLockInterface_wrapper() = 0;
 
     /*!
      * \brief clearMessageQueue

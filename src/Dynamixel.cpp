@@ -233,11 +233,6 @@ std::vector <std::string> Dynamixel::serialGetAvailableDevices()
     return devices;
 }
 
-void Dynamixel::serialLockInterface()
-{
-    serial->setLock();
-}
-
 void Dynamixel::serialSetLatency(int latency)
 {
     serial->setLatency(latency);
@@ -286,7 +281,17 @@ void Dynamixel::dxl_tx_packet()
 
     // Send packet
     unsigned char txPacketSize = dxl_get_txpacket_size();
-    unsigned char txPacketSizeSent = serial->tx(txPacket, txPacketSize);
+    unsigned char txPacketSizeSent = 0;
+
+    if (serial != NULL)
+    {
+        txPacketSizeSent = serial->tx(txPacket, txPacketSize);
+    }
+    else
+    {
+        std::cerr << "Serial interface has been destroyed!" << std::endl;
+        return;
+    }
 
     // Check if we send the whole packet
     if (txPacketSize != txPacketSizeSent)
@@ -356,27 +361,36 @@ void Dynamixel::dxl_rx_packet()
         rxPacketSizeReceived = 0;
     }
 
-    // Receive packet
-    int nRead = serial->rx((unsigned char*)&rxPacket[rxPacketSizeReceived], rxPacketSize - rxPacketSizeReceived);
-    rxPacketSizeReceived += nRead;
-
-    // Check if we received the whole packet
-    if (rxPacketSizeReceived < rxPacketSize)
+    int nRead = 0;
+    if (serial != NULL)
     {
-        if (serial->checkTimeOut() == 1)
-        {
-            if (rxPacketSizeReceived == 0)
-            {
-                commStatus = COMM_RXTIMEOUT;
-            }
-            else
-            {
-                commStatus = COMM_RXCORRUPT;
-            }
+        // Receive packet
+        nRead = serial->rx((unsigned char*)&rxPacket[rxPacketSizeReceived], rxPacketSize - rxPacketSizeReceived);
+        rxPacketSizeReceived += nRead;
 
-            commLock = 0;
-            return;
+        // Check if we received the whole packet
+        if (rxPacketSizeReceived < rxPacketSize)
+        {
+            if (serial->checkTimeOut() == 1)
+            {
+                if (rxPacketSizeReceived == 0)
+                {
+                    commStatus = COMM_RXTIMEOUT;
+                }
+                else
+                {
+                    commStatus = COMM_RXCORRUPT;
+                }
+
+                commLock = 0;
+                return;
+            }
         }
+    }
+    else
+    {
+        std::cerr << "Serial interface has been destroyed!" << std::endl;
+        return;
     }
 
     // Find packet header
@@ -510,7 +524,7 @@ void Dynamixel::dxl_txrx_packet(int ack)
 
     if (commStatus != COMM_TXSUCCESS)
     {
-        std::cerr << "Unable to sent TX packet on serial link: " << serialGetCurrentDevice() << "'" << std::endl;
+        std::cerr << "Unable to send TX packet on serial link: " << serialGetCurrentDevice() << "'" << std::endl;
         return;
     }
 

@@ -44,7 +44,7 @@ if sys.platform.startswith('linux') == True:
         exit(0)
 
     # Additional libraries
-    libraries = ['pthread']
+    libraries = ['pthread', 'lockdev']
     libraries_paths = ['']
 
 elif sys.platform.startswith('win') == True:
@@ -98,8 +98,8 @@ src_framework = [env.Object("src/SerialPort.cpp"), env.Object("src/SerialPortLin
 # Build examples
 ###############################################################################
 
-env.Program(target = 'build/ex_basic_test', source = ["examples/ex_basic_test.cpp", src_framework])
-env.Program(target = 'build/ex_simple', source = ["examples/ex_simple.cpp"] + src_framework)
+env.Program(target = 'build/ex_basic_test', source = ["examples/ex_basic_test.cpp", src_framework], LIBS = libraries, LIBPATH = libraries_paths)
+env.Program(target = 'build/ex_simple', source = ["examples/ex_simple.cpp"] + src_framework, LIBS = libraries, LIBPATH = libraries_paths)
 env.Program(target = 'build/ex_simple_threaded', source = ["examples/ex_simple_threaded.cpp"] + src_framework, LIBS = libraries, LIBPATH = libraries_paths)
 env.Program(target = 'build/ex_controller', source = ["examples/ex_controller.cpp"] + src_framework, LIBS = libraries, LIBPATH = libraries_paths)
 env.Program(target = 'build/ex_sinus_control', source = ["examples/ex_sinus_control.cpp"] + src_framework, LIBS = libraries + ["opencv_core", "opencv_highgui"], LIBPATH = libraries_paths)

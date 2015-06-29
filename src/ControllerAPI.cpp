@@ -101,13 +101,19 @@ void ControllerAPI::stopThread()
     {
         std::cout << ">> Stopping thread (id: " << syncloopThread.get_id() << ")..." << std::endl;
 
+        // Send termination message
         miniMessages m;
         memset(&m, 0, sizeof(m));
         m.msg = ctrl_state_stop;
         sendMessage(&m);
 
-        clearErrorCount();
+        // Wait for the thread to finish
         syncloopThread.join();
+
+        // Cleanup controller
+        unregisterServos_internal();
+        clearMessageQueue();
+        clearErrorCount();
         setState(state_stopped);
     }
 }
@@ -135,43 +141,48 @@ int ControllerAPI::getState()
 
 bool ControllerAPI::waitUntilReady()
 {
+    return waitUntil(state_started, 6);
+}
+
+bool ControllerAPI::waitUntil(int state, int timeout)
+{
     // First, check if the controller is running, otherwise there is not point waiting for it to be ready...
-    if (getState() < state_started)
+    if (getState() < state)
     {
         std::cerr << "waitUntilReady(): controller is not running!" << std::endl;
         return false;
     }
 
-    std::chrono::seconds timeout(static_cast<int>(6));
-    std::chrono::milliseconds waittime(static_cast<int>(2));
+    std::chrono::seconds timeout_s(static_cast<int>(timeout));
+    std::chrono::milliseconds wait_ms(static_cast<int>(2));
     std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
 
     // Wait until the controller is at least in 'scanned' state, but not ready
     // because if there is no results and hence it will never be ready
     while (getState() < state_scanned)
     {
-        if ((start + timeout) < std::chrono::system_clock::now())
+        if ((start + timeout_s) < std::chrono::system_clock::now())
         {
             std::cerr << "waitUntilReady(): timeout!" << std::endl;
             return false;
         }
 
-        std::this_thread::sleep_for(waittime);
+        std::this_thread::sleep_for(wait_ms);
     }
 
     // If we do have results after the scan, we want to wait for every device to be properly read
     if (getServos().size() > 0)
     {
         // Wait until the controller is in 'ready' state
-        while (getState() < state_ready)
+        while (getState() < state)
         {
-            if ((start + timeout) < std::chrono::system_clock::now())
+            if ((start + timeout_s) < std::chrono::system_clock::now())
             {
                 std::cerr << "waitUntilReady(): timeout!" << std::endl;
                 return false;
             }
 
-            std::this_thread::sleep_for(waittime);
+            std::this_thread::sleep_for(wait_ms);
         }
     }
 

@@ -20,6 +20,7 @@ unix {
     *-g++* {
         message("Using GCC")
         QMAKE_CXXFLAGS += -pthread
+        QMAKE_LFLAGS   += -llockdev
 
         if: system("gcc -dumpversion | grep 4.[0-5]") {
             error("You need at least GCC 4.6+ to use C++11 features")

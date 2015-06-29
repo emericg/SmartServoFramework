@@ -130,6 +130,13 @@ int SerialPortWindows::openLink()
     // Make sure no tty connection is already running
     closeLink();
 
+    // Check if another instance is using this port
+    if (isLocked() == true)
+    {
+        std::cerr << "Cannot connect to serial port: '" << ttyDevicePath << "': interface is locked!" << std::endl;
+        goto OPEN_LINK_ERROR;
+    }
+
     // Open tty device
 #ifdef UNICODE
     ttyDeviceFileDescriptor = CreateFileW(stringToLPCWSTR(ttyDeviceName), GENERIC_READ|GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -141,6 +148,9 @@ int SerialPortWindows::openLink()
         std::cerr << "Unable to open device: '" << ttyDeviceName << "' error: '" << GetLastError() << "'" << std::endl;
         goto OPEN_LINK_ERROR;
     }
+
+    // Lock device
+    setLock();
 
     // Setting communication property
     Dcb.DCBlength = sizeof(DCB);
@@ -246,6 +256,8 @@ void SerialPortWindows::closeLink()
         this->flush();
         CloseHandle(ttyDeviceFileDescriptor);
         ttyDeviceFileDescriptor = INVALID_HANDLE_VALUE;
+
+        removeLock();
     }
 }
 

@@ -108,13 +108,13 @@ SET(SmartServoFramework_SRC
 
 # Build library
 ADD_LIBRARY(SmartServoFramework_shared SHARED ${SmartServoFramework_SRC})
-#TARGET_LINK_LIBRARIES(SmartServoFramework_shared)
+TARGET_LINK_LIBRARIES(SmartServoFramework_shared lockdev)
 SET_TARGET_PROPERTIES(SmartServoFramework_shared PROPERTIES OUTPUT_NAME SmartServoFramework)
 
 #IF(CMAKE_BUILD_MODE STREQUAL "Static")
 #    MESSAGE("** Static library will be built")
 #    ADD_LIBRARY(SmartServoFramework_static STATIC ${SmartServoFramework_SRC})
-#    TARGET_LINK_LIBRARIES(SmartServoFramework_static)
+#    TARGET_LINK_LIBRARIES(SmartServoFramework_static lockdev)
 #    SET_TARGET_PROPERTIES(SmartServoFramework_static PROPERTIES OUTPUT_NAME SmartServoFramework)
 #ENDIF(CMAKE_BUILD_MODE STREQUAL "Static")
 

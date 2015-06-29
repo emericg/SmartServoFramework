@@ -36,8 +36,8 @@ SerialPort::SerialPort(const int serialDevice, const int servoDevices):
     ttyDevicePath("null"),
     ttyDeviceBaudRate(1000000),
     ttyDeviceLatencyTime(LATENCY_TIME_DEFAULT),
+    ttyDeviceLockMode(0),
     ttyDeviceLockPath("null"),
-    ttyDeviceLocked(false),
     serialDevice(serialDevice),
     servoDevices(servoDevices),
     packetStartTime(0.0),
@@ -204,6 +204,11 @@ bool SerialPort::isLocked()
 }
 
 bool SerialPort::setLock()
+{
+    return false;
+}
+
+bool SerialPort::removeLock()
 {
     return false;
 }
