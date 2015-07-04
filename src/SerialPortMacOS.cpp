@@ -45,92 +45,55 @@
 int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
 {
     int retcode = 0;
-    std::string basePort = "/dev/tty";
-
-    // Used to validate existing serial port availability (currently disabled)
-    //struct serial_struct serinfo;
+    std::string portBase = "/dev/";
+    std::string portVariations[5] = {"cu", "ttyUSB", "ttyACM", "ttyS", ""};
 
     TRACE_INFO(SERIAL, "serialPortsScanner() [MacOS variant]\n");
 
-    // Serial ports from USB adapters (ftdi or other chips)
-    for (int i = 0; i < 8; i++)
+    // MacOSX variant? (/dev/cu*)
+    // Serial ports from USB adapters (/dev/ttyUSB*) (ftdi or other chips)
+    // Serial ports from USB adapters (/dev/ttyACM*) ("abstract control model")
+    // Regular Serial ports from motherboards (/dev/ttyS*)
+    // Regular Serial ports from motherboards (/dev/tty*)
+
+    for (int i = 0; i < 3; i++)
     {
-        std::string port = basePort + "USB" + std::to_string(i);
-
-        int fd = open(port.c_str(), O_RDWR | O_NONBLOCK);
-        if (fd > 0)
+        for (int j = 0; j < 8; j++)
         {
-            // Try to get serial infos
-            //if (ioctl(fd, TIOCGSERIAL, &serinfo) > -1)
-            {
-                availableSerialPorts.push_back(port);
-                retcode++;
-            }
+            std::string portPath = portBase + portVariations[i] + std::to_string(j);
+            std::string portName = "tty" + portVariations[i] + std::to_string(j);
 
-            close(fd);
+            // Open arguments:
+            // O_RDONLY: Request opening the file read/write
+            // O_NOCTTY: If the named file is a terminal device, don't make it the controlling terminal for the process
+
+            int fd = open(portPath.c_str(), O_RDONLY | O_NOCTTY);
+            if (fd > 0)
+            {
+#ifdef LOCK_LOCKDEV
+                if (dev_testlock(portName.c_str()) == 0)
+#endif
+                {
+                    // Used to validate existing serial port availability (currently disabled)
+                    //struct serial_struct serinfo;
+                    //if (ioctl(fd, TIOCGSERIAL, &serinfo) > -1)
+                    {
+                        TRACE_INFO(SERIAL, "- Scanning for serial port on '%s' > FOUND\n", portPath.c_str());
+                        availableSerialPorts.push_back(portPath);
+                        retcode++;
+                    }
+                }
+#ifdef LOCK_LOCKDEV
+                else
+                {
+                    TRACE_WARNING(SERIAL, "- Scanning for serial port on '%s' > LOCKED\n", portPath.c_str());
+                }
+#endif
+                close(fd);
+            }
         }
     }
 
-    // Serial ports from USB adapters ("abstract control model")
-    for (int i = 0; i < 8; i++)
-    {
-        std::string port = basePort + "ACM" + std::to_string(i);
-
-        int fd = open(port.c_str(), O_RDWR | O_NONBLOCK);
-        if (fd > 0)
-        {
-            // Try to get serial infos
-            //if (ioctl(fd, TIOCGSERIAL, &serinfo) > -1)
-            {
-                TRACE_1(SERIAL, "- Scanning for serial port on '%s' > FOUND\n", port.c_str());
-                availableSerialPorts.push_back(port);
-                retcode++;
-            }
-
-            close(fd);
-        }
-    }
-/*
-    // Regular Serial ports from motherboards (with "S" prefix)
-    for (int i = 0; i < 8; i++)
-    {
-        std::string port = basePort + "S" + std::to_string(i);
-
-        int fd = open(port.c_str(), O_RDWR | O_NONBLOCK);
-        if (fd > 0)
-        {
-            // Try to get serial infos
-            //if (ioctl(fd, TIOCGSERIAL, &serinfo) > -1)
-            {
-                TRACE_1(SERIAL, "- Scanning for serial port on '%s' > FOUND\n", port.c_str());
-                availableSerialPorts.push_back(port);
-                retcode++;
-            }
-
-            close(fd);
-        }
-    }
-
-    // Regular Serial ports from motherboards
-    for (int i = 0; i < 8; i++)
-    {
-        std::string port = basePort + std::to_string(i);
-
-        int fd = open(port.c_str(), O_RDWR | O_NONBLOCK);
-        if (fd > 0)
-        {
-            // Try to get serial infos
-            //if (ioctl(fd, TIOCGSERIAL, &serinfo) > -1)
-            {
-                TRACE_1(SERIAL, "- Scanning for serial port on '%s' > FOUND\n", port.c_str());
-                availableSerialPorts.push_back(port);
-                retcode++;
-            }
-
-            close(fd);
-        }
-    }
-*/
     return retcode;
 }
 
