@@ -326,7 +326,7 @@ void DynamixelController::run()
                 break;
 
             default:
-                std::cerr << "[DXL] Unknown message type: '" << m.msg << "'" << std::endl;
+                TRACE_WARNING(DXL, "Unknown message type: '%i'\n", m.msg);
                 break;
             }
 
@@ -489,7 +489,7 @@ void DynamixelController::run()
                     // Count must be high enough to avoid "false positive": device producing a lot of errors but still present on the serial link
                     if (s->getErrorCount() > 16)
                     {
-                        std::cerr << "Device #" << id << " has an error count too high and is going to be unregistered from its controller on '" << serialGetCurrentDevice() << "'..." << std::endl;
+                        TRACE_ERROR(DXL, "Device #%i has an error count too high and is going to be unregistered from its controller on '%s'...\n", id, serialGetCurrentDevice().c_str());
                         unregisterServo(s);
                         continue;
                     }
@@ -731,9 +731,13 @@ void DynamixelController::run()
 
 #ifdef LATENCY_TIMER
         if ((loopd / 1000.0) > syncloopDuration)
-            std::cerr << "Sync loop duration: " << (loopd / 1000.0) << "ms of the " << syncloopDuration << "ms budget." << std::endl;
+        {
+            TRACE_WARNING(DXL, "Sync loop duration: %fms of the %fms budget.\n", (loopd / 1000.0), syncloopDuration);
+        }
         else
-            std::cout << "Sync loop duration: " << (loopd / 1000.0) << "ms of the " << syncloopDuration << "ms budget." << std::endl;
+        {
+            TRACE_INFO(DXL, "Sync loop duration: %fms of the %fms budget.\n", (loopd / 1000.0), syncloopDuration);
+        }
 #endif
 
         if (waitd > 0.0)
@@ -743,5 +747,5 @@ void DynamixelController::run()
         }
     }
 
-    std::cout << ">> THREAD (tid: " << std::this_thread::get_id() << "') termination by 'loop exit'" << std::endl;
+    TRACE_INFO(DXL, ">> THREAD (tid: '%i') termination by 'loop exit'\n", std::this_thread::get_id());
 }

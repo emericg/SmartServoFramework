@@ -21,12 +21,12 @@
  */
 
 #include "ControllerAPI.h"
+#include "minitraces.h"
 
 // C standard library
 #include <string.h>
 
 // C++ standard libraries
-#include <iostream>
 #include <chrono>
 #include <thread>
 
@@ -72,7 +72,7 @@ void ControllerAPI::pauseThread()
 
     if (ctrlState >= state_started && syncloopThread.joinable() == 1)
     {
-        std::cout << ">> Pausing thread (id: " << syncloopThread.get_id() << ")..." << std::endl;
+        TRACE_INFO(CAPI, ">> Pausing thread (id: %i)...\n", syncloopThread.get_id());
 
         miniMessages m;
         memset(&m, 0, sizeof(m));
@@ -84,14 +84,14 @@ void ControllerAPI::pauseThread()
     }
     else if (ctrlState == state_paused && syncloopThread.joinable() == 0)
     {
-        std::cout << ">> Unpausing thread..." << std::endl;
+        TRACE_INFO(CAPI, ">> Unpausing thread (id: %i)...\n", syncloopThread.get_id());
 
         setState(state_ready);
         syncloopThread = std::thread(&ControllerAPI::run, this);
     }
     else
     {
-        std::cerr << "Cannot pause/unpause thread (id: " << syncloopThread.get_id() << "): unknown state (" << ctrlState << ")" << std::endl;
+        TRACE_ERROR(CAPI, ">> Cannot pause/unpause thread (id: %i): unknown controller state (%i)...\n", syncloopThread.get_id(), ctrlState);
     }
 }
 
@@ -99,7 +99,7 @@ void ControllerAPI::stopThread()
 {
     if (getState() != state_stopped && syncloopThread.joinable() == 1)
     {
-        std::cout << ">> Stopping thread (id: " << syncloopThread.get_id() << ")..." << std::endl;
+        TRACE_INFO(CAPI, ">> Stopping thread (id: %i)...\n", syncloopThread.get_id());
 
         // Send termination message
         miniMessages m;
@@ -129,7 +129,7 @@ void ControllerAPI::setState(const int state)
     }
     else
     {
-        std::cerr << "setState(" << state << ") error: invalid state!" << std::endl;
+        TRACE_ERROR(CAPI, ">> setState(%i) error: invalid state!\n", state);
     }
 }
 
@@ -149,7 +149,7 @@ bool ControllerAPI::waitUntil(int state, int timeout)
     // First, check if the controller is running, otherwise there is not point waiting for it to be ready...
     if (getState() < state)
     {
-        std::cerr << "waitUntilReady(): controller is not running!" << std::endl;
+        TRACE_ERROR(CAPI, "waitUntilReady(): controller is not running!\n");
         return false;
     }
 
@@ -163,7 +163,7 @@ bool ControllerAPI::waitUntil(int state, int timeout)
     {
         if ((start + timeout_s) < std::chrono::system_clock::now())
         {
-            std::cerr << "waitUntilReady(): timeout!" << std::endl;
+            TRACE_ERROR(CAPI, "waitUntilReady(): timeout!\n");
             return false;
         }
 
@@ -178,7 +178,7 @@ bool ControllerAPI::waitUntil(int state, int timeout)
         {
             if ((start + timeout_s) < std::chrono::system_clock::now())
             {
-                std::cerr << "waitUntilReady(): timeout!" << std::endl;
+                TRACE_ERROR(CAPI, "waitUntilReady(): timeout!\n");
                 return false;
             }
 
@@ -228,11 +228,11 @@ void ControllerAPI::registerServo_internal(Servo *servo)
             {
                 if ((*it)->getId() == (*servo).getId())
                 {
-                    std::cerr << "Unable to register servo #" << (*servo).getId() << ": already registered!" << std::endl;
+                    TRACE_ERROR(CAPI, "Unable to register servo #%i: already registered!\n", (*servo).getId());
                     return;
                 }
             }
-            std::cerr << "Registering servo #" << (*servo).getId() << std::endl;
+            TRACE_INFO(CAPI, "Registering servo #%i\n", (*servo).getId());
 
             // Add servo to the controller vector
             servoList.push_back(servo);
@@ -245,12 +245,12 @@ void ControllerAPI::registerServo_internal(Servo *servo)
         }
         else
         {
-            std::cerr << "Cannot register a device while scanning!" << std::endl;
+            TRACE_ERROR(CAPI, "Cannot register a device: controller is scanning!\n");
         }
     }
     else
     {
-        std::cerr << "Cannot register a device: controller is not running!" << std::endl;
+        TRACE_ERROR(CAPI, "Cannot register a device: controller is not running!\n");
     }
 }
 
@@ -326,7 +326,7 @@ int ControllerAPI::delayedAddServos_internal(std::chrono::time_point <std::chron
 {
     if (delay < std::chrono::system_clock::now())
     {
-        std::cout << "Adding back servo #" << id << " to its controller" << std::endl;
+        TRACE_INFO(CAPI, "Adding back servo #%i to its controller\n", id);
         servoListLock.lock();
 
         syncList.push_back(id);
@@ -376,14 +376,14 @@ void ControllerAPI::sendMessage(miniMessages *m)
 {
     if (getState() >= state_started)
     {
-        //std::cout << "> sendMiniMessage() " << std::endl;
+        TRACE_3(CAPI, "> sendMessage()\n");
 
         std::lock_guard <std::mutex> lock(m_mutex);
         m_queue.push_back(*m);
     }
     else
     {
-        std::cerr << "> sendMiniMessage() error: controller's thread not running!" << std::endl;
+        TRACE_ERROR(CAPI, "sendMiniMessage() error: controller's thread not running\n");
     }
 }
 

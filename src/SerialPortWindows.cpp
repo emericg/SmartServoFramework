@@ -27,7 +27,7 @@
 
 // C++ standard library
 #include <string>
-#include <iostream>
+#include <vector>
 
 LPCWSTR stringToLPCWSTR(const std::string &s)
 {
@@ -101,9 +101,9 @@ SerialPortWindows::SerialPortWindows(std::string &devicePath, const int baud, co
 
         setBaudRate(baud);
 
-        std::cout << "- Device name has been set to: '" << ttyDeviceName << "'" << std::endl;
-        std::cout << "- Device port has been set to: '" << ttyDevicePath << "'" << std::endl;
-        std::cout << "- Device baud rate has been set to: '" << ttyDeviceBaudRate << "'" << std::endl;
+        TRACE_INFO(SERIAL, "- Device name has been set to: '%s'\n", ttyDeviceName.c_str());
+        TRACE_INFO(SERIAL, "- Device node has been set to: '%s'\n", ttyDevicePath.c_str());
+        TRACE_INFO(SERIAL, "- Device baud rate has been set to: '%i'\n", ttyDeviceBaudRate);
     }
 }
 
@@ -134,7 +134,7 @@ int SerialPortWindows::openLink()
     // Check if another instance is using this port
     if (isLocked() == true)
     {
-        std::cerr << "Cannot connect to serial port: '" << ttyDevicePath << "': interface is locked!" << std::endl;
+        TRACE_ERROR(SERIAL, "Cannot connect to serial port: '%s': interface is locked!\n", ttyDevicePath.c_str());
         goto OPEN_LINK_ERROR;
     }
 
@@ -146,7 +146,7 @@ int SerialPortWindows::openLink()
 #endif
     if (ttyDeviceFileDescriptor == INVALID_HANDLE_VALUE)
     {
-        std::cerr << "Unable to open device: '" << ttyDeviceName << "' error: '" << GetLastError() << "'" << std::endl;
+        TRACE_ERROR(SERIAL, "Unable to open device: '%s' error: '%i'\n", ttyDeviceName.c_str(), GetLastError());
         goto OPEN_LINK_ERROR;
     }
 
@@ -157,7 +157,7 @@ int SerialPortWindows::openLink()
     Dcb.DCBlength = sizeof(DCB);
     if (GetCommState(ttyDeviceFileDescriptor, &Dcb) == FALSE)
     {
-        std::cerr << "Unable to get communication state on '" << ttyDevicePath << "'" << std::endl;
+        TRACE_ERROR(SERIAL, "Unable to get communication state on '%s'\n", ttyDevicePath.c_str());
         goto OPEN_LINK_ERROR;
     }
 
@@ -183,32 +183,32 @@ int SerialPortWindows::openLink()
 
     if (SetCommState(ttyDeviceFileDescriptor, &Dcb) == FALSE)
     {
-        std::cerr << "Unable to set communication state on '" << ttyDevicePath << "'" << std::endl;
+        TRACE_ERROR(SERIAL, "Unable to set communication state on '%s'\n", ttyDevicePath.c_str());
         goto OPEN_LINK_ERROR;
     }
     if (SetCommMask(ttyDeviceFileDescriptor, 0) == FALSE) // Not using Comm event
     {
-        std::cerr << "Unable to set communication mask on '" << ttyDevicePath << "'" << std::endl;
+        TRACE_ERROR(SERIAL, "Unable to set communication mask on '%s'\n", ttyDevicePath.c_str());
         goto OPEN_LINK_ERROR;
     }
     if (SetupComm(ttyDeviceFileDescriptor, 8192, 8192) == FALSE) // Buffer size (Rx,Tx)
     {
-        std::cerr << "Unable to setup communication on '" << ttyDevicePath << "'" << std::endl;
+        TRACE_ERROR(SERIAL, "Unable to setup communication on '%s'\n", ttyDevicePath.c_str());
         goto OPEN_LINK_ERROR;
     }
     if (PurgeComm(ttyDeviceFileDescriptor, PURGE_TXABORT|PURGE_TXCLEAR|PURGE_RXABORT|PURGE_RXCLEAR) == FALSE) // Clear buffer
     {
-        std::cerr << "Unable to purge communication on '" << ttyDevicePath << "'" << std::endl;
+        TRACE_ERROR(SERIAL, "Unable to purge communication on '%s'\n", ttyDevicePath.c_str());
         goto OPEN_LINK_ERROR;
     }
     if (ClearCommError(ttyDeviceFileDescriptor, &dwError, NULL) == FALSE)
     {
-        std::cerr << "Unable to clear communication errors on '" << ttyDevicePath << "'" << std::endl;
+        TRACE_ERROR(SERIAL, "Unable to clear communication errors on '%s'\n", ttyDevicePath.c_str());
         goto OPEN_LINK_ERROR;
     }
     if (GetCommTimeouts(ttyDeviceFileDescriptor, &Timeouts) == FALSE)
     {
-        std::cerr << "Unable to get communication timeouts on '" << ttyDevicePath << "'" << std::endl;
+        TRACE_ERROR(SERIAL, "Unable to get communication timeouts on '%s'\n", ttyDevicePath.c_str());
         goto OPEN_LINK_ERROR;
     }
 
@@ -222,7 +222,7 @@ int SerialPortWindows::openLink()
 
     if (SetCommTimeouts(ttyDeviceFileDescriptor, &Timeouts) == FALSE)
     {
-        std::cerr << "Unable to set communication timeouts on '" << ttyDevicePath << "'" << std::endl;
+        TRACE_ERROR(SERIAL, "Unable to set communication timeouts on '%s'\n", ttyDevicePath.c_str());
         goto OPEN_LINK_ERROR;
     }
 
@@ -280,7 +280,7 @@ int SerialPortWindows::tx(unsigned char *packet, int packetLength)
             dwError = GetLastError();
             if (dwError)
             {
-                std::cerr << "SerialPortWindows::tx(dwError: " << dwError << ")" << std::endl;
+                TRACE_ERROR(SERIAL, "SerialPortWindows::tx(dwError: %i)\n", dwError);
                 ClearCommError(ttyDeviceFileDescriptor, &dwError, &comstat);
             }
 
@@ -291,17 +291,17 @@ int SerialPortWindows::tx(unsigned char *packet, int packetLength)
             }
             else
             {
-                std::cerr << "Cannot write to serial port '" << ttyDevicePath << "': WriteFile() failed!" << std::endl;
+                TRACE_ERROR(SERIAL, "Cannot write to serial port '%s': WriteFile() failed!\n", ttyDevicePath.c_str());
             }
         }
         else
         {
-            std::cerr << "Cannot write to serial port '" << ttyDevicePath << "': invalid packet buffer or size!" << std::endl;
+            TRACE_ERROR(SERIAL, "Cannot write to serial port '%s': invalid packet buffer or size!\n", ttyDevicePath.c_str());
         }
     }
     else
     {
-        std::cerr << "Cannot write to serial port '" << ttyDevicePath << "': invalid device!" << std::endl;
+        TRACE_ERROR(SERIAL, "Cannot write to serial port '%s': invalid device!\n", ttyDevicePath.c_str());
     }
 
     return status;
@@ -325,7 +325,7 @@ int SerialPortWindows::rx(unsigned char *packet, int packetLength)
             dwError = GetLastError();
             if (dwError)
             {
-                std::cerr << "SerialPortWindows::rx(dwError: " << dwError << ")" << std::endl;
+                TRACE_ERROR(SERIAL, "SerialPortWindows::rx(dwError: %i)\n", dwError);
                 ClearCommError(ttyDeviceFileDescriptor, &dwError, &comstat);
             }
 
@@ -336,17 +336,17 @@ int SerialPortWindows::rx(unsigned char *packet, int packetLength)
             }
             else
             {
-                std::cerr << "Cannot read from serial port '" << ttyDevicePath << "': ReadFile() failed!" << std::endl;
+                TRACE_ERROR(SERIAL, "Cannot read from serial port '%s': ReadFile() failed!\n", ttyDevicePath.c_str());
             }
         }
         else
         {
-            std::cerr << "Cannot read from serial port '" << ttyDevicePath << "': invalid packet buffer or size!" << std::endl;
+            TRACE_ERROR(SERIAL, "Cannot read from serial port '%s': ReadFile() invalid packet buffer or size!\n", ttyDevicePath.c_str());
         }
     }
     else
     {
-        std::cerr << "Cannot read from serial port '" << ttyDevicePath << "': invalid device!" << std::endl;
+        TRACE_ERROR(SERIAL, "Cannot read from serial port '%s': invalid device!\n", ttyDevicePath.c_str());
     }
 
     return readStatus;

@@ -21,14 +21,15 @@
  */
 
 #include "ServoDynamixel.h"
+#include "minitraces.h"
 
 #include "Dynamixel.h"
 #include "DynamixelTools.h"
 #include "ControlTablesDynamixel.h"
 
-#include <iostream>
 #include <thread>
 #include <cstring>
+#include <iostream>
 
 ServoDynamixel::ServoDynamixel(const int control_table[][8], int dynamixel_id, int dynamixel_model, int speed_mode):
     Servo()
@@ -178,11 +179,11 @@ void ServoDynamixel::waitMovmentCompletion(int timeout_ms)
     {
         access.unlock();
 
-        //std::cout << "waitMovmentCompletion (" << margin_dw << " <  pos:" << c << "  < " << margin_up << ")" << std::endl;
+        TRACE_2(DXL, "waitMovmentCompletion(%i < pos: %i < %i)\n", margin_dw, c, margin_up);
 
         if ((start + timeout_duration) < std::chrono::system_clock::now())
         {
-            std::cerr << "waitMovmentCompletion(): timeout!" << std::endl;
+            TRACE_WARNING(DXL, "waitMovmentCompletion() timeout!\n", margin_dw, c, margin_up);
             return;
         }
 
@@ -379,7 +380,7 @@ void ServoDynamixel::setGoalPosition(int pos)
     }
     else
     {
-        std::cerr << "[#" << servoId << "] setGoalPosition(" << registerTableValues[gid(REG_CURRENT_POSITION)] << " > " << pos << ") [VALUE ERROR]" << std::endl;
+        TRACE_ERROR(DXL, "[#%i] setGoalPosition(%i > %i) [VALUE ERROR]\n", servoId, registerTableValues[gid(REG_CURRENT_POSITION)], pos);
     }
 }
 
@@ -425,7 +426,7 @@ void ServoDynamixel::setGoalPosition(int pos, int time_budget_ms)
         }
         else
         {
-            std::cerr << "[#" << servoId << "] setGoalPosition(" << registerTableValues[gid(REG_CURRENT_POSITION)] << " > " << pos << ") [VALUE ERROR]" << std::endl;
+            TRACE_ERROR(DXL, "[#%i] setGoalPosition(%i > %i) [VALUE ERROR]\n", servoId, registerTableValues[gid(REG_CURRENT_POSITION)], pos);
         }
     }
 }
@@ -445,7 +446,7 @@ void ServoDynamixel::moveGoalPosition(int move)
         {
             int mod = newpos % steps;
 
-            std::cerr << "[#" << servoId << "]  moveGoalPosition([" << curr << " > " << newpos << "] [VALUE ERROR] with modulo: " << mod <<  std::endl;
+            TRACE_ERROR(DXL, "[#%i]  moveGoalPosition([%i > %i]) [VALUE ERROR] with modulo: %i\n", servoId, curr, newpos, mod);
         }
     }
 

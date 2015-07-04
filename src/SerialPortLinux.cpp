@@ -45,6 +45,7 @@
 #include <sstream>
 #include <cstring>
 #include <string>
+#include <vector>
 #include <thread>
 
 int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
@@ -191,7 +192,7 @@ int SerialPortLinux::convertBaudRateFlag(int baudrate)
 
         if (baudRateFlag != 0)
         {
-            //std::cout << "convertBaudRateFlag(" << baudrate << ") has been set to " << baudrate << " (exact match)" << std::endl;
+            TRACE_1(SERIAL, "convertBaudRateFlag(%i) has been set to %i (exact match)\n", baudrate, baudrate);
         }
         else
         {
@@ -206,7 +207,6 @@ int SerialPortLinux::convertBaudRateFlag(int baudrate)
                 {
                     baudRateFlag = rate_to_constant(speeds[i]);
                     TRACE_WARNING(SERIAL, "convertBaudRateFlag(%i) has been set to B%i (close enough match, ±1.5%)\n", baudrate, speeds[i]);
-
                     break;
                 }
             }
@@ -255,14 +255,14 @@ bool SerialPortLinux::isLocked()
                 if (strcmp(buf, ss.str().c_str()) != 0)
                 {
                     TRACE_WARNING(SERIAL, "- Device '%s' is LOCKED\n", ttyDevicePath.c_str());
-                    std::cout << "Lock from another instance or program found at: '" << ttyDeviceLockPath << "'" << std::endl;
+                    TRACE_1(SERIAL, "Lock from another instance or program found at: '%s'\n", ttyDeviceLockPath.c_str());
                     status = true;
                 }
             }
             else
             {
                 TRACE_WARNING(SERIAL, "- Device '%s' is LOCKED\n", ttyDevicePath.c_str());
-                std::cout << "Lock found at: '" << ttyDeviceLockPath << "'" << std::endl;
+                TRACE_1(SERIAL, "Lock found at: '%s'\n", ttyDeviceLockPath.c_str());
                 status = true;
             }
 
@@ -353,23 +353,23 @@ bool SerialPortLinux::setLock()
 
             if (errno == EBADF)
             {
-                std::cerr << "EBADF" << std::endl;
+                TRACE_ERROR(SERIAL, "EBADF\n");
             }
             if (errno == EINTR)
             {
-                std::cerr << "EINTR" << std::endl;
+                TRACE_ERROR(SERIAL, "EINTR\n");
             }
             if (errno == EINVAL)
             {
-                std::cerr << "EINVAL" << std::endl;
+                TRACE_ERROR(SERIAL, "EINVAL\n");
             }
             if (errno == ENOLCK)
             {
-                std::cerr << "ENOLCK" << std::endl;
+                TRACE_ERROR(SERIAL, "ENOLCK\n");
             }
             if (errno == EWOULDBLOCK)
             {
-                std::cerr << "EWOULDBLOCK" << std::endl;
+                TRACE_ERROR(SERIAL, "EWOULDBLOCK\n");
             }
         }
 #endif
