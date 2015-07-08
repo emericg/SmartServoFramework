@@ -21,13 +21,14 @@
  */
 
 #include "ServoHerkuleX.h"
+#include "minitraces.h"
 
 #include "HerkuleX.h"
 #include "HerkuleXTools.h"
 #include "ControlTablesHerkuleX.h"
 
 #include <iostream>
-#include <string.h>
+#include <cstring>
 
 ServoHerkuleX::ServoHerkuleX(const int control_table[][8], int herkulex_id, int herkulex_model, int speed_mode):
     Servo()
@@ -466,7 +467,7 @@ void ServoHerkuleX::setGoalPosition(int pos)
     }
     else
     {
-        std::cerr << "[#" << servoId << "] setGoalPosition(" << registerTableValues[gid(REG_ABSOLUTE_POSITION)] << " > " << pos << ") [VALUE ERROR]" << std::endl;
+        TRACE_ERROR(HKX, "[#%i] setGoalPosition(%i > %i) [VALUE ERROR]\n", servoId, registerTableValues[gid(REG_CURRENT_POSITION)], pos);
     }
 }
 
@@ -521,7 +522,8 @@ void ServoHerkuleX::setTorqueEnabled(int torque)
     }
     else
     {
-        std::cerr << "[#" << servoId << "] setTorqueEnabled(" << torque << ") [VALUE ERROR]" << std::endl;
+        TRACE_ERROR(HKX, "[#%i]  setTorqueEnabled(%i) [VALUE ERROR]\n", servoId, torque);
+
     }
 }
 
@@ -541,7 +543,7 @@ void ServoHerkuleX::moveGoalPosition(int move)
         {
             int mod = newpos % steps;
 
-            std::cerr << "[#" << servoId << "]  moveGoalPosition([" << curr << " > " << newpos << "] [VALUE ERROR] with modulo: " << mod <<  std::endl;
+            TRACE_ERROR(HKX, "[#%i]  moveGoalPosition([%i > %i]) [VALUE ERROR] with modulo: %i\n", servoId, curr, newpos, mod);
         }
     }
 
@@ -552,7 +554,7 @@ void ServoHerkuleX::moveGoalPosition(int move)
     }
     else
     {
-        std::cerr << "[#" << servoId << "]  moveGoalPosition([" << curr << " > " << newpos << "] [VALUE ERROR]" <<  std::endl;
+        TRACE_ERROR(HKX, "[#%i]  moveGoalPosition([%i > %i]) [VALUE ERROR]\n", servoId, curr, newpos);
     }
 */
 }
@@ -625,12 +627,12 @@ int ServoHerkuleX::getValue(int reg_name, int reg_type)
         }
         else
         {
-            std::cerr << "[#" << servoId << "] getValue(reg " << reg_name << "/" << getRegisterNameTxt(reg_name) << ") [REGISTER ID ERROR]" << std::endl;
+            TRACE_ERROR(HKX, "[#%i] getValue(reg %i / %s) [REGISTER ID ERROR]\n", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
         }
     }
     else
     {
-        std::cerr << "[#" << servoId << "] getValue(reg " << reg_name << "/" << getRegisterNameTxt(reg_name) << ") [REGISTER NAME ERROR]" << std::endl;
+        TRACE_ERROR(HKX, "[#%i] getValue(reg %i / %s) [REGISTER NAME ERROR]\n", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
     }
 
     return value;
@@ -670,12 +672,12 @@ int ServoHerkuleX::getValueCommit(int reg_name, int reg_type)
         }
         else
         {
-            std::cerr << "[#" << servoId << "] getValueCommit(reg " << reg_name << "/" << getRegisterNameTxt(reg_name) << ") [REGISTER ID ERROR]" << std::endl;
+            TRACE_ERROR(HKX, "[#%i] getValueCommit(reg %i / %s) [REGISTER ID ERROR]\n", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
         }
     }
     else
     {
-        std::cerr << "[#" << servoId << "] getValueCommit(reg " << reg_name << "/" << getRegisterNameTxt(reg_name) << ") [REGISTER NAME ERROR]" << std::endl;
+        TRACE_ERROR(HKX, "[#%i] getValueCommit(reg %i / %s) [REGISTER NAME ERROR]\n", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
     }
 
     return commit;
@@ -683,7 +685,7 @@ int ServoHerkuleX::getValueCommit(int reg_name, int reg_type)
 
 /* ************************************************************************** */
 
-void ServoHerkuleX::setValue(int reg_name, int value, int reg_type)
+void ServoHerkuleX::setValue(int reg_name, int reg_value, int reg_type)
 {
     // Find register's informations (addr, size...)
     RegisterInfos infos;
@@ -695,7 +697,7 @@ void ServoHerkuleX::setValue(int reg_name, int value, int reg_type)
             if (infos.reg_access_mode == READ_WRITE)
             {
                 // Check value
-                if (value >= infos.reg_value_min && value <= infos.reg_value_max)
+                if (reg_value >= infos.reg_value_min && reg_value <= infos.reg_value_max)
                 {
                     std::lock_guard <std::mutex> lock(access);
 
@@ -712,39 +714,39 @@ void ServoHerkuleX::setValue(int reg_name, int value, int reg_type)
                     // Set value(s)
                     if (reg_type == REGISTER_ROM || reg_type == REGISTER_BOTH)
                     {
-                        registerTableValues[infos.reg_index] = value;
+                        registerTableValues[infos.reg_index] = reg_value;
                         registerTableCommits[infos.reg_index] = 1;
                     }
 
                     if (reg_type == REGISTER_RAM || reg_type == REGISTER_BOTH)
                     {
-                        registerTableValuesRAM[infos.reg_index] = value;
+                        registerTableValuesRAM[infos.reg_index] = reg_value;
                         registerTableCommitsRAM[infos.reg_index] = 1;
                     }
                 }
                 else
                 {
-                    std::cerr << "[#" << servoId << "] setValue(reg " << reg_name << "/" << getRegisterNameTxt(reg_name) << " to '" << value
-                              << "')  [VALUE ERROR]! min/max(" << infos.reg_value_min << "/" << infos.reg_value_max << ")" << std::endl;
+                    TRACE_ERROR(HKX, "[#%i] setValue(reg %i / %s to %i) [REGISTER VALUE ERROR] (min: %i / max: %i)\n", servoId,
+                                reg_name, getRegisterNameTxt(reg_name).c_str(), reg_value, infos.reg_value_min, infos.reg_value_max);
                 }
             }
             else
             {
-                std::cerr << "[#" << servoId << "] setValue(reg " << reg_name << "/" << getRegisterNameTxt(reg_name) << ") [REGISTER ACCESS ERROR]" << std::endl;
+                TRACE_ERROR(HKX, "[#%i] setValue(reg %i / %s) [REGISTER ACCESS ERROR]\n", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
             }
         }
         else
         {
-            std::cerr << "[#" << servoId << "] setValue(reg " << reg_name << "/" << getRegisterNameTxt(reg_name) << ") [REGISTER ID ERROR]" << std::endl;
+            TRACE_ERROR(HKX, "[#%i] setValue(reg %i / %s) [REGISTER ID ERROR]\n", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
         }
     }
     else
     {
-        std::cerr << "[#" << servoId << "] setValue(reg " << reg_name << "/" << getRegisterNameTxt(reg_name) << ") [REGISTER NAME ERROR]" << std::endl;
+        TRACE_ERROR(HKX, "[#%i] setValue(reg %i / %s) [REGISTER NAME ERROR]\n", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
     }
 }
 
-void ServoHerkuleX::updateValue(int reg_name, int value, int reg_type)
+void ServoHerkuleX::updateValue(int reg_name, int reg_value, int reg_type)
 {
     // Find register's informations (addr, size...)
     RegisterInfos infos;
@@ -753,7 +755,7 @@ void ServoHerkuleX::updateValue(int reg_name, int value, int reg_type)
         if (infos.reg_index >= 0)
         {
             // Check value
-            if (value >= infos.reg_value_min && value <= infos.reg_value_max)
+            if (reg_value >= infos.reg_value_min && reg_value <= infos.reg_value_max)
             {
                 std::lock_guard <std::mutex> lock(access);
 
@@ -770,12 +772,12 @@ void ServoHerkuleX::updateValue(int reg_name, int value, int reg_type)
                 // Update value(s)
                 if (reg_type == REGISTER_ROM || reg_type == REGISTER_BOTH)
                 {
-                    registerTableValues[infos.reg_index] = value;
+                    registerTableValues[infos.reg_index] = reg_value;
                 }
 
                 if (reg_type == REGISTER_RAM || reg_type == REGISTER_BOTH)
                 {
-                    registerTableValuesRAM[infos.reg_index] = value;
+                    registerTableValuesRAM[infos.reg_index] = reg_value;
                 }
             }
             else
@@ -783,18 +785,18 @@ void ServoHerkuleX::updateValue(int reg_name, int value, int reg_type)
                 valueErrors++;
                 errorCount++;
 
-                std::cerr << "[#" << servoId << "] updateValue(reg " << reg_name << "/" << getRegisterNameTxt(reg_name) << " to '" << value
-                          << "')  [VALUE ERROR]! min/max(" << infos.reg_value_min << "/" << infos.reg_value_max << ")" << std::endl;
+                TRACE_ERROR(HKX, "[#%i] updateValue(reg %i / %s to %i) [REGISTER VALUE ERROR] (min: %i / max: %i)\n", servoId,
+                            reg_name, getRegisterNameTxt(reg_name).c_str(), reg_value, infos.reg_value_min, infos.reg_value_max);
             }
         }
         else
         {
-            std::cerr << "[#" << servoId << "] updateValue(reg " << reg_name << "/" << getRegisterNameTxt(reg_name) << ") [REGISTER ID ERROR]" << std::endl;
+            TRACE_ERROR(HKX, "[#%i] updateValue(reg %i / %s) [REGISTER ID ERROR]\n", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
         }
     }
     else
     {
-        std::cerr << "[#" << servoId << "] updateValue(reg " << reg_name << "/" << getRegisterNameTxt(reg_name) << ") [REGISTER NAME ERROR]" << std::endl;
+        TRACE_ERROR(HKX, "[#%i] updateValue(reg %i / %s) [REGISTER NAME ERROR]\n", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
     }
 }
 
@@ -839,16 +841,16 @@ void ServoHerkuleX::commitValue(int reg_name, int commit, int reg_type)
             }
             else
             {
-                std::cerr << "[#" << servoId << "] commitValue(reg " << reg_name << "/" << getRegisterNameTxt(reg_name) << ") [REGISTER ACCESS ERROR]" << std::endl;
+                TRACE_ERROR(HKX, "[#%i] commitValue(reg %i / %s) [REGISTER ACCESS ERROR]\n", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
             }
         }
         else
         {
-            std::cerr << "[#" << servoId << "] commitValue(reg " << reg_name << "/" << getRegisterNameTxt(reg_name) << ") [REGISTER ID ERROR]" << std::endl;
+            TRACE_ERROR(HKX, "[#%i] commitValue(reg %i / %s) [REGISTER ID ERROR]\n", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
         }
     }
     else
     {
-        std::cerr << "[#" << servoId << "] commitValue(reg " << reg_name << "/" << getRegisterNameTxt(reg_name) << ") [REGISTER NAME ERROR]" << std::endl;
+        TRACE_ERROR(HKX, "[#%i] commitValue(reg %i / %s) [REGISTER NAME ERROR]\n", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
     }
 }

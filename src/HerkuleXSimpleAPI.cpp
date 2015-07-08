@@ -141,11 +141,11 @@ bool HerkuleXSimpleAPI::checkId(const int id, const bool broadcast)
     {
         if (id == BROADCAST_ID && broadcast == false)
         {
-            std::cerr << "Error: Broadcast ID is disabled for the current instruction." << std::endl;
+            TRACE_ERROR(DAPI, "Error: Broadcast ID is disabled for the current instruction.\n");
         }
         else
         {
-            std::cerr << "Error: ID '" << id << "' is out of [0;" << maxId << "] boundaries." << std::endl;
+            TRACE_ERROR(DAPI, "Error: ID '%i' is out of [0;%i] boundaries.\n", id, maxId);
         }
     }
 
@@ -273,7 +273,7 @@ int HerkuleXSimpleAPI::changeId(const int old_id, const int new_id)
 
             if (hkx_get_com_status() == COMM_RXSUCCESS)
             {
-                std::cout << "Cannot set new ID '" << new_id << "' for this servo: already in use" << std::endl;
+                TRACE_ERROR(DAPI, "[#%i] Cannot set new ID '%i' for this servo: already in use\n", old_id, new_id);
             }
             else
             {
@@ -294,7 +294,7 @@ int HerkuleXSimpleAPI::changeId(const int old_id, const int new_id)
         }
         else
         {
-            std::cerr << "Cannot set new ID '" << new_id << "' for this servo: out of range" << std::endl;
+            TRACE_ERROR(DAPI, "[#%i] Cannot set new ID '%i' for this servo: out of range\n", old_id, new_id);
         }
     }
 
@@ -326,7 +326,7 @@ int HerkuleXSimpleAPI::changeBaudRate(const int id, const int baudnum)
         }
         else
         {
-            std::cerr << "Cannot set new baudnum '" << baudnum << "' for this servo: out of range" << std::endl;
+            TRACE_ERROR(DAPI, "[#%i] Cannot set new baudnum '%i' for this servo: out of range\n", id, baudnum);
         }
     }
 
@@ -379,7 +379,7 @@ int HerkuleXSimpleAPI::setMinMaxPositions(const int id, const int min, const int
         // Valid positions are in range [0:1023] for most servo series, and [0:4095] for high-end servo series
         if ((min < 0) || (min > 4095) || (max < 0) || (max > 4095))
         {
-            std::cerr << "Cannot set new min/max positions: '" << min << "/" << max << "' for this servo: out of range" << std::endl;
+            TRACE_ERROR(DAPI, "[#%i] Cannot set new min/max positions '%i/%i' for this servo: out of range\n", id, min, max);
         }
         else
         {
@@ -470,7 +470,7 @@ int HerkuleXSimpleAPI::setTorqueEnabled(const int id, int torque)
         }
         else
         {
-            std::cerr << "Cannot set torque_enabled: '" << torque << "' for this servo: out of range" << std::endl;
+            TRACE_ERROR(DAPI, "[#%i] Cannot set torque_enabled '%i' for this servo: out of range\n", id, torque);
         }
     }
 
@@ -586,7 +586,7 @@ int HerkuleXSimpleAPI::setGoalPosition(const int id, const int position)
         }
         else
         {
-            std::cerr << "Cannot set goal position: '" << position << "' for this servo: out of range" << std::endl;
+            TRACE_ERROR(DAPI, "[#%i] Cannot set goal position '%i' for this servo: out of range\n", id, position);
         }
     }
 
@@ -612,7 +612,7 @@ int HerkuleXSimpleAPI::setGoalPosition(const int id, const int position, const i
         }
         else
         {
-            std::cerr << "Cannot set goal position: '" << position << "' for this servo: out of range" << std::endl;
+            TRACE_ERROR(DAPI, "[#%i] Cannot set goal position '%i' for this servo: out of range\n", id, position);
         }
     }
 
@@ -778,17 +778,17 @@ int HerkuleXSimpleAPI::getSetting(const int id, const int reg_name, int reg_type
             }
             else
             {
-                std::cerr << "[#" << id << "] getSetting(reg " << reg_name << "/" << getRegisterNameTxt(reg_name) << ") [REGISTER NAME ERROR]" << std::endl;
+                TRACE_ERROR(DAPI, "[#%i] getSetting(reg %i / %s) [REGISTER NAME ERROR]\n", id, reg_name, getRegisterNameTxt(reg_name).c_str());
             }
         }
         else
         {
-            std::cerr << "[#" << id << "] getSetting(reg " << reg_name << "/" << getRegisterNameTxt(reg_name) << ") [CONTROL TABLE ERROR]" << std::endl;
+            TRACE_ERROR(DAPI, "[#%i] getSetting(reg %i / %s) [CONTROL TABLE ERROR]\n", id, reg_name, getRegisterNameTxt(reg_name).c_str());
         }
     }
     else
     {
-        std::cerr << "[#" << id << "] getSetting(reg " << reg_name << "/" << getRegisterNameTxt(reg_name) << ") [DEVICE ID ERROR]" << std::endl;
+        TRACE_ERROR(DAPI, "[#%i] getSetting(reg %i / %s) [DEVICE ID ERROR]\n", id, reg_name, getRegisterNameTxt(reg_name).c_str());
     }
 
     return value;
@@ -873,28 +873,28 @@ int HerkuleXSimpleAPI::setSetting(const int id, const int reg_name, const int re
                     }
                     else
                     {
-                        std::cerr << "[#" << id << "] setSetting(reg " << reg_name << "/" << getRegisterNameTxt(reg_name) << " to '" << reg_value
-                                  << "')  [VALUE ERROR]! min/max(" << infos.reg_value_min << "/" << infos.reg_value_max << ")" << std::endl;
+                        TRACE_ERROR(DAPI, "[#%i] setSetting(reg %i / %s) [VALUE ERROR] (min: %i / max: %i)\n",
+                                    id, reg_name, getRegisterNameTxt(reg_name).c_str(), infos.reg_value_min, infos.reg_value_max);
                     }
                 }
                 else
                 {
-                    std::cerr << "[#" << id << "] setSetting(reg " << reg_name << "/" << getRegisterNameTxt(reg_name) << ") [REGISTER ACCESS ERROR]" << std::endl;
+                    TRACE_ERROR(DAPI, "[#%i] setSetting(reg %i / %s) [REGISTER ACCESS ERROR]\n", id, reg_name, getRegisterNameTxt(reg_name).c_str());
                 }
             }
             else
             {
-                std::cerr << "[#" << id << "] setSetting(reg " << reg_name << "/" << getRegisterNameTxt(reg_name) << ") [REGISTER NAME ERROR]" << std::endl;
+                TRACE_ERROR(DAPI, "[#%i] setSetting(reg %i / %s) [REGISTER NAME ERROR]\n", id, reg_name, getRegisterNameTxt(reg_name).c_str());
             }
         }
         else
         {
-            std::cerr << "[#" << id << "] setSetting(reg " << reg_name << "/" << getRegisterNameTxt(reg_name) << ") [CONTROL TABLE ERROR]" << std::endl;
+            TRACE_ERROR(DAPI, "[#%i] setSetting(reg %i / %s) [CONTROL TABLE ERROR]\n", id, reg_name, getRegisterNameTxt(reg_name).c_str());
         }
     }
     else
     {
-        std::cerr << "[#" << id << "] setSetting(reg " << reg_name << "/" << getRegisterNameTxt(reg_name) << ") [DEVICE ID ERROR]" << std::endl;
+        TRACE_ERROR(DAPI, "[#%i] setSetting(reg %i / %s) [DEVICE ID ERROR]\n", id, reg_name, getRegisterNameTxt(reg_name).c_str());
     }
 
     return status;
