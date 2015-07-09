@@ -28,8 +28,6 @@
 #include "ControlTables.h"
 #include "ControlTablesDynamixel.h"
 
-#include <iostream>
-
 ServoMX::ServoMX(int dynamixel_id, int dynamixel_model, int control_mode):
     ServoDynamixel(MX_control_table, dynamixel_id, dynamixel_model, control_mode)
 {

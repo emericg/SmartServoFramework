@@ -159,7 +159,8 @@ std::vector <int> DynamixelSimpleAPI::servoScan(int start, int stop)
     if (stop < 1 || stop > maxId || stop < start)
         stop = maxId;
 
-    std::cout << std::endl << "> Scanning for Dynamixel devices on '" << serialGetCurrentDevice() << "'... Range is [" << start << "," << stop << "]" << std::endl;
+    TRACE_INFO(DAPI, "\n> Scanning for Dynamixel devices on '%s'... Range is [%i,%i]\n",
+               serialGetCurrentDevice().c_str(), start, stop);
 
     // A vector of Dynamixel IDs found during the scan
     std::vector <int> ids;
@@ -175,27 +176,27 @@ std::vector <int> DynamixelSimpleAPI::servoScan(int start, int stop)
 
             ids.push_back(id);
 
-            std::cout << std::endl;
-            std::cout << "[#" << id << "] DYNAMIXEL servo found!" << std::endl;
-            std::cout << "[#" << id << "] model: " << pingstats.model_number << " (" << dxl_get_model_name(pingstats.model_number) << ")" << std::endl;
+            TRACE_INFO(DAPI, "\n[#%i] Dynamixel servo found!\n", id);
+            TRACE_INFO(DAPI, "[#%i] model: '%i' (%s)\n", id, pingstats.model_number,
+                       dxl_get_model_name(pingstats.model_number).c_str());
 
             // Other informations, not printed by default:
-            //std::cout << "[#" << id << "] firmware: " << pingstats.firmware_version << std::endl;
-            //std::cout << "[#" << id << "] position: " << dxl_read_current_position(id) << std::endl;
-            //std::cout << "[#" << id << "] speed: " << dxl_read_current_speed(id) << std::endl;
-            //std::cout << "[#" << id << "] torque: " << dxl_read_current_torque(id) << std::endl;
-            //std::cout << "[#" << id << "] load: " << dxl_read_current_load(id) << std::endl;
-            //std::cout << "[#" << id << "] baudrate: " << dxl_get_baud(id) << std::endl;
+            TRACE_1(DAPI, "[#%i] firmware: '%i' \n", id, pingstats.firmware_version);
+            TRACE_1(DAPI, "[#%i] position: '%i' \n", id, readCurrentPosition(id));
+            TRACE_1(DAPI, "[#%i] speed: '%i' \n", id, readCurrentSpeed(id));
+            TRACE_1(DAPI, "[#%i] torque: '%i' \n", id, getTorqueEnabled(id));
+            TRACE_1(DAPI, "[#%i] load: '%i' \n", id, readCurrentLoad(id));
+            TRACE_1(DAPI, "[#%i] baudrate: '%i' \n", id, getSetting(id, REG_BAUD_RATE));
 
             setLed(id, 0);
         }
         else
         {
-            std::cout << ".";
+            printf(".");
         }
     }
 
-    std::cout << std::endl;
+    printf("\n");
     return ids;
 }
 

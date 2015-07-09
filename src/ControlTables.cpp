@@ -26,7 +26,6 @@
 #include "minitraces.h"
 
 // C++ standard libraries
-#include <iostream>
 #include <cmath>
 
 const int (*getRegisterTable(const int servo_model))[8]

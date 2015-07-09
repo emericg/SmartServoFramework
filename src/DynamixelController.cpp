@@ -110,17 +110,17 @@ void DynamixelController::changeProtocolVersion(int protocol)
             {
                 maxId = 253;
             }
-            std::cout << "- Using Dynamixel communication protocol version 1" << std::endl;
+            TRACE_INFO(CAPI, "- Using Dynamixel communication protocol version 1\n");
         }
         else if (protocol == 2)
         {
             protocolVersion = 2;
             maxId = 252;
-            std::cout << "- Using Dynamixel communication protocol version 2" << std::endl;
+            TRACE_INFO(CAPI, "- Using Dynamixel communication protocol version 2\n");
         }
         else
         {
-            std::cout << "- Unknown Dynamixel communication protocol (version '" << protocol << "'), unable to use it!" << std::endl;
+            TRACE_ERROR(CAPI, "- Unknown Dynamixel communication protocol (version %i), unable to use it!\n", protocol);
         }
     }
 }
@@ -188,9 +188,11 @@ void DynamixelController::autodetect_internal(int start, int stop)
     serialSetLatency(8);
 #endif
 
-    std::cout << "DXL ctrl_device_autodetect(port: '" << serialGetCurrentDevice() << "' | tid: '" << std::this_thread::get_id() << "')" << std::endl;
-    std::cout << "> THREADED Scanning for DXL devices on '" << serialGetCurrentDevice() << "', Dynamixel protocol v" << protocolVersion
-              << ", Range is [" << start << "," << stop << "[" << std::endl;
+    TRACE_INFO(CAPI, "DXL ctrl_device_autodetect(port: '%s' / tid: '%i')\n"
+               , serialGetCurrentDevice().c_str(), std::this_thread::get_id());
+
+    TRACE_INFO(CAPI, "> THREADED Scanning for DXL devices on '%s' , protocol v%i, range is [%i,%i[\n",
+               serialGetCurrentDevice().c_str(), protocolVersion, start, stop);
 
     for (int id = start; id <= stop; id++)
     {
@@ -205,7 +207,7 @@ void DynamixelController::autodetect_internal(int start, int stop)
             dxl_get_model_infos(pingstats.model_number, serie, model);
             ServoDynamixel *servo = NULL;
 
-            std::cout << std::endl << "[#" << id << "] " << dxl_get_model_name(pingstats.model_number) << " servo found! ";
+            TRACE_INFO(DXL, "[#%i] %s servo found!\n", id, dxl_get_model_name(pingstats.model_number).c_str());
 
             // Instanciate the device found
             switch (serie)
@@ -249,11 +251,11 @@ void DynamixelController::autodetect_internal(int start, int stop)
         }
         else
         {
-            std::cout << ".";
+            printf(".");
         }
     }
 
-    std::cout << std::endl;
+    printf("\n");
 
     // Restore RX packet timeout
     serialSetLatency(LATENCY_TIME_DEFAULT);
@@ -266,7 +268,9 @@ void DynamixelController::autodetect_internal(int start, int stop)
 
 void DynamixelController::run()
 {
-    std::cout << "DynamixelController::run(port: '" << serialGetCurrentDevice() << "' | tid: '" << std::this_thread::get_id() << "')" << std::endl;
+    TRACE_INFO(CAPI, "DynamixelController::run(port: '%s' / tid: '%i')\n"
+               , serialGetCurrentDevice().c_str(), std::this_thread::get_id());
+
     std::chrono::time_point<std::chrono::system_clock> start, end;
 
     while (getState() >= state_started)
@@ -311,14 +315,14 @@ void DynamixelController::run()
                 break;
 
             case ctrl_state_pause:
-                std::cout << ">> THREAD (tid: " << std::this_thread::get_id() << "') pause by message" << std::endl;
+                TRACE_INFO(CAPI, ">> THREAD (tid: '%i') paused by message\n", std::this_thread::get_id());
                 m_mutex.lock();
                 m_queue.pop_front();
                 m_mutex.unlock();
                 return;
                 break;
             case ctrl_state_stop:
-                std::cout << ">> THREAD (tid: " << std::this_thread::get_id() << "') termination by 'stop message'" << std::endl;
+                TRACE_INFO(CAPI, ">> THREAD (tid: '%i') termination by 'stop message'\n", std::this_thread::get_id());
                 m_mutex.lock();
                 m_queue.pop_front();
                 m_mutex.unlock();
@@ -351,13 +355,13 @@ void DynamixelController::run()
             {
                 // Every servo register value will be updated
                 updateList.push_back(id);
-                std::cout << "Refresh servo #" << id << " registers"<< std::endl;
+                TRACE_INFO(DXL, "Refresh servo #%i registers\n", id);
             }
 
             if (actionProgrammed == 1)
             {
                 dxl_action(id, ack);
-                std::cout << "Action for servo #" << id << std::endl;
+                TRACE_INFO(DXL, "Action for servo #%i\n", id);
             }
 
             if (rebootProgrammed == 1)
@@ -380,7 +384,7 @@ void DynamixelController::run()
 
                 // Reboot
                 dxl_reboot(id, ack);
-                std::cout << "Rebooting servo #" << id << "..." << std::endl;
+                TRACE_INFO(DXL, "Rebooting servo #%i...\n", id);
 
                 miniMessages m {ctrl_device_delayed_add, std::chrono::system_clock::now() + std::chrono::seconds(2), NULL, id, 0};
                 sendMessage(&m);
@@ -406,7 +410,7 @@ void DynamixelController::run()
 
                 // Reset
                 dxl_reset(id, resetProgrammed, ack);
-                std::cout << "Resetting servo #" << id << " (setting: " << resetProgrammed << ")..." << std::endl;
+                TRACE_INFO(DXL, "Resetting servo #%i (setting: %i)...\n", id, resetProgrammed);
 
                 miniMessages m {ctrl_device_delayed_add, std::chrono::system_clock::now() + std::chrono::seconds(2), NULL, id, 1};
                 sendMessage(&m);
@@ -434,20 +438,19 @@ void DynamixelController::run()
 
                         for (int ctid = 1; ctid < s->getRegisterCount(); ctid++)
                         {
-                            int regname = getRegisterName(s->getControlTable(), ctid);
-                            int regaddr = getRegisterAddr(s->getControlTable(), regname);
-                            int regsize = getRegisterSize(s->getControlTable(), regname);
+                            int reg_name = getRegisterName(s->getControlTable(), ctid);
+                            int reg_addr = getRegisterAddr(s->getControlTable(), reg_name);
+                            int reg_size = getRegisterSize(s->getControlTable(), reg_name);
 
-                            //std::cout << "Reading value for reg [" << ctid << "] name: '" << getRegisterNameTxt(regname)
-                            //          << "' addr: '" << regaddr << "' size: '" << regsize << "'" << std::endl;
+                            TRACE_1(DXL, "Reading value for reg [%i] name: '%s' addr: '%i' size: '%i'", ctid, getRegisterNameTxt(reg_name).c_str(), reg_addr, reg_size);
 
-                            if (regsize == 1)
+                            if (reg_size == 1)
                             {
-                                s->updateValue(regname, dxl_read_byte(id, regaddr, ack));
+                                s->updateValue(reg_name, dxl_read_byte(id, reg_addr, ack));
                             }
                             else //if (regsize == 2)
                             {
-                                s->updateValue(regname, dxl_read_word(id, regaddr, ack));
+                                s->updateValue(reg_name, dxl_read_word(id, reg_addr, ack));
                             }
                             s->setError(dxl_get_rxpacket_error());
                             updateErrorCount(dxl_get_com_error());
@@ -497,35 +500,35 @@ void DynamixelController::run()
                     // Commit register modifications
                     for (int ctid = 0; ctid < s->getRegisterCount(); ctid++)
                     {
-                        int regname = getRegisterName(s->getControlTable(), ctid);
+                        int reg_name = getRegisterName(s->getControlTable(), ctid);
 
-                        if (s->getValueCommit(regname) == 1)
+                        if (s->getValueCommit(reg_name) == 1)
                         {
-                            int regaddr = getRegisterAddr(s->getControlTable(), regname);
-                            int regsize = getRegisterSize(s->getControlTable(), regname);
+                            int reg_addr = getRegisterAddr(s->getControlTable(), reg_name);
+                            int reg_size = getRegisterSize(s->getControlTable(), reg_name);
 
-                            if ((s->getSpeedMode() == SPEED_AUTO && (regname != REG_GOAL_POSITION && regname != REG_GOAL_SPEED)) == false)
+                            if ((s->getSpeedMode() == SPEED_AUTO && (reg_name != REG_GOAL_POSITION && reg_name != REG_GOAL_SPEED)) == false)
                             {
-                                //std::cout << "Writing value '" << s->getValue(regname) << "' for reg [" << ctid << "] name: '" << getRegisterNameTxt(regname)
-                                //          << "' addr: '" << regaddr << "' size: '" << regsize << "'" << std::endl;
+                                TRACE_1(DXL, "Writing value '%i' for reg [%i] name: '%s' addr: '%i' size: '%i'",
+                                        s->getValue(reg_name), ctid, getRegisterNameTxt(reg_name).c_str(), reg_addr, reg_size);
 
-                                if (regsize == 1)
+                                if (reg_size == 1)
                                 {
-                                    dxl_write_byte(id, regaddr, s->getValue(regname), ack);
+                                    dxl_write_byte(id, reg_addr, s->getValue(reg_name), ack);
                                 }
                                 else //if (regsize == 2)
                                 {
-                                    dxl_write_word(id, regaddr, s->getValue(regname), ack);
+                                    dxl_write_word(id, reg_addr, s->getValue(reg_name), ack);
                                 }
 
-                                s->commitValue(regname, 0);
+                                s->commitValue(reg_name, 0);
                                 s->setError(dxl_get_rxpacket_error());
                                 updateErrorCount(dxl_get_com_error());
                                 dxl_print_error();
 
-                                if (regname == REG_ID)
+                                if (reg_name == REG_ID)
                                 {
-                                    if (s->changeInternalId(s->getValue(regname)) == 1)
+                                    if (s->changeInternalId(s->getValue(reg_name)) == 1)
                                     {
                                         s->reboot();
                                     }
@@ -624,7 +627,8 @@ void DynamixelController::run()
                                             dxl_print_error();
                                         }
 
-                                        //std::cout << "pos:" << cpos << " Movingspeed: " << speed << "  CurrentSpeed: " << s->getCurrentSpeed() << " |   (> " << gpos << ") (angle: " << angle << ")" << std::endl;
+                                        TRACE_2(DXL, "pos: '%i' Movingspeed: '%i' CurrentSpeed: '%i'   |   (> %i) (angle: %i)",
+                                                cpos, speed, s->getCurrentSpeed(), gpos, angle);
                                     }
                                     else // STOP
                                     {
@@ -638,7 +642,8 @@ void DynamixelController::run()
                                         updateErrorCount(dxl_get_com_error());
                                         dxl_print_error();
 
-                                        //std::cout << "[STOP] pos:" << cpos << " speed: " << speed << "   |   (> " << gpos << ") (angle: " << angle << ")" << std::endl;
+                                        TRACE_2(DXL, "[STOP] pos: '%i' speed: '%i'   |   (> %i) (angle: %i)",
+                                                cpos, speed, gpos, angle);
                                         s->commitValue(REG_GOAL_POSITION, 0);
                                     }
                                 }
@@ -673,7 +678,8 @@ void DynamixelController::run()
                                             dxl_print_error();
                                         }
 
-                                        //std::cout << "pos:" << cpos << " speed: " << speed << "   |   (> " << gpos << ") (angle: " << angle << ")" << std::endl;
+                                        TRACE_2(DXL, "pos: '%i' Movingspeed: '%i' CurrentSpeed: '%i'   |   (> %i) (angle: %i)",
+                                                cpos, speed, s->getCurrentSpeed(), gpos, angle);
                                     }
                                     else // STOP
                                     {
@@ -697,7 +703,8 @@ void DynamixelController::run()
                                         updateErrorCount(dxl_get_com_error());
                                         dxl_print_error();
 
-                                        //std::cout << "[STOP] pos:" << cpos << " speed: " << speed << "   |   (> " << gpos << ") (angle: " << angle << ")" << std::endl;
+                                        TRACE_2(DXL, "[STOP] pos: '%i' speed: '%i'   |   (> %i) (angle: %i)",
+                                                cpos, speed, gpos, angle);
                                         s->commitValue(REG_GOAL_POSITION, 0);
                                     }
                                 }

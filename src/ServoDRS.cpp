@@ -27,9 +27,6 @@
 #include "ControlTables.h"
 #include "ControlTablesHerkuleX.h"
 
-#include <iostream>
-#include <string.h>
-
 ServoDRS::ServoDRS(int herkulex_id, int herkulex_model, int control_mode):
     ServoHerkuleX(getRegisterTable(hkx_get_servo_model(herkulex_model)), herkulex_id, herkulex_model, control_mode)
 {
