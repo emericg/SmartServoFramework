@@ -9,7 +9,7 @@ cmake_minimum_required(VERSION 2.8)
 ###############################################################################
 
 SET(SmartServoFramework_VERSION_MAJOR 0)
-SET(SmartServoFramework_VERSION_MINOR 91)
+SET(SmartServoFramework_VERSION_MINOR 92)
 SET(SmartServoFramework_VERSION_PATCH 0)
 
 SET(ENABLE_DEBUG   1) # "Toggle debug traces"

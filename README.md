@@ -1,11 +1,11 @@
-SmartServoFramework 0.91
+SmartServoFramework 0.92
 ========================
 
 ## Introduction
 
-SmartServoFramework is a C++ multiplatform framework used to drive "smart servo" devices like Dynamixel or HerkuleX actuators. It has been developped at Inria Grenoble.
+SmartServoFramework is a C++ multiplatform framework used to drive "smart servo" devices like Dynamixel or HerkuleX actuators. It has been developped at Inria Grenoble research center.
 
-Linux, Mac OS and Windows operating systems are supported. All you need to begin moving stuff around is at least one servo, a serial port adapter and a modern C++ compiler! SmartServoFramework works well on Raspberry Pi or other similar boards, but will not work on arduinos nor any other microcontrollers.
+Linux, Mac OS X and Windows operating systems are supported. All you need to begin moving stuff around is at least one servo, a serial port adapter and a modern C++ compiler! SmartServoFramework works well on Raspberry Pi or other similar boards, but will not work on arduinos nor any other microcontrollers.
 
 > Dynamixel devices from [Robotis](http://www.robotis.com/) and HerkuleX devices from [Dongbu Robot](http://www.dongburobot.com/) are high-performance networked actuators for robots available in wide range of sizes and strengths.  
 > They have adjustable torque, speed, angle limits, and provide various feedback like position, load, voltage and temperature...
@@ -58,8 +58,7 @@ SmartServoGui is a fully featured Qt GUI application that helps you discover dev
 You will need a modern C++/11 capable compiler:
 
 * GCC >= 4.6  
-* Clang >= 3.0  
-* XCode >= 4.6  
+* LLVM >= 3.0  
 * MSVC >= 2012  
 
 ### Serial link
@@ -67,8 +66,9 @@ You will need a modern C++/11 capable compiler:
 This framework can be used with any combination of RS-232 ports, USB to TTL adapters, USB to RS-485 adapters, half or full duplex... but you'll need the right link for the right device.
 
 First make sure that you can access your serial port:
-* If you are running Windows you will need to install the [FTDI driver for the USB2Dynamixel device](http://www.robotis.com/xe/download_en/646927). You may also need other drivers depending on your adapter (like the [CP210x driver](http://www.silabs.com/products/mcu/pages/usbtouartbridgevcpdrivers.aspx), the [USB2AX driver](https://raw.githubusercontent.com/Xevel/usb2ax/master/firmware/lufa_usb2ax/USB2AX.inf), or maybe the official [FTDI driver](http://www.ftdichip.com/FTDrivers.htm)).
-* If you are running Linux, you will need special permissions from the `uucp` and/or `dialout` groups in order to access serial ports. You can add your user account to these groups with this command (you'll need root credentials for this operation): `# useradd -G uucp,dialout $USER`
+* If you are running Linux, you will need special permissions from the `uucp` and/or `dialout` groups in order to access serial ports. You can add your user account to these groups with this command: `# useradd -G uucp,dialout $USER` (you'll need root credentials for this operation).
+* If you are running Mac OS X, depending on your adapter, you may need to install the [FTDI driver](http://www.robotis.com/xe/download_en/646927), or the [CP210x driver](http://www.silabs.com/products/mcu/pages/usbtouartbridgevcpdrivers.aspx).
+* If you are running Windows, you will need to install the [FTDI driver for the USB2Dynamixel device](http://www.robotis.com/xe/download_en/646927). You may also need other drivers depending on your adapter (like the [USB2AX driver](https://raw.githubusercontent.com/Xevel/usb2ax/master/firmware/lufa_usb2ax/USB2AX.inf), the [CP210x driver](http://www.silabs.com/products/mcu/pages/usbtouartbridgevcpdrivers.aspx), or the official [FTDI driver](http://www.ftdichip.com/Drivers/D2XX.htm)).
 
 Latency over the serial port will limit the number of instructions you can send each second even more than bandwidth limitations.
 To minimize traffic on your serial port:  
