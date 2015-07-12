@@ -27,7 +27,6 @@
 #include "HerkuleXTools.h"
 #include "ControlTablesHerkuleX.h"
 
-#include <iostream>
 #include <cstring>
 
 ServoHerkuleX::ServoHerkuleX(const int control_table[][8], int herkulex_id, int herkulex_model, int speed_mode):
@@ -110,31 +109,30 @@ void ServoHerkuleX::status()
 {
     std::lock_guard <std::mutex> lock(access);
 
-    std::cout << "Status(#" << servoId << ")" << std::endl;
+    TRACE_INFO(HKX, "Status(#%i)\n", servoId);
 
-    std::cout << "> model      : " << servoModel << std::endl;
-    std::cout << "> firmware   : " << registerTableValues[gid(REG_FIRMWARE_VERSION)] << std::endl;
-    std::cout << "> baudrate   : " << hkx_get_baudrate(registerTableValues[gid(REG_BAUD_RATE)]) << std::endl;
+    TRACE_INFO(HKX, "> model      : %i\n", servoModel);
+    TRACE_INFO(HKX, "> firmware   : %i\n", registerTableValues[gid(REG_FIRMWARE_VERSION)]);
+    TRACE_INFO(HKX, "> baudrate   : %i\n", hkx_get_baudrate(registerTableValues[gid(REG_BAUD_RATE)]));
 
-    //std::cout << ">> speed mode     : " << speedMode << std::endl;
-    std::cout << ">> steps          : " << steps << std::endl;
-    std::cout << ">> runningDegrees : " << runningDegrees << std::endl;
+    TRACE_INFO(HKX, ">> steps          : %i\n", steps);
+    TRACE_INFO(HKX, ">> runningDegrees : %i\n", runningDegrees);
 
-    std::cout << "> torque enabled  : " << registerTableValues[gid(REG_TORQUE_ENABLE)] << std::endl;
-    std::cout << "> max torque      : " << registerTableValues[gid(REG_MAX_TORQUE)] << std::endl;
-    std::cout << "> torque limit    : " << registerTableValues[gid(REG_TORQUE_LIMIT)] << std::endl;
+    TRACE_INFO(HKX, "> torque enabled  : %i\n", registerTableValues[gid(REG_TORQUE_ENABLE)]);
+    TRACE_INFO(HKX, "> max torque      : %i\n", registerTableValues[gid(REG_MAX_TORQUE)]);
+    TRACE_INFO(HKX, "> torque limit    : %i\n", registerTableValues[gid(REG_TORQUE_LIMIT)]);
 
-    std::cout << "> goal position   : " << registerTableValues[gid(REG_GOAL_POSITION)] << std::endl;
-    std::cout << "> goal speed      : " << registerTableValues[gid(REG_GOAL_SPEED)] << std::endl;
-    std::cout << "> current position: " << registerTableValues[gid(REG_CURRENT_POSITION)] << std::endl;
-    std::cout << "> current speed   : " << registerTableValues[gid(REG_CURRENT_SPEED)] << std::endl;
-    std::cout << "> current load    : " << registerTableValues[gid(REG_CURRENT_LOAD)] << std::endl;
-    std::cout << "> current voltage : " << registerTableValues[gid(REG_CURRENT_VOLTAGE)] << std::endl;
-    std::cout << "> current temp    : " << registerTableValues[gid(REG_CURRENT_TEMPERATURE)] << std::endl;
-    std::cout << "> registered      : " << registerTableValues[gid(REG_REGISTERED)] << std::endl;
-    std::cout << "> moving          : " << registerTableValues[gid(REG_MOVING)] << std::endl;
-    std::cout << "> lock            : " << registerTableValues[gid(REG_LOCK)] << std::endl;
-    std::cout << "> punch           : " << registerTableValues[gid(REG_PUNCH)] << std::endl;
+    TRACE_INFO(HKX, "> goal position   : %i\n", registerTableValues[gid(REG_GOAL_POSITION)]);
+    TRACE_INFO(HKX, "> goal speed      : %i\n", registerTableValues[gid(REG_GOAL_SPEED)]);
+    TRACE_INFO(HKX, "> current position: %i\n", registerTableValues[gid(REG_CURRENT_POSITION)]);
+    TRACE_INFO(HKX, "> current speed   : %i\n", registerTableValues[gid(REG_CURRENT_SPEED)]);
+    TRACE_INFO(HKX, "> current load    : %i\n", registerTableValues[gid(REG_CURRENT_LOAD)]);
+    TRACE_INFO(HKX, "> current voltage : %i\n", registerTableValues[gid(REG_CURRENT_VOLTAGE)]);
+    TRACE_INFO(HKX, "> current temp    : %i\n", registerTableValues[gid(REG_CURRENT_TEMPERATURE)]);
+    TRACE_INFO(HKX, "> registered      : %i\n", registerTableValues[gid(REG_REGISTERED)]);
+    TRACE_INFO(HKX, "> moving          : %i\n", registerTableValues[gid(REG_MOVING)]);
+    TRACE_INFO(HKX, "> lock            : %i\n", registerTableValues[gid(REG_LOCK)]);
+    TRACE_INFO(HKX, "> punch           : %i\n", registerTableValues[gid(REG_PUNCH)]);
 }
 
 std::string ServoHerkuleX::getModelString()
@@ -415,7 +413,7 @@ int ServoHerkuleX::getMoving()
 
 void ServoHerkuleX::setId(int id)
 {
-    //std::cout << "[#" << servoId << "] setId(from " << servoId << " to " << id << ")" << std::endl;
+    TRACE_1(HKX, "[#%i] setId(from %i to %i)\n", servoId, servoId, id);
 
     // TODO use maxId
     if (id > -1 && id < 254)
@@ -430,7 +428,7 @@ void ServoHerkuleX::setId(int id)
 
 void ServoHerkuleX::setCWLimit(int limit, const int reg_type)
 {
-    //std::cout << "[#" << servoId << "] setCWLimit(" << limit << ")" << std::endl;
+    TRACE_1(HKX, "[#%i] setCWLimit(%i)\n", servoId, limit);
 
     if (limit > -1 && limit < steps)
     {
@@ -443,7 +441,7 @@ void ServoHerkuleX::setCWLimit(int limit, const int reg_type)
 
 void ServoHerkuleX::setCCWLimit(int limit, const int reg_type)
 {
-    //std::cout << "[#" << servoId << "] setCCWLimit(" << limit << ")" << std::endl;
+    TRACE_1(HKX, "[#%i] setCCWLimit(%i)\n", servoId, limit);
 
     if (limit > -1 && limit < steps)
     {
@@ -456,7 +454,7 @@ void ServoHerkuleX::setCCWLimit(int limit, const int reg_type)
 
 void ServoHerkuleX::setGoalPosition(int pos)
 {
-    //std::cout << "[#" << servoId << "] HKX setGoalPosition(" << pos << ")" << std::endl;
+    TRACE_1(HKX, "[#%i] setGoalPosition(%i)\n", servoId, pos);
 
     if (pos > -1 && pos < steps)
     {
@@ -478,7 +476,7 @@ void ServoHerkuleX::setGoalPosition(int pos, int time_budget_ms)
 
 void ServoHerkuleX::setLed(int led)
 {
-    //std::cout << "[#" << servoId << "] setLed(" << led << ")" << std::endl;
+    TRACE_1(HKX, "[#%i] setLed(%i)\n", servoId, led);
     int color = 0;
 
     // Normalize value
@@ -504,7 +502,7 @@ void ServoHerkuleX::setLed(int led)
 
 void ServoHerkuleX::setTorqueEnabled(int torque)
 {
-    //std::cout << "[#" << servoId << "] setTorqueEnabled(" << torque << ")" << std::endl;
+    TRACE_1(HKX, "[#%i] setTorqueEnabled(%i)\n", servoId, torque);
 
     // Normalize value, 1 means 'torque on' for Dynamixel devices
     if (torque == 1)
@@ -530,7 +528,7 @@ void ServoHerkuleX::setTorqueEnabled(int torque)
 void ServoHerkuleX::moveGoalPosition(int move)
 {
 /*
-    std::cout << "[#" << servoId << "] moveGoalPosition(" << torque << ")" << std::endl;
+    TRACE_1(HKX, "[#%i] moveGoalPosition(%i)\n", servoId, move);
 
     std::lock_guard <std::mutex> lock(access);
     int curr = registerTableValues[gid(SERVO_CURRENT_POSITION)];
@@ -561,7 +559,8 @@ void ServoHerkuleX::moveGoalPosition(int move)
 /*
 void ServoHerkuleX::setMovingSpeed(int speed)
 {
-    //std::cout << "setMovingSpeed(" << speed << ")" << std::endl;
+    TRACE_1(HKX, "[#%i] setMovingSpeed(%i)\n", servoId, speed);
+
     std::lock_guard <std::mutex> lock(access);
 
     if (registerTableValues[gid(SERVO_MIN_POSITION)] == 0 &&
@@ -585,11 +584,12 @@ void ServoHerkuleX::setMovingSpeed(int speed)
 
 void ServoHerkuleX::setMaxTorque(int torque)
 {
-    //std::cout << "[#" << servoId << "] setMaxTorque(" << torque << ")" << std::endl;
-    std::lock_guard <std::mutex> lock(access);
+    TRACE_1(HKX, "[#%i] setMovingSpeed(%i)\n", servoId, speed);
 
     if (torque < 1024)
     {
+        std::lock_guard <std::mutex> lock(access);
+
         registerTableValues[gid(SERVO_MAX_TORQUE)] = torque;
         registerTableCommits[gid(SERVO_MAX_TORQUE)] = 1;
     }

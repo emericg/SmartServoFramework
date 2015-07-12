@@ -24,7 +24,6 @@
 #include "minitraces.h"
 
 // C++ standard libraries
-#include <iostream>
 #include <chrono>
 #include <thread>
 

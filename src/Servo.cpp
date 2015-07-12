@@ -27,7 +27,6 @@
 #include "Servo.h"
 #include "minitraces.h"
 
-#include <iostream>
 #include <thread>
 
 Servo::Servo()

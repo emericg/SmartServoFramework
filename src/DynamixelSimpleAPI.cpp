@@ -28,7 +28,6 @@
 
 // C++ standard libraries
 #include <cstring>
-#include <iostream>
 #include <map>
 #include <mutex>
 
@@ -159,7 +158,7 @@ std::vector <int> DynamixelSimpleAPI::servoScan(int start, int stop)
     if (stop < 1 || stop > maxId || stop < start)
         stop = maxId;
 
-    TRACE_INFO(DAPI, "\n> Scanning for Dynamixel devices on '%s'... Range is [%i,%i]\n",
+    TRACE_INFO(DAPI, "> Scanning for Dynamixel devices on '%s'... Range is [%i,%i]\n",
                serialGetCurrentDevice().c_str(), start, stop);
 
     // A vector of Dynamixel IDs found during the scan
@@ -176,7 +175,7 @@ std::vector <int> DynamixelSimpleAPI::servoScan(int start, int stop)
 
             ids.push_back(id);
 
-            TRACE_INFO(DAPI, "\n[#%i] Dynamixel servo found!\n", id);
+            TRACE_INFO(DAPI, "[#%i] Dynamixel servo found!\n", id);
             TRACE_INFO(DAPI, "[#%i] model: '%i' (%s)\n", id, pingstats.model_number,
                        dxl_get_model_name(pingstats.model_number).c_str());
 

@@ -110,7 +110,7 @@ int ServoXL::getHardwareErrorStatus()
 
 void ServoXL::setId(int id)
 {
-    TRACE_1(SERVO, "[#%i] setId(from %i to %i)\n", servoId, servoId, id);
+    TRACE_1(DXL, "[#%i] setId(from %i to %i)\n", servoId, servoId, id);
 
     if (id > -1 && id < 253)
     {
