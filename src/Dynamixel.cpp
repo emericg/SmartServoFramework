@@ -21,10 +21,10 @@
  */
 
 #include "Dynamixel.h"
+#include "minitraces.h"
 
 // C++ standard libraries
 #include <cstring>
-#include <iostream>
 #include <map>
 #include <mutex>
 
@@ -176,11 +176,11 @@ int Dynamixel::serialInitialize(std::string &devicePath, const int baud)
     if (serial != NULL && serial->openLink() == 1)
     {
         status = 1;
-        std::cout << "> Serial interface successfully opened on " << devicePath << " @ " << baud << std::endl;
+        TRACE_INFO(DXL, "> Serial interface successfully opened on '%s' @ %i bps\n", devicePath.c_str(), baud);
     }
     else
     {
-        std::cerr << "> Failed to open serial interface on " << devicePath << " @ " << baud << ". Exiting..." << std::endl;
+        TRACE_ERROR(DXL, "> Failed to open serial interface on '%s' @ %i bps. Exiting...\n", devicePath.c_str(), baud);
     }
 
     return status;
@@ -223,7 +223,7 @@ std::vector <std::string> Dynamixel::serialGetAvailableDevices()
 
     if (serial == NULL)
     {
-        std::cerr << "Serial interface is not initialized!" << std::endl;
+        TRACE_ERROR(DXL, "Serial interface is not initialized!\n");
     }
     else
     {
@@ -246,7 +246,7 @@ void Dynamixel::setAckPolicy(int ack)
     }
     else
     {
-        std::cerr << "Invalid ack policy: '" << ack << "'', not in [0;2] range." << std::endl;
+        TRACE_ERROR(DXL, "Invalid ack policy: '%i', not in [0;2] range.\n", ack);
     }
 }
 
@@ -254,7 +254,7 @@ void Dynamixel::dxl_tx_packet()
 {
     if (serial == NULL)
     {
-        std::cerr << "Serial interface is not initialized!" << std::endl;
+        TRACE_ERROR(DXL, "Serial interface is not initialized!\n");
         return;
     }
 
@@ -289,7 +289,7 @@ void Dynamixel::dxl_tx_packet()
     }
     else
     {
-        std::cerr << "Serial interface has been destroyed!" << std::endl;
+        TRACE_ERROR(DXL, "Serial interface has been destroyed!\n");
         return;
     }
 
@@ -334,7 +334,7 @@ void Dynamixel::dxl_rx_packet()
 {
     if (serial == NULL)
     {
-        std::cerr << "Serial interface is not initialized!" << std::endl;
+        TRACE_ERROR(DXL, "Serial interface is not initialized!\n");
         return;
     }
 
@@ -389,7 +389,7 @@ void Dynamixel::dxl_rx_packet()
     }
     else
     {
-        std::cerr << "Serial interface has been destroyed!" << std::endl;
+        TRACE_ERROR(DXL, "Serial interface has been destroyed!\n");
         return;
     }
 
@@ -524,7 +524,7 @@ void Dynamixel::dxl_txrx_packet(int ack)
 
     if (commStatus != COMM_TXSUCCESS)
     {
-        std::cerr << "Unable to send TX packet on serial link: " << serialGetCurrentDevice() << "'" << std::endl;
+        TRACE_ERROR(DXL, "Unable to send TX packet on serial link: '%s'\n", serialGetCurrentDevice().c_str());
         return;
     }
 
@@ -574,7 +574,7 @@ void Dynamixel::dxl_txrx_packet(int ack)
 #ifdef LATENCY_TIMER
     end = std::chrono::high_resolution_clock::now();
     int loopd = std::chrono::duration_cast<std::chrono::microseconds>(end-start).count();
-    std::cout << "TX > RX loop: " << loopd << "µs ("<< 0 << ")" << std::endl;
+    TRACE_1(DXL, "TX > RX loop: %iµs\n", loopd);
 #endif
 }
 
@@ -939,25 +939,25 @@ int Dynamixel::dxl_print_error()
             switch (error)
             {
                 case ERRBIT2_RESULT:
-                    std::cerr << "[#" << id << "] Protocol Error: Failed processing of instruction packet!" << std::endl;
+                    TRACE_ERROR(DXL, "[#%i] Protocol Error: Failed processing of instruction packet!\n", id);
                     break;
                 case ERRBIT2_INSTRUCTION:
-                    std::cerr << "[#" << id << "] Protocol Error: Undefined instruction OR action without 'Reg Write'!" << std::endl;
+                    TRACE_ERROR(DXL, "[#%i] Protocol Error: Undefined instruction OR action without 'Reg Write'!\n", id);
                     break;
                 case ERRBIT2_CHECKSUM:
-                    std::cerr << "[#" << id << "] Protocol Error: Packet checksum value doesn't compute!" << std::endl;
+                    TRACE_ERROR(DXL, "[#%i] Protocol Error: Packet checksum value doesn't compute!\n", id);
                     break;
                 case ERRBIT2_DATA_RANGE:
-                    std::cerr << "[#" << id << "] Protocol Error: Value out of range!" << std::endl;
+                    TRACE_ERROR(DXL, "[#%i] Protocol Error: Value out of range!\n", id);
                     break;
                 case ERRBIT2_DATA_LENGTH:
-                    std::cerr << "[#" << id << "] Protocol Error: Data length shorter than required length for the corresponding address!" << std::endl;
+                    TRACE_ERROR(DXL, "[#%i] Protocol Error: Data length shorter than required length for the corresponding address!\n", id);
                     break;
                 case ERRBIT2_DATA_LIMIT:
-                    std::cerr << "[#" << id << "] Protocol Error: Data length longer than required length for the corresponding address!" << std::endl;
+                    TRACE_ERROR(DXL, "[#%i] Protocol Error: Data length longer than required length for the corresponding address!\n", id);
                     break;
                 case ERRBIT2_ACCESS:
-                    std::cerr << "[#" << id << "] Protocol Error: Access violation! (Please check for read/write only register; or ROM lock enable)" << std::endl;
+                    TRACE_ERROR(DXL, "[#%i] Protocol Error: Access violation! (Please check for read/write only register; or ROM lock enable)\n", id);
                     break;
                 default:
                     error = 0;
@@ -967,48 +967,48 @@ int Dynamixel::dxl_print_error()
         else
         {
             if (error & ERRBIT1_VOLTAGE)
-                std::cerr << "[#" << id << "] Protocol Error: Input voltage error!" << std::endl;
+                TRACE_ERROR(DXL, "[#%i] Protocol Error: Input voltage error!\n", id);
             if (error & ERRBIT1_ANGLE_LIMIT)
-                std::cerr << "[#" << id << "] Protocol Error: Angle limit error!" << std::endl;
+                TRACE_ERROR(DXL, "[#%i] Protocol Error: Angle limit error!\n", id);
             if (error & ERRBIT1_OVERHEAT)
-                std::cerr << "[#" << id << "] Protocol Error: Overheat error!" << std::endl;
+                TRACE_ERROR(DXL, "[#%i] Protocol Error: Overheat error!\n", id);
             if (error & ERRBIT1_RANGE)
-                std::cerr << "[#" << id << "] Protocol Error: Out of range value error!" << std::endl;
+                TRACE_ERROR(DXL, "[#%i] Protocol Error: Out of range value error!\n", id);
             if (error & ERRBIT1_CHECKSUM)
-                std::cerr << "[#" << id << "] Protocol Error: Checksum error!" << std::endl;
+                TRACE_ERROR(DXL, "[#%i] Protocol Error: Checksum error!\n", id);
             if (error & ERRBIT1_OVERLOAD)
-                std::cerr << "[#" << id << "] Protocol Error: Overload error!" << std::endl;
+                TRACE_ERROR(DXL, "[#%i] Protocol Error: Overload error!\n", id);
             if (error & ERRBIT1_INSTRUCTION)
-                std::cerr << "[#" << id << "] Protocol Error: Instruction code error!" << std::endl;
+                TRACE_ERROR(DXL, "[#%i] Protocol Error: Instruction code error!\n", id);
         }
         break;
 
     case COMM_TXFAIL:
-        std::cerr << "[#" << id << "] COMM_TXFAIL: Failed transmit instruction packet!" << std::endl;
+        TRACE_ERROR(DXL, "[#%i] COMM_TXFAIL: Failed transmit instruction packet!\n", id);
         break;
 
     case COMM_TXERROR:
-        std::cerr << "[#" << id << "] COMM_TXERROR: Incorrect instruction packet!" << std::endl;
+        TRACE_ERROR(DXL, "[#%i] COMM_TXERROR: Incorrect instruction packet!\n", id);
         break;
 
     case COMM_RXFAIL:
-        std::cerr << "[#" << id << "] COMM_RXFAIL: Failed get status packet from device!" << std::endl;
+        TRACE_ERROR(DXL, "[#%i] COMM_RXFAIL: Failed get status packet from device!\n", id);
         break;
 
     case COMM_RXWAITING:
-        std::cerr << "[#" << id << "] COMM_RXWAITING: Now recieving status packet!" << std::endl;
+        TRACE_ERROR(DXL, "[#%i] COMM_RXWAITING: Now recieving status packet!\n", id);
         break;
 
     case COMM_RXTIMEOUT:
-        std::cerr << "[#" << id << "] COMM_RXTIMEOUT: Timeout reached while waiting for a status packet!" << std::endl;
+        TRACE_ERROR(DXL, "[#%i] COMM_RXTIMEOUT: Timeout reached while waiting for a status packet!\n", id);
         break;
 
     case COMM_RXCORRUPT:
-        std::cerr << "[#" << id << "] COMM_RXCORRUPT: Status packet is corrupted!" << std::endl;
+        TRACE_ERROR(DXL, "[#%i] COMM_RXCORRUPT: Status packet is corrupted!\n", id);
         break;
 
     default:
-        std::cerr << "[#" << id << "] commStatus has an unknown error code: "<< commStatus << std::endl;
+        TRACE_ERROR(DXL, "[#%i] commStatus has an unknown error code: '%i'\n", id, commStatus);
         break;
     }
 
@@ -1171,7 +1171,7 @@ void Dynamixel::dxl_reboot(const int id, const int ack)
     else
     {
         commStatus = COMM_TXFAIL;
-        std::cerr << "Error! 'Reboot' instruction not available with protocol v1!" << std::endl;
+        TRACE_ERROR(DXL, "'Reboot' instruction not available with protocol v1!\n");
     }
 }
 
@@ -1202,11 +1202,11 @@ int Dynamixel::dxl_read_byte(const int id, const int address, const int ack)
 
     if (id == 254)
     {
-        std::cerr << "Error! Cannot send 'Read' instruction to broadcast address!" << std::endl;
+        TRACE_ERROR(DXL, "Cannot send 'Read' instruction to broadcast address!\n");
     }
     else if (ack == ACK_NO_REPLY)
     {
-        std::cerr << "Error! Cannot send 'Read' instruction if ACK_NO_REPLY is set!" << std::endl;
+        TRACE_ERROR(DXL, "Cannot send 'Read' instruction if ACK_NO_REPLY is set!\n");
     }
     else
     {
@@ -1286,11 +1286,11 @@ int Dynamixel::dxl_read_word(const int id, const int address, const int ack)
 
     if (id == 254)
     {
-        std::cerr << "Error! Cannot send 'Read' instruction to broadcast address!" << std::endl;
+        TRACE_ERROR(DXL, "Error! Cannot send 'Read' instruction to broadcast address!\n");
     }
     else if (ack == ACK_NO_REPLY)
     {
-        std::cerr << "Error! Cannot send 'Read' instruction if ACK_NO_REPLY is set!" << std::endl;
+        TRACE_ERROR(DXL, "Error! Cannot send 'Read' instruction if ACK_NO_REPLY is set!\n");
     }
     else
     {

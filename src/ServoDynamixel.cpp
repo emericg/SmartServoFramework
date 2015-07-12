@@ -21,12 +21,12 @@
  */
 
 #include "ServoDynamixel.h"
+#include "minitraces.h"
 
 #include "Dynamixel.h"
 #include "DynamixelTools.h"
 #include "ControlTablesDynamixel.h"
 
-#include <iostream>
 #include <thread>
 #include <cstring>
 
@@ -99,31 +99,31 @@ void ServoDynamixel::status()
 {
     std::lock_guard <std::mutex> lock(access);
 
-    std::cout << "Status(#" << servoId << ")" << std::endl;
+    TRACE_INFO(DXL, "Status(#%i)\n", servoId);
 
-    std::cout << "> model      : " << servoModel << std::endl;
-    std::cout << "> firmware   : " << registerTableValues[gid(REG_FIRMWARE_VERSION)] << std::endl;
-    std::cout << "> baudrate   : " << dxl_get_baudrate(registerTableValues[gid(REG_BAUD_RATE)]) << std::endl;
+    TRACE_INFO(DXL, "> model      : %i\n", servoModel);
+    TRACE_INFO(DXL, "> firmware   : %i\n", registerTableValues[gid(REG_FIRMWARE_VERSION)]);
+    TRACE_INFO(DXL, "> baudrate   : %i\n", dxl_get_baudrate(registerTableValues[gid(REG_BAUD_RATE)]));
 
-    std::cout << ">> speed mode     : " << speedMode << std::endl;
-    std::cout << ">> steps          : " << steps << std::endl;
-    std::cout << ">> runningDegrees : " << runningDegrees << std::endl;
+    TRACE_INFO(DXL, ">> speed mode     : %i\n", speedMode);
+    TRACE_INFO(DXL, ">> steps          : %i\n", steps);
+    TRACE_INFO(DXL, ">> runningDegrees : %i\n", runningDegrees);
 
-    std::cout << "> torque enabled  : " << registerTableValues[gid(REG_TORQUE_ENABLE)] << std::endl;
-    std::cout << "> max torque      : " << registerTableValues[gid(REG_MAX_TORQUE)] << std::endl;
-    std::cout << "> torque limit    : " << registerTableValues[gid(REG_TORQUE_LIMIT)] << std::endl;
+    TRACE_INFO(DXL, "> torque enabled  : %i\n", registerTableValues[gid(REG_TORQUE_ENABLE)]);
+    TRACE_INFO(DXL, "> max torque      : %i\n", registerTableValues[gid(REG_MAX_TORQUE)]);
+    TRACE_INFO(DXL, "> torque limit    : %i\n", registerTableValues[gid(REG_TORQUE_LIMIT)]);
 
-    std::cout << "> goal position   : " << registerTableValues[gid(REG_GOAL_POSITION)] << std::endl;
-    std::cout << "> goal speed      : " << registerTableValues[gid(REG_GOAL_SPEED)] << std::endl;
-    std::cout << "> current position: " << registerTableValues[gid(REG_CURRENT_POSITION)] << std::endl;
-    std::cout << "> current speed   : " << registerTableValues[gid(REG_CURRENT_SPEED)] << std::endl;
-    std::cout << "> current load    : " << registerTableValues[gid(REG_CURRENT_LOAD)] << std::endl;
-    std::cout << "> current voltage : " << registerTableValues[gid(REG_CURRENT_VOLTAGE)] << std::endl;
-    std::cout << "> current temp    : " << registerTableValues[gid(REG_CURRENT_TEMPERATURE)] << std::endl;
-    std::cout << "> registered      : " << registerTableValues[gid(REG_REGISTERED)] << std::endl;
-    std::cout << "> moving          : " << registerTableValues[gid(REG_MOVING)] << std::endl;
-    std::cout << "> lock            : " << registerTableValues[gid(REG_LOCK)] << std::endl;
-    std::cout << "> punch           : " << registerTableValues[gid(REG_PUNCH)] << std::endl;
+    TRACE_INFO(DXL, "> goal position   : %i\n", registerTableValues[gid(REG_GOAL_POSITION)]);
+    TRACE_INFO(DXL, "> goal speed      : %i\n", registerTableValues[gid(REG_GOAL_SPEED)]);
+    TRACE_INFO(DXL, "> current position: %i\n", registerTableValues[gid(REG_CURRENT_POSITION)]);
+    TRACE_INFO(DXL, "> current speed   : %i\n", registerTableValues[gid(REG_CURRENT_SPEED)]);
+    TRACE_INFO(DXL, "> current load    : %i\n", registerTableValues[gid(REG_CURRENT_LOAD)]);
+    TRACE_INFO(DXL, "> current voltage : %i\n", registerTableValues[gid(REG_CURRENT_VOLTAGE)]);
+    TRACE_INFO(DXL, "> current temp    : %i\n", registerTableValues[gid(REG_CURRENT_TEMPERATURE)]);
+    TRACE_INFO(DXL, "> registered      : %i\n", registerTableValues[gid(REG_REGISTERED)]);
+    TRACE_INFO(DXL, "> moving          : %i\n", registerTableValues[gid(REG_MOVING)]);
+    TRACE_INFO(DXL, "> lock            : %i\n", registerTableValues[gid(REG_LOCK)]);
+    TRACE_INFO(DXL, "> punch           : %i\n", registerTableValues[gid(REG_PUNCH)]);
 }
 
 std::string ServoDynamixel::getModelString()
@@ -178,11 +178,11 @@ void ServoDynamixel::waitMovmentCompletion(int timeout_ms)
     {
         access.unlock();
 
-        //std::cout << "waitMovmentCompletion (" << margin_dw << " <  pos:" << c << "  < " << margin_up << ")" << std::endl;
+        TRACE_2(DXL, "waitMovmentCompletion(%i < pos: %i < %i)\n", margin_dw, c, margin_up);
 
         if ((start + timeout_duration) < std::chrono::system_clock::now())
         {
-            std::cerr << "waitMovmentCompletion(): timeout!" << std::endl;
+            TRACE_WARNING(DXL, "waitMovmentCompletion() timeout!\n", margin_dw, c, margin_up);
             return;
         }
 
@@ -317,7 +317,7 @@ int ServoDynamixel::getPunch()
 
 void ServoDynamixel::setId(int id)
 {
-    //std::cout << "[#" << servoId << "] setId(from " << servoId << " to " << id << ")" << std::endl;
+    TRACE_1(DXL, "[#%i] setId(from %i to %i)\n", servoId, servoId, id);
 
     if (id > -1 && id < 254)
     {
@@ -331,7 +331,7 @@ void ServoDynamixel::setId(int id)
 
 void ServoDynamixel::setCWLimit(int limit)
 {
-    //std::cout << "[#" << servoId << "] setCWLimit(" << limit << ")" << std::endl;
+    TRACE_1(DXL, "[#%i] setCWLimit(%i)\n", servoId, limit);
 
     if (limit > -1 && limit < steps)
     {
@@ -344,7 +344,7 @@ void ServoDynamixel::setCWLimit(int limit)
 
 void ServoDynamixel::setCCWLimit(int limit)
 {
-    //std::cout << "[#" << servoId << "] setCCWLimit(" << limit << ")" << std::endl;
+    TRACE_1(DXL, "[#%i] setCCWLimit(%i)\n", servoId, limit);
 
     if (limit > -1 && limit < steps)
     {
@@ -357,7 +357,7 @@ void ServoDynamixel::setCCWLimit(int limit)
 
 void ServoDynamixel::setGoalPosition(int pos)
 {
-    //std::cout << "[#" << servoId << "] DXL setGoalPosition(" << pos << ")" << std::endl;
+    TRACE_1(DXL, "[#%i] setGoalPosition(%i)\n", servoId, pos);
 
     if (pos > -1 && pos < steps)
     {
@@ -379,13 +379,13 @@ void ServoDynamixel::setGoalPosition(int pos)
     }
     else
     {
-        std::cerr << "[#" << servoId << "] setGoalPosition(" << registerTableValues[gid(REG_CURRENT_POSITION)] << " > " << pos << ") [VALUE ERROR]" << std::endl;
+        TRACE_ERROR(DXL, "[#%i] setGoalPosition(%i > %i) [VALUE ERROR]\n", servoId, registerTableValues[gid(REG_CURRENT_POSITION)], pos);
     }
 }
 
 void ServoDynamixel::setGoalPosition(int pos, int time_budget_ms)
 {
-    //std::cout << "[#" << servoId << "] DXL setGoalPosition(" << pos << " in " << time_budget_ms <<  "ms)" << std::endl;
+    TRACE_1(DXL, "[#%i] setGoalPosition(%i in %ims)\n", servoId, pos, time_budget_ms);
 
     if (time_budget_ms > 0)
     {
@@ -425,14 +425,15 @@ void ServoDynamixel::setGoalPosition(int pos, int time_budget_ms)
         }
         else
         {
-            std::cerr << "[#" << servoId << "] setGoalPosition(" << registerTableValues[gid(REG_CURRENT_POSITION)] << " > " << pos << ") [VALUE ERROR]" << std::endl;
+            TRACE_ERROR(DXL, "[#%i] setGoalPosition(%i > %i) [VALUE ERROR]\n", servoId, registerTableValues[gid(REG_CURRENT_POSITION)], pos);
         }
     }
 }
 
 void ServoDynamixel::moveGoalPosition(int move)
 {
-    //std::cout << "moveGoalPosition(" << move << ")" << std::endl;
+    TRACE_1(DXL, "[#%i] moveGoalPosition(%i)\n", servoId, move);
+
     access.lock();
 
     int curr = registerTableValues[gid(REG_CURRENT_POSITION)];
@@ -445,7 +446,7 @@ void ServoDynamixel::moveGoalPosition(int move)
         {
             int mod = newpos % steps;
 
-            std::cerr << "[#" << servoId << "]  moveGoalPosition([" << curr << " > " << newpos << "] [VALUE ERROR] with modulo: " << mod <<  std::endl;
+            TRACE_ERROR(DXL, "[#%i]  moveGoalPosition([%i > %i]) [VALUE ERROR] with modulo: %i\n", servoId, curr, newpos, mod);
         }
     }
 
@@ -456,7 +457,8 @@ void ServoDynamixel::moveGoalPosition(int move)
 
 void ServoDynamixel::setMovingSpeed(int speed)
 {
-    //std::cout << "setMovingSpeed(" << speed << ")" << std::endl;
+    TRACE_1(DXL, "[#%i] setMovingSpeed(%i)\n", servoId, speed);
+
     std::lock_guard <std::mutex> lock(access);
 
     if (registerTableValues[gid(REG_MIN_POSITION)] == 0 &&
@@ -480,7 +482,7 @@ void ServoDynamixel::setMovingSpeed(int speed)
 
 void ServoDynamixel::setMaxTorque(int torque)
 {
-    //std::cout << "[#" << servoId << "] setMaxTorque(" << torque << ")" << std::endl;
+    TRACE_1(DXL, "[#%i] setMaxTorque(%i)\n", servoId, torque);
 
     if (torque < 1024)
     {
@@ -493,8 +495,7 @@ void ServoDynamixel::setMaxTorque(int torque)
 
 void ServoDynamixel::setLed(int led)
 {
-    //std::cout << "[#" << servoId << "] setLed(" << led << ")" << std::endl;
-    std::lock_guard <std::mutex> lock(access);
+    TRACE_1(DXL, "[#%i] setLed(%i)\n", servoId, led);
 
     // Normalize value
     if (led >= 1)
@@ -506,16 +507,18 @@ void ServoDynamixel::setLed(int led)
         led = 0;
     }
 
+    std::lock_guard <std::mutex> lock(access);
+
     registerTableValues[gid(REG_LED)] = led;
     registerTableCommits[gid(REG_LED)] = 1;
 }
 
 void ServoDynamixel::setTorqueEnabled(int torque)
 {
+    TRACE_1(DXL, "[#%i] setTorqueEnabled(%i)\n", servoId, torque);
+
     // Normalize value
     (torque > 0) ? torque = 1 : torque = 0;
-
-    //std::cout << "[#" << servoId << "] setTorqueEnabled(" << torque << ")" << std::endl;
 
     std::lock_guard <std::mutex> lock(access);
 

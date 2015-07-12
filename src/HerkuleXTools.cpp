@@ -21,7 +21,7 @@
  */
 
 #include "HerkuleXTools.h"
-#include <iostream>
+#include "minitraces.h"
 
 std::string hkx_get_model_name(const int model_number)
 {
@@ -106,7 +106,7 @@ int hkx_get_baudrate(const int baudnum, const int servo_serie)
 
     if (servo_serie == 0)
     {
-        std::cerr << "Unknown servo serie, using default baudrate of: '" << baudRate << "' bps" << std::endl;
+        TRACE_ERROR(TOOLS, "Unknown servo serie, using default baudrate of: '%i' bps\n", baudRate);
     }
     else if (servo_serie >= SERVO_DRS)
     {
@@ -137,13 +137,13 @@ int hkx_get_baudrate(const int baudnum, const int servo_serie)
             baudRate = 57600;
             break;
         default:
-            std::cerr << "Invalid baudnum (" << baudnum << ") for DRS serie, using default baudrate of: '" << baudRate << "' bps" << std::endl;
+            TRACE_ERROR(TOOLS, "Invalid baudnum '%i' for DRS serie, using default baudrate of: '%i' bps\n", baudnum, baudRate);
             break;
         }
     }
     else
     {
-        std::cerr << "Unsupported HerkuleX servo serie, using default baudrate of: '" << baudRate << "' bps" << std::endl;
+        TRACE_ERROR(TOOLS, "Unsupported HerkuleX servo serie, using default baudrate of: '%i' bps\n", baudRate);
     }
 
     return baudRate;

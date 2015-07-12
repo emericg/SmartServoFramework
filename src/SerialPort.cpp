@@ -23,13 +23,12 @@
 #include "SerialPort.h"
 #include "DynamixelTools.h"
 #include "HerkuleXTools.h"
+#include "minitraces.h"
 
 // Include the OS specific serialPortsScanner()
 #include "SerialPortLinux.h"
 #include "SerialPortMacOS.h"
 #include "SerialPortWindows.h"
-
-#include <iostream>
 
 SerialPort::SerialPort(const int serialDevice, const int servoDevices):
     ttyDeviceName("null"),
@@ -107,7 +106,7 @@ int SerialPort::checkBaudRate(const int baud)
             }
             else
             {
-                std::cerr << "Invalid baudrate '" << baud << "' for an HerkuleX device, using default baudrate value of: '" << baudRate << "'" << std::endl;
+                TRACE_ERROR(SERIAL, "Invalid baudrate '%i' bps for a HerkuleX device, using default baudrate value of: '%i' bps\n", baud, baudRate);
             }
         }
         else if (servoDevices >= SERVO_DYNAMIXEL)
@@ -124,7 +123,7 @@ int SerialPort::checkBaudRate(const int baud)
             }
             else
             {
-                std::cerr << "Invalid baudrate '" << baud << "' for a Dynamixel device, using default baudrate value of: '" << baudRate << "'" << std::endl;
+                TRACE_ERROR(SERIAL, "Invalid baudrate '%i' bps for a Dynamixel device, using default baudrate value of: '%i' bps\n", baud, baudRate);
             }
         }
         else
@@ -136,13 +135,13 @@ int SerialPort::checkBaudRate(const int baud)
             }
             else
             {
-                std::cerr << "Invalid device class '" << servoDevices << "' and baudrate '" << baud << "', using default baudrate value of: '" << baudRate << "'" << std::endl;
+                TRACE_ERROR(SERIAL, "Invalid device class '%i' with baudrate '%i' bps, using default baudrate value of: '%i'bps\n", servoDevices, baud, baudRate);
             }
         }
     }
     else
     {
-        std::cerr << "Invalid baudnum (" << baud << "), using default baudrate value of: '" << baudRate << "'" << std::endl;
+        TRACE_ERROR(SERIAL, "Invalid baudrate '%i' bps, using default baudrate value of: '%i' bps\n", baud, baudRate);
     }
 
     // Apply bandwith restriction depending on the adapter chip
@@ -151,7 +150,7 @@ int SerialPort::checkBaudRate(const int baud)
         if (baudRate > 4500000)
         {
             baudRate = 4500000;
-            std::cerr << "Invalid baudrate ('" << baud << "' > 4500000): too high for SERIAL_USB2DYNAMIXEL or or FTDI based device, using default baudrate value of: '1000000'" << std::endl;
+            TRACE_ERROR(SERIAL, "Invalid baudrate ('%i' > 4500000): too high for SERIAL_USB2DYNAMIXEL or or FTDI based device, using default baudrate value of: '1000000'\n", baud);
         }
     }
     else if (serialDevice == SERIAL_USB2AX)
@@ -159,7 +158,7 @@ int SerialPort::checkBaudRate(const int baud)
         if (baudRate > 1000000)
         {
             baudRate = 1000000;
-            std::cerr << "Invalid baudrate ('" << baud << "' > 1000000): too high for USB2AX device, using default baudrate value of: '1000000'" << std::endl;
+            TRACE_ERROR(SERIAL, "Invalid baudrate ('%i' > 1000000): too high for USB2AX device, using default baudrate value of: '1000000'\n", baud);
         }
     }
     else if (serialDevice == SERIAL_ZIG100)
@@ -167,7 +166,7 @@ int SerialPort::checkBaudRate(const int baud)
         if (baudRate > 115200)
         {
             baudRate = 115200;
-            std::cerr << "Invalid baudrate ('" << baud << "' > 115200): too high for ZIG-100/110A device, using default baudrate value of: '1000000'" << std::endl;
+            TRACE_ERROR(SERIAL, "Invalid baudrate ('%i' > 115200): too high for ZIG-100/110A device, using fallback baudrate value of: '115200'\n", baud);
         }
     }
 
@@ -193,7 +192,10 @@ std::vector <std::string> SerialPort::scanSerialPorts()
     std::vector <std::string> availableSerialPorts;
 
     // This function is OS specific
-    serialPortsScanner(availableSerialPorts);
+    if (serialPortsScanner(availableSerialPorts) == 0)
+    {
+        TRACE_WARNING(SERIAL, "No serial ports found during scan...\n");
+    }
 
     return availableSerialPorts;
 }
@@ -221,7 +223,7 @@ void SerialPort::setLatency(int latency)
     }
     else
     {
-        std::cerr << "Invalid latency value: '" << latency << "'', not in ]0;128[ range." << std::endl;
+        TRACE_ERROR(SERIAL, "Invalid latency value: '%i', not in ]0;128[ range.\n", latency);
     }
 }
 

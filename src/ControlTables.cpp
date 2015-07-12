@@ -23,9 +23,9 @@
 #include "ControlTables.h"
 #include "ControlTablesDynamixel.h"
 #include "ControlTablesHerkuleX.h"
+#include "minitraces.h"
 
 // C++ standard libraries
-#include <iostream>
 #include <cmath>
 
 const int (*getRegisterTable(const int servo_model))[8]
@@ -90,7 +90,7 @@ const int (*getRegisterTable(const int servo_model))[8]
 
     if (ct == NULL)
     {
-        std::cerr << "Unable to find a suitable 'Control Table' for servo_model: '" << servo_model << "'" << std::endl;
+        TRACE_ERROR(TABLES, "Unable to find a suitable 'Control Table' for servo_model: '%i'\n", servo_model);
     }
 
     return ct;
@@ -157,7 +157,7 @@ const int (*getRegisterTable(const int servo_serie, const int servo_model))[8]
 
     if (ct == NULL)
     {
-        std::cerr << "Unable to find a suitable 'Control Table' for servo_serie: '" << servo_serie << "' servo_model: '" << servo_model << "'" << std::endl;
+        TRACE_ERROR(TABLES, "Unable to find a suitable 'Control Table' for servo_serie: '%i' / servo_model: '%i'\n", servo_serie, servo_model);
     }
 
     return ct;
@@ -174,7 +174,7 @@ unsigned getRegisterCount(const int ct[][8])
         {
             if (ct[i][0] == 999)
             {
-                //std::cout << "Control table size is: " << i << std::endl;
+                TRACE_1(TABLES, "Control table size is: '%i'\n", i);
                 count = i;
                 break; // exit search loop
             }
@@ -190,13 +190,11 @@ int getRegisterInfos(const int ct[][8], const int reg_name, RegisterInfos &infos
 
     if (ct != NULL)
     {
-        // DEBUG
-        //std::cout << "Control table size is: " << getRegisterCount() << std::endl;
+        TRACE_1(TABLES, "Control table size is: '%i'\n", getRegisterCount(ct));
 
         for (unsigned i = 0; i < getRegisterCount(ct); i++)
         {
-            // DEBUG
-            //std::cout << "Control table [" << i << "/" << getRegisterCount() << "] value: "<< ct[i][0] << std::endl;
+            TRACE_1(TABLES, "Control table [%i / %i] value: '%i'\n", i, getRegisterCount(ct), ct[i][0]);
 
             if (ct[i][0] == reg_name) // match register name
             {

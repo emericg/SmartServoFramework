@@ -13,8 +13,8 @@ Linux, Mac OS and Windows operating systems are supported. All you need to begin
 This framework can be used with any Dynamixel or HerkuleX devices. Please note that the Dynamixel PRO devices should work, but are not supported, as no test devices are available.  
 Support for other devices or brand may be added in the futur...
 
-* **Simple API:** Use this mode to get or set a value to a servo by sending a simple instruction and waiting for the answer.  
-* **Controller API:** Setup a controller and attach servo instances to it. Manipulate servo objects and let the controller sync its values with the actual servo hardware in a background thread with a fixed frequency.  
+* **Direct API:** Use this mode to get or set a value to a servo by sending simple and direct instructions, then waiting for the answers.  
+* **Controller API:** Setup a controller and attach servo instances to it. Manipulate servo objects and let the controller synchronize its "virtual" register values with the real servo hardware in a background thread with a fixed frequency.  
 
 ### Documentation
 

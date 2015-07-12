@@ -21,9 +21,9 @@
  */
 
 #include "HerkuleXController.h"
+#include "minitraces.h"
 
 // C++ standard libraries
-#include <iostream>
 #include <chrono>
 #include <thread>
 
@@ -45,15 +45,13 @@ void HerkuleXController::updateInternalSettings()
 {
     if (servoSerie != SERVO_UNKNOWN)
     {
-        std::cout << std::endl;
-
         if (servoSerie >= SERVO_HERKULEX)
         {
             ackPolicy = 1;
             maxId = 253;
 
             protocolVersion = 1;
-            std::cout << "- Using HerkuleX communication protocol" << std::endl;
+            TRACE_INFO(CAPI, "- Using HerkuleX communication protocol\n");
         }
         else if (servoSerie >= SERVO_DYNAMIXEL)
         {
@@ -70,7 +68,7 @@ void HerkuleXController::updateInternalSettings()
 
                 if (serialDevice == SERIAL_USB2AX)
                 {
-                    // The USB2AX device uses the ID 253 for itself
+                    // The USB2AX adapter reserves the ID 253 for itself
                     maxId = 252;
                 }
                 else
@@ -81,17 +79,17 @@ void HerkuleXController::updateInternalSettings()
 
             if (protocolVersion == 2)
             {
-                std::cout << "- Using Dynamixel communication protocol version 2" << std::endl;
+                TRACE_INFO(CAPI, "- Using Dynamixel communication protocol version 2\n");
             }
             else
             {
-                std::cout << "- Using Dynamixel communication protocol version 1" << std::endl;
+                TRACE_INFO(CAPI, "- Using Dynamixel communication protocol version 1\n");
             }
         }
     }
     else
     {
-        std::cerr << "Warning: Unknown servo serie!" << std::endl;
+        TRACE_WARNING(CAPI, "Warning: Unknown servo serie!\n");
     }
 }
 
@@ -158,8 +156,11 @@ void HerkuleXController::autodetect_internal(int start, int stop)
     serialSetLatency(8);
 #endif
 
-    std::cout << "HKX ctrl_device_autodetect(port: '" << serialGetCurrentDevice() << "' | tid: '" << std::this_thread::get_id() << "')" << std::endl;
-    std::cout << "> THREADED Scanning for HKX devices on '" << serialGetCurrentDevice() << "', Range is [" << start << "," << stop << "[" << std::endl;
+    TRACE_INFO(CAPI, "HKX ctrl_device_autodetect(port: '%s' / tid: '%i')\n",
+               serialGetCurrentDevice().c_str(), std::this_thread::get_id());
+
+    TRACE_INFO(CAPI, "> THREADED Scanning for HKX devices on '%s' , range is [%i,%i[\n",
+               serialGetCurrentDevice().c_str(), start, stop);
 
     for (int id = start; id <= stop; id++)
     {
@@ -174,7 +175,7 @@ void HerkuleXController::autodetect_internal(int start, int stop)
             hkx_get_model_infos(pingstats.model_number, serie, model);
             ServoHerkuleX *servo = NULL;
 
-            std::cout << std::endl << "[#" << id << "] " << hkx_get_model_name(pingstats.model_number) << " servo found! ";
+            TRACE_INFO(HKX, "[#%i] %s servo found!\n", id, hkx_get_model_name(pingstats.model_number).c_str());
 
             // Instanciate the device found
             switch (serie)
@@ -205,11 +206,11 @@ void HerkuleXController::autodetect_internal(int start, int stop)
         }
         else
         {
-            std::cout << ".";
+            printf(".");
         }
     }
 
-    std::cout << std::endl;
+    printf("\n");
 
     // Restore RX packet timeout
     serialSetLatency(LATENCY_TIME_DEFAULT);
@@ -219,7 +220,9 @@ void HerkuleXController::autodetect_internal(int start, int stop)
 
 void HerkuleXController::run()
 {
-    std::cout << "HerkuleXController::run(port: '" << serialGetCurrentDevice() << "' | tid: '" << std::this_thread::get_id() << "')" << std::endl;
+    TRACE_INFO(CAPI, "HerkuleXController::run(port: '%s' / tid: '%i')\n"
+               , serialGetCurrentDevice().c_str(), std::this_thread::get_id());
+
     std::chrono::time_point<std::chrono::system_clock> start, end;
 
     while (getState() >= state_started)
@@ -264,14 +267,14 @@ void HerkuleXController::run()
                 break;
 
             case ctrl_state_pause:
-                std::cout << ">> THREAD (tid: " << std::this_thread::get_id() << "') pause by message" << std::endl;
+                TRACE_INFO(CAPI, ">> THREAD (tid: '%i') paused by message\n", std::this_thread::get_id());
                 m_mutex.lock();
                 m_queue.pop_front();
                 m_mutex.unlock();
                 return;
                 break;
             case ctrl_state_stop:
-                std::cout << ">> THREAD (tid: " << std::this_thread::get_id() << "') termination by 'stop message'" << std::endl;
+                TRACE_INFO(CAPI, ">> THREAD (tid: '%i') termination by 'stop message'\n", std::this_thread::get_id());
                 m_mutex.lock();
                 m_queue.pop_front();
                 m_mutex.unlock();
@@ -279,7 +282,7 @@ void HerkuleXController::run()
                 break;
 
             default:
-                std::cerr << "[HKX] Unknown message type: '" << m.msg << "'" << std::endl;
+                TRACE_WARNING(HKX, "Unknown message type: '%i'\n", m.msg);
                 break;
             }
 
@@ -304,7 +307,7 @@ void HerkuleXController::run()
             {
                 // Every servo register value will be updated
                 updateList.push_back(id);
-                std::cout << "Refresh servo #" << id << " registers"<< std::endl;
+                TRACE_INFO(HKX, "Refresh servo #%i registers\n", id);
             }
 
             if (rebootProgrammed == 1)
@@ -327,7 +330,7 @@ void HerkuleXController::run()
 
                 // Reboot
                 hkx_reboot(id, ack);
-                std::cout << "Rebooting servo #" << id << "..." << std::endl;
+                TRACE_INFO(HKX, "Rebooting servo #%i...\n", id);
 
                 miniMessages m {ctrl_device_delayed_add, std::chrono::system_clock::now() + std::chrono::seconds(2), NULL, id, 1};
                 sendMessage(&m);
@@ -353,7 +356,7 @@ void HerkuleXController::run()
 
                 // Reset
                 hkx_reset(id, resetProgrammed, ack);
-                std::cout << "Resetting servo #" << id << " (setting: " << resetProgrammed << ")..." << std::endl;
+                TRACE_INFO(HKX, "Resetting servo #%i (setting: %i)...\n", id, resetProgrammed);
 
                 miniMessages m {ctrl_device_delayed_add, std::chrono::system_clock::now() + std::chrono::seconds(2), NULL, id, 1};
                 sendMessage(&m);
@@ -385,7 +388,7 @@ void HerkuleXController::run()
                             int reg_name = getRegisterName(s->getControlTable(), ctid);
                             getRegisterInfos(s->getControlTable(), reg_name, reg);
 
-                            //std::cout << "Reading value for reg [" << ctid << "] name: '" << regname << "' addr: '" << regaddr << "' size: '" << regsize << "'" << std::endl;
+                            TRACE_1(HKX, "Reading value for reg [%i] name: '%s' addr: '%i' size: '%i'", ctid, getRegisterNameTxt(reg_name).c_str(), reg.reg_addr, reg.reg_size);
 
                             int reg_type = REGISTER_AUTO;
                             if (reg.reg_addr_rom >= 0 && reg.reg_addr_ram >= 0)
@@ -468,7 +471,7 @@ void HerkuleXController::run()
                     // Count must be high enough to avoid "false positive": device producing a lot of errors but still present on the serial link
                     if (s->getErrorCount() > 16)
                     {
-                        std::cerr << "Device #" << id << " has an error count too high and is going to be unregistered from its controller on '" << serialGetCurrentDevice() << "'..." << std::endl;
+                        TRACE_ERROR(HKX, "Device #%i has an error count too high and is going to be unregistered from its controller on '%s'...\n", id, serialGetCurrentDevice().c_str());
                         unregisterServo(s);
                         continue;
                     }
@@ -483,8 +486,8 @@ void HerkuleXController::run()
                         {
                             int regaddr = getRegisterAddr(s->getControlTable(), regname, REGISTER_ROM);
 
-                            //std::cout << "Writing ROM value '" << s->getValue(regname) << "' for reg [" << ctid << "] name: '" << getRegisterNameTxt(regname)
-                            //          << "' addr: '" << regaddr << "' size: '" << regsize << "'" << std::endl;
+                            TRACE_1(HKX, "Writing ROM value '%i' for reg [%i] name: '%s' addr: '%i' size: '%i'",
+                                    s->getValue(regname, REGISTER_ROM), ctid, getRegisterNameTxt(regname).c_str(), regaddr, regsize);
 
                             if (regsize == 1)
                             {
@@ -514,8 +517,8 @@ void HerkuleXController::run()
                         {
                             int regaddr = getRegisterAddr(s->getControlTable(), regname, REGISTER_RAM);
 
-                            //std::cout << "Writing RAM value '" << s->getValue(regname) << "' for reg [" << ctid << "] name: '" << getRegisterNameTxt(regname)
-                            //          << "' addr: '" << regaddr << "' size: '" << regsize << "'" << std::endl;
+                            TRACE_1(HKX, "Writing RAM value '%i' for reg [%i] name: '%s' addr: '%i' size: '%i'",
+                                    s->getValue(regname, REGISTER_RAM), ctid, getRegisterNameTxt(regname).c_str(), regaddr, regsize);
 
                             if (regsize == 1)
                             {
@@ -640,9 +643,13 @@ void HerkuleXController::run()
 
 #ifdef LATENCY_TIMER
         if ((loopd / 1000.0) > syncloopDuration)
-            std::cerr << "Sync loop duration: " << (loopd / 1000.0) << "ms of the " << syncloopDuration << "ms budget." << std::endl;
+        {
+            TRACE_WARNING(HKX, "Sync loop duration: %fms of the %fms budget.\n", (loopd / 1000.0), syncloopDuration);
+        }
         else
-            std::cout << "Sync loop duration: " << (loopd / 1000.0) << "ms of the " << syncloopDuration << "ms budget." << std::endl;
+        {
+            TRACE_INFO(HKX, "Sync loop duration: %fms of the %fms budget.\n", (loopd / 1000.0), syncloopDuration);
+        }
 #endif
 
         if (waitd > 0.0)
@@ -652,5 +659,5 @@ void HerkuleXController::run()
         }
     }
 
-    std::cout << ">> THREAD (tid: " << std::this_thread::get_id() << "') termination by 'loop exit'" << std::endl;
+    TRACE_INFO(HKX, ">> THREAD (tid: '%i') termination by 'loop exit'\n", std::this_thread::get_id());
 }
