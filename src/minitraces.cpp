@@ -185,9 +185,9 @@ void MiniTraces_print(const char *file, const int line, const char *func,
         print_trace_time();
 #endif
 
-        // Print trace module_name, 5 chars, left padded
+        // Print trace module_name (6 chars paddding)
         const char *level_string = get_trace_level_string(level);
-        printf("[%s][%5s]", level_string, trace_modules_table[module].module_name);
+        printf("[%s][%6s]", level_string, trace_modules_table[module].module_name);
 
 #if DEBUG_WITH_FUNC_INFO
         // Print the function where the trace came from
@@ -195,9 +195,9 @@ void MiniTraces_print(const char *file, const int line, const char *func,
 #endif
 
 #if DEBUG_WITH_FILE_INFO
-        // Print the line of code that triggered the trace output
+        // Print the file (no padding) and line (3 chars padding) of code that triggered the trace output
         const char *tmp = strrchr(file, '/');
-        printf("{%s:%d}", tmp ? ++tmp : file, line);
+        printf("{%s:%3d}", tmp ? ++tmp : file, line);
 #endif
 
         // Customizable header / body separator
