@@ -34,13 +34,14 @@ extern "C" {
 // GENERAL SETTINGS
 // =============================================================================
 
-#define ENABLE_TRACES       2   //!< 0: disabled, 1: enables error and warning levels, 2: enable all trace levels
-#define ENABLE_COLORS       1   //!< Enable terminal colored output
+#define ENABLE_TRACES    2    //!< 0: disabled, 1: enables error and warning levels, 2: enable all trace levels
+#define ENABLE_COLORS    1    //!< Enable colors on terminal output
 
 // Advanced debugging features
-#define DEBUG_WITH_TIMESTAMPS       2   //!< 0: disabled, 1: trace tick (in milliseconds), 2: trace time (hh:mm:ss)
+#define DEBUG_WITH_PID              0   //!< Enable "program identifier"
+#define DEBUG_WITH_TIMESTAMPS       0   //!< 0: disabled, 1: trace tick (in milliseconds), 2: trace time (hh:mm:ss)
 #define DEBUG_WITH_FUNC_INFO        1
-#define DEBUG_WITH_FILE_INFO        1
+#define DEBUG_WITH_FILE_INFO        0
 #define DEBUG_WITH_FORCED_SYNC      0
 #define DEBUG_WITH_STRICT_PADDING   0   //!< Not implemented yet
 
@@ -56,7 +57,11 @@ extern "C" {
  * You can use bracket, spaces, colors...
  * Example: #define PID OUT_BLUE "[MINITRACE]" CLR_RESET " "
  */
-#define PID OUT_GREEN "[SSF]" CLR_RESET
+#if DEBUG_WITH_PID == 1
+#define PID OUT_BLUE "[SSF]" CLR_RESET
+#else
+#define PID ""
+#endif
 
 // =============================================================================
 // TRACE MODULES
