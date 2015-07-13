@@ -20,7 +20,10 @@ unix {
     *-g++* {
         message("Using GCC")
         QMAKE_CXXFLAGS += -pthread
-        QMAKE_LFLAGS   += -llockdev
+
+        unix:!macx {
+            QMAKE_LFLAGS += -llockdev
+        }
 
         if: system("gcc -dumpversion | grep 4.[0-5]") {
             error("You need at least GCC 4.6+ to use C++11 features")
@@ -31,14 +34,18 @@ unix {
         }
     }
     *clang* {
-        message("Using Clang")
-        QMAKE_CXXFLAGS += -std=c++11 -Wno-unused-parameter
+        message("Using LLVM")
+        QMAKE_CXXFLAGS += -std=c++11 -stdlib=libc++ -Wno-unused-parameter
+        LIBS += -stdlib=libc++
     }
+}
+macx {
+    #
 }
 win32 {
     *-g++* {
         message("Using MinGW / Windows")
-        QMAKE_CXXFLAGS += -pthread -std=c++11 -Wno-unused-parameter
+        QMAKE_CXXFLAGS += -std=c++11 -pthread -Wno-unused-parameter
     }
     *-msvc* {
         message("Using MSVC / Windows")

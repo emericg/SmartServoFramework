@@ -49,6 +49,35 @@ ENDIF(CMAKE_BUILD_TYPE STREQUAL "Release")
 #    "${CMAKE_SOURCE_DIR}/src/cmake_defines.h"
 #)
 
+# Plateform specific
+###############################################################################
+
+# Linux specific stuff
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+
+    MESSAGE("Building on Linux plateform")
+    SET(EXTRALIBS "lockdev")
+
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+
+# Mac OS X specific stuff
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+
+    MESSAGE("Building on MacOSX plateform")
+    FIND_LIBRARY(IOKIT_FRAMEWORK IOKit)
+    MESSAGE("* Finding library IOKit: ${IOKIT_FRAMEWORK}")
+    SET(EXTRALIBS ${IOKIT_FRAMEWORK})
+
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+
+# Windows specific stuff
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+
+    MESSAGE("Building on Windows plateform")
+    SET(EXTRALIBS "")
+
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+
 # Source files
 ###############################################################################
 
@@ -111,13 +140,13 @@ SET(SmartServoFramework_SRC
 
 # Build library
 ADD_LIBRARY(SmartServoFramework_shared SHARED ${SmartServoFramework_SRC})
-TARGET_LINK_LIBRARIES(SmartServoFramework_shared lockdev)
+TARGET_LINK_LIBRARIES(SmartServoFramework_shared ${EXTRA_LIBS})
 SET_TARGET_PROPERTIES(SmartServoFramework_shared PROPERTIES OUTPUT_NAME SmartServoFramework)
 
 #IF(CMAKE_BUILD_MODE STREQUAL "Static")
 #    MESSAGE("** Static library will be built")
 #    ADD_LIBRARY(SmartServoFramework_static STATIC ${SmartServoFramework_SRC})
-#    TARGET_LINK_LIBRARIES(SmartServoFramework_static lockdev)
+#    TARGET_LINK_LIBRARIES(SmartServoFramework_static ${EXTRA_LIBS})
 #    SET_TARGET_PROPERTIES(SmartServoFramework_static PROPERTIES OUTPUT_NAME SmartServoFramework)
 #ENDIF(CMAKE_BUILD_MODE STREQUAL "Static")
 

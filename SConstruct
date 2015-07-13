@@ -14,9 +14,9 @@ from distutils.version import StrictVersion
 
 if ARGUMENTS.get('debug', 0):
     print "> DEBUG build"
-    env = Environment(CCFLAGS = ' -g ')
+    env = Environment(CCFLAGS = ' -g -Wno-unused-parameters ')
 else:
-    env = Environment(CCFLAGS = ' -O2 ')
+    env = Environment(CCFLAGS = ' -O2 -Wno-unused-parameters ')
 
 
 # Multiplatform build
@@ -33,12 +33,12 @@ if sys.platform.startswith('linux') == True:
             exit(0)
         elif StrictVersion(CC_VERSION) < StrictVersion('4.8'):
             # GCC 4.6 needs a different flag to enable C++11
-            env.Append(CCFLAGS = "-std=c++0x -pthread -Wno-unused-parameters ")
+            env.Append(CCFLAGS = "-std=c++0x -pthread ")
         else:
-            env.Append(CCFLAGS = "-std=c++11 -pthread -Wno-unused-parameters ")
+            env.Append(CCFLAGS = "-std=c++11 -pthread ")
     elif env['CC'] == 'clang':
-        print '> Clang ' + CC_VERSION + ' compiler'
-        env.Append(CCFLAGS = "-std=c++11 -Wno-unused-parameters ")
+        print '> LLVM ' + CC_VERSION + ' compiler'
+        env.Append(CCFLAGS = "-std=c++11 ")
     else:
         print '> WARNING > Unknown compiler > ' + env['CC']
         exit(0)
@@ -56,7 +56,7 @@ elif sys.platform.startswith('win') == True:
         env.Append(tools = "msvc")
     elif env['CC'] == 'gcc':
         print '> MinGW compiler'
-        env.Append(CCFLAGS = "-std=c++11 -pthread -winpthreads -Wno-unused-parameters ")
+        env.Append(CCFLAGS = "-std=c++11 -pthread -winpthreads ")
     else:
         print '> WARNING > Unknown compiler > ' + env['CC']
 
@@ -69,15 +69,15 @@ elif sys.platform == 'darwin':
     print '> MAC OS platform'
     if env['CC'] == 'gcc':
         print '> Gcc compiler'
-        env.Append(CCFLAGS = "-std=c++11 -pthread -stdlib=libstdc++ ")
+        env.Append(CCFLAGS = "-std=c++11 -stdlib=libstdc++ -pthread ")
     elif env['CC'] == 'clang':
-        print '> Clang compiler'
+        print '> LLVM compiler'
         env.Append(CCFLAGS = "-std=c++11 -stdlib=libc++ ")
     else:
         print '> WARNING > Unknown compiler > ' + env['CC']
 
     # Additional libraries
-    libraries = ['']
+    libraries = ['IOKit']
     libraries_paths = ['']
 
 else:
