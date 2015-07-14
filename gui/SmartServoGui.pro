@@ -36,7 +36,7 @@ unix {
     *clang* {
         message("Using LLVM")
         QMAKE_CXXFLAGS += -std=c++11 -stdlib=libc++ -Wno-unused-parameter
-        LIBS += -stdlib=libc++
+        LIBS += -stdlib=libc++ -framework IOKit -framework CoreFoundation
     }
 }
 macx {
