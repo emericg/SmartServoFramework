@@ -26,6 +26,7 @@
 // C++ standard libraries
 #include <chrono>
 #include <thread>
+#include <cmath>
 
 // Enable latency timer
 //#define LATENCY_TIMER
@@ -190,7 +191,7 @@ void DynamixelController::autodetect_internal(int start, int stop)
     TRACE_INFO(CAPI, "DXL ctrl_device_autodetect(port: '%s' / tid: '%i')\n"
                , serialGetCurrentDevice().c_str(), std::this_thread::get_id());
 
-    TRACE_INFO(CAPI, "> THREADED Scanning for DXL devices on '%s' , protocol v%i, range is [%i,%i[\n",
+    TRACE_INFO(CAPI, "> THREADED Scanning for DXL devices on '%s', protocol v%i, range is [%i,%i[\n",
                serialGetCurrentDevice().c_str(), protocolVersion, start, stop);
 
     for (int id = start; id <= stop; id++)
@@ -599,7 +600,7 @@ void DynamixelController::run()
                                 {
                                     double step = static_cast<double>(s->getRunningDegrees()) / s->getSteps();
                                     double angle = static_cast<double>(gpos - cpos) * step;
-                                    double angle_abs = abs(angle);
+                                    double angle_abs = std::fabs(angle);
                                     int speed = (movingSpeed + static_cast<int>(k * angle_abs));
 
                                     if (angle_abs > mot)
@@ -653,7 +654,7 @@ void DynamixelController::run()
 
                                     if (angle > 180) angle -= 360;
                                     else if (angle < -180) angle += 360;
-                                    double angle_abs = abs(angle);
+                                    double angle_abs = std::fabs(angle);
 
                                     int speed = (movingSpeed + static_cast<int>(k * angle_abs));
 

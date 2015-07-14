@@ -24,6 +24,7 @@
 #include "minitraces.h"
 
 // C++ standard libraries
+#include <cstdlib>
 #include <cstring>
 #include <map>
 #include <mutex>
@@ -979,7 +980,7 @@ void HerkuleX::hkx_i_jog(const int id, const int mode, const int value, const in
         }
         else
         {
-            JOG = abs(value); // speed
+            JOG = std::abs(value); // speed
             JOG += 0x4000; // direction
         }
         SET = 0x0A; // continuous rotation with blue led
@@ -1019,7 +1020,7 @@ void HerkuleX::hkx_s_jog(const int id, const int mode, const int value, const in
         }
         else
         {
-            JOG = abs(value); // speed
+            JOG = std::abs(value); // speed
             JOG += 0x4000; // direction
         }
         SET = 0x0A; // continuous rotation with blue led
