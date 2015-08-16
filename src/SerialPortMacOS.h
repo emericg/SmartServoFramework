@@ -32,7 +32,7 @@
  * \param[out] availableSerialPorts: A list of serial port nodes (ex: /dev/cu.USB0 or /dev/cu.modem1234).
  * \return The number of serial ports found.
  *
- * Scans for devices identifying as modems, using IOKit.
+ * Scans for devices identifying as modems, using IOKit. This feature is still a work in progress.
  */
 int serialPortsScanner(std::vector <std::string> &availableSerialPorts);
 
