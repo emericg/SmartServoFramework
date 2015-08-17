@@ -269,10 +269,13 @@ void MainWindow::scanSerialPorts()
             helper->deviceProtocol->addItem("HKX @ 115.2 Kb/s");
             helper->deviceProtocol->addItem("HKX @ 57.6 Kb/s");
             helper->deviceProtocol->addItem("HKX @ 1 Mb/s");
-            helper->deviceProtocol->setMaximumWidth(80);
+            helper->deviceProtocol->setMaximumSize(80, 28);
+            helper->deviceProtocol->setFont(QFont("Cantarell", 10));
             helper->deviceScan = new QPushButton();
             helper->deviceScan->setIcon(QIcon(":/icons/icons/emblem-ubuntuone-updating.svg"));
-            helper->deviceScan->setMaximumSize(32, 32);
+            helper->deviceScan->setIconSize(QSize(24, 24));
+            helper->deviceScan->setMaximumSize(24, 24);
+            helper->deviceScan->setFlat(true);
             ui->groupPorts->layout()->addWidget(helper->deviceName);
             ui->groupPorts->layout()->addWidget(helper->deviceProtocol);
             ui->groupPorts->layout()->addWidget(helper->deviceScan);
