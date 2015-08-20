@@ -14,9 +14,9 @@ from distutils.version import StrictVersion
 
 if ARGUMENTS.get('debug', 0):
     print "> DEBUG build"
-    env = Environment(CCFLAGS = ' -g -Wno-unused-parameters ')
+    env = Environment(CCFLAGS = ' -g -Wno-unused-parameter ')
 else:
-    env = Environment(CCFLAGS = ' -O2 -Wno-unused-parameters ')
+    env = Environment(CCFLAGS = ' -O2 -Wno-unused-parameter ')
 
 
 # Multiplatform build
@@ -88,7 +88,7 @@ else:
 ###############################################################################
 
 src_framework = [env.Object("src/SerialPort.cpp"), env.Object("src/SerialPortLinux.cpp"), env.Object("src/SerialPortMacOS.cpp"), env.Object("src/SerialPortWindows.cpp"),
-                 env.Object("src/ControlTables.cpp"), env.Object("src/Utils.cpp"), env.Object("src/ControllerAPI.cpp"),env.Object("src/Servo.cpp"),
+                 env.Object("src/minitraces.cpp"), env.Object("src/ControlTables.cpp"), env.Object("src/Utils.cpp"), env.Object("src/ControllerAPI.cpp"),env.Object("src/Servo.cpp"),
                  env.Object("src/Dynamixel.cpp"), env.Object("src/DynamixelTools.cpp"), env.Object("src/DynamixelSimpleAPI.cpp"), env.Object("src/DynamixelController.cpp"),
                  env.Object("src/ServoDynamixel.cpp"), env.Object("src/ServoAX.cpp"), env.Object("src/ServoEX.cpp"), env.Object("src/ServoMX.cpp"), env.Object("src/ServoXL.cpp"),
                  env.Object("src/HerkuleX.cpp"), env.Object("src/HerkuleXTools.cpp"), env.Object("src/HerkuleXSimpleAPI.cpp"), env.Object("src/HerkuleXController.cpp"),
