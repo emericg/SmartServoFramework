@@ -55,16 +55,16 @@ enum RegisterAccessMode_e
  */
 typedef struct RegisterInfos
 {
-    int reg_index       = -1; //!< Register index in device's control table
-    int reg_addr        = -1; //!< Register address in RAM if available, ROM overwise
+    int reg_index;       //!< Register index in device's control table
+    int reg_addr;        //!< Register address in RAM if available, ROM overwise
 
-    int reg_addr_rom    = -1; //!< Register address in ROM (if available)
-    int reg_addr_ram    = -1; //!< Register address in RAM (if available)
-    int reg_size        = -1; //!< Register size in byte
-    int reg_access_mode = -1; //!< Register access mode (read/write or read only)
-    int reg_value_def   = -1; //!< Default (or initial) value
-    int reg_value_min   = -1; //!< Minimum value
-    int reg_value_max   = -1; //!< Maximum value
+    int reg_addr_rom;    //!< Register address in ROM (if available)
+    int reg_addr_ram;    //!< Register address in RAM (if available)
+    int reg_size;        //!< Register size in byte
+    int reg_access_mode; //!< Register access mode (read/write or read only)
+    int reg_value_def;   //!< Default (or initial) value
+    int reg_value_min;   //!< Minimum value
+    int reg_value_max;   //!< Maximum value
 
 } RegisterInfos;
 
