@@ -42,8 +42,8 @@ protected:
     int *registerTableValuesRAM; //!< New table used to support "dual value (ROM/RAM) registers" values
     int *registerTableCommitsRAM; //!< New table used to support "dual value (ROM/RAM) registers" commits
 
-    int gotopos = 0;
-    int gotopos_commit = 0;
+    int gotopos;
+    int gotopos_commit;
 
 public:
     ServoHerkuleX(const int control_table[][8], int herkulex_id, int herkulex_model, int speed_mode = 0);

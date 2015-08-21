@@ -63,6 +63,9 @@ ServoHerkuleX::ServoHerkuleX(const int control_table[][8], int herkulex_id, int 
     registerTableValuesRAM = new int [registerTableSize]();
     registerTableCommitsRAM = new int [registerTableSize]();
 
+    gotopos = 0;
+    gotopos_commit = 0;
+
     // Set model and id because we already known them
     registerTableValues[gid(REG_MODEL_NUMBER)] = herkulex_model;
     if (herkulex_id > -1 && herkulex_id < BROADCAST_ID)
