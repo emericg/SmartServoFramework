@@ -406,7 +406,7 @@ int Servo::getValue(int reg_name, int reg_type)
     int value = -1;
 
     // Find register's informations (addr, size...)
-    RegisterInfos infos;
+    RegisterInfos infos = {-1, -1, -1, -1, -1, -1, -1, -1, -1};
     if (getRegisterInfos(ct, reg_name, infos) == 1)
     {
         if (infos.reg_index >= 0)
@@ -434,7 +434,7 @@ int Servo::getValueCommit(int reg_name, int reg_type)
     int commit = -1;
 
     // Find register's informations (addr, size...)
-    RegisterInfos infos;
+    RegisterInfos infos = {-1, -1, -1, -1, -1, -1, -1, -1, -1};
     if (getRegisterInfos(ct, reg_name, infos) == 1)
     {
         if (infos.reg_index >= 0)
@@ -462,7 +462,7 @@ int Servo::getValueCommit(int reg_name, int reg_type)
 void Servo::setValue(int reg_name, int reg_value, int reg_type)
 {
     // Find register's informations (addr, size...)
-    RegisterInfos infos;
+    RegisterInfos infos = {-1, -1, -1, -1, -1, -1, -1, -1, -1};
     if (getRegisterInfos(ct, reg_name, infos) == 1)
     {
         if (infos.reg_index >= 0)
@@ -504,7 +504,7 @@ void Servo::setValue(int reg_name, int reg_value, int reg_type)
 void Servo::updateValue(int reg_name, int reg_value, int reg_type)
 {
     // Find register's informations (addr, size...)
-    RegisterInfos infos;
+    RegisterInfos infos = {-1, -1, -1, -1, -1, -1, -1, -1, -1};
     if (getRegisterInfos(ct, reg_name, infos) == 1)
     {
         if (infos.reg_index >= 0)
@@ -540,7 +540,7 @@ void Servo::updateValue(int reg_name, int reg_value, int reg_type)
 void Servo::commitValue(int reg_name, int commit, int reg_type)
 {
     // Find register's informations (addr, size...)
-    RegisterInfos infos;
+    RegisterInfos infos = {-1, -1, -1, -1, -1, -1, -1, -1, -1};
     if (getRegisterInfos(ct, reg_name, infos) == 1)
     {
         if (infos.reg_index >= 0)

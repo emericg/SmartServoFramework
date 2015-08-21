@@ -722,7 +722,7 @@ int HerkuleXSimpleAPI::getSetting(const int id, const int reg_name, int reg_type
         if (cctt)
         {
             // Find register's informations (addr, size...)
-            RegisterInfos infos;
+            RegisterInfos infos = {-1, -1, -1, -1, -1, -1, -1, -1, -1};
             if (getRegisterInfos(cctt, reg_name, infos) == 1)
             {
                 // Register type
@@ -810,7 +810,7 @@ int HerkuleXSimpleAPI::setSetting(const int id, const int reg_name, const int re
         if (cctt)
         {
             // Find register's informations (addr, size...)
-            RegisterInfos infos;
+            RegisterInfos infos = {-1, -1, -1, -1, -1, -1, -1, -1, -1};
             if (getRegisterInfos(cctt, reg_name, infos) == 1)
             {
                 // Check if we have permission to write into this register

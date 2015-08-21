@@ -871,7 +871,7 @@ int DynamixelSimpleAPI::getSetting(const int id, const int reg_name, int reg_typ
         if (cctt)
         {
             // Find register's informations (addr, size...)
-            RegisterInfos infos;
+            RegisterInfos infos = {-1, -1, -1, -1, -1, -1, -1, -1, -1};
             if (getRegisterInfos(cctt, reg_name, infos) == 1)
             {
                 // Read value
@@ -926,7 +926,7 @@ int DynamixelSimpleAPI::setSetting(const int id, const int reg_name, const int r
         if (cctt)
         {
             // Find register's informations (addr, size...)
-            RegisterInfos infos;
+            RegisterInfos infos = {-1, -1, -1, -1, -1, -1, -1, -1, -1};
             if (getRegisterInfos(cctt, reg_name, infos) == 1)
             {
                 // Check if we have permission to write into this register
