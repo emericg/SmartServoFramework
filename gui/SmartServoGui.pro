@@ -22,7 +22,7 @@ unix {
         QMAKE_CXXFLAGS += -pthread
 
         unix:!macx {
-            QMAKE_LFLAGS += -llockdev
+            LIBS += -llockdev
         }
 
         if: system("gcc -dumpversion | grep 4.[0-5]") {
