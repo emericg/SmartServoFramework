@@ -21,31 +21,31 @@ unix {
         message("Using GCC")
         QMAKE_CXXFLAGS += -pthread
 
-        unix:!macx {
-            LIBS += -llockdev
-        }
-
         if: system("gcc -dumpversion | grep 4.[0-5]") {
             error("You need at least GCC 4.6+ to use C++11 features")
         } else: system("gcc -dumpversion | grep 4.6") {
-            QMAKE_CXXFLAGS += -std=c++0x -Wno-unused-parameter
+            QMAKE_CXXFLAGS += -std=c++0x -Wno-unused-parameter -Wno-unused-variable
         } else: {
-            QMAKE_CXXFLAGS += -std=c++11 -Wno-unused-parameter
+            QMAKE_CXXFLAGS += -std=c++11 -Wno-unused-parameter -Wno-unused-variable
         }
     }
     *clang* {
         message("Using LLVM")
-        QMAKE_CXXFLAGS += -std=c++11 -stdlib=libc++ -Wno-unused-parameter
-        LIBS += -stdlib=libc++ -framework IOKit -framework CoreFoundation -lSmartServoFramework -L../../build/
+        QMAKE_CXXFLAGS += -std=c++11 -stdlib=libc++ -Wno-unused-parameter -Wno-unused-variable
+        LIBS += -stdlib=libc++
     }
-}
-macx {
-    #
+
+    unix:!macx {
+        LIBS += -llockdev
+    }
+    unix:macx {
+        LIBS += -framework IOKit -framework CoreFoundation
+    }
 }
 win32 {
     *-g++* {
         message("Using MinGW / Windows")
-        QMAKE_CXXFLAGS += -std=c++11 -pthread -Wno-unused-parameter
+        QMAKE_CXXFLAGS += -std=c++11 -pthread -Wno-unused-parameter -Wno-unused-variable
     }
     *-msvc* {
         message("Using MSVC / Windows")
@@ -53,8 +53,8 @@ win32 {
 }
 
 # SmartServoFramework sources
-#SOURCES    += ../src/*.cpp
-#HEADERS    += ../src/*.h
+SOURCES    += ../src/*.cpp
+HEADERS    += ../src/*.h
 
 # GUI application sources
 SOURCES    += src/main.cpp src/mainwindow.cpp src/advancescanner.cpp src/qabout.cpp src/settings.cpp
