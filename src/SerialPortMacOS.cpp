@@ -487,10 +487,18 @@ int SerialPortMacOS::openLink()
     tty.c_cc[VMIN]  = 0;
 
     tcflush(ttyDeviceFileDescriptor, TCIFLUSH);
-    tcsetattr(ttyDeviceFileDescriptor, TCSANOW, &tty);
+    // Cause the new options to take effect immediately.
+    if (tcsetattr(ttyDeviceFileDescriptor, TCSANOW, &tty) == -1)
+    {
+       TRACE_ERROR(SERIAL, "Error setting tty attributes %s - %s(%d).\n",
+                  ttyDevicePath.c_str(), strerror(errno), errno);
+       goto OPEN_LINK_ERROR;
+    }
 
     TRACE_1(SERIAL, "Current input baud rate is %d\n", (int)cfgetispeed(&tty));
     TRACE_1(SERIAL, "Current output baud rate is %d\n", (int)cfgetospeed(&tty));
+   
+    sleep(1);
 
     if (ttyDeviceBaudRate < 1)
     {
@@ -520,14 +528,6 @@ int SerialPortMacOS::openLink()
 
         TRACE_1(SERIAL, "Input baud rate changed to %d\n", (int) cfgetispeed(&tty));
         TRACE_1(SERIAL, "Output baud rate changed to %d\n", (int) cfgetospeed(&tty));
-
-        // Cause the new options to take effect immediately.
-        if (tcsetattr(ttyDeviceFileDescriptor, TCSANOW, &tty) == -1)
-        {
-            TRACE_ERROR(SERIAL, "Error setting tty attributes %s - %s(%d).\n",
-                        ttyDevicePath.c_str(), strerror(errno), errno);
-            goto OPEN_LINK_ERROR;
-        }
 
         unsigned long mics = 1UL;
         if (ioctl(ttyDeviceFileDescriptor, IOSSDATALAT, &mics) == -1)

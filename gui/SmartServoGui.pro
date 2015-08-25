@@ -36,7 +36,7 @@ unix {
     *clang* {
         message("Using LLVM")
         QMAKE_CXXFLAGS += -std=c++11 -stdlib=libc++ -Wno-unused-parameter
-        LIBS += -stdlib=libc++ -framework IOKit -framework CoreFoundation
+        LIBS += -stdlib=libc++ -framework IOKit -framework CoreFoundation -lSmartServoFramework -L../../build/
     }
 }
 macx {
@@ -53,8 +53,8 @@ win32 {
 }
 
 # SmartServoFramework sources
-SOURCES    += ../src/*.cpp
-HEADERS    += ../src/*.h
+#SOURCES    += ../src/*.cpp
+#HEADERS    += ../src/*.h
 
 # GUI application sources
 SOURCES    += src/main.cpp src/mainwindow.cpp src/advancescanner.cpp src/qabout.cpp src/settings.cpp
