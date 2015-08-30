@@ -167,13 +167,14 @@ void MainWindow::loading(bool enabled)
 
         if ((rand() % 1024) >= 512)
         {
-            QPixmap load(QPixmap(":/help/help/Dynamixel_help.png"));
+            QPixmap load(":/help/help/Dynamixel_help.png");
+            load.setDevicePixelRatio(qApp->devicePixelRatio());
             ui->label_loading_img->setPixmap(load);
         }
         else
         {
-            //QPixmap load(QPixmap(":/help/help/HerkuleX_help.png"));
-            QPixmap load(QPixmap(":/help/help/Dynamixel_help.png"));
+            QPixmap load(":/help/help/Dynamixel_help.png"); // ":/help/help/HerkuleX_help.png"
+            load.setDevicePixelRatio(qApp->devicePixelRatio());
             ui->label_loading_img->setPixmap(load);
         }
     }
@@ -269,7 +270,7 @@ void MainWindow::scanSerialPorts()
             helper->deviceProtocol->addItem("HKX @ 115.2 Kb/s");
             helper->deviceProtocol->addItem("HKX @ 57.6 Kb/s");
             helper->deviceProtocol->addItem("HKX @ 1 Mb/s");
-            helper->deviceProtocol->setMaximumSize(80, 28);
+            helper->deviceProtocol->setMaximumWidth(100);
             helper->deviceProtocol->setFont(QFont("Cantarell", 10));
             helper->deviceScan = new QPushButton();
             helper->deviceScan->setIcon(QIcon(":/icons/icons/emblem-ubuntuone-updating.svg"));
@@ -990,7 +991,9 @@ void MainWindow::servoSelection()
         ui->ctemp->setPalette(QPalette(QColor(85,85,128)));
 
         // Picture and doc
-        QFile spec;
+        QFile servoSpec;
+        QPixmap servoIcon;
+
         int pictureSize = ui->tabWidget->size().height() * 0.33; // All of our pictures are square
         ui->servoPicture_label->setMaximumWidth(pictureSize);
         ui->servoPicture_label->setMaximumHeight(pictureSize);
@@ -1002,74 +1005,74 @@ void MainWindow::servoSelection()
         case SERVO_DRS:
             if (servoModel == SERVO_DRS_0101)
             {
-                ui->servoPicture_label->setPixmap(QPixmap(QString::fromUtf8(":/devices/devices/DRS-0101.jpg")));
-                spec.setFileName(":/specs/specs/DRS-0101.html");
+                servoIcon.load(":/devices/devices/DRS-0101.jpg");
+                servoSpec.setFileName(":/specs/specs/DRS-0101.html");
             }
             else if (servoModel == SERVO_DRS_0201)
             {
-                ui->servoPicture_label->setPixmap(QPixmap(QString::fromUtf8(":/devices/devices/DRS-0201.jpg")));
-                spec.setFileName(":/specs/specs/DRS-0201.html");
+                servoIcon.load(":/devices/devices/DRS-0201.jpg");
+                servoSpec.setFileName(":/specs/specs/DRS-0201.html");
             }
             else if (servoModel == SERVO_DRS_0401)
             {
-                ui->servoPicture_label->setPixmap(QPixmap(QString::fromUtf8(":/devices/devices/DRS-0401.jpg")));
-                spec.setFileName(":/specs/specs/DRS-0401.html");
+                servoIcon.load(":/devices/devices/DRS-0401.jpg");
+                servoSpec.setFileName(":/specs/specs/DRS-0401.html");
             }
             else if (servoModel == SERVO_DRS_0402)
             {
-                ui->servoPicture_label->setPixmap(QPixmap(QString::fromUtf8(":/devices/devices/DRS-0402.jpg")));
-                spec.setFileName(":/specs/specs/DRS-0402.html");
+                servoIcon.load(":/devices/devices/DRS-0402.jpg");
+                servoSpec.setFileName(":/specs/specs/DRS-0402.html");
             }
             else if (servoModel == SERVO_DRS_0601)
             {
-                ui->servoPicture_label->setPixmap(QPixmap(QString::fromUtf8(":/devices/devices/DRS-0601.jpg")));
-                spec.setFileName(":/specs/specs/DRS-0601.html");
+                servoIcon.load(":/devices/devices/DRS-0601.jpg");
+                servoSpec.setFileName(":/specs/specs/DRS-0601.html");
             }
             else if (servoModel == SERVO_DRS_0602)
             {
-                ui->servoPicture_label->setPixmap(QPixmap(QString::fromUtf8(":/devices/devices/DRS-0602.jpg")));
-                spec.setFileName(":/specs/specs/DRS-0602.html");
+                servoIcon.load(":/devices/devices/DRS-0602.jpg");
+                servoSpec.setFileName(":/specs/specs/DRS-0602.html");
             }
             break;
 
         case SERVO_XL:
-            ui->servoPicture_label->setPixmap(QPixmap(QString::fromUtf8(":/devices/devices/XL-320.jpg")));
-            spec.setFileName(":/specs/specs/XL-320.html");
+            servoIcon.load(":/devices/devices/XL-320.jpg");
+            servoSpec.setFileName(":/specs/specs/XL-320.html");
             break;
 
         case SERVO_EX:
             if (servoSerie == SERVO_EX106)
             {
-                ui->servoPicture_label->setPixmap(QPixmap(QString::fromUtf8(":/devices/devices/EX-106.jpg")));
-                spec.setFileName(":/specs/specs/EX-106.html");
+                servoIcon.load(":/devices/devices/EX-106.jpg");
+                servoSpec.setFileName(":/specs/specs/EX-106.html");
             }
             else if (servoSerie == SERVO_EX106p)
             {
-                ui->servoPicture_label->setPixmap(QPixmap(QString::fromUtf8(":/devices/devices/EX-106p.jpg")));
-                spec.setFileName(":/specs/specs/EX-106p.html");
+                servoIcon.load(":/devices/devices/EX-106p.jpg");
+                servoSpec.setFileName(":/specs/specs/EX-106p.html");
             }
             break;
 
         case SERVO_MX:
             if (servoModel == SERVO_MX106)
             {
-                ui->servoPicture_label->setPixmap(QPixmap(QString::fromUtf8(":/devices/devices/MX-106.jpg")));
-                spec.setFileName(":/specs/specs/MX-106.html");
+                servoIcon.load(":/devices/devices/MX-106.jpg");
+                servoSpec.setFileName(":/specs/specs/MX-106.html");
             }
             else if (servoModel == SERVO_MX64)
             {
-                ui->servoPicture_label->setPixmap(QPixmap(QString::fromUtf8(":/devices/devices/MX-64.jpg")));
-                spec.setFileName(":/specs/specs/MX-64.html");
+                servoIcon.load(":/devices/devices/MX-64.jpg");
+                servoSpec.setFileName(":/specs/specs/MX-64.html");
             }
             else if (servoModel == SERVO_MX28)
             {
-                ui->servoPicture_label->setPixmap(QPixmap(QString::fromUtf8(":/devices/devices/MX-28.jpg")));
-                spec.setFileName(":/specs/specs/MX-28.html");
+                servoIcon.load(":/devices/devices/MX-28.jpg");
+                servoSpec.setFileName(":/specs/specs/MX-28.html");
             }
             else if (servoModel == SERVO_MX12W)
             {
-                ui->servoPicture_label->setPixmap(QPixmap(QString::fromUtf8(":/devices/devices/MX-28.jpg")));
-                spec.setFileName(":/specs/specs/MX-12W.html");
+                servoIcon.load(":/devices/devices/MX-28.jpg");
+                servoSpec.setFileName(":/specs/specs/MX-12W.html");
             }
             break;
 
@@ -1079,45 +1082,49 @@ void MainWindow::servoSelection()
         default: // these series are the "default"
             if (servoSerie == SERVO_DX)
             {
-                ui->servoPicture_label->setPixmap(QPixmap(":/devices/devices/DX-117.jpg"));
-                spec.setFileName(":/specs/specs/DX-117.html");
+                servoIcon.load(":/devices/devices/DX-117.jpg");
+                servoSpec.setFileName(":/specs/specs/DX-117.html");
             }
             else if (servoModel == SERVO_AX12W)
             {
-                ui->servoPicture_label->setPixmap(QPixmap(":/devices/devices/AX-12W.jpg"));
-                spec.setFileName(":/specs/specs/AX-12W.html");
+                servoIcon.load(":/devices/devices/AX-12W.jpg");
+                servoSpec.setFileName(":/specs/specs/AX-12W.html");
             }
             else if (servoModel == SERVO_AX12A)
             {
-                ui->servoPicture_label->setPixmap(QPixmap(":/devices/devices/AX-12A.jpg"));
-                spec.setFileName(":/specs/specs/AX-12A.html");
+                servoIcon.load(":/devices/devices/AX-12A.jpg");
+                servoSpec.setFileName(":/specs/specs/AX-12A.html");
             }
             else if (servoModel == SERVO_AX18A)
             {
-                ui->servoPicture_label->setPixmap(QPixmap(":/devices/devices/AX-18A.jpg"));
-                spec.setFileName(":/specs/specs/AX-18A.html");
+                servoIcon.load(":/devices/devices/AX-18A.jpg");
+                servoSpec.setFileName(":/specs/specs/AX-18A.html");
             }
             else if (servoModel == SERVO_RX24F)
             {
-                ui->servoPicture_label->setPixmap(QPixmap(":/devices/devices/RX-24.jpg"));
+                servoIcon.load(":/devices/devices/RX-24.jpg");
             }
             else if (servoModel == SERVO_RX28)
             {
-                ui->servoPicture_label->setPixmap(QPixmap(":/devices/devices/RX-48.jpg"));
+                servoIcon.load(":/devices/devices/RX-48.jpg");
             }
             else if (servoModel == SERVO_RX64)
             {
-                ui->servoPicture_label->setPixmap(QPixmap(":/devices/devices/RX-64.jpg"));
+                servoIcon.load(":/devices/devices/RX-64.jpg");
             }
             break;
         }
 
+        // Set icon
+        servoIcon.setDevicePixelRatio(qApp->devicePixelRatio());
+        ui->servoPicture_label->setPixmap(servoIcon);
+
         // Set specification text
-        if (spec.open(QIODevice::ReadOnly | QIODevice::Text))
+        if (servoSpec.open(QIODevice::ReadOnly | QIODevice::Text))
         {
-            QTextStream flux(&spec);
+            QTextStream flux(&servoSpec);
             ui->textBrowser_spec->setText(flux.readAll());
-            spec.close();
+            servoSpec.close();
         }
         else
         {
@@ -2303,7 +2310,9 @@ void MainWindow::toggleServoPanel(bool status)
         ui->gpos_label->setText(tr("Goal position"));
 
         // Infos
-        ui->servoPicture_label->setPixmap(QPixmap(QString::fromUtf8(":/icons/icons/emblem-unreadable.svg")));
+        QPixmap servoDefaultIcon(":/icons/icons/emblem-unreadable.svg");
+        servoDefaultIcon.setDevicePixelRatio(qApp->devicePixelRatio());
+        ui->servoPicture_label->setPixmap(servoDefaultIcon);
         ui->textBrowser_spec->setText(tr("No documentation available..."));
         ui->servoManual_label->hide();
         ui->copyrightNotice_label->hide();

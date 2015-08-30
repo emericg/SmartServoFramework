@@ -36,6 +36,12 @@ int main(int argc, char *argv[])
     qtTranslator.load("qt_" + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
     app.installTranslator(&qtTranslator);
 
+    // High DPI monitor?
+    if (app.devicePixelRatio() > 1)
+    {
+        app.setAttribute(Qt::AA_UseHighDpiPixmaps);
+    }
+
     // Handle SmartServoGui translation
     QTranslator appTranslator;
     QString locale = QLocale::system().name().section('_', 0, 0);
