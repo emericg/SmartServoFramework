@@ -38,7 +38,7 @@
 
 using namespace rapidjson;
 
-Settings::Settings(QWidget *parent) :
+Settings::Settings(QWidget *parent):
     QWidget(parent),
     ui(new Ui::Settings)
 {
@@ -50,28 +50,41 @@ Settings::Settings(QWidget *parent) :
     QObject::connect(ui->pushButton_save, SIGNAL(clicked()), this, SLOT(saveSettings()));
 
     // Init json parser
-    parser = NULL;
     parser = new Document();
 
-    ctrl_locks = false;
     ui_pause = false;
+    ctrl_autoscan = true;
+    ctrl_locks = true;
     ctrl_freq = 10;
+
+    // Configuration file path
+    filepath.clear();
 
 #if defined(__linux__) || defined(__gnu_linux)
     char *env = getenv("HOME");
     if (env)
     {
-        filepath = env;
+        filepath  = env;
         filepath += "/.config/SmartServoGUI";
         mkdir(filepath.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
         filepath += "/settings.json";
     }
 #elif defined(_WIN32) || defined(_WIN64)
-    // TODO
-    filepath = "settings.json";
+    char *env = getenv("%APPDATA%");
+    if (env)
+    {
+        filepath  = env;
+        filepath += "/SmartServoGUI";
+        _mkdir(filepath.c_str());
+        filepath = "/SmartServoGUI.json";
+    }
 #elif defined(__APPLE__) || defined(__MACH__)
-    // TODO
-    filepath = "settings.json";
+    char *env = getenv("HOME");
+    if (env)
+    {
+        filepath  = env;
+        filepath += "/Library/Preferences/SmartServoGUI.json";
+    }
 #else
     #error "No compatible operating system detected!"
 #endif
@@ -86,13 +99,14 @@ void Settings::loadSettings()
 {
     // settings
     ui->checkBox_pause->setChecked(ui_pause);
+    ui->checkBox_autoscan->setChecked(ctrl_autoscan);
     ui->checkBox_locks->setChecked(ctrl_locks);
     ui->spinBox_freq->setValue(ctrl_freq);
 /*
     // serial ports
     ui->checkBox_0->setChecked();
     ui->lineEdit_0->setText();
-    //ui->comboBox_0->
+    ui->comboBox_0->setCurrentIndex()
     ui->spinBox_0->setValue();
 */
 }
@@ -109,13 +123,50 @@ void Settings::saveSettings()
 
     if (ui->checkBox_pause->isChecked() != ui_pause)
     {
+        if ((*parser).HasMember("ui") == false)
+        {
+            Value contacts(kObjectType);
+            (*parser).AddMember("ui", contacts, parser->GetAllocator());
+        }
+        if ((*parser)["ui"].HasMember("pause") == false)
+        {
+            (*parser)["ui"].AddMember("pause", ui_pause, parser->GetAllocator());
+        }
+
         ui_pause = ui->checkBox_pause->isChecked();
         (*parser)["ui"]["pause"].SetBool(ui_pause);
         write++;
     }
 
+    if (ui->checkBox_autoscan->isChecked() != ctrl_autoscan)
+    {
+        if ((*parser).HasMember("ctrl") == false)
+        {
+            Value contacts(kObjectType);
+            (*parser).AddMember("ctrl", contacts, parser->GetAllocator());
+        }
+        if ((*parser)["ctrl"].HasMember("autoscan") == false)
+        {
+            (*parser)["ctrl"].AddMember("autoscan", ctrl_autoscan, parser->GetAllocator());
+        }
+
+        ctrl_autoscan = ui->checkBox_autoscan->isChecked();
+        (*parser)["ctrl"]["autoscan"].SetBool(ctrl_autoscan);
+        write++;
+    }
+
     if (ui->checkBox_locks->isChecked() != ctrl_locks)
     {
+        if ((*parser).HasMember("ctrl") == false)
+        {
+            Value contacts(kObjectType);
+            (*parser).AddMember("ctrl", contacts, parser->GetAllocator());
+        }
+        if ((*parser)["ctrl"].HasMember("locks") == false)
+        {
+            (*parser)["ctrl"].AddMember("locks", ctrl_locks, parser->GetAllocator());
+        }
+
         ctrl_locks = ui->checkBox_locks->isChecked();
         (*parser)["ctrl"]["locks"].SetBool(ctrl_locks);
         write++;
@@ -123,6 +174,16 @@ void Settings::saveSettings()
 
     if (ui->spinBox_freq->value() != ctrl_freq)
     {
+        if ((*parser).HasMember("ctrl") == false)
+        {
+            Value contacts(kObjectType);
+            (*parser).AddMember("ctrl", contacts, parser->GetAllocator());
+        }
+        if ((*parser)["ctrl"].HasMember("freq") == false)
+        {
+            (*parser)["ctrl"].AddMember("freq", ctrl_freq, parser->GetAllocator());
+        }
+
         ctrl_freq = ui->spinBox_freq->value();
         (*parser)["ctrl"]["freq"].SetInt(ctrl_freq);
         write++;
@@ -136,6 +197,11 @@ void Settings::saveSettings()
 
     // Close setting window
     close();
+}
+
+bool Settings::getAutoScan()
+{
+    return ctrl_autoscan;
 }
 
 bool Settings::getLock()
@@ -165,21 +231,23 @@ int Settings::readSettings()
 
     FILE *fp = std::fopen(filepath.c_str(), "r");
 
-    // Parse from file
-    if (fp != NULL)
+    // Parse from file, if it exists
+    if (fp == NULL)
+    {
+        std::cerr << "Warning: no configuration file, using default values! A new one will be created next time you change a setting." << std::endl;
+    }
+    else
     {
         char readBuffer[8192];
         FileReadStream is(fp, readBuffer, sizeof(readBuffer));
 
         // Try document parsing
-        if (parser->ParseStream(is).HasParseError() == true ||
-            parser->IsObject() == false)
+        if (parser->ParseStream(is).HasParseError() == true)
         {
-            std::cerr << "Parsing from file to document failed." << std::endl;
+            std::cerr << "Parsing settings from file to document failed!" << std::endl;
         }
         else
         {
-            //std::cout << "Parsing from file to document succeeded." << std::endl;
             retcode = 1;
         }
 
@@ -189,16 +257,15 @@ int Settings::readSettings()
     // Parse from string (fallback)
     if (retcode == 0)
     {
-        std::string fallback_json = "{\"ui\":{\"pause\":false},\"ctrl\":{\"locks\":false,\"freq\":10},\"serial\":{\"ports\":[{\"on\":false,\"path\":\"/dev/ttyUSB0\",\"protocol\":\"auto\",\"speed\":1000000},{\"on\":false,\"path\":\"/dev/ttyUSB1\",\"protocol\":\"auto\",\"speed\":1000000},{\"on\":false,\"path\":\"/dev/ttyACM0\",\"protocol\":\"auto\",\"speed\":1000000},{\"on\":false,\"path\":\"null\",\"protocol\":\"auto\",\"speed\":1000000}]}}";
+        std::string fallback_json = "{\"ui\":{\"pause\":false},\"ctrl\":{\"autoscan\":true,\"locks\":true,\"freq\":10},\"serial\":{\"ports\":[{\"on\":false,\"path\":\"/dev/ttyUSB0\",\"protocol\":\"auto\",\"speed\":1000000},{\"on\":false,\"path\":\"/dev/ttyUSB1\",\"protocol\":\"auto\",\"speed\":1000000},{\"on\":false,\"path\":\"/dev/ttyACM0\",\"protocol\":\"auto\",\"speed\":1000000},{\"on\":false,\"path\":\"null\",\"protocol\":\"auto\",\"speed\":1000000}]}}";
 
-        if (parser->Parse(fallback_json.c_str()).HasParseError() == true ||
-            parser->IsObject() == false)
+        if (parser->Parse(fallback_json.c_str()).HasParseError() == true)
         {
-            std::cerr << "Parsing from fallback string to document failed." << std::endl;
+            std::cerr << "Parsing settings from fallback string to document failed!" << std::endl;
         }
         else
         {
-            std::cout << "Parsing from fallback string to document succeeded." << std::endl;
+            std::cout << "Parsing settings from fallback string to document succeeded." << std::endl;
             retcode = 1;
         }
     }
@@ -215,6 +282,10 @@ int Settings::readSettings()
 
         if (parser->HasMember("ctrl"))
         {
+            if ((*parser)["ctrl"].HasMember("autoscan"))
+            {
+                ctrl_autoscan = (*parser)["ctrl"]["autoscan"].GetBool();
+            }
             if ((*parser)["ctrl"].HasMember("locks"))
             {
                 ctrl_locks = (*parser)["ctrl"]["locks"].GetBool();
@@ -261,26 +332,34 @@ int Settings::writeSettings()
     int retcode = 0;
     //std::cout << "writeSettings() " << std::endl;
 
-    FILE *fp = std::fopen(filepath.c_str(), "w");
-
-    if (fp != NULL)
+    if (filepath.empty() == false)
     {
-        char writeBuffer[8192];
-        FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
+        FILE *fp = std::fopen(filepath.c_str(), "w");
 
-        if (parser->IsObject() == false)
+        if (fp != NULL)
         {
-            std::cerr << "Parsing to document failed." << std::endl;
-        }
-        else
-        {
-            PrettyWriter<FileWriteStream> writer(os);
-            parser->Accept(writer);
+            char writeBuffer[8192];
+            FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
 
-            retcode = 1;
+            if (parser->IsObject() == false)
+            {
+                std::cerr << "Writing settings to '" << filepath << "' failed!" << std::endl;
+            }
+            else
+            {
+                PrettyWriter<FileWriteStream> writer(os);
+                parser->Accept(writer);
+
+                retcode = 1;
+            }
+
+            std::fclose(fp);
         }
 
-        std::fclose(fp);
+    }
+    else
+    {
+        std::cerr << "Writing settings to disk failed: no path for the setting file!" << std::endl;
     }
 
     return retcode;

@@ -45,14 +45,15 @@ class Settings : public QWidget
 
     Ui::Settings *ui;
 
-    // path of the config file (OS dependant)
+    //! Path of the config file (OS dependant)
     std::string filepath;
 
-    // parser
+    //! Config file parser
     rapidjson::Document *parser;
 
-    // settings stored
+    // Settings
     bool ui_pause;
+    bool ctrl_autoscan;
     bool ctrl_locks;
     int ctrl_freq;
     std::vector <struct portconfig_s> serial_ports;
@@ -68,6 +69,7 @@ public:
     explicit Settings(QWidget *parent = 0);
     ~Settings();
 
+    bool getAutoScan();
     bool getLock();
     bool getPause();
     int getFreq();
