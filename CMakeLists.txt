@@ -8,40 +8,40 @@ cmake_minimum_required(VERSION 2.8)
 # Pass various options to SmartServoFramework source code
 ###############################################################################
 
-SET(SmartServoFramework_VERSION_MAJOR 0)
-SET(SmartServoFramework_VERSION_MINOR 92)
-SET(SmartServoFramework_VERSION_PATCH 0)
+set(SmartServoFramework_VERSION_MAJOR 0)
+set(SmartServoFramework_VERSION_MINOR 93)
+set(SmartServoFramework_VERSION_PATCH 0)
 
-SET(ENABLE_DEBUG   1) # "Toggle debug traces"
-SET(ENABLE_COLORS  1) # "Toggle colored terminal output"
+set(ENABLE_DEBUG   1) # "Toggle debug traces"
+set(ENABLE_COLORS  1) # "Toggle colored terminal output"
 
 # Doxygen module
-FIND_PACKAGE(Doxygen) # FindDoxygen.cmake
+find_package(Doxygen) # FindDoxygen.cmake
 
-IF(DOXYGEN_FOUND)
-    MESSAGE(STATUS "* Doxygen found")
-ELSE(DOXYGEN_FOUND)
-    MESSAGE(WARNING " > Doxygen not found")
-ENDIF(DOXYGEN_FOUND)
+if(DOXYGEN_FOUND)
+    message(STATUS "* Doxygen found")
+else(DOXYGEN_FOUND)
+    message(WARNING " > Doxygen not found")
+endif(DOXYGEN_FOUND)
 
 # Detect build type. You can change it using "-DCMAKE_BUILD_TYPE="
-IF(CMAKE_BUILD_TYPE STREQUAL "Release")
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
 
-    MESSAGE(STATUS "* This is a RELEASE build. You can change it using -DCMAKE_BUILD_TYPE=Debug.")
-    SET(ENABLE_DEBUG 0)
-    SET(CMAKE_BUILD_TYPE release)
+    message(STATUS "* This is a RELEASE build. You can change it using -DCMAKE_BUILD_TYPE=Debug.")
+    set(ENABLE_DEBUG 0)
+    set(CMAKE_BUILD_TYPE release)
     # Custom cflags? Use "release mode" and "-O2" for better speed.
-    SET(CMAKE_CXX_FLAGS "-O2 -Wall -std=c++11 -Wno-unused -Wno-unused-parameter")
+    set(CMAKE_CXX_FLAGS "-O2 -Wall -std=c++11 -Wno-unused -Wno-unused-parameter")
 
-ELSE(CMAKE_BUILD_TYPE STREQUAL "Release")
+else(CMAKE_BUILD_TYPE STREQUAL "Release")
 
-    MESSAGE("!! * This is a DEBUG build. You can change it using -DCMAKE_BUILD_TYPE=Release.")
-    SET(ENABLE_DEBUG 1)
-    SET(CMAKE_BUILD_TYPE debug)
+    message(STATUS "!! * This is a DEBUG build. You can change it using -DCMAKE_BUILD_TYPE=Release.")
+    set(ENABLE_DEBUG 1)
+    set(CMAKE_BUILD_TYPE debug)
     # Custom cflags? Use "debug mode" and "-O0 -g" if you want better support for GDB and Valgrind.
-    SET(CMAKE_CXX_FLAGS "-O0 -g -Wall -Wextra -std=c++11 -Wno-unused -Wno-unused-parameter")
+    set(CMAKE_CXX_FLAGS "-O0 -g -Wall -Wextra -std=c++11 -Wno-unused -Wno-unused-parameter")
 
-ENDIF(CMAKE_BUILD_TYPE STREQUAL "Release")
+endif(CMAKE_BUILD_TYPE STREQUAL "Release")
 
 ## Save options into a "cmake_defines.h" file, using "cmake_defines.h.in" template
 #CONFIGURE_FILE(
@@ -53,37 +53,36 @@ ENDIF(CMAKE_BUILD_TYPE STREQUAL "Release")
 ###############################################################################
 
 # Linux specific stuff
-IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
-    MESSAGE("Building on Linux plateform")
-    SET(EXTRALIBS "lockdev")
+    message(STATUS "Building on Linux plateform")
+    set(EXTRALIBS "lockdev")
 
-ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 # Mac OS X specific stuff
-IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
-    MESSAGE("Building on MacOSX plateform")
-    FIND_LIBRARY(IOKIT_FRAMEWORK IOKit)
+    message(STATUS "Building on Mac OS X plateform")
+    find_library(IOKIT_FRAMEWORK IOKit)
     find_library(COREFOUNDATION_FRAMEWORK CoreFoundation)
-    MESSAGE("* Finding library IOKit: ${IOKIT_FRAMEWORK}")
-    MESSAGE("* Finding library CoreFoundation: ${COREFOUNDATION_FRAMEWORK}")
-    SET(EXTRA_LIBS ${IOKIT_FRAMEWORK} ${COREFOUNDATION_FRAMEWORK}) 
+    message(STATUS "* Finding library IOKit: ${IOKIT_FRAMEWORK}")
+    message(STATUS "* Finding library CoreFoundation: ${COREFOUNDATION_FRAMEWORK}")
+    set(EXTRA_LIBS ${IOKIT_FRAMEWORK} ${COREFOUNDATION_FRAMEWORK})
 
-ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 # Windows specific stuff
-IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
-    MESSAGE("Building on Windows plateform")
-    SET(EXTRALIBS "")
+    message(STATUS "Building on Windows plateform")
 
-ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 # Source files
 ###############################################################################
 
-SET(SmartServoFramework_SRC
+set(SmartServoFramework_SRC
     src/minitraces.cpp
     src/minitraces_conf.h
     src/minitraces.h
@@ -141,20 +140,20 @@ SET(SmartServoFramework_SRC
 ###############################################################################
 
 # Build library
-ADD_LIBRARY(SmartServoFramework_shared SHARED ${SmartServoFramework_SRC})
-TARGET_LINK_LIBRARIES(SmartServoFramework_shared ${EXTRA_LIBS})
-SET_TARGET_PROPERTIES(SmartServoFramework_shared PROPERTIES OUTPUT_NAME SmartServoFramework)
+add_library(SmartServoFramework_shared SHARED ${SmartServoFramework_SRC})
+target_link_libraries(SmartServoFramework_shared ${EXTRA_LIBS})
+set_target_properties(SmartServoFramework_shared PROPERTIES OUTPUT_NAME SmartServoFramework)
 
-#IF(CMAKE_BUILD_MODE STREQUAL "Static")
-#    MESSAGE("** Static library will be built")
-#    ADD_LIBRARY(SmartServoFramework_static STATIC ${SmartServoFramework_SRC})
-#    TARGET_LINK_LIBRARIES(SmartServoFramework_static ${EXTRA_LIBS})
-#    SET_TARGET_PROPERTIES(SmartServoFramework_static PROPERTIES OUTPUT_NAME SmartServoFramework)
-#ENDIF(CMAKE_BUILD_MODE STREQUAL "Static")
+#if(CMAKE_BUILD_MODE STREQUAL "Static")
+#    message(STATUS "** Static library will be built")
+#    add_library(SmartServoFramework_static STATIC ${SmartServoFramework_SRC})
+#    target_link_libraries(SmartServoFramework_static ${EXTRA_LIBS})
+#    set_target_properties(SmartServoFramework_static PROPERTIES OUTPUT_NAME SmartServoFramework)
+#endif(CMAKE_BUILD_MODE STREQUAL "Static")
 
 # Install the shared library and its header into the system (optional step, requires root credentials)
 ###############################################################################
 
 # Relative to $<INSTALL_PREFIX>
-INSTALL(TARGETS SmartServoFramework_shared DESTINATION lib/)
-INSTALL(DIRECTORY src/ DESTINATION include/SmartServoFramework FILES_MATCHING PATTERN "*.h")
+install(TARGETS SmartServoFramework_shared DESTINATION lib/)
+install(DIRECTORY src/ DESTINATION include/SmartServoFramework FILES_MATCHING PATTERN "*.h")
