@@ -37,6 +37,7 @@
 
 /*!
  * \brief The controllerState enum.
+ * \todo move that into the ControllerAPI
  */
 enum controllerState_e
 {

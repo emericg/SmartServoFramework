@@ -220,8 +220,8 @@ void HerkuleXController::autodetect_internal(int start, int stop)
 
 void HerkuleXController::run()
 {
-    TRACE_INFO(CAPI, "HerkuleXController::run(port: '%s' / tid: '%i')\n"
-               , serialGetCurrentDevice().c_str(), std::this_thread::get_id());
+    TRACE_INFO(CAPI, "HerkuleXController::run(port: '%s' / tid: '%i')\n",
+               serialGetCurrentDevice().c_str(), std::this_thread::get_id());
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
 

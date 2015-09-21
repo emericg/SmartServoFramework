@@ -188,8 +188,8 @@ void DynamixelController::autodetect_internal(int start, int stop)
     serialSetLatency(8);
 #endif
 
-    TRACE_INFO(CAPI, "DXL ctrl_device_autodetect(port: '%s' / tid: '%i')\n"
-               , serialGetCurrentDevice().c_str(), std::this_thread::get_id());
+    TRACE_INFO(CAPI, "DXL ctrl_device_autodetect(port: '%s' / tid: '%i')\n",
+               serialGetCurrentDevice().c_str(), std::this_thread::get_id());
 
     TRACE_INFO(CAPI, "> THREADED Scanning for DXL devices on '%s', protocol v%i, range is [%i,%i[\n",
                serialGetCurrentDevice().c_str(), protocolVersion, start, stop);
@@ -268,8 +268,8 @@ void DynamixelController::autodetect_internal(int start, int stop)
 
 void DynamixelController::run()
 {
-    TRACE_INFO(CAPI, "DynamixelController::run(port: '%s' / tid: '%i')\n"
-               , serialGetCurrentDevice().c_str(), std::this_thread::get_id());
+    TRACE_INFO(CAPI, "DynamixelController::run(port: '%s' / tid: '%i')\n",
+               serialGetCurrentDevice().c_str(), std::this_thread::get_id());
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
 
