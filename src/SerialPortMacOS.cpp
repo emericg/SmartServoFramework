@@ -445,7 +445,7 @@ int SerialPortMacOS::openLink()
     if (isLocked() == true)
     {
         TRACE_ERROR(SERIAL, "Cannot connect to serial port: '%s': interface is locked!\n", ttyDevicePath.c_str());
-        goto OPEN_LINK_ERROR;
+        goto OPEN_LINK_LOCKED;
     }
 
     // Open tty device
@@ -497,7 +497,7 @@ int SerialPortMacOS::openLink()
 
     TRACE_1(SERIAL, "Current input baud rate is %d\n", (int)cfgetispeed(&tty));
     TRACE_1(SERIAL, "Current output baud rate is %d\n", (int)cfgetospeed(&tty));
-   
+
     sleep(1);
 
     if (ttyDeviceBaudRate < 1)
@@ -581,6 +581,10 @@ int SerialPortMacOS::openLink()
 OPEN_LINK_ERROR:
     closeLink();
     return 0;
+
+OPEN_LINK_LOCKED:
+    closeLink();
+    return -1;
 }
 
 bool SerialPortMacOS::isOpen()

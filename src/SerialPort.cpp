@@ -35,7 +35,7 @@ SerialPort::SerialPort(const int serialDevice, const int servoDevices):
     ttyDevicePath("null"),
     ttyDeviceBaudRate(1000000),
     ttyDeviceLatencyTime(LATENCY_TIME_DEFAULT),
-    ttyDeviceLockMode(0),
+    ttyDeviceLockMode(1),
     ttyDeviceLockPath("null"),
     serialDevice(serialDevice),
     servoDevices(servoDevices),

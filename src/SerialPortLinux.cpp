@@ -32,7 +32,7 @@
 #include <sys/ioctl.h>
 #include <sys/time.h>
 
-// Locks support
+// Device lock support
 #include <lockdev.h>
 #include <sys/file.h>
 #define LOCK_LOCKDEV
@@ -75,9 +75,9 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
             int fd = open(portPath.c_str(), O_RDONLY | O_NOCTTY);
             if (fd > 0)
             {
-#ifdef LOCK_LOCKDEV
-                if (dev_testlock(portName.c_str()) == 0)
-#endif
+//#ifdef LOCK_LOCKDEV
+//                if (dev_testlock(portName.c_str()) == 0)
+//#endif
                 {
                     // Used to validate existing serial port availability (currently disabled)
                     //struct serial_struct serinfo;
@@ -88,12 +88,12 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
                         retcode++;
                     }
                 }
-#ifdef LOCK_LOCKDEV
-                else
-                {
-                    TRACE_WARNING(SERIAL, "- Scanning for serial port on '%s' > LOCKED\n", portPath.c_str());
-                }
-#endif
+//#ifdef LOCK_LOCKDEV
+//                else
+//                {
+//                    TRACE_WARNING(SERIAL, "- Scanning for serial port on '%s' > LOCKED\n", portPath.c_str());
+//                }
+//#endif
                 close(fd);
             }
         }
@@ -334,7 +334,6 @@ bool SerialPortLinux::setLock()
         else
         {
             TRACE_ERROR(SERIAL, "- Unable to use lockdev for '%s':  do you have necessary permissions?\n", ttyDevicePath.c_str());
-
         }
 #endif
 
@@ -403,7 +402,6 @@ bool SerialPortLinux::removeLock()
     {
         status = true;
         TRACE_INFO(SERIAL, "Lock removed for device '%s'\n", ttyDevicePath.c_str());
-
     }
     else
     {
@@ -441,7 +439,7 @@ int SerialPortLinux::openLink()
     if (isLocked() == true)
     {
         TRACE_ERROR(SERIAL, "Cannot connect to serial port: '%s': interface is locked!\n", ttyDevicePath.c_str());
-        goto OPEN_LINK_ERROR;
+        goto OPEN_LINK_LOCKED;
     }
 
     // Open tty device
@@ -524,6 +522,10 @@ int SerialPortLinux::openLink()
 OPEN_LINK_ERROR:
     closeLink();
     return 0;
+
+OPEN_LINK_LOCKED:
+    closeLink();
+    return -1;
 }
 
 bool SerialPortLinux::isOpen()

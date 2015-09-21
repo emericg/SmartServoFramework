@@ -193,7 +193,7 @@ public:
 
     /*!
      * \brief Open a serial link at given speed.
-     * \return 1 if success, 0 otherwise.
+     * \return 1 if success, 0 if locked, -1 otherwise.
      */
     virtual int openLink() = 0;
 

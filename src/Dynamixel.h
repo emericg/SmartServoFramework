@@ -84,7 +84,7 @@ protected:
      * \brief Open a serial link with the given parameters.
      * \param devicePath: The path to the serial device node.
      * \param baud: The baudrate or Dynamixel 'baudnum'.
-     * \return 1 if success, 0 otherwise.
+     * \return 1 if success, 0 if locked, -1 otherwise.
      */
     int serialInitialize(std::string &devicePath, const int baud);
 

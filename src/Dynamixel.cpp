@@ -173,10 +173,14 @@ int Dynamixel::serialInitialize(std::string &devicePath, const int baud)
 #endif
 
     // Initialize the serial link
-    if (serial != NULL && serial->openLink() == 1)
+    if (serial != NULL)
     {
-        status = 1;
-        TRACE_INFO(DXL, "> Serial interface successfully opened on '%s' @ %i bps\n", devicePath.c_str(), baud);
+        status = serial->openLink();
+
+        if (status > 0)
+        {
+            TRACE_INFO(DXL, "> Serial interface successfully opened on '%s' @ %i bps\n", devicePath.c_str(), baud);
+        }
     }
     else
     {
