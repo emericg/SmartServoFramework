@@ -12,7 +12,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string notr="true">SmartServoGui</string>
+   <string notr="true">SmartServoGUI</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../resources/resources.qrc">

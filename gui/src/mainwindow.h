@@ -59,10 +59,15 @@ class MainWindow : public QMainWindow
     {
         // GUI elements
         QCheckBox *deviceName;
-        QComboBox *deviceProtocol;
+        QComboBox *deviceSettings;
         QPushButton *deviceScan;
-        // Controller
+
+        // Controller settings
         int deviceControllerProtocol;
+        int deviceControllerSpeed;
+        int deviceControllerDevices;
+
+        // Controller
         ControllerAPI *deviceController;
     };
 
@@ -75,7 +80,7 @@ class MainWindow : public QMainWindow
     int tableServoModel;
     bool tableAutoSelection;
 
-    void loading(bool enabled);
+    void loadingScreen(bool enabled);
 
     int getCurrentController(ControllerAPI *&ctrl);
     int getCurrentServo(ControllerAPI *&ctrl, int &id);
@@ -128,6 +133,8 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    void autoScan();
+
 public slots:
     void resizeTabWidgetContent();
 
@@ -137,8 +144,10 @@ public slots:
     void settingsStart();
     void settingsStop();
 
-    void scanSerialPorts();
+    void scanSerialPorts(bool autoscan = true);
     void scanServos();
+
+    void refreshSerialPort(QString port_qstring);
 
     /*!
      * For each serial port, try to start a controller and scan for servos.

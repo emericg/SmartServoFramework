@@ -61,15 +61,6 @@ MainWindow::MainWindow(QWidget *parent):
     ui->frame_err_hkx->hide();
     ui->frameStatus->hide();
 
-    asw = NULL;
-    stw = new Settings();
-    stw->readSettings();
-    stw->loadSettings();
-
-    tableServoSerie = 0;
-    tableServoModel = 0;
-    tableAutoSelection = false;
-
     // Force custom window size
     setGeometry(0, 0, 1200, 640);
 
@@ -105,6 +96,18 @@ MainWindow::MainWindow(QWidget *parent):
     // Initialize device "self refresh" loop
     selfRefreshTimer = new QTimer(this);
     connect(selfRefreshTimer, SIGNAL(timeout()), this, SLOT(servoUpdate()));
+
+    // Advance Scanner window
+    asw = NULL;
+
+    // Setting window
+    stw = new Settings();
+    stw->readSettings();
+    stw->loadSettings();
+
+    tableServoSerie = 0;
+    tableServoModel = 0;
+    tableAutoSelection = false;
 }
 
 MainWindow::~MainWindow()
@@ -126,7 +129,7 @@ MainWindow::~MainWindow()
     delete ui;
     delete selfRefreshTimer;
 
-    // Clean controllers list
+    // Clean up controllers
     for (auto p: serialPorts)
     {
         if (p != NULL)
@@ -143,7 +146,7 @@ MainWindow::~MainWindow()
     }
 }
 
-void MainWindow::loading(bool enabled)
+void MainWindow::loadingScreen(bool enabled)
 {
     QTabBar *tabBar = ui->tabWidget->findChild<QTabBar *>();
     tabBar->setVisible(!enabled);
@@ -175,7 +178,7 @@ void MainWindow::loading(bool enabled)
         }
         else
         {
-            QPixmap load(":/help/help/Dynamixel_help.png"); // ":/help/help/HerkuleX_help.png"
+            QPixmap load(":/help/help/Dynamixel_help.png");
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
             load.setDevicePixelRatio(qApp->devicePixelRatio());
 #endif
@@ -191,12 +194,24 @@ void MainWindow::loading(bool enabled)
     }
 }
 
-void MainWindow::scanSerialPorts()
+void MainWindow::autoScan()
 {
-    // Clean the UI, indicate we are starting to scan
+    bool autoscan = true;
+
+    if (stw)
+    {
+        autoscan = stw->getAutoScan();
+    }
+
+    scanSerialPorts(autoscan);
+}
+
+void MainWindow::scanSerialPorts(bool autoscan)
+{
+    // Disable scan buttons, indicate we are starting to scan
     ui->pushScanSerial->setDisabled(true);
     ui->pushScanServo->setDisabled(true);
-    loading(true);
+    loadingScreen(true);
 
     // Clean the deviceTreeWidget content
     while (QWidget *item = ui->deviceTreeWidget->childAt(0,0))
@@ -216,7 +231,7 @@ void MainWindow::scanSerialPorts()
     }
     ui->groupPorts->update();
 
-    // Clean controllers list
+    // Clean existing serial ports list and associated controllers
     for (auto p: serialPorts)
     {
         if (p != NULL)
@@ -233,7 +248,7 @@ void MainWindow::scanSerialPorts()
     }
     serialPorts.clear();
 
-    // Scan for available serial ports
+    // Scan for available/new serial ports
     std::vector <std::string> availablePorts;
     serialPortsScanner(availablePorts);
 
@@ -252,7 +267,7 @@ void MainWindow::scanSerialPorts()
         ui->serialPortErrors_label->hide();
 
         QSignalMapper *signalMapper = new QSignalMapper(this);
-        QObject::connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(scanServos(QString)));
+        QObject::connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(refreshSerialPort(QString)));
 
         // Create "helper" structure to keep track of serial port instances
         // Create an entry inside the "scan group box" for each serial port
@@ -263,26 +278,26 @@ void MainWindow::scanSerialPorts()
 
             helper->deviceName = new QCheckBox(QString::fromStdString(p));
             helper->deviceName->setChecked(true);
-            helper->deviceProtocol = new QComboBox();
-            helper->deviceProtocol->addItem("auto");
-            helper->deviceProtocol->addItem("DXL v1 @ 1 Mb/s");
-            helper->deviceProtocol->addItem("DXL v1 @ 115.2 Kb/s");
-            helper->deviceProtocol->addItem("DXL v1 @ 57.6 Kb/s");
-            helper->deviceProtocol->addItem("DXL v2 @ 1 Mb/s");
-            helper->deviceProtocol->addItem("DXL v2 @ 115.2 Kb/s");
-            helper->deviceProtocol->addItem("DXL v2 @ 57.6 Kb/s");
-            helper->deviceProtocol->addItem("HKX @ 115.2 Kb/s");
-            helper->deviceProtocol->addItem("HKX @ 57.6 Kb/s");
-            helper->deviceProtocol->addItem("HKX @ 1 Mb/s");
-            helper->deviceProtocol->setMaximumWidth(100);
-            helper->deviceProtocol->setFont(QFont("Cantarell", 10));
+            helper->deviceSettings = new QComboBox();
+            helper->deviceSettings->addItem("auto");
+            helper->deviceSettings->addItem("DXL v1 @ 1 Mb/s");
+            helper->deviceSettings->addItem("DXL v1 @ 115.2 Kb/s");
+            helper->deviceSettings->addItem("DXL v1 @ 57.6 Kb/s");
+            helper->deviceSettings->addItem("DXL v2 @ 1 Mb/s");
+            helper->deviceSettings->addItem("DXL v2 @ 115.2 Kb/s");
+            helper->deviceSettings->addItem("DXL v2 @ 57.6 Kb/s");
+            helper->deviceSettings->addItem("HKX @ 115.2 Kb/s");
+            helper->deviceSettings->addItem("HKX @ 57.6 Kb/s");
+            helper->deviceSettings->addItem("HKX @ 1 Mb/s");
+            helper->deviceSettings->setMaximumSize(80, 28);
+            helper->deviceSettings->setFont(QFont("Cantarell", 10));
             helper->deviceScan = new QPushButton();
             helper->deviceScan->setIcon(QIcon(":/icons/icons/emblem-ubuntuone-updating.svg"));
             helper->deviceScan->setIconSize(QSize(24, 24));
             helper->deviceScan->setMaximumSize(24, 24);
             helper->deviceScan->setFlat(true);
             ui->groupPorts->layout()->addWidget(helper->deviceName);
-            ui->groupPorts->layout()->addWidget(helper->deviceProtocol);
+            ui->groupPorts->layout()->addWidget(helper->deviceSettings);
             ui->groupPorts->layout()->addWidget(helper->deviceScan);
             ui->groupPorts->update();
 
@@ -293,17 +308,20 @@ void MainWindow::scanSerialPorts()
         // Update the GUI before each servo scan
         qApp->processEvents();
 
-        // Launch servo scanning
-        scanServos();
+        // Launch servo scanning?
+        if (autoscan == true)
+        {
+            scanServos();
+        }
     }
 
-    // Search for "orphan" ports?
-    // TODO
-
     // Indicate that we are no longer scanning
-    ui->frame_loading->hide();
     ui->pushScanSerial->setEnabled(true);
     ui->pushScanServo->setEnabled(true);
+
+    // Maybe this scan did not yield any results, to avoid showing a blank interface,
+    // we do not turn off loading screen, only the loading animation
+    ui->frame_loading->hide();
 
     // Update UI
     ui->deviceTreeWidget->update();
@@ -311,12 +329,9 @@ void MainWindow::scanSerialPorts()
 
 void MainWindow::scanServos()
 {
-    tableAutoSelection = false;
-
-    // Disable scan buttons
     ui->pushScanSerial->setDisabled(true);
     ui->pushScanServo->setDisabled(true);
-
+    tableAutoSelection = false;
     scan_running = true;
 
     for (SerialPortHelper *h: serialPorts)
@@ -326,10 +341,27 @@ void MainWindow::scanServos()
             // Process the device only if its GUI element is 'checked'
             if (h->deviceName->isChecked() == true)
             {
+                // Launch a scan
                 scanServos(h->deviceName->text());
             }
         }
     }
+
+    scan_running = false;
+
+    ui->pushScanSerial->setEnabled(true);
+    ui->pushScanServo->setEnabled(true);
+}
+
+void MainWindow::refreshSerialPort(QString port_qstring)
+{
+    ui->pushScanSerial->setDisabled(true);
+    ui->pushScanServo->setDisabled(true);
+    tableAutoSelection = false;
+    scan_running = true;
+
+    // Launch a scan
+    scanServos(port_qstring);
 
     scan_running = false;
 
@@ -346,32 +378,32 @@ void MainWindow::scanServos(QString port_qstring)
     bool ctrl_locks = stw->getLock();
     int ctrl_freq = stw->getFreq();
 
+    // First locate the port to scan
     for (struct SerialPortHelper *h: serialPorts)
     {
         if (h->deviceName->text() == port_qstring)
         {
-            h->deviceScan->setDisabled(true);
-
             std::string port_stdstring = port_qstring.toStdString();
             std::cout << ">> scanServos(" << port_stdstring << ")" << std::endl;
 
+            // Disable the refresh button on this port
+            h->deviceScan->setDisabled(true);
+
             // Indicate we are starting to scan
-            ui->frame_loading->show();
+            // FIXME check if we are on the loading tab
+            {
+                ui->frame_loading->show();
 
-            ui->tabWidget->update();
-            ui->tabWidget->repaint();
-            qApp->processEvents();
+                ui->tabWidget->update();
+                ui->tabWidget->repaint();
+                qApp->processEvents();
 
-            // Lock windows size
-            this->setMinimumSize(this->size());
-            this->setMaximumSize(this->size());
-            ui->centralWidget->setMinimumSize(this->size());
-            ui->centralWidget->setMaximumSize(this->size());
-
-            // "Scanning..." tree item
-            QString scan_entry_txt = tr("Scanning...");
-            QTreeWidgetItem *scan_entry = new QTreeWidgetItem();
-            scan_entry->setText(0, scan_entry_txt);
+                // Lock windows size
+                this->setMinimumSize(this->size());
+                this->setMaximumSize(this->size());
+                ui->centralWidget->setMinimumSize(this->size());
+                ui->centralWidget->setMaximumSize(this->size());
+            }
 
             // Clean devices attached to the corresponding deviceTreeWidget port (if needed)
             QTreeWidgetItem *port = NULL;
@@ -389,177 +421,251 @@ void MainWindow::scanServos(QString port_qstring)
                 }
             }
 
-            // Add port in deviceTreeWidget (if it doesn't exists already)
+            // Add port in deviceTreeWidget (if needed)
             if (port == NULL)
             {
                 port = new QTreeWidgetItem();
                 ui->deviceTreeWidget->addTopLevelItem(port);
                 port->setText(0, port_qstring);
             }
-            // Indicate we are scanning on this port
+
+            // Indicate we are scanning this port in the device tree widget
+            QString scan_entry_txt = tr("Scanning...");
+            QTreeWidgetItem *scan_entry = new QTreeWidgetItem();
+            scan_entry->setText(0, scan_entry_txt);
             port->setExpanded(true);
             port->addChild(scan_entry);
-
-            // Delete "old" controller (if needed)
-            if (h->deviceController != NULL)
-            {
-                delete h->deviceController;
-                h->deviceController = NULL;
-            }
 
             // Handle "auto" mode
             int scan_rounds  = 1;
             int scan_results = 0;
-            int scan_setting = h->deviceProtocol->currentIndex();
+            int scan_setting = 0;
+
+            // Handle "saved" settings
+            int deviceControllerProtocolSAVED = 0;
+            int deviceControllerSpeedSAVED = 0;
 
             for (int i = 0; i < scan_rounds; i++)
             {
-                // Rewrite 'scan_setting' if 'auto' scan mode is set
-                if (h->deviceProtocol->currentIndex() == 0)
+                if (h->deviceSettings->currentIndex() == 0)
                 {
+                    // Rewrite 'scan_setting' if scan preset is set to 'auto'
                     int scanrounds_item[4] = {1, 3, 4, 7};
                     scan_rounds = 4;
+                    scan_results = 0;
                     scan_setting = scanrounds_item[i];
                 }
+                else
+                {
+                    scan_rounds  = 1;
+                    scan_results = 0;
+                    scan_setting = h->deviceSettings->currentIndex();
 
-                // Init controller
-                int speed = 0;
+                    // We need to check is the protocol or speed has changed on the selected port
+                    deviceControllerProtocolSAVED = h->deviceControllerProtocol;
+                    deviceControllerSpeedSAVED = h->deviceControllerSpeed;
+                }
+
+                // Load controller settings
                 switch (scan_setting)
                 {
                 // DXL v1
                 case 1:
                     h->deviceControllerProtocol = 1;
-                    h->deviceController = new DynamixelController(ctrl_freq, SERVO_MX);
-                    speed = 1000000;
+                    h->deviceControllerSpeed = 1000000;
+                    h->deviceControllerDevices = SERVO_MX;
                     break;
                 case 2:
                     h->deviceControllerProtocol = 1;
-                    h->deviceController = new DynamixelController(ctrl_freq, SERVO_MX);
-                    speed = 115200;
+                    h->deviceControllerSpeed = 115200;
+                    h->deviceControllerDevices = SERVO_MX;
                     break;
                 case 3:
                     h->deviceControllerProtocol = 1;
-                    h->deviceController = new DynamixelController(ctrl_freq, SERVO_MX);
-                    speed = 57600;
+                    h->deviceControllerSpeed = 57600;
+                    h->deviceControllerDevices = SERVO_MX;
                     break;
 
                 // DXL v2
                 case 4:
                     h->deviceControllerProtocol = 2;
-                    h->deviceController = new DynamixelController(ctrl_freq, SERVO_XL);
-                    speed = 1000000;
+                    h->deviceControllerSpeed = 1000000;
+                    h->deviceControllerDevices = SERVO_XL;
                     break;
                 case 5:
                     h->deviceControllerProtocol = 2;
-                    h->deviceController = new DynamixelController(ctrl_freq, SERVO_XL);
-                    speed = 115200;
+                    h->deviceControllerSpeed = 115200;
+                    h->deviceControllerDevices = SERVO_XL;
                     break;
                 case 6:
                     h->deviceControllerProtocol = 2;
-                    h->deviceController = new DynamixelController(ctrl_freq, SERVO_XL);
-                    speed = 57600;
+                    h->deviceControllerSpeed = 57600;
+                    h->deviceControllerDevices = SERVO_XL;
                     break;
 
                 // HKX
                 case 7:
                     h->deviceControllerProtocol = 3;
-                    h->deviceController = new HerkuleXController(ctrl_freq, SERVO_DRS);
-                    speed = 115200;
+                    h->deviceControllerSpeed = 115200;
+                    h->deviceControllerDevices = SERVO_DRS;
                     break;
                 case 8:
                     h->deviceControllerProtocol = 3;
-                    h->deviceController = new HerkuleXController(ctrl_freq, SERVO_DRS);
-                    speed = 57600;
+                    h->deviceControllerSpeed = 57600;
+                    h->deviceControllerDevices = SERVO_DRS;
                     break;
                 case 9:
                     h->deviceControllerProtocol = 3;
-                    h->deviceController = new HerkuleXController(ctrl_freq, SERVO_DRS);
-                    speed = 1000000;
+                    h->deviceControllerSpeed = 1000000;
+                    h->deviceControllerDevices = SERVO_DRS;
                     break;
+                }
+
+                // Do we need a new controller for this serial port?
+                // - no controller instanciated
+                // - controller with new protocol or speed
+                if (h->deviceController == NULL ||
+                    deviceControllerProtocolSAVED != h->deviceControllerProtocol ||
+                    deviceControllerSpeedSAVED != h->deviceControllerSpeed)
+                {
+                    // Delete old controller (if needed)
+                    if (h->deviceController != NULL)
+                    {
+                        h->deviceController->disconnect();
+                        delete h->deviceController;
+                        h->deviceController = NULL;
+                    }
+
+                    // Create a new one
+                    if (h->deviceControllerProtocol == 1)
+                    {
+                        h->deviceController = new DynamixelController(ctrl_freq, h->deviceControllerDevices);
+                    }
+                    else if (h->deviceControllerProtocol == 2)
+                    {
+                        h->deviceController = new DynamixelController(ctrl_freq, h->deviceControllerDevices);
+                    }
+                    else if (h->deviceControllerProtocol == 3)
+                    {
+                        h->deviceController = new HerkuleXController(ctrl_freq, h->deviceControllerDevices);
+                    }
+
+                    // Connect the controller to its serial port
+                    if (h->deviceController != NULL)
+                    {
+                        scan_results = h->deviceController->connect(port_stdstring, h->deviceControllerSpeed);
+
+                        if (scan_results != 1)
+                        {
+                            h->deviceController->disconnect();
+                            delete h->deviceController;
+                            h->deviceController = NULL;
+                        }
+                    }
                 }
 
                 // Scan
                 if (scan_running == true && h->deviceController != NULL)
                 {
-                    if (h->deviceController->connect(port_stdstring, speed) == 1)
+                    loadingScreen(true);
+/*
+                    // Are we scanning the currently selected port? Then go to the loading screen
+                    ControllerAPI *ctrl = NULL;
+                    getCurrentController(ctrl);
+
+                    if (h->deviceController == ctrl)
                     {
-                        // Scan for servo(s)
-                        h->deviceController->autodetect(ui->rangeStart_spinBox->value(), ui->rangeStop_spinBox->value());
+                        std::cout << "YES WE ARE" << std::endl;
+                        loadingScreen(true);
+                        qApp->processEvents();
+                    }
+*/
+                    // Scan for servo(s)
+                    h->deviceController->autodetect(ui->rangeStart_spinBox->value(), ui->rangeStop_spinBox->value());
 
-                        // Wait until the controller is scanned (not ready, cause if there is no results it will never be ready)
-                        while (h->deviceController->getState() >= state_started &&
-                               h->deviceController->getState() < state_scanned)
+                    // Controller already in ready state? Wait for the new scan to begin then
+                    if (h->deviceController->getState() >= state_scanned)
+                    {
+                        while (h->deviceController->getState() > state_scanned)
                         {
-                            if (scan_running == false)
-                            {
-                                h->deviceController->disconnect();
-                            }
+                            std::chrono::milliseconds waittime(static_cast<int>(3));
+                            std::this_thread::sleep_for(waittime);
+                        }
+                    }
 
+                    // Wait until the controller is 'scanned' (not 'ready', cause if there is no results it will never be ready)
+                    while (h->deviceController->getState() >= state_started &&
+                           h->deviceController->getState() < state_scanned)
+                    {
+                        if (scan_running == false)
+                        {
+                            h->deviceController->disconnect();
+                        }
+
+                        std::chrono::milliseconds waittime(static_cast<int>(3));
+                        std::this_thread::sleep_for(waittime);
+                        qApp->processEvents();
+                    }
+
+                    // Get the scanned list
+                    const std::vector <Servo *> servos = h->deviceController->getServos();
+
+                    if (servos.size() != 0)
+                    {
+                        // Add device(s) found to the tree widget
+                        for (auto s: servos)
+                        {
+                            scan_results++;
+
+                            // Add it to the device tree widget
+                            QString device_txt = "[#" + QString::number(s->getId()) + "]  " + QString::fromStdString(s->getModelString());
+                            QTreeWidgetItem *device = new QTreeWidgetItem();
+                            port->addChild(device);
+                            if (h->deviceControllerProtocol == 3)
+                            {
+                                device->setIcon(0, QIcon(":/devices/devices/HKX.svg"));
+                            }
+                            else
+                            {
+                                if (h->deviceControllerProtocol == 2)
+                                    device->setIcon(0, QIcon(":/devices/devices/DXL.svg")); // DXLv2.svg
+                                else if (h->deviceControllerProtocol == 1)
+                                    device->setIcon(0, QIcon(":/devices/devices/DXL.svg")); // DXLv1.svg
+                            }
+                            device->setText(0, device_txt);
+
+                            if (tableAutoSelection == false)
+                            {
+                                // Autoselect first servo
+                                ui->deviceTreeWidget->clearSelection();
+                                device->setSelected(true);
+                                tableAutoSelection = true;
+
+                                loadingScreen(false);
+                                selfRefreshTimer->start(125);
+                            }
+                        }
+
+                        // Wait until the controller is ready
+                        while (h->deviceController->getState() >= state_started &&
+                               h->deviceController->getState() < state_ready)
+                        {
                             std::chrono::milliseconds waittime(static_cast<int>(4));
                             std::this_thread::sleep_for(waittime);
                             qApp->processEvents();
                         }
 
-                        // Get the scanned list
-                        const std::vector <Servo *> servos = h->deviceController->getServos();
-
-                        if (servos.size() != 0)
-                        {
-                            // Add device(s) found to the tree widget
-                            for (auto s: servos)
-                            {
-                                scan_results++;
-
-                                // Add it to the device tree widget
-                                QString device_txt = "[#" + QString::number(s->getId()) + "]  " + QString::fromStdString(s->getModelString());
-                                QTreeWidgetItem *device = new QTreeWidgetItem();
-                                port->addChild(device);
-                                if (h->deviceControllerProtocol == 3)
-                                {
-                                    device->setIcon(0, QIcon(":/devices/devices/HKX.svg"));
-                                }
-                                else
-                                {
-                                    if (h->deviceControllerProtocol == 2)
-                                        device->setIcon(0, QIcon(":/devices/devices/DXL.svg")); // DXLv2.svg
-                                    else //if (h->deviceControllerProtocol == 1)
-                                        device->setIcon(0, QIcon(":/devices/devices/DXL.svg")); // DXLv1.svg
-                                }
-                                device->setText(0, device_txt);
-
-                                if (tableAutoSelection == false)
-                                {
-                                    // Autoselect first servo
-                                    ui->deviceTreeWidget->clearSelection();
-                                    device->setSelected(true);
-                                    tableAutoSelection = true;
-
-                                    loading(false);
-                                    selfRefreshTimer->start(125);
-                                }
-                            }
-
-                            // Wait until the controller is ready
-                            while (h->deviceController->getState() >= state_started &&
-                                   h->deviceController->getState() < state_ready)
-                            {
-                                std::chrono::milliseconds waittime(static_cast<int>(4));
-                                std::this_thread::sleep_for(waittime);
-                                qApp->processEvents();
-                            }
-
-                            // Exit 'scan_rounds'
-                            break;
-                        }
-                        else
-                        {
-                            h->deviceController->disconnect();
-                        }
+                        // Exit 'scan_rounds'
+                        break;
                     }
                     else
                     {
-                        scan_results = -1;
+                        h->deviceController->disconnect();
                     }
+                }
+                else
+                {
+                    std::cerr << "Error, cannot start scannig for servos! (scann running ? " << scan_running << ")   (controller ? " << h->deviceController << ")" << std::endl;
                 }
             }
 
@@ -570,35 +676,42 @@ void MainWindow::scanServos(QString port_qstring)
 
             // Indicate that we are no longer scanning
             ui->frame_loading->hide();
+            port->removeChild(scan_entry);
+            delete scan_entry;
 
             // Do that only once, not every time we try a new serial port configuration
             if (scan_results <= 0)
             {
-                if (scan_results == -1)
-                {
-                    // Put an 'error' icon
-                    QString achtung_txt = "Interface is locked!";
-                    QTreeWidgetItem *achtung = new QTreeWidgetItem();
-                    port->addChild(achtung);
-                    achtung->setText(0, achtung_txt);
-                    achtung->setIcon(0, QIcon(":/icons/icons/emblem-readonly.svg"));
-                }
-                else if (scan_results == 0)
+                if (scan_results == 0)
                 {
                     // Indicate we did not found any device
                     QTreeWidgetItem *nodevice = new QTreeWidgetItem();
                     nodevice->setText(0, tr("No device available!"));
                     port->addChild(nodevice);
                 }
+                else if (scan_results == -1)
+                {
+                    // Put a 'locked' icon
+                    QString achtung_txt = "Interface is locked!";
+                    QTreeWidgetItem *achtung = new QTreeWidgetItem();
+                    port->addChild(achtung);
+                    achtung->setText(0, achtung_txt);
+                    achtung->setIcon(0, QIcon(":/icons/icons/emblem-readonly.svg"));
+                }
+                else if (scan_results == -2)
+                {
+                    // Put an 'error' icon
+                    QString achtung_txt = "Unable to connect!";
+                    QTreeWidgetItem *achtung = new QTreeWidgetItem();
+                    port->addChild(achtung);
+                    achtung->setText(0, achtung_txt);
+                    achtung->setIcon(0, QIcon(":/icons/icons/emblem-unreadable.svg"));
+                }
 
                 // No need to keep this "empty" controller working
                 delete h->deviceController;
                 h->deviceController = NULL;
             }
-
-            // Remove the "Scanning..." entry
-            port->removeChild(scan_entry);
-            delete scan_entry;
 
             // Unlock windows size
             this->setMinimumSize(0, 0);

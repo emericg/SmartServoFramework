@@ -57,8 +57,8 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
-    // Start initial "automatic" scanning
-    w.scanSerialPorts();
+    // Start initial "automatic" scanning, if enabled
+    w.autoScan();
 
     return app.exec();
 }

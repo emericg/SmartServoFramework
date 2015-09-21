@@ -40,14 +40,14 @@
       <string>Device Controllers</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="1" column="1">
+      <item row="3" column="1">
        <widget class="QLabel" name="label">
         <property name="text">
          <string>Synchronization frequency between controllers and devices.</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
+      <item row="3" column="0">
        <widget class="QSpinBox" name="spinBox_freq">
         <property name="maximumSize">
          <size>
@@ -66,10 +66,17 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="0" colspan="2">
+      <item row="2" column="0" colspan="2">
        <widget class="QCheckBox" name="checkBox_locks">
         <property name="text">
          <string>Use &quot;file locks&quot; to avoid concurent use of the serial ports.</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QCheckBox" name="checkBox_autoscan">
+        <property name="text">
+         <string>Auto-scan serial ports at launch</string>
         </property>
        </widget>
       </item>
