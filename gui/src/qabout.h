@@ -39,6 +39,9 @@ public:
 
 private:
     Ui::QAbout *ui;
+
+private slots:
+    void openWebsite();
 };
 
 #endif // QABOUT_H

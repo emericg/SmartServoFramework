@@ -23,15 +23,24 @@
 #include "qabout.h"
 #include "ui_qabout.h"
 
+#include <qdesktopservices.h>
+
 QAbout::QAbout(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::QAbout)
 {
     ui->setupUi(this);
-    connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(close()));
+    connect(ui->pushButton_ok, SIGNAL(clicked()), this, SLOT(close()));
+    connect(ui->pushButton_website, SIGNAL(clicked()), this, SLOT(openWebsite()));
 }
 
 QAbout::~QAbout()
 {
     delete ui;
+}
+
+void QAbout::openWebsite()
+{
+    QString link = "https://github.com/emericg/SmartServoFramework";
+    QDesktopServices::openUrl(QUrl(link));
 }
