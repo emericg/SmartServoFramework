@@ -586,6 +586,12 @@ void MainWindow::scanServos(QString port_qstring)
                     // Controller already in ready state? Wait for the new scan to begin then
                     if (h->deviceController->getState() >= state_scanned)
                     {
+                        if (scan_running == false)
+                        {
+                            h->deviceController->disconnect();
+                            break;
+                        }
+
                         while (h->deviceController->getState() > state_scanned)
                         {
                             std::chrono::milliseconds waittime(static_cast<int>(3));
@@ -600,6 +606,7 @@ void MainWindow::scanServos(QString port_qstring)
                         if (scan_running == false)
                         {
                             h->deviceController->disconnect();
+                            break;
                         }
 
                         std::chrono::milliseconds waittime(static_cast<int>(3));
