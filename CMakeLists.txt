@@ -30,16 +30,25 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
     message(STATUS "* This is a RELEASE build. You can change it using -DCMAKE_BUILD_TYPE=Debug.")
     set(ENABLE_DEBUG 0)
     set(CMAKE_BUILD_TYPE release)
-    # Custom cflags? Use "release mode" and "-O2" for better speed.
-    set(CMAKE_CXX_FLAGS "-O2 -Wall -std=c++11 -Wno-unused -Wno-unused-parameter")
 
-else(CMAKE_BUILD_TYPE STREQUAL "Release")
+    # Custom cflags? Use "release mode" and "-O2" for better speed.
+	if (UNIX)
+		set(CMAKE_CXX_FLAGS "-O2 -Wall -std=c++11 -Wno-unused -Wno-unused-parameter")
+	else()
+		set(CMAKE_CXX_FLAGS "-O2 -Wall -std=c++11")
+	endif()
+
+else()
 
     message(STATUS "!! * This is a DEBUG build. You can change it using -DCMAKE_BUILD_TYPE=Release.")
     set(ENABLE_DEBUG 1)
     set(CMAKE_BUILD_TYPE debug)
     # Custom cflags? Use "debug mode" and "-O0 -g" if you want better support for GDB and Valgrind.
-    set(CMAKE_CXX_FLAGS "-O0 -g -Wall -Wextra -std=c++11 -Wno-unused -Wno-unused-parameter")
+	if (UNIX)
+		set(CMAKE_CXX_FLAGS "-O0 -Wall -Wextra -std=c++11 -Wno-unused -Wno-unused-parameter")
+	else()
+		set(CMAKE_CXX_FLAGS "-O0 -Wall -Wextra -std=c++11")
+	endif()
 
 endif(CMAKE_BUILD_TYPE STREQUAL "Release")
 
@@ -152,8 +161,12 @@ set_target_properties(SmartServoFramework_shared PROPERTIES OUTPUT_NAME SmartSer
 #endif(CMAKE_BUILD_MODE STREQUAL "Static")
 
 # Install the shared library and its header into the system (optional step, requires root credentials)
+# Relative to $<INSTALL_PREFIX>
 ###############################################################################
 
-# Relative to $<INSTALL_PREFIX>
-install(TARGETS SmartServoFramework_shared DESTINATION lib/)
-install(DIRECTORY src/ DESTINATION include/SmartServoFramework FILES_MATCHING PATTERN "*.h")
+if(UNIX)
+	install(TARGETS SmartServoFramework_shared DESTINATION lib/)
+	install(DIRECTORY src/ DESTINATION include/SmartServoFramework FILES_MATCHING PATTERN "*.h")
+else(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    # TODO
+endif()
