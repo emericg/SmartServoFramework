@@ -4,27 +4,17 @@ sudo: false
 compiler:
   - clang
   - gcc
-
 os:
   - linux
   - osx
 
-install:
-if [[ ${TRAVIS_OS_NAME} = linux ]]; then
-    # /usr/bin/gcc is v4.6 by default, but newer gcc package (gcc-X.Y prefixed) is available.
-    - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
-    # /usr/bin/clang is v3.4 by default, and newer clang package (NOT prefixed) is available.
-    #- if [ "$CXX" = "clang++" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
-    - echo ${PATH}
-    - ls /usr/local
-    - ls /usr/local/bin
-    - export PATH=/usr/local/bin:/usr/bin:${PATH}
-    - echo ${CXX}
-    - ${CXX} --version
-fi
-
 # We need newer compilers for c++11
-# Lockdev is a linux dependency
+install:
+  # /usr/bin/gcc is v4.6 by default, but newer gcc package (gcc-X prefixed) is available.
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then if [ "$CXX" == "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi; fi;
+  # /usr/bin/clang is v3.4 by default, and newer clang package (clang-X.Y prefixed) is available.
+  #- if [ "$TRAVIS_OS_NAME" == "linux" ]; then if  [ "$CXX" = "clang++" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi; fi;
+
 addons:
   apt:
     sources:
@@ -34,7 +24,7 @@ addons:
     - liblockdev1-dev
 
 before_script:
-  - cd build
+  - cd build/
   - cmake ..
 
 script:
