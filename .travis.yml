@@ -1,0 +1,15 @@
+language: cpp
+
+compiler:
+  - clang
+  - gcc
+
+os:
+  - linux
+  - osx
+
+before_script:
+  - cd build
+  - cmake ..
+
+script: make
