@@ -8,27 +8,31 @@ os:
   - linux
   - osx
 
+# We need newer compilers for c++11
+before_install:
+  - if [ "$CXX" == "g++" ]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi
+  - if [ "$CXX" == "clang++" ]; then sudo add-apt-repository -y ppa:h-rayflood/llvm; fi
+  - sudo apt-get update -qq
+
 install:
-# /usr/bin/gcc is v4.6 by default, but newer gcc package (gcc-X.Y prefixed) is available.
-- if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
-# /usr/bin/clang is v3.4 by default, and newer clang package (NOT prefixed) is available.
-#- if [ "$CXX" = "clang++" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
-- echo ${PATH}
-- ls /usr/local
-- ls /usr/local/bin
-- export PATH=/usr/local/bin:/usr/bin:${PATH}
-- echo ${CXX}
-- ${CXX} --version
+  # g++ 5.2
+  - if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-5; fi
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-5.2"; fi
+  # clang 3.6
+  - if [ "$CXX" == "clang++" ]; then sudo apt-get install --allow-unauthenticated -qq clang-3.6; fi
+  - if [ "$CXX" == "clang++" ]; then export CXX="clang++-3.6"; fi
+
+# Lockdev is a linux dependency
 addons:
   apt:
-    sources:
-    - ubuntu-toolchain-r-test
     packages:
-    - g++-4.9
-    - clang
+    - liblockdev1
+    - liblockdev1-dev
 
 before_script:
   - cd build
   - cmake ..
 
-script: make
+script:
+  - $CXX --version
+  - make
