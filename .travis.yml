@@ -1,4 +1,5 @@
 language: cpp
+sudo: false
 
 compiler:
   - clang
@@ -9,24 +10,16 @@ os:
   - osx
 
 # We need newer compilers for c++11
-before_install:
-  - if [ "$CXX" == "g++" ]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi
-  - if [ "$CXX" == "clang++" ]; then sudo add-apt-repository -y ppa:h-rayflood/llvm; fi
-  - sudo apt-get update -qq
-
-install:
-  # g++ 5.2
-  - if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-5; fi
-  - if [ "$CXX" = "g++" ]; then export CXX="g++-5.2"; fi
-  # clang 3.6
-  - if [ "$CXX" == "clang++" ]; then sudo apt-get install --allow-unauthenticated -qq clang-3.6; fi
-  - if [ "$CXX" == "clang++" ]; then export CXX="clang++-3.6"; fi
-
 # Lockdev is a linux dependency
+install:
+- if [ "$CXX" = "g++" ]; then export CXX="g++-5.2" CC="gcc-5.2"; fi
+
 addons:
   apt:
+    sources:
+    - ubuntu-toolchain-r-test
     packages:
-    - liblockdev1
+    - g++-5
     - liblockdev1-dev
 
 before_script:
