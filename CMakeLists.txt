@@ -23,22 +23,20 @@ find_package(Doxygen) # FindDoxygen.cmake
 
 if(DOXYGEN_FOUND)
     message(STATUS "* Doxygen found, you can use it to generate a nice API documentation")
-else(DOXYGEN_FOUND)
-    message(WARNING " > Doxygen not found")
 endif(DOXYGEN_FOUND)
 
 # Build options
 ###############################################################################
 
-if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
     message(STATUS "* Building with Clang compiler")
     set(CMAKE_CXX_FLAGS "-stdlib=libc++")
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     message(STATUS "* Building with GCC compiler")
     set(CMAKE_CXX_FLAGS "-stdlib=libstdc++")
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
+elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
     message(STATUS "* Building with Intel Cpp compiler")
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     message(STATUS "* Building with Visual Studio Cpp compiler")
 endif()
 
@@ -51,7 +49,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(ENABLE_DEBUG 1)
     set(CMAKE_BUILD_TYPE debug)
     # Custom cflags? Use "debug mode" and "-O0 -g" if you want better support for GDB and Valgrind.
-    if (UNIX)
+    if(UNIX)
         set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g -Wextra -Wno-unused -Wno-unused-parameter")
     else()
         set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g -Wextra")
@@ -64,7 +62,7 @@ else()
     set(CMAKE_BUILD_TYPE release)
 
     # Custom cflags? Use "release mode" and "-O2" for better speed.
-    if (UNIX)
+    if(UNIX)
         set(CMAKE_CXX_FLAGS_RELEASE "-O2 -Wno-unused -Wno-unused-parameter")
     else()
         set(CMAKE_CXX_FLAGS_RELEASE "-O2")
@@ -163,12 +161,13 @@ set(SmartServoFramework_SRC
 ###############################################################################
 
 # Build library
+message(STATUS "** Building shared library")
 add_library(SmartServoFramework_shared SHARED ${SmartServoFramework_SRC})
 target_link_libraries(SmartServoFramework_shared ${EXTRA_LIBS})
 set_target_properties(SmartServoFramework_shared PROPERTIES OUTPUT_NAME SmartServoFramework)
 
 if(CMAKE_BUILD_MODE STREQUAL "Static")
-    message(STATUS "** Static library will be built")
+    message(STATUS "** Building static library")
     add_library(SmartServoFramework_static STATIC ${SmartServoFramework_SRC})
     target_link_libraries(SmartServoFramework_static ${EXTRA_LIBS})
     set_target_properties(SmartServoFramework_static PROPERTIES OUTPUT_NAME SmartServoFramework)
