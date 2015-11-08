@@ -1,11 +1,13 @@
-SmartServoFramework 0.92
+SmartServoFramework 0.93
 ========================
+
+[![Build Status](https://travis-ci.org/emericg/SmartServoFramework.svg?branch=master)](https://travis-ci.org/emericg/SmartServoFramework)
 
 ## Introduction
 
 SmartServoFramework is a C++ multiplatform framework used to drive "smart servo" devices like Dynamixel or HerkuleX actuators. It has been developped at Inria Grenoble research center.
 
-Linux, Mac OS X and Windows operating systems are supported. All you need to begin moving stuff around is at least one servo, a serial port adapter and a modern C++ compiler! SmartServoFramework works well on Raspberry Pi or other similar boards, but will not work on arduinos nor any other microcontrollers.
+Linux (and most Unix systems), Mac OS X and Windows operating systems are supported. All you need to begin moving stuff around is at least one servo, a serial port adapter and a modern C++ compiler! SmartServoFramework works well on Raspberry Pi or other similar boards, but will not work on arduinos nor any other microcontrollers.
 
 > Dynamixel devices from [Robotis](http://www.robotis.com/) and HerkuleX devices from [Dongbu Robot](http://www.dongburobot.com/) are high-performance networked actuators for robots available in wide range of sizes and strengths.  
 > They have adjustable torque, speed, angle limits, and provide various feedback like position, load, voltage and temperature...
@@ -23,7 +25,15 @@ If you are running a Linux system you can easily generate the documentation from
 > $ cd SmartServoFramework/  
 > $ doxygen Doxyfile  
 
-### Example softwares
+### Building SmartServoFramework library
+
+> $ cd SmartServoFramework/build/  
+> $ cmake ..  
+> $ make  
+
+The shared library will be located inside the `build/` directory.
+
+### Building and using test softwares
 
 Various examples programs are available:
 
@@ -33,6 +43,12 @@ Various examples programs are available:
 * ex_controller: Control four servos with your keyboard using the 'Controller API'.  
 * ex_sinus_control: Control a servo with sinusoid curve for both speed and position.  
 * ex_advance_scanner: Scan serial ports for Dynamixel servos, for all IDs and all (but configurable) serial port speeds.  
+
+You can build them by simply typing:
+> $ cd SmartServoFramework/  
+> $ scons  
+
+The test softwares binaries will be located inside the `build/` directory.
 
 ## GUI software
 
@@ -55,7 +71,7 @@ SmartServoGui is a fully featured Qt GUI application that helps you discover dev
 
 ### Compiler
 
-You will need a modern C++/11 capable compiler:
+You will need a modern C++11 capable compiler:
 
 * GCC >= 4.6  
 * LLVM >= 3.0  

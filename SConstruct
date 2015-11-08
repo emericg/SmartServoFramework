@@ -1,5 +1,5 @@
-# SmartServoFramwork build system
-# Emeric Grange <emeric.grange@inria.fr>
+# SmartServoFramwork "test programs" build system
+# Emeric Grange <emeric.grange@gmail.com>
 
 # http://www.scons.org/
 # http://www.scons.org/wiki/IDEIntegration
@@ -66,7 +66,7 @@ elif sys.platform.startswith('win') == True:
 
 elif sys.platform == 'darwin':
 
-    print '> MAC OS platform'
+    print '> MAC OS X platform'
     if env['CC'] == 'gcc':
         print '> Gcc compiler'
         env.Append(CCFLAGS = "-std=c++11 -stdlib=libstdc++ -pthread ")
@@ -95,7 +95,7 @@ src_framework = [env.Object("src/SerialPort.cpp"), env.Object("src/SerialPortLin
                  env.Object("src/ServoHerkuleX.cpp"), env.Object("src/ServoDRS.cpp")]
 
 
-# Build examples
+# Build test programs
 ###############################################################################
 
 env.Program(target = 'build/ex_basic_test', source = ["examples/ex_basic_test.cpp", src_framework], LIBS = libraries, LIBPATH = libraries_paths)
