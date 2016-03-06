@@ -155,7 +155,7 @@ void ServoDynamixel::setSpeedMode(int speed_mode)
     }
 }
 
-void ServoDynamixel::waitMovmentCompletion(int timeout_ms)
+void ServoDynamixel::waitMovementCompletion(int timeout_ms)
 {
     std::chrono::milliseconds timeout_duration(static_cast<int>(timeout_ms));
     std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
