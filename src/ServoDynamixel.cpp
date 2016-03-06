@@ -178,11 +178,11 @@ void ServoDynamixel::waitMovementCompletion(int timeout_ms)
     {
         access.unlock();
 
-        TRACE_2(DXL, "waitMovmentCompletion(%i < pos: %i < %i)\n", margin_dw, c, margin_up);
+        TRACE_2(DXL, "waitMovementCompletion(%i < pos: %i < %i)\n", margin_dw, c, margin_up);
 
         if ((start + timeout_duration) < std::chrono::system_clock::now())
         {
-            TRACE_WARNING(DXL, "waitMovmentCompletion() timeout!\n", margin_dw, c, margin_up);
+            TRACE_WARNING(DXL, "waitMovementCompletion() timeout!\n", margin_dw, c, margin_up);
             return;
         }
 

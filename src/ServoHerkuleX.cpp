@@ -154,7 +154,7 @@ void ServoHerkuleX::getModelInfos(int &servo_serie, int &servo_model)
 
 /* ************************************************************************** */
 
-void ServoHerkuleX::waitMovmentCompletion(int timeout_ms)
+void ServoHerkuleX::waitMovementCompletion(int timeout_ms)
 {
     // TODO
 }
