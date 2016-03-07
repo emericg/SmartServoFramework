@@ -1,5 +1,5 @@
-# SmartServoFramwork "test programs" build system
-# Emeric Grange <emeric.grange@gmail.com>
+# SmartServoFramework "examples" build system
+# This file allows you to build the test programs bundled SmartServoFramework
 
 # http://www.scons.org/
 # http://www.scons.org/wiki/IDEIntegration
@@ -10,17 +10,17 @@ from distutils.version import StrictVersion
 
 
 # Initialize the environment
-###############################################################################
+################################################################################
 
 if ARGUMENTS.get('debug', 0):
     print "> DEBUG build"
-    env = Environment(CCFLAGS = ' -g -Wno-unused-parameter ')
+    env = Environment(CCFLAGS = ' -g -Wall -Wextra -Wno-unused-parameter ')
 else:
     env = Environment(CCFLAGS = ' -O2 -Wno-unused-parameter ')
 
 
 # Multiplatform build
-###############################################################################
+################################################################################
 
 if sys.platform.startswith('linux') == True:
 
@@ -69,7 +69,8 @@ elif sys.platform == 'darwin':
     print '> MAC OS X platform'
     if env['CC'] == 'gcc':
         print '> Gcc compiler'
-        env.Append(CCFLAGS = "-std=c++11 -stdlib=libstdc++ -pthread ")
+        env.Append(CCFLAGS = "-std=c++11 -stdlib=libstdc++")
+        env.Append(LFLAGS = "-F /System/Library/Frameworks/ -f IOKit")
     elif env['CC'] == 'clang':
         print '> LLVM compiler'
         env.Append(CCFLAGS = "-std=c++11 -stdlib=libc++ ")
@@ -77,15 +78,16 @@ elif sys.platform == 'darwin':
         print '> WARNING > Unknown compiler > ' + env['CC']
 
     # Additional libraries
-    libraries = ['IOKit']
+    libraries = ['']
     libraries_paths = ['']
 
 else:
     print '> WARNING > Unknown operating system > ' + sys.platform
 
 
-# Source files
-###############################################################################
+# Framework source files
+# For these test programs, we will use the framework sources directly
+################################################################################
 
 src_framework = [env.Object("src/SerialPort.cpp"), env.Object("src/SerialPortLinux.cpp"), env.Object("src/SerialPortMacOS.cpp"), env.Object("src/SerialPortWindows.cpp"),
                  env.Object("src/minitraces.cpp"), env.Object("src/ControlTables.cpp"), env.Object("src/Utils.cpp"), env.Object("src/ControllerAPI.cpp"),env.Object("src/Servo.cpp"),
@@ -96,7 +98,7 @@ src_framework = [env.Object("src/SerialPort.cpp"), env.Object("src/SerialPortLin
 
 
 # Build test programs
-###############################################################################
+################################################################################
 
 env.Program(target = 'build/ex_basic_test', source = ["examples/ex_basic_test.cpp", src_framework], LIBS = libraries, LIBPATH = libraries_paths)
 env.Program(target = 'build/ex_simple', source = ["examples/ex_simple.cpp"] + src_framework, LIBS = libraries, LIBPATH = libraries_paths)

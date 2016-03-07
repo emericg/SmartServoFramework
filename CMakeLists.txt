@@ -1,22 +1,18 @@
-# Project informations
-###############################################################################
+# SmartServoFramework "library" build system
+# This file allows you to build a shared library of SmartServoFramework
 
-# General
 project(SmartServoFramework)
 cmake_minimum_required(VERSION 2.8)
 
-# Pass various options to SmartServoFramework source code
-###############################################################################
-
 set(SmartServoFramework_VERSION_MAJOR 0)
-set(SmartServoFramework_VERSION_MINOR 93)
+set(SmartServoFramework_VERSION_MINOR 95)
 set(SmartServoFramework_VERSION_PATCH 0)
 
 set(ENABLE_DEBUG   1) # "Toggle debug traces"
 set(ENABLE_COLORS  1) # "Toggle colored terminal output"
 
 # Dependencies
-###############################################################################
+################################################################################
 
 # Doxygen module
 find_package(Doxygen) # FindDoxygen.cmake
@@ -26,7 +22,7 @@ if(DOXYGEN_FOUND)
 endif(DOXYGEN_FOUND)
 
 # Build options
-###############################################################################
+################################################################################
 
 if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
     message(STATUS "* Building with Clang compiler")
@@ -40,7 +36,9 @@ elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     message(STATUS "* Building with Visual Studio Cpp compiler")
 endif()
 
-set(CMAKE_CXX_FLAGS "-std=c++11 -Wall")
+# Require C++11 standard by default
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Detect build type. You can change it using "-DCMAKE_BUILD_TYPE="
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -50,9 +48,9 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_BUILD_TYPE debug)
     # Custom cflags? Use "debug mode" and "-O0 -g" if you want better support for GDB and Valgrind.
     if(UNIX)
-        set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g -Wextra -Wno-unused -Wno-unused-parameter")
+        set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g -Wall -Wextra -Wno-unused -Wno-unused-parameter")
     else()
-        set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g -Wextra")
+        set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g -Wall -Wextra")
     endif()
 
 else()
@@ -71,7 +69,7 @@ else()
 endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
 # Platform specific
-###############################################################################
+################################################################################
 
 # Linux specific stuff
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
