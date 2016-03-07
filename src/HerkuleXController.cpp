@@ -26,6 +26,7 @@
 // C++ standard libraries
 #include <chrono>
 #include <thread>
+#include <mutex>
 
 // Enable latency timer
 //#define LATENCY_TIMER

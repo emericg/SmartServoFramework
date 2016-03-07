@@ -33,8 +33,6 @@
 #include "ServoXL.h"
 
 #include <vector>
-#include <mutex>
-#include <thread>
 
 /** \addtogroup ControllerAPIs
  *  @{

@@ -29,7 +29,6 @@
 // C++ standard libraries
 #include <cstring>
 #include <map>
-#include <mutex>
 
 DynamixelSimpleAPI::DynamixelSimpleAPI(int servos)
 {

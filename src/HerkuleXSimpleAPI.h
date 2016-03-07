@@ -26,7 +26,6 @@
 #include "HerkuleX.h"
 
 #include <vector>
-#include <mutex>
 
 /** \addtogroup SimpleAPIs
  *  @{

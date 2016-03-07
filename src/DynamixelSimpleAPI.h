@@ -26,7 +26,6 @@
 #include "Dynamixel.h"
 
 #include <vector>
-#include <mutex>
 
 /** \addtogroup SimpleAPIs
  *  @{
