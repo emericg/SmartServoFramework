@@ -437,6 +437,7 @@ bool SerialPortMacOS::removeLock()
 int SerialPortMacOS::openLink()
 {
     struct termios tty;
+    //memset(&tty, 0, sizeof(tty));
 
     // Make sure no tty connection is already running (in that case, openLink() will do a reconnection)
     closeLink();
@@ -486,6 +487,8 @@ int SerialPortMacOS::openLink()
     tty.c_cc[VTIME] = 0;
     tty.c_cc[VMIN]  = 0;
 
+    sleep(1); // FIXME why is this necessary for our serial port to work?
+
     tcflush(ttyDeviceFileDescriptor, TCIFLUSH);
     // Cause the new options to take effect immediately.
     if (tcsetattr(ttyDeviceFileDescriptor, TCSANOW, &tty) == -1)
@@ -498,7 +501,7 @@ int SerialPortMacOS::openLink()
     TRACE_1(SERIAL, "Current input baud rate is %d\n", (int)cfgetispeed(&tty));
     TRACE_1(SERIAL, "Current output baud rate is %d\n", (int)cfgetospeed(&tty));
 
-    sleep(1);
+    sleep(1); // FIXME why is this necessary for our serial port to work?
 
     if (ttyDeviceBaudRate < 1)
     {
