@@ -1,15 +1,9 @@
-# Build artifacts
-*.o
-
-# Binaries
+# Binaries and build artifacts
 build/*
-gui/build/*
+*.o
 
 # Doxygen
 doc/html
-
-# Scons temporary project files
-.scon*
 
 # CMake temporary project files
 CMakeLists.txt.*
@@ -23,6 +17,11 @@ SmartServoFramework.includes
 # QMake temporary project files (gui)
 gui/SmartServoGui.pro.*
 gui/Makefile
+gui/build/*
 
-#Netbeans Project Files
+# Scons temporary project files (examples)
+examples/.scon*
+examples/build/*
+
+# Netbeans project files
 nbproject/*

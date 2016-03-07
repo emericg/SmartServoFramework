@@ -85,24 +85,26 @@ else:
     print '> WARNING > Unknown operating system > ' + sys.platform
 
 
-# Framework source files
-# For these test programs, we will use the framework sources directly
+# For these test programs, we will use the framework source files directly
+# Framework sources will be copied into the 'build' directory and build artifacts will be stored there
 ################################################################################
 
-src_framework = [env.Object("src/SerialPort.cpp"), env.Object("src/SerialPortLinux.cpp"), env.Object("src/SerialPortMacOS.cpp"), env.Object("src/SerialPortWindows.cpp"),
-                 env.Object("src/minitraces.cpp"), env.Object("src/ControlTables.cpp"), env.Object("src/Utils.cpp"), env.Object("src/ControllerAPI.cpp"),env.Object("src/Servo.cpp"),
-                 env.Object("src/Dynamixel.cpp"), env.Object("src/DynamixelTools.cpp"), env.Object("src/DynamixelSimpleAPI.cpp"), env.Object("src/DynamixelController.cpp"),
-                 env.Object("src/ServoDynamixel.cpp"), env.Object("src/ServoAX.cpp"), env.Object("src/ServoEX.cpp"), env.Object("src/ServoMX.cpp"), env.Object("src/ServoXL.cpp"),
-                 env.Object("src/HerkuleX.cpp"), env.Object("src/HerkuleXTools.cpp"), env.Object("src/HerkuleXSimpleAPI.cpp"), env.Object("src/HerkuleXController.cpp"),
-                 env.Object("src/ServoHerkuleX.cpp"), env.Object("src/ServoDRS.cpp")]
+env.BuildDir('build/', '../src/')
+
+src_framework = [env.Object("build/SerialPort.cpp"), env.Object("build/SerialPortLinux.cpp"), env.Object("build/SerialPortMacOS.cpp"), env.Object("build/SerialPortWindows.cpp"),
+                 env.Object("build/minitraces.cpp"), env.Object("build/ControlTables.cpp"), env.Object("build/Utils.cpp"), env.Object("build/ControllerAPI.cpp"),env.Object("build/Servo.cpp"),
+                 env.Object("build/Dynamixel.cpp"), env.Object("build/DynamixelTools.cpp"), env.Object("build/DynamixelSimpleAPI.cpp"), env.Object("build/DynamixelController.cpp"),
+                 env.Object("build/ServoDynamixel.cpp"), env.Object("build/ServoAX.cpp"), env.Object("build/ServoEX.cpp"), env.Object("build/ServoMX.cpp"), env.Object("build/ServoXL.cpp"),
+                 env.Object("build/HerkuleX.cpp"), env.Object("build/HerkuleXTools.cpp"), env.Object("build/HerkuleXSimpleAPI.cpp"), env.Object("build/HerkuleXController.cpp"),
+                 env.Object("build/ServoHerkuleX.cpp"), env.Object("build/ServoDRS.cpp")]
 
 
 # Build test programs
 ################################################################################
 
-env.Program(target = 'build/ex_basic_test', source = ["examples/ex_basic_test.cpp", src_framework], LIBS = libraries, LIBPATH = libraries_paths)
-env.Program(target = 'build/ex_simple', source = ["examples/ex_simple.cpp"] + src_framework, LIBS = libraries, LIBPATH = libraries_paths)
-env.Program(target = 'build/ex_simple_threaded', source = ["examples/ex_simple_threaded.cpp"] + src_framework, LIBS = libraries, LIBPATH = libraries_paths)
-env.Program(target = 'build/ex_controller', source = ["examples/ex_controller.cpp"] + src_framework, LIBS = libraries, LIBPATH = libraries_paths)
-env.Program(target = 'build/ex_sinus_control', source = ["examples/ex_sinus_control.cpp"] + src_framework, LIBS = libraries + ["opencv_core", "opencv_highgui"], LIBPATH = libraries_paths)
-env.Program(target = 'build/ex_advance_scanner', source = ["examples/ex_advance_scanner.cpp"] + src_framework, LIBS = libraries, LIBPATH = libraries_paths)
+env.Program(target = 'ex_basic_test', source = ["ex_basic_test.cpp", src_framework], LIBS = libraries, LIBPATH = libraries_paths)
+env.Program(target = 'ex_simple', source = ["ex_simple.cpp"] + src_framework, LIBS = libraries, LIBPATH = libraries_paths)
+env.Program(target = 'ex_simple_threaded', source = ["ex_simple_threaded.cpp"] + src_framework, LIBS = libraries, LIBPATH = libraries_paths)
+env.Program(target = 'ex_controller', source = ["ex_controller.cpp"] + src_framework, LIBS = libraries, LIBPATH = libraries_paths)
+env.Program(target = 'ex_sinus_control', source = ["ex_sinus_control.cpp"] + src_framework, LIBS = libraries + ["opencv_core", "opencv_highgui"], LIBPATH = libraries_paths)
+env.Program(target = 'ex_advance_scanner', source = ["ex_advance_scanner.cpp"] + src_framework, LIBS = libraries, LIBPATH = libraries_paths)
