@@ -18,7 +18,7 @@ Support for other devices or brands may be added in the futur...
 * **Simple API:** Use this API to easily get/set values to your servos by sending simple synchronous instructions, then waiting for the answers!  
 * **Managed API:** Setup a controller and attach servo instances to it. Manipulate servo objects and let the controller synchronize its "virtual" register values with the real servo hardware in a background thread with a fixed frequency.  Beware: this API is more complex to master, and not entirely stable ;-)
 
-### Documentation
+### API documentation
 
 You can dynamically generate an API documentation from the source code using Doxygen. The documentation will be generated inside the `doc/` directory.
 If you are running a Mac/Linux system you can easily generate the documentation from a terminal:
@@ -27,65 +27,24 @@ If you are running a Mac/Linux system you can easily generate the documentation 
 
 If you are allergic to the command line, it's just as easy to generate the documentation with DoxyWizard, Doxygen's GUI.
 
-### Requirements
+## Using the framework
 
-* A C++11 compiler (GCC >= 4.6; LLVM >= 3.0; MSVC >= 2012)
+### Compiler
+
+You will need a modern C++11 capable compiler:
+* GCC >= 4.6  
+* LLVM >= 3.0  
+* MSVC >= 2012  
+
+### Dependencies
+
+Build system:
 * CMake (**ONLY** to build the standalone library)
 * Scons (**ONLY** to build the examples)
 * Doxygen (**ONLY** to generate the documentation)
 
 Using Linux?
 * liblockdev1-dev (used to lock the serial port, which will save you from a lot of potential head scratching errors)
-
-### Building SmartServoFramework library
-
-> $ cd SmartServoFramework/build/  
-> $ cmake ..  
-> $ make  
-
-The shared library will be located inside the `build/` directory.
-
-### Building test softwares
-
-Various examples programs are available:
-
-* ex_basic_test: Very simple example that move the servo at ID #0 with the 'UP' and 'DOWN' keys.  
-* ex_simple: Control four servos with your keyboard using the 'Simple API'.  
-* ex_simple_threaded: Control four servos with your keyboard using the 'Simple API', with servos actions and keyboard handled in two separate threads.  
-* ex_controller: Control four servos with your keyboard using the 'Controller API'.  
-* ex_sinus_control: Control a servo with sinusoid curve for both speed and position.  
-* ex_advance_scanner: Scan serial ports for Dynamixel servos, for all IDs and all (but configurable) serial port speeds.  
-
-You can build them all at once by simply typing:
-> $ cd SmartServoFramework/examples  
-> $ scons  
-
-The executables will be located inside the `examples/build/` directory.
-
-## SmartServoGui
-
-SmartServoGui is a fully featured Qt GUI application that helps you discover devices on available serial links, get an overview of all of their registers, and easily changes their settings!
-
-### Building SmartServoGui
-
-> $ cd SmartServoFramework/gui/  
-> $ qmake-qt${4-5}  
-> $ make  
-> $ ./build/SmartServoGui  
-
-![GUI2](http://i.imgur.com/x3sXE31.png)
-
-![GUI3](http://i.imgur.com/bE2qYIk.png)
-
-## Prerequisite
-
-### Compiler
-
-You will need a modern C++11 capable compiler:
-
-* GCC >= 4.6  
-* LLVM >= 3.0  
-* MSVC >= 2012  
 
 ### Serial link
 
@@ -113,6 +72,45 @@ To minimize traffic on your serial port:
 #### Serial link (HerkuleX servos)
 
 You need a serial port with a regular "full-duplex" TTL converter to use HerkuleX devices.
+
+### Building SmartServoFramework library
+
+> $ cd SmartServoFramework/build/  
+> $ cmake ..  
+> $ make  
+
+The shared library will be located inside the `build/` directory.
+
+### Building test softwares
+
+Various examples programs are available:
+
+* ex_simple: Control up to four servos with your keyboard using the 'Simple API'.  
+* ex_simple_threaded: ex_simple variant, with servos actions and keyboard handled in two separate threads.  
+* ex_controller: Control four servos with your keyboard using the 'Controller API'.  
+* ex_sinus_control: Control a servo with sinusoid curve for both speed and position.  
+* ex_advance_scanner: Scan serial ports for Dynamixel servos, for all IDs and all (but configurable) serial port speeds.  
+
+You can build them all at once by simply typing:
+> $ cd SmartServoFramework/examples  
+> $ scons  
+
+The executables will be located inside the `examples/build/` directory.
+
+### Building SmartServoGui
+
+> $ cd SmartServoFramework/gui/  
+> $ qmake-qt${4-5}  
+> $ make  
+> $ ./build/SmartServoGui  
+
+## SmartServoGui
+
+SmartServoGui is a fully featured Qt GUI application that helps you discover devices on available serial links, get an overview of all of their registers, and easily changes their settings!
+
+![GUI2](http://i.imgur.com/x3sXE31.png)
+
+![GUI3](http://i.imgur.com/bE2qYIk.png)
 
 ## Get involved!
 
