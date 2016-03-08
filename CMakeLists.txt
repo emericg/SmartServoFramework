@@ -18,7 +18,7 @@ set(ENABLE_COLORS  1) # "Toggle colored terminal output"
 find_package(Doxygen) # FindDoxygen.cmake
 
 if(DOXYGEN_FOUND)
-    message(STATUS "* Doxygen found, you can use it to generate a nice API documentation")
+    message(STATUS "* Doxygen found, you can use it to generate a nice API documentation!")
 endif(DOXYGEN_FOUND)
 
 # Build options
@@ -36,9 +36,9 @@ elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 endif()
 
 # Require C++11 standard by default
+set(CMAKE_CXX_FLAGS "-std=c++11")
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS "-std=c++11")
 
 # Detect build type. You can change it using "-DCMAKE_BUILD_TYPE="
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

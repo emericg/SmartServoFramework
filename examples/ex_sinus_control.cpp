@@ -26,14 +26,16 @@
  * \author Emeric Grange <emeric.grange@inria.fr>
  *
  * Control one servo with sinusoid curve for speed and position.
+ * OpenCV can be used to visualize the position and speed curve of the servo.
  */
 
 #define ENABLE_OPENCV_VIZ       1
 #define SYNC_FREQUENCY         30
 #define SOFTWARE_FREQUENCY     30
 
-// Smart Servo Framework
+// SmartServoFramework
 #include "../src/DynamixelController.h"
+#include "../src/HerkuleXController.h"
 
 // C++ standard libraries
 #include <iostream>

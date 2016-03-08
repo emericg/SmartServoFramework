@@ -38,8 +38,9 @@
  * - Use any other key to exit the program.
  */
 
-// Smart Servo Framework
+// SmartServoFramework
 #include "../src/DynamixelController.h"
+#include "../src/HerkuleXController.h"
 
 // C++ standard libraries
 #include <iostream>

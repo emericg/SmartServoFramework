@@ -42,8 +42,9 @@
  * keys handling.
  */
 
-// Smart Servo Framework
+// SmartServoFramework
 #include "../src/DynamixelSimpleAPI.h"
+#include "../src/HerkuleXSimpleAPI.h"
 
 // C++ standard libraries
 #include <iostream>

@@ -1,29 +1,41 @@
-SmartServoFramework 0.93
+SmartServoFramework 0.95
 ========================
 
 [![Build Status](https://travis-ci.org/emericg/SmartServoFramework.svg?branch=master)](https://travis-ci.org/emericg/SmartServoFramework)
 
 ## Introduction
 
-SmartServoFramework is a C++ multiplatform framework used to drive "smart servo" devices like Dynamixel or HerkuleX actuators. It has been developped at Inria Grenoble research center.
+SmartServoFramework is a C++ multi-platform framework used to drive "smart servo" devices like Dynamixel or HerkuleX actuators. It has been developed at Inria Grenoble research center.
 
-Linux (and most Unix systems), Mac OS X and Windows operating systems are supported. All you need to begin moving stuff around is at least one servo, a serial port adapter and a modern C++ compiler! SmartServoFramework works well on Raspberry Pi or other similar boards, but will not work on arduinos nor any other microcontrollers.
+Linux (and most Unix systems), Mac OS X and Windows operating systems are supported. All you need to begin moving stuff around is at least one servo, a serial port adapter and a modern C++ compiler! SmartServoFramework works well on Raspberry Pi or other embedded boards, but will not work on Arduinos nor any other microcontrollers.
 
 > Dynamixel devices from [Robotis](http://www.robotis.com/) and HerkuleX devices from [Dongbu Robot](http://www.dongburobot.com/) are high-performance networked actuators for robots available in wide range of sizes and strengths.  
 > They have adjustable torque, speed, angle limits, and provide various feedback like position, load, voltage and temperature...
 
 This framework can be used with any Dynamixel or HerkuleX devices. Please note that the Dynamixel PRO devices should work, but are not supported, as no test devices are available.  
-Support for other devices or brand may be added in the futur...
+Support for other devices or brands may be added in the futur...
 
-* **Direct API:** Use this mode to get or set a value to a servo by sending simple and direct instructions, then waiting for the answers.  
-* **Controller API:** Setup a controller and attach servo instances to it. Manipulate servo objects and let the controller synchronize its "virtual" register values with the real servo hardware in a background thread with a fixed frequency.  
+* **Simple API:** Use this API to easily get/set values to your servos by sending simple synchronous instructions, then waiting for the answers!  
+* **Managed API:** Setup a controller and attach servo instances to it. Manipulate servo objects and let the controller synchronize its "virtual" register values with the real servo hardware in a background thread with a fixed frequency.  Beware: this API is more complex to master, and not entirely stable ;-)
 
 ### Documentation
 
-You can dynamically generate an API documentation from the source code using Doxygen. The documentation will be generated inside the "doc" directory.
-If you are running a Linux system you can easily generate the documentation from a terminal:
+You can dynamically generate an API documentation from the source code using Doxygen. The documentation will be generated inside the `doc/` directory.
+If you are running a Mac/Linux system you can easily generate the documentation from a terminal:
 > $ cd SmartServoFramework/  
 > $ doxygen Doxyfile  
+
+If you are allergic to the command line, it's just as easy to generate the documentation with DoxyWizard, Doxygen's GUI.
+
+### Requirements
+
+* A C++11 compiler (GCC >= 4.6; LLVM >= 3.0; MSVC >= 2012)
+* CMake (**ONLY** to build the standalone library)
+* Scons (**ONLY** to build the examples)
+* Doxygen (**ONLY** to generate the documentation)
+
+Using Linux?
+* liblockdev1-dev (used to lock the serial port, which will save you from a lot of potential head scratching errors)
 
 ### Building SmartServoFramework library
 
@@ -33,24 +45,24 @@ If you are running a Linux system you can easily generate the documentation from
 
 The shared library will be located inside the `build/` directory.
 
-### Building and using test softwares
+### Building test softwares
 
 Various examples programs are available:
 
-* ex_basic_test: Very simple example that move the servo at ID 0 with the 'UP' and 'DOWN' keys.  
+* ex_basic_test: Very simple example that move the servo at ID #0 with the 'UP' and 'DOWN' keys.  
 * ex_simple: Control four servos with your keyboard using the 'Simple API'.  
 * ex_simple_threaded: Control four servos with your keyboard using the 'Simple API', with servos actions and keyboard handled in two separate threads.  
 * ex_controller: Control four servos with your keyboard using the 'Controller API'.  
 * ex_sinus_control: Control a servo with sinusoid curve for both speed and position.  
 * ex_advance_scanner: Scan serial ports for Dynamixel servos, for all IDs and all (but configurable) serial port speeds.  
 
-You can build them by simply typing:
-> $ cd SmartServoFramework/  
+You can build them all at once by simply typing:
+> $ cd SmartServoFramework/examples  
 > $ scons  
 
-The test softwares binaries will be located inside the `build/` directory.
+The executables will be located inside the `examples/build/` directory.
 
-## GUI software
+## SmartServoGui
 
 SmartServoGui is a fully featured Qt GUI application that helps you discover devices on available serial links, get an overview of all of their registers, and easily changes their settings!
 
@@ -60,8 +72,6 @@ SmartServoGui is a fully featured Qt GUI application that helps you discover dev
 > $ qmake-qt${4-5}  
 > $ make  
 > $ ./build/SmartServoGui  
-
-![GUI1](http://i.imgur.com/9mkQFUx.png)
 
 ![GUI2](http://i.imgur.com/x3sXE31.png)
 
