@@ -38,6 +38,7 @@ endif()
 # Require C++11 standard by default
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_FLAGS "-std=c++11")
 
 # Detect build type. You can change it using "-DCMAKE_BUILD_TYPE="
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
