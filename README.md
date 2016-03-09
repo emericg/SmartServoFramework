@@ -3,6 +3,8 @@ SmartServoFramework 0.95
 
 [![Build Status](https://travis-ci.org/emericg/SmartServoFramework.svg?branch=master)](https://travis-ci.org/emericg/SmartServoFramework)
 
+![SERVO](https://raw.githubusercontent.com/emericg/SmartServoFramework/master/gui/resources/img/dynamixel_ax12_diagram.png)
+
 ## Introduction
 
 SmartServoFramework is a C++ multi-platform framework used to drive "smart servo" devices like Dynamixel or HerkuleX actuators. It has been developed at Inria Grenoble research center.
@@ -29,14 +31,12 @@ If you are allergic to the command line, it's just as easy to generate the docum
 
 ## Using the framework
 
-### Compiler
+### Dependencies
 
 You will need a modern C++11 capable compiler:
-* GCC >= 4.6  
-* LLVM >= 3.0  
-* MSVC >= 2012  
-
-### Dependencies
+* GCC >= 4.6
+* LLVM >= 3.0
+* MSVC >= 2012
 
 Build system:
 * CMake (**ONLY** to build the standalone library)
@@ -44,11 +44,11 @@ Build system:
 * Doxygen (**ONLY** to generate the documentation)
 
 Using Linux?
-* liblockdev1-dev (used to lock the serial port, which will save you from a lot of potential head scratching errors)
+* liblockdev1-dev (used to lock the serial port to a single software instance, which will save you from a lot of potential head scratching errors...)
 
 ### Serial link
 
-This framework can be used with any combination of RS-232 ports, USB to TTL adapters, USB to RS-485 adapters, half or full duplex... but you'll need the right link for the right device.
+This framework can be used with any combination of RS-232 ports, USB to TTL adapters, USB to RS-485 adapters, half or full duplex... But you'll need the right link for the right device.
 
 First make sure that you can access your serial port:
 * If you are running Linux, you will need special permissions from the `uucp` and/or `dialout` groups in order to access serial ports. You can add your user account to these groups with this command: `# useradd -G uucp,dialout $USER` (you'll need root credentials for this operation).
@@ -56,16 +56,18 @@ First make sure that you can access your serial port:
 * If you are running Windows, you will need to install the [FTDI driver for the USB2Dynamixel device](http://www.robotis.com/xe/download_en/646927). You may also need other drivers depending on your adapter (like the [USB2AX driver](https://raw.githubusercontent.com/Xevel/usb2ax/master/firmware/lufa_usb2ax/USB2AX.inf), the [CP210x driver](http://www.silabs.com/products/mcu/pages/usbtouartbridgevcpdrivers.aspx), or the official [FTDI driver](http://www.ftdichip.com/Drivers/D2XX.htm)).
 
 Latency over the serial port will limit the number of instructions you can send each second even more than bandwidth limitations.
-To minimize traffic on your serial port:  
-- Make sure you have set the "Status Return Level" / "Ack Policy" to '1' to minimize the number of status packets (if you do not need them), or even '2' to disable them all.  
-- If you are using Dynamixel devices, you may want to reduce the "Return Delay Time" value to a minimum, from the default of '250' to something like '10'.  
-- You can also use [these tips](https://projectgus.com/2011/10/notes-on-ftdi-latency-with-arduino/) to reduce latency on serial ports adapter using FTDI chips!  
+A few tips to minimize traffic on your serial port:  
+- You can use [these tips](https://projectgus.com/2011/10/notes-on-ftdi-latency-with-arduino/) to reduce latency on serial ports adapter using FTDI chips!  
+- If you are using Dynamixel devices, you may want to reduce the "Return Delay Time" value to a minimum, from the default of '250' to something like '10'. Check what value works for you.  
+- For both Dynamixel and HerkuleX devices, you can set the "Status Return Level" / "Ack Policy" to '1' in order to minimize the number of status packets (only if you do not need them), or even '2' to disable them ALL. Check your servo manual for more info on this.  
+
+One more important thing: you need to power your servos with **proper power supply**. Shaky power sources have been known to cause interferences on serial bus, resulting in numerous packet corruptions. Be careful when using batteries and power converters!
 
 #### Serial link (Dynamixel servos)
 
+* [USB2AX](http://www.xevelabs.com/doku.php?id=product:usb2ax:usb2ax): Unofficial but awesome device designed to manage TTL communication with your Dynamixels (All of the AX servos and MX 'T' versions).  
 * [USB2Dynamixel](http://support.robotis.com/en/product/auxdevice/interface/usb2dxl_manual.htm): Official device that can manage regular RS232, RS485 and TTL communications.  
-* [USB2AX](http://www.xevelabs.com/doku.php?id=product:usb2ax:usb2ax): Unofficial device designed to manage TTL communication only.  
-* "Home made" TTL half-duplex device: (LINK?)  
+* Home made TTL half-duplex device: [like this one](http://savageelectronics.blogspot.fr/2011/01/arduino-y-dynamixel-ax-12.html), or less detailed but [in english](http://www.memememememememe.me/the-dynamixel/)
 
 > Note: Regular "full-duplex" TTL converters will NOT do the trick for "half-duplex TTL" Dynamixel servos (AX series, MX "T" series, XL-320, ...).
 
@@ -87,7 +89,7 @@ Various examples programs are available:
 
 * ex_simple: Control up to four servos with your keyboard using the 'Simple API'.  
 * ex_simple_threaded: ex_simple variant, with servos actions and keyboard handled in two separate threads.  
-* ex_controller: Control four servos with your keyboard using the 'Controller API'.  
+* ex_controller: Control four servos with your keyboard using the 'Managed API'.  
 * ex_sinus_control: Control a servo with sinusoid curve for both speed and position.  
 * ex_advance_scanner: Scan serial ports for Dynamixel servos, for all IDs and all (but configurable) serial port speeds.  
 
@@ -114,13 +116,13 @@ SmartServoGui is a fully featured Qt GUI application that helps you discover dev
 
 ## Get involved!
 
-### Users
-
-You can help us finding bugs, proposing new functionalities and more directly on this website! Click on the "New issue" button in the menu to do that.
-
 ### Developers
 
-You can browse the git repository here on GitHub, submit patches and push requests!
+You can browse the code here on GitHub, submit patches and pull requests! Your help would be greatly appreciated ;-)
+
+### Users
+
+You can help us finding bugs, proposing new features and more! Visit the "Issues" section in the GitHub menu to start.
 
 ## Licensing
 
