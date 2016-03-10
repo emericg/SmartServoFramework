@@ -14,7 +14,7 @@ SmartServoFramework is a C++ multi-platform framework used to drive "smart servo
 > Dynamixel devices from [Robotis](http://www.robotis.com/) and HerkuleX devices from [Dongbu Robot](http://www.dongburobot.com/) are high-performance networked actuators for robots available in wide range of sizes and strengths.  
 > They have adjustable torque, speed, angle limits, and provide various feedback like position, load, voltage and temperature...
 
-This framework **can be used with any Dynamixel or HerkuleX devices**. That means AX series, MX "T" series, XL-320, DRS-0101, and the others! Please note that the Dynamixel PRO devices *should* work, but are marked as not supported as no test devices are available.  
+This framework **can be used with any Dynamixel or HerkuleX devices**. That means AX series, MX "T" series, XL-320, DRS-0101, and the others! Please note that the Dynamixel PRO devices *should* work (the dynamixel protocol v2 is implemented, and works great with XL-320 devices), but Dynamixel PRO devices are marked as not supported as we couldn't test with any real device.  
 Support for other devices or brands may be added in the futur...
 
 * **Simple API:** Use this API to easily get/set values to your servos by sending simple synchronous instructions, then waiting for the answers!  
@@ -44,7 +44,7 @@ Build system:
 * Doxygen (**ONLY** to generate the documentation)
 
 Using Linux?
-* liblockdev1-dev (used to lock the serial port to a single software instance, which will save you from a lot of potential head scratching errors...)
+* liblockdev (used to lock the serial port to a single software instance, which will save you from a lot of potential head scratching errors...)
 
 ### Serial link
 
