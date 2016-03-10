@@ -77,7 +77,7 @@
         </font>
        </property>
        <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;version 0.93&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;version DEV&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
@@ -110,7 +110,7 @@
         <string/>
        </property>
        <property name="text">
-        <string>SmartServoGUI</string>
+        <string>SmartServoGui</string>
        </property>
       </widget>
      </item>
@@ -201,7 +201,7 @@ p, li { white-space: pre-wrap; }
         </font>
        </property>
        <property name="text">
-        <string>version 0.93</string>
+        <string>version 0.95</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>

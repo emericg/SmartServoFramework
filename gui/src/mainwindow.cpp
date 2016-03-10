@@ -672,7 +672,7 @@ void MainWindow::scanServos(QString port_qstring)
                 }
                 else
                 {
-                    std::cerr << "Error, cannot start scannig for servos! (scann running ? " << scan_running << ")   (controller ? " << h->deviceController << ")" << std::endl;
+                    std::cerr << "Error, cannot start scanning for servos! (scann running ? " << scan_running << ")   (controller ? " << h->deviceController << ")" << std::endl;
                 }
             }
 
