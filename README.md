@@ -9,22 +9,22 @@ SmartServoFramework 0.95
 
 SmartServoFramework is a C++ multi-platform framework used to drive "smart servo" devices like Dynamixel or HerkuleX actuators. It has been developed at Inria Grenoble research center.
 
-**Linux** (and most Unix systems), **Mac OS X** and **Windows** operating systems are supported. All you need to begin moving stuff around is at least one servo, a serial port adapter and a modern C++ compiler! SmartServoFramework works well on Raspberry Pi or other embedded boards, but will not work on Arduinos nor any other microcontrollers.
+*Linux* (and most Unix systems), *Mac OS X* and *Windows* operating systems are supported. All you need to begin moving stuff around is at least one servo, a serial port adapter and a modern C++ compiler! SmartServoFramework works well on Raspberry Pi or other embedded boards, but will not work on Arduinos nor any other microcontrollers.
 
 > Dynamixel devices from [Robotis](http://www.robotis.com/) and HerkuleX devices from [Dongbu Robot](http://www.dongburobot.com/) are high-performance networked actuators for robots available in wide range of sizes and strengths.  
 > They have adjustable torque, speed, angle limits, and provide various feedback like position, load, voltage and temperature...
 
-This framework **can be used with any Dynamixel or HerkuleX devices**. That means AX series, MX "T" series, XL-320, DRS-0101, and the others! Please note that the Dynamixel PRO devices *should* work (the dynamixel protocol v2 is implemented, and works great with XL-320 devices), but Dynamixel PRO devices are marked as not supported as we couldn't test with any real device.  
+This framework *can be used with any Dynamixel or HerkuleX devices*. That means AX series, MX "T" series, XL-320, DRS-0101, and the others! Please note that the Dynamixel PRO devices *should* work (the version 2 of the communication protocol is implemented, and works great with XL-320 devices), but Dynamixel PRO devices are marked as not supported as we couldn't test with any real device.  
 Support for other devices or brands may be added in the futur...
 
-* **Simple API:** Use this API to easily get/set values to your servos by sending simple synchronous instructions, then waiting for the answers!  
-* **Managed API:** Setup a controller and attach servo instances to it. Manipulate servo objects and let the controller synchronize its "virtual" register values with the real servo hardware in a background thread with a fixed frequency.  Beware: this API is more complex to master, and not entirely stable ;-)
+* *Simple API:* Use this API to easily get/set values to your servos by sending simple synchronous instructions, then waiting for the answers!  
+* *Managed API:* Setup a controller and attach servo instances to it. Manipulate servo objects and let the controller synchronize its "virtual" register values with the real servo hardware in a background thread with a fixed frequency.  Beware: this API is more complex to master, and not entirely stable ;-)
 
 ### Documentation
 
 > More information on how to use the framework and your devices is available inside the `doc/` directory and mirrored on the wiki. Please check these out ;-)
 
-You can dynamically generate a *full API documentation* from the source code using Doxygen. This will prove very important in order to work efficiently with the framework. The documentation will be generated inside the `doc/` directory.
+You can dynamically generate a *full API documentation* from the source code using Doxygen. This will prove very important in order to work efficiently with the framework. The documentation will be accessible through `doc/API_documentation.html`.
 
 If you are running a Mac/Linux system you can easily generate the documentation from a terminal:
 > $ cd SmartServoFramework/  
@@ -42,9 +42,9 @@ You will need a modern C++11 capable compiler:
 * MSVC >= 2012
 
 Build system:
-* CMake (**ONLY** to build the standalone library)
-* Scons (**ONLY** to build the examples)
-* Doxygen (**ONLY** to generate the documentation)
+* CMake (*ONLY* to build the standalone library)
+* Scons (*ONLY* to build the examples)
+* Doxygen (*ONLY* to generate the documentation)
 
 Using Linux?
 * liblockdev (used to lock the serial port to a single software instance, which will save you from a lot of potential head scratching errors...)
@@ -73,13 +73,13 @@ You can build them all at once:
 
 The executables will be located inside the `examples/build/` directory.
 
-### Serv communication
+### Serial communication
 
-> A full documentation if available inside the `doc/` directory.
+> A full documentation is available inside the `doc/` directory.
 
 This framework can be used with any combination of RS-232 ports, USB to TTL adapters, USB to RS-485 adapters, half or full duplex... But you'll need the right link for the right device.
 
-One more important thing: you need to power your servos with **proper power supply**. Shaky power sources have been known to cause interferences on serial bus, resulting in numerous packet corruptions. Be careful when using batteries and power converters!
+One more important thing: you need to power your servos with *proper power supply*. Shaky power sources have been known to cause interferences on serial bus, resulting in numerous packet corruptions. Be careful when using batteries and power converters!
 
 First you will need to make sure your software can access your serial port:
 * If you are running Linux, you will need special permissions from the `uucp` and/or `dialout` groups in order to access serial ports. You can add your user account to these groups with this command: `# useradd -G uucp,dialout $USER` (you'll need root credentials for this operation).
@@ -92,7 +92,7 @@ A few tips to minimize latency and reduce traffic on your serial bus:
 - If you are using Dynamixel devices, you may want to reduce the "Return Delay Time" value to a minimum, from the default of '250' to something like '25'. Check what value works for you.  
 - For both Dynamixel and HerkuleX devices, you can set the "Status Return Level" / "Ack Policy" to '1' in order to minimize the number of status packets (only if you do not need them), or even '2' to disable them ALL. Check your servo manual for more info on this.  
 
-#### Serial link (Dynamixel servos)
+#### Communication with Dynamixel devices
 
 > Note: Regular "full-duplex" TTL converters will NOT work with "half-duplex TTL" Dynamixel servos (AX serie, MX "T" serie, XL-320, ...).
 
@@ -100,15 +100,15 @@ A few tips to minimize latency and reduce traffic on your serial bus:
 * [USB2Dynamixel](http://support.robotis.com/en/product/auxdevice/interface/usb2dxl_manual.htm): Official device that can manage all Dynamixel devices through RS232 / RS485 / TTL communications.  
 * Home made TTL half-duplex device: [like this setup](http://savageelectronics.blogspot.fr/2011/01/arduino-y-dynamixel-ax-12.html) from Savage Electronics (in spanish), or [this one](http://www.memememememememe.me/the-dynamixel/) from memememe (in english).
 
-#### Serial link (HerkuleX servos)
+#### Communication with HerkuleX devices
 
 You need a serial port with a regular "full-duplex" TTL converter to use HerkuleX devices.
 
 ## SmartServoGui
 
-SmartServoGui is a fully featured Qt GUI application that helps you discover devices on available serial links, get an overview of all of their registers, and easily changes their settings!
+SmartServoGui is a fully featured Qt GUI application that helps you discover devices on available serial links, get an overview of all of their registers, and easily tweak their settings!
 
-SmartServoGui has its own README int the `gui/` directory, where you can learn more about its features!
+> SmartServoGui has its own README in the `gui/` directory, where you can learn more about its features!
 
 ### Quick installation
 
