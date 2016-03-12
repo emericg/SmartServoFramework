@@ -1,10 +1,11 @@
 SmartServoGui
 =============
 
-SmartServoGui is a fully featured Qt GUI application that helps you discover devices on available serial links, get an overview of all of their registers, and easily changes their settings!
+SmartServoGui is a fully featured Qt GUI application that helps you discover devices on available serial links, get an overview of all of their registers, and easily tweak their settings!
 
 Features:
 * Works with Dynamixel and HerkuleX devices
+* Works on Linux, Mac OS and Windows
 * Works with any number of serial ports, each on its own protocol (dxl v1/v2 or hkx)
 * Visualize and change every servo registers
 * Check out your servo characteristic and access the manuals
@@ -23,13 +24,13 @@ Features:
 ### Dependencies
 
 You will need a modern C++11 capable compiler:
-* GCC >= 4.6
-* LLVM >= 3.0
-* MSVC >= 2012
+* GCC >= 4.6  
+* LLVM >= 3.0  
+* MSVC >= 2012  
 
-
-* Qt (version 4 or 5)
-* SmartServoFramework (we got this one covered)
+Libraries:
+* Qt (version 4 or 5)  
+* SmartServoFramework (we got this one covered)  
 
 Using Linux?
 * liblockdev (used to lock the serial port to a single software instance, which will save you from a lot of potential head scratching errors...)
@@ -60,6 +61,6 @@ You can browse the git repository here on GitHub, submit patches and push reques
 SmartServoFramework is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
 [Consult the licence on the FSF website](http://www.gnu.org/licenses/lgpl-3.0.txt).
 
-Copyright (c) 2015, INRIA, All rights reserved.  
+Copyright (c) 2014, INRIA, All rights reserved.  
 Emeric Grange <emeric.grange@gmail.com>  
 Dominique Vaufreydaz <dominique.vaufreydaz@inria.fr>  
