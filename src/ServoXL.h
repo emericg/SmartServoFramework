@@ -17,7 +17,7 @@
  *
  * \file ServoXL.h
  * \date 08/07/2014
- * \author Emeric Grange <emeric.grange@inria.fr>
+ * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
 #ifndef SERVO_XL_H
@@ -29,7 +29,7 @@
 #include <map>
 #include <mutex>
 
-/** \addtogroup ControllerAPIs
+/** \addtogroup ManagedAPIs
  *  @{
  */
 

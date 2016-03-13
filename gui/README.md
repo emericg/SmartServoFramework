@@ -3,7 +3,7 @@ SmartServoGui
 
 SmartServoGui is a fully featured Qt GUI application that helps you discover devices on available serial links, get an overview of all of their registers, and easily tweak their settings!
 
-Features:
+**Features:**
 * Works with Dynamixel and HerkuleX devices
 * Works on Linux, Mac OS and Windows
 * Works with any number of serial ports, each on its own protocol (dxl v1/v2 or hkx)

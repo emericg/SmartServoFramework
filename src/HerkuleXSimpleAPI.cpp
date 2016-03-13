@@ -30,11 +30,11 @@
 #include <cstring>
 #include <map>
 
-HerkuleXSimpleAPI::HerkuleXSimpleAPI(int servos)
+HerkuleXSimpleAPI::HerkuleXSimpleAPI(int servoSerie)
 {
-    if (servos != SERVO_UNKNOWN)
+    if (servoSerie != SERVO_UNKNOWN)
     {
-        if (servos >= SERVO_HERKULEX)
+        if (servoSerie >= SERVO_HERKULEX)
         {
             ackPolicy = 1;
             maxId = 253;
@@ -42,11 +42,11 @@ HerkuleXSimpleAPI::HerkuleXSimpleAPI(int servos)
             protocolVersion = 1;
             servoSerie = SERVO_DRS;
 
-            if (servos == SERVO_DRS_0402 || servos == SERVO_DRS_0602)
+            if (servoSerie == SERVO_DRS_0402 || servoSerie == SERVO_DRS_0602)
             {
                 ct = DRS0x02_control_table;
             }
-            else if (servos == SERVO_DRS_0401 || servos == SERVO_DRS_0601)
+            else if (servoSerie == SERVO_DRS_0401 || servoSerie == SERVO_DRS_0601)
             {
                 ct = DRS0x01_control_table;
             }
@@ -62,13 +62,13 @@ HerkuleXSimpleAPI::HerkuleXSimpleAPI(int servos)
             ackPolicy = 2;
             maxId = 252;
 
-            if (servos >= SERVO_PRO)
+            if (servoSerie >= SERVO_PRO)
             {
                 protocolVersion = 2;
                 servoSerie = SERVO_PRO;
                 ct = PRO_control_table;
             }
-            else if (servos >= SERVO_XL)
+            else if (servoSerie >= SERVO_XL)
             {
                 protocolVersion = 2;
                 servoSerie = SERVO_XL;

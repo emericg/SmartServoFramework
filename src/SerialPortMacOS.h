@@ -17,7 +17,7 @@
  *
  * \file SerialPortMacOS.h
  * \date 14/07/2015
- * \author Emeric Grange <emeric.grange@inria.fr>
+ * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
 #ifndef SERIALPORT_MACOS_H

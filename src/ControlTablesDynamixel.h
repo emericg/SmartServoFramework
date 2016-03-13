@@ -17,7 +17,7 @@
  *
  * \file ControlTablesDynamixel.h
  * \date 24/07/2014
- * \author Emeric Grange <emeric.grange@inria.fr>
+ * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
 #ifndef CONTROL_TABLES_DYNAMIXEL_H
@@ -281,11 +281,12 @@ const int AXS1_control_table[30][8] =
 /*!
  * \brief IR Sensor Array control table.
  *
- * AX-S1 is a sensor device. The configuration and the communication type of AX-S1
- * are equal to AX-12A's, but it is not operated by servo motor.
+ * The IR sensor array is a device with 7 mounted infrared sensors.
+ * Each IR sensor is capable of detecting black and white colors.
+ * The array is capable of emitting sounds.
  *
  * More details:
- * http://support.robotis.com/en/product/auxdevice/sensor/dxl_ax_s1.htm
+ * http://support.robotis.com/en/product/auxdevice/sensor/ir_sensor_array.htm
  */
 const int IR_ARRAY_control_table[28][8] =
 {

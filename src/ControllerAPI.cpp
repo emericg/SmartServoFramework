@@ -32,20 +32,20 @@
 
 /* ************************************************************************** */
 
-ControllerAPI::ControllerAPI(int freq):
+ControllerAPI::ControllerAPI(int ctrlFrequency):
     controllerState(state_stopped),
     errorCount(0),
     syncloopCounter(0)
 {
-    if (freq < 1 || freq > 120)
+    if (ctrlFrequency < 1 || ctrlFrequency > 120)
     {
         syncloopFrequency = 30;
         syncloopDuration = 1000.0 / 30.0;
     }
     else
     {
-        syncloopFrequency = freq;
-        syncloopDuration = 1000.0 / static_cast<double>(freq);
+        syncloopFrequency = ctrlFrequency;
+        syncloopDuration = 1000.0 / static_cast<double>(ctrlFrequency);
     }
 }
 

@@ -17,7 +17,7 @@
  *
  * \file DynamixelController.h
  * \date 14/03/2014
- * \author Emeric Grange <emeric.grange@inria.fr>
+ * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
 #ifndef DYNAMIXEL_CONTROLLER_H
@@ -34,19 +34,20 @@
 
 #include <vector>
 
-/** \addtogroup ControllerAPIs
+/** \addtogroup ManagedAPIs
  *  @{
  */
 
 /*!
- * \brief The DynamixelController class
+ * \brief The DynamixelController class, part of the ManagedAPI
  *
+ * A controller can only be attached to ONE serial link at a time.
+
  * A "controller" provide a high level API to handle several servos at the same time.
  * A client must instanciate servos objects and register them to a controller.
  * Each servo object is synchronized with its hardware counterpart by the run()
  * method, running in its own backgound thread.
  *
- * A DynamixelController instance can only be attached to ONE serial link at a time.
  */
 class DynamixelController: public Dynamixel, public ControllerAPI
 {
@@ -59,10 +60,10 @@ class DynamixelController: public Dynamixel, public ControllerAPI
 public:
     /*!
      * \brief DynamixelController constructor.
-     * \param freq: This is the synchronization frequency between the controller and the servos devices. Range is [1;120], default is 30.
-     * \param servoSerie: The servo class to use with this instance (default is Dynamixel MX, the more 'capable' of the Dynamixel v1 serie).
+     * \param servoSerie: The servo serie to use with this controller. Only used to choose the right communication protocol.
+     * \param ctrlFrequency: This is the synchronization frequency between the controller and the servos devices. Range is [1;120], default is 30.
      */
-    DynamixelController(int freq = 30, int servoSerie = SERVO_MX);
+    DynamixelController(int ctrlFrequency = 30, int servoSerie = SERVO_MX);
 
     /*!
      * \brief DynamixelController destructor. Stop the controller's thread and close the serial connection.

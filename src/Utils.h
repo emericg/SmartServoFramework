@@ -17,7 +17,7 @@
  *
  * \file Utils.h
  * \date 08/07/2014
- * \author Emeric Grange <emeric.grange@inria.fr>
+ * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
 #ifndef UTILS_H
@@ -28,23 +28,32 @@
 
 /*!
  * \defgroup SimpleAPIs Simple APIs
+ *
+ * Use this API to easily get/set values to your servos by sending simple
+ * synchronous instructions, then waiting for the answers!
  */
 
 /*!
- * \defgroup ControllerAPIs Controller APIs
+ * \defgroup ManagedAPIs Managed APIs
+ *
+ * Setup a controller and attach servo instances to it. Manipulate servo objects
+ * and let the controller synchronize (at a fixed frequency) its "virtual" register
+ * values with the real servo devices using a background thread.
+ *
+ * Beware: this API is more complex to master, and not entirely stable yet ;-)
  */
 
 /*!
- * \defgroup tools Tools
+ * \defgroup ControlTables Low level devices support
  */
 
 /*!
- * \defgroup ControlTables Control Tables
+ * \defgroup Tools Tools
  */
 
 /* ************************************************************************** */
 
-/** \addtogroup tools
+/** \addtogroup Tools
  *  @{
  */
 
@@ -117,7 +126,7 @@ enum LedColors_e
 /* ************************************************************************** */
 
 /*!
- * \brief Enum to define the various servos (and sensors) brands, series, and models.
+ * \brief Enum to define the various servos (and sensors) brands, series, and models supported by the framework.
  */
 enum ServoDevices_e
 {

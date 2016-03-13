@@ -17,12 +17,16 @@
  *
  * \file ControlTables.h
  * \date 21/07/2014
- * \author Emeric Grange <emeric.grange@inria.fr>
+ * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
 #ifndef CONTROL_TABLES_H
 #define CONTROL_TABLES_H
 /* ************************************************************************** */
+
+/** \addtogroup ControlTables
+ *  @{
+ */
 
 // "Control Table consists of data regarding the current status and operation,
 // which exists inside of Dynamixel. The user can control Dynamixel by changing
@@ -109,6 +113,8 @@ int getRegisterAccessMode(const int ct[][8], const int reg_name);
 int getRegisterInitialValue(const int ct[][8], const int reg_name);
 
 int getRegisterBounds(const int ct[][8], const int reg_name, int &min, int &max);
+
+/** @}*/
 
 /* ************************************************************************** */
 #endif /* CONTROL_TABLES_H */

@@ -17,7 +17,7 @@
  *
  * \file SerialPortLinux.h
  * \date 05/03/2014
- * \author Emeric Grange <emeric.grange@inria.fr>
+ * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
 #ifndef SERIALPORT_LINUX_H

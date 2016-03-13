@@ -17,7 +17,7 @@
  *
  * \file DynamixelSimpleAPI.h
  * \date 11/04/2014
- * \author Emeric Grange <emeric.grange@inria.fr>
+ * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
 #ifndef DYNAMIXEL_SIMPLE_API_H
@@ -34,14 +34,19 @@
 /*!
  * \brief The DynamixelSimpleAPI class
  *
- * This class provide a high level API to handle servos with minimal efforts.
- * One "Simple API" instance can only be attached to ONE serial link at a time,
- * so you can create as many instances as you need on different ports.
+ * Use this API to easily get/set values to your servos with minimal efforts
+ * by sending simple (synchronous) instructions, then waiting (blocking, really)
+ * for the answers!
  *
- * You must specify what device class you will be using for this API to operate
- * efficiently. If you want to use this API with multiple servo series at the
- * same time, just choose the more permissive serie. 'MX' should be fine for
- * almost every use cases when using Dynamixel v1 devices.
+ * - One "Simple API" instance can only be attached to ONE serial link at a time.
+ * - You can create as many instances as you need on different ports.
+ * - You must specify what device class you will be using for this API to operate efficiently.
+ *
+ * If you want to use this API with multiple servo from *different* models at the
+ * same time, just choose the more "permissive" serie.
+ * - 'SERVO_MX' should be fine for almost every use cases when using Dynamixel v1 devices.
+ * - 'SERVO_DRS' should be fine for almost every use cases when using Dynamixel v1 devices.
+ *
  * So for instance, if you want to use this API with XL-320 devices, you need
  * to specify it when calling the constructor.
  *
@@ -63,9 +68,9 @@ class DynamixelSimpleAPI: public Dynamixel
 public:
     /*!
      * \brief DynamixelSimpleAPI constructor.
-     * \param servos: The servo class to use with this instance (default is Dynamixel MX, the more capable of the Dynamixel v1 serie).
+     * \param servoSerie: The servo serie to use with this instance. Default is Dynamixel MX, the more 'capable' of the Dynamixel v1 series.
      */
-    DynamixelSimpleAPI(int servos = SERVO_MX);
+    DynamixelSimpleAPI(int servoSerie = SERVO_MX);
 
     /*!
      * \brief DynamixelSimpleAPI destructor.

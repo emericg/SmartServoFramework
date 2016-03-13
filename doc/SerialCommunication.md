@@ -3,6 +3,10 @@ Serial communication
 
 > "I trust that you read the 'serial port' section of the README?" Emeric
 
+This framework can be used with any combination of RS-232 ports, USB to TTL adapters, USB to RS-485 adapters, half or full duplex... But you'll need the right link for the right device.
+
+One more important thing: you need to power your servos with **proper power supply**. Shaky power sources have been known to cause interferences on serial links, resulting in numerous packet corruptions. Be careful when using batteries and power converters!
+
 ### Communication type
 
 Dynamixel and HerkuleX devices communicates through serial communication links.
@@ -12,11 +16,7 @@ Depending on the devices:
 - Dynamixel series RX, EX, MX-R, uses full duplex (4 pins) RS-485 links
 - HerkuleX devices uses full duplex (4 pins) TTL RS-232 links
 
-### Adapters
-
-This framework can be used with any combination of RS-232 ports, USB to TTL adapters, USB to RS-485 adapters, half or full duplex... But you'll need the right link for the right device.
-
-One more important thing: you need to power your servos with **proper power supply**. Shaky power sources have been known to cause interferences on serial links, resulting in numerous packet corruptions. Be careful when using batteries and power converters!
+### Supported adapters
 
 #### Dynamixel devices
 
@@ -37,11 +37,22 @@ You will need to make sure your software can access your serial port:
 * If you are running Mac OS X, depending on your adapter, you may need to install the [FTDI driver](http://www.robotis.com/xe/download_en/646927), or the [CP210x driver](http://www.silabs.com/products/mcu/pages/usbtouartbridgevcpdrivers.aspx).
 * If you are running Windows, you will need to install the [FTDI driver for the USB2Dynamixel device](http://www.robotis.com/xe/download_en/646927). You may also need other drivers depending on your adapter (like the [USB2AX driver](https://raw.githubusercontent.com/Xevel/usb2ax/master/firmware/lufa_usb2ax/USB2AX.inf), the [CP210x driver](http://www.silabs.com/products/mcu/pages/usbtouartbridgevcpdrivers.aspx), or the official [FTDI driver](http://www.ftdichip.com/Drivers/D2XX.htm)).
 
-## About latency
+### Serial port locking mechanism
+
+It is important to guaranty that your application will be the only one to send commands and read the results back. Otherwise things will start to go wrong fast... We provide locking mechanisms in order to protect you against things like launching two instances of your application on the same port, or using one application and one SmartServoGui on two different ports.
+
+The framework will handle locking/unlocking the serial port if a locking method is available with your serial port implementation:
+* Linux: "lockfile" support
+* Linux: "liblockdev" support (default)
+* Linux: "flock()" support
+* Mac OS X: "lockfile" support
+* Mac OS X: "TIOCEXCL ioctl" support (default)
+
+### About latency
 
 The thing is: serial ports are **usually** slow and handle communication errors poorly...
 * Communication speeds are low (from 115.2 KBps to 1 MBps)  
-* Depending on your serial port / device combination, you can even go as low as 2.4 KBps (Dynamixel PRO devices) or 57.6 KBps (HerkuleX) and as high as 3 MBps (MX devices) and even way further until 10.5 Mbps for PRO devices  
+* Depending on your serial port / device combination, you can even go as low as 9.6 KBps (Dynamixel PRO devices) or 57.6 KBps (HerkuleX) and as high as 3 MBps (MX devices) and even up to 10.5 Mbps for PRO devices  
 * Latency over the serial bus (caused by adapters and servos) will limit the number of instructions you can send each second even more than bandwidth limitations  
 
 A few tips to minimize latency and reduce traffic on your serial bus:  

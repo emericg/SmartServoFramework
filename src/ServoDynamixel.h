@@ -17,7 +17,7 @@
  *
  * \file ServoDynamixel.h
  * \date 13/03/2014
- * \author Emeric Grange <emeric.grange@inria.fr>
+ * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
 #ifndef SERVO_DYNAMIXEL_H
@@ -29,7 +29,7 @@
 #include <map>
 #include <mutex>
 
-/** \addtogroup ControllerAPIs
+/** \addtogroup ManagedAPIs
  *  @{
  */
 

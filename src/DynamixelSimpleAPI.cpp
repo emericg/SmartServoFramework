@@ -30,11 +30,11 @@
 #include <cstring>
 #include <map>
 
-DynamixelSimpleAPI::DynamixelSimpleAPI(int servos)
+DynamixelSimpleAPI::DynamixelSimpleAPI(int servoSerie)
 {
-    if (servos != SERVO_UNKNOWN)
+    if (servoSerie != SERVO_UNKNOWN)
     {
-        if (servos >= SERVO_HERKULEX)
+        if (servoSerie >= SERVO_HERKULEX)
         {
             ackPolicy = 1;
             maxId = 253;
@@ -42,11 +42,11 @@ DynamixelSimpleAPI::DynamixelSimpleAPI(int servos)
             protocolVersion = 1;
             servoSerie = SERVO_DRS;
 
-            if (servos == SERVO_DRS_0402 || servos == SERVO_DRS_0602)
+            if (servoSerie == SERVO_DRS_0402 || servoSerie == SERVO_DRS_0602)
             {
                 ct = DRS0x02_control_table;
             }
-            else if (servos == SERVO_DRS_0401 || servos == SERVO_DRS_0601)
+            else if (servoSerie == SERVO_DRS_0401 || servoSerie == SERVO_DRS_0601)
             {
                 ct = DRS0x01_control_table;
             }
@@ -62,13 +62,13 @@ DynamixelSimpleAPI::DynamixelSimpleAPI(int servos)
             ackPolicy = 2;
             maxId = 252;
 
-            if (servos >= SERVO_PRO)
+            if (servoSerie >= SERVO_PRO)
             {
                 protocolVersion = 2;
                 servoSerie = SERVO_PRO;
                 ct = PRO_control_table;
             }
-            else if (servos >= SERVO_XL)
+            else if (servoSerie >= SERVO_XL)
             {
                 protocolVersion = 2;
                 servoSerie = SERVO_XL;
@@ -76,7 +76,7 @@ DynamixelSimpleAPI::DynamixelSimpleAPI(int servos)
             }
             else // SERVO AX to MX
             {
-                // We set the servo serie to 'MX' which is the more capable of the Dynamixel v1 serie
+                // Default is Dynamixel MX, the more 'capable' of the Dynamixel v1 series
                 protocolVersion = 1;
                 servoSerie = SERVO_MX;
                 ct = MX_control_table;

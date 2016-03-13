@@ -17,7 +17,7 @@
  *
  * \file SerialPort.h
  * \date 05/03/2014
- * \author Emeric Grange <emeric.grange@inria.fr>
+ * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
 #ifndef SERIALPORT_H
@@ -85,8 +85,7 @@ enum SerialErrorCodes_e
  *
  * This class provide abstraction to use the serial port across Linux, Windows
  * and Mac OS operating systems. Almost all of this code is heavily OS dependent,
- * and therefore most functions are "virtual pure" and implemented only in child
- * classes.
+ * and therefore most functions are only implemented in child classes.
  *
  * Both Dynamixel and HerkuleX devices are using the same settings:
  * - Data Bit: 8
@@ -116,7 +115,7 @@ protected:
     int serialDevice;              //!< Specify (if known) what TTL converter is in use. This information will be used to compute correct baudrate.
     int servoDevices;              //!< Specify if we use this serial port with Dynamixel or HerkuleX devices (using ::ServoDevices_e values). This information will be used to compute correct baudrate.
 
-    double packetStartTime;        //!< Time (in millisecond) where the packet was sent.
+    double packetStartTime;        //!< Time (in millisecond) when the packet was sent.
     double packetWaitTime;         //!< Time (in millisecond) to wait for an answer.
     double byteTransfertTime;      //!< Estimation of the time (in millisecond) needed to read/write one byte on the serial link.
 
@@ -154,7 +153,7 @@ protected:
      * \brief Check if the serial device has been locked by another instance or program.
      * \return True if a lock has been found for this serial device, false otherwise.
      *
-     * \note This functionnality is (currently) only implemented on the Linux backend.
+     * \note This functionnality is not implemented on the Windows backend.
      */
     virtual bool isLocked();
 
@@ -162,7 +161,7 @@ protected:
      * \brief Set a lock for this serial device.
      * \return True if a lock has been placed successfully for this serial device, false otherwise.
      *
-     * \note This functionnality is (currently) only implemented on the Linux backend.
+     * \note This functionnality is not implemented on the Windows backend.
      */
     virtual bool setLock();
 
@@ -170,7 +169,7 @@ protected:
      * \brief Remove the lock we put on this serial device.
      * \return True if the lock has been removed successfully for this serial device, false otherwise.
      *
-     * \note This functionnality is (currently) only implemented on the Linux backend.
+     * \note This functionnality is not implemented on the Windows backend.
      */
     virtual bool removeLock();
 
@@ -238,8 +237,8 @@ public:
     virtual void flush() = 0;
 
     /*!
-     * \brief Set the serial port latency for packet reception timeout.
-     * \param latency: The serial port latency in millisecond.
+     * \brief Set the serial port latency value, used to compute timeout duration for packet reception.
+     * \param latency: The latency value in millisecond.
      */
     virtual void setLatency(int latency);
 

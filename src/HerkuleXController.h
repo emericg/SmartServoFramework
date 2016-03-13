@@ -17,7 +17,7 @@
  *
  * \file HerkuleXController.h
  * \date 25/08/2014
- * \author Emeric Grange <emeric.grange@inria.fr>
+ * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
 #ifndef HERKULEX_CONTROLLER_H
@@ -31,19 +31,14 @@
 
 #include <vector>
 
-/** \addtogroup ControllerAPIs
+/** \addtogroup ManagedAPIs
  *  @{
  */
 
 /*!
- * \brief The HerkuleXController class
+ * \brief The HerkuleXController class, part of the ManagedAPI
  *
- * A "controller" provide a high level API to handle several servos at the same time.
- * A client must instanciate servos objects and register them to a controller.
- * Each servo object is synchronized with its hardware counterpart by the run()
- * method, running in its own backgound thread.
- *
- * An HerkuleXController instance can only be attached to ONE serial link at a time.
+ * An controller can only be attached to ONE serial link at a time.
  */
 class HerkuleXController: public HerkuleX, public ControllerAPI
 {
@@ -56,10 +51,10 @@ class HerkuleXController: public HerkuleX, public ControllerAPI
 public:
     /*!
      * \brief HerkuleXController constructor.
-     * \param freq: This is the synchronization frequency between the controller and the servos devices. Range is [1;120], default is 30.
-     * \param servoSerie: The servo class to use with this instance (default is HerkuleX DRS0101).
+     * \param servoSerie: The servo serie to use with this controller. Only used to choose the right communication protocol.
+     * \param ctrlFrequency: This is the synchronization frequency between the controller and the servos devices. Range is [1;120], default is 30.
      */
-    HerkuleXController(int freq = 30, int servoSerie = SERVO_DRS);
+    HerkuleXController(int ctrlFrequency = 30, int servoSerie = SERVO_DRS);
 
     /*!
      * \brief HerkuleXController destructor. Stop the controller's thread and close the serial connection.

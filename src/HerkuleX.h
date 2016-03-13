@@ -17,7 +17,7 @@
  *
  * \file HerkuleX.h
  * \date 07/07/2014
- * \author Emeric Grange <emeric.grange@inria.fr>
+ * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
 #ifndef HERKULEX_H
@@ -35,21 +35,28 @@
 #include <vector>
 
 /*!
- * \brief The HerkuleX class
+ * \brief The HerkuleX communication protocol implementation
+ * \todo Rename to HerkuleXProtocol
  *
- * This class provide the low level API to handle servos and "manually" generate
- * instruction packets and send them over a serial link. This API will be used
- * by both "Simple" and "Controller" APIs.
+ * Get more informations on the HerkuleX devices here:
+ * http://hovis.co.kr/guide/herkulex_eng.html
+ * http://hovis.co.kr/guide/herkulex/drs-0101/[ENG]%20Herkulex%20Manual_20140218.pdf
+ * http://hovis.co.kr/guide/herkulex/drs-0401/[Eng]Herkulex0401%20manual_140804.pdf
+ * http://hovis.co.kr/guide/herkulex/drs-0601/[Eng]Herkulex0601%20manual_140804.pdf
+ *
+ * This class provide the low level API to handle communication with servos.
+ * It can generate instruction packets and send them over a serial link. This class
+ * will be used by both "SimpleAPIs" and "Controllers".
  */
 class HerkuleX
 {
 private:
-    SerialPort *serial;                         //!< The serial port instance we are going to use.
+    SerialPort *serial;          //!< The serial port instance we are going to use.
 
     unsigned char txPacket[MAX_PACKET_LENGTH_hkx];//!< TX "instruction" packet buffer
     unsigned char rxPacket[MAX_PACKET_LENGTH_hkx];//!< RX "status" packet buffer
-    int rxPacketSize;                           //!< Size of the incoming packet
-    int rxPacketSizeReceived;                   //!< Byte(s) of the incoming packet received from the serial link
+    int rxPacketSize;            //!< Size of the incoming packet
+    int rxPacketSizeReceived;    //!< Byte(s) of the incoming packet received from the serial link
 
     /*!
      * The software lock used to lock the serial interface, to avoid concurent
@@ -59,7 +66,7 @@ private:
      * (ex: /dev/tty0 and /dev/ttyUSB0).
      */
     int commLock;
-    int commStatus;                             //!< Last communication status
+    int commStatus;              //!< Last communication status
 
     // Serial communication methods, using one of the SerialPort[Linux/Mac/Windows] implementations.
     void hkx_tx_packet();
@@ -70,12 +77,12 @@ protected:
     HerkuleX();
     virtual ~HerkuleX() = 0;
 
-    int serialDevice;                           //!< Serial device in use (if known) using '::SerialDevices_e' enum. Can affect link speed and latency.
-    int servoSerie;                             //!< Servo serie using '::ServoDevices_e' enum. Used internally to setup some parameters like maxID, ackPolicy and protocolVersion.
+    int serialDevice;            //!< Serial device in use (if known) using '::SerialDevices_e' enum. Can affect link speed and latency.
+    int servoSerie;              //!< Servo serie using '::ServoDevices_e' enum. Used internally to setup some parameters like maxID, ackPolicy and protocolVersion.
 
-    int protocolVersion;                        //!< Version of the communication protocol in use.
-    int maxId;                                  //!< Store in the maximum value for servo IDs.
-    int ackPolicy;                              //!< Set the status/ack packet return policy using '::AckPolicy_e' (0: No return; 1: Return for READ commands; 2: Return for all commands).
+    int protocolVersion;         //!< Version of the communication protocol in use.
+    int maxId;                   //!< Store in the maximum value for servo IDs.
+    int ackPolicy;               //!< Set the status/ack packet return policy using '::AckPolicy_e' (0: No return; 1: Return for READ commands; 2: Return for all commands).
 
     // Handle serial link
     ////////////////////////////////////////////////////////////////////////////

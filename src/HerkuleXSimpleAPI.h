@@ -17,7 +17,7 @@
  *
  * \file HerkuleXSimpleAPI.h
  * \date 19/08/2014
- * \author Emeric Grange <emeric.grange@inria.fr>
+ * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
 #ifndef HERKULEX_SIMPLE_API_H
@@ -70,9 +70,9 @@ class HerkuleXSimpleAPI: public HerkuleX
 public:
     /*!
      * \brief HerkuleXSimpleAPI constructor.
-     * \param servos: The servo class to use with this instance.
+     * \param servoSerie: The servo serie to use with this instance. Default is DRS but you can be more specific.
      */
-    HerkuleXSimpleAPI(int servos = SERVO_DRS);
+    HerkuleXSimpleAPI(int servoSerie = SERVO_DRS);
 
     /*!
      * \brief HerkuleXSimpleAPI destructor.

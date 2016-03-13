@@ -14,15 +14,16 @@ SmartServoFramework is a C++ multi-platform framework used to drive "smart servo
 > Dynamixel devices from [Robotis](http://www.robotis.com/) and HerkuleX devices from [Dongbu Robot](http://www.dongburobot.com/) are high-performance networked actuators for robots available in wide range of sizes and strengths.  
 > They have adjustable torque, speed, angle limits, and provide various feedback like position, load, voltage and temperature...
 
-This framework **can be used with any Dynamixel or HerkuleX devices**. That means AX serie, MX-T serie, XL-320, DRS-0101 to 0602, and all of the others! Please note that the Dynamixel PRO devices *should* work (the version 2 of the communication protocol is implemented, and works great with XL-320 devices), but are considered as not supported since we couldn't test with any real device.  
-Support for other devices or brands may be added in the futur...
+This framework **can be used with any Dynamixel or HerkuleX devices**. We support all models of HerkuleX from the DRS-0101 up to the DRS-0602. For Dynamixel that means AX, EX, MX-T series, XL-320 models, as well as the older RX and DX series. We even have support for the AX-S1 and IR sensor array! Please note that the Dynamixel PRO devices *should* work (the version 2 of the communication protocol is implemented, and works great with XL-320 devices), but they are considered as experimental since we couldn't test with any real device.  
+Support for other devices, brands or protocols may be added in the futur...
 
+We provide two different APIs:
 * **Simple API:** Use this API to easily get/set values to your servos by sending simple synchronous instructions, then waiting for the answers!  
 * **Managed API:** Setup a controller and attach servo instances to it. Manipulate servo objects and let the controller synchronize its "virtual" register values with the real servo hardware in a background thread with a fixed frequency.  Beware: this API is more complex to master, and not entirely stable ;-)  
 
-### Documentation
+## Documentation
 
-> More information on how to use the framework and your devices is available inside the `doc/` directory and mirrored on the wiki. Please check these out ;-)
+> More informations on how to use the framework and your devices are available inside the `doc/` directory, and mirrored on the wiki. Please check these docs ;-)
 
 You can dynamically generate a **full API documentation** from the source code using Doxygen. This will prove very important in order to work efficiently with the framework. The documentation will be accessible through `doc/API_documentation.html`.
 
@@ -30,9 +31,11 @@ If you are running a Mac/Linux system you can easily generate the documentation 
 > $ cd SmartServoFramework/  
 > $ doxygen Doxyfile  
 
-If you are allergic to the command line, it's just as easy to generate the documentation with DoxyWizard, Doxygen's GUI.
+If you have problems with the command line, it's just as easy to generate the documentation using DoxyWizard, Doxygen's GUI.
 
-## Using the framework
+## Building the framework
+
+> A full documentation is available in the `doc/BuildInstructions.md`
 
 ### Dependencies
 
@@ -47,15 +50,13 @@ Build system:
 * Doxygen (**ONLY** needed to generate the documentation)  
 
 Using Linux?
-* liblockdev (used to lock the serial port to a single software instance, which will save you from a lot of potential head scratching errors...)
+* liblockdev (used to lock the serial port to a single software instance, which will save you from a lot of potential head scratching errors...)  
 
 ### Building SmartServoFramework library
 
 > $ cd SmartServoFramework/build/  
 > $ cmake ..  
 > $ make  
-
-The shared library will be located inside the `build/` directory.
 
 ### Building test softwares
 
@@ -68,14 +69,12 @@ Various test softwares are available in the `examples/` directory for you to pla
 * ex_advance_scanner: Scan serial ports for Dynamixel servos, for all IDs and all (but configurable) serial port speeds.  
 
 You can build them all at once:
-> $ cd SmartServoFramework/examples  
+> $ cd SmartServoFramework/examples/  
 > $ scons  
-
-The executables will be located inside the `examples/build/` directory.
 
 ### Serial communication
 
-> A full documentation is available inside the `doc/` directory.
+> A full documentation is available in the `doc/SerialCommunication.md`
 
 This framework can be used with any combination of RS-232 ports, USB to TTL adapters, USB to RS-485 adapters, half or full duplex... But you'll need the right link for the right device.
 
@@ -85,12 +84,6 @@ First you will need to make sure your software can access your serial port:
 * If you are running Linux, you will need special permissions from the `uucp` and/or `dialout` groups in order to access serial ports. You can add your user account to these groups with this command: `# useradd -G uucp,dialout $USER` (you'll need root credentials for this operation).
 * If you are running Mac OS X, depending on your adapter, you may need to install the [FTDI driver](http://www.robotis.com/xe/download_en/646927), or the [CP210x driver](http://www.silabs.com/products/mcu/pages/usbtouartbridgevcpdrivers.aspx).
 * If you are running Windows, you will need to install the [FTDI driver for the USB2Dynamixel device](http://www.robotis.com/xe/download_en/646927). You may also need other drivers depending on your adapter (like the [USB2AX driver](https://raw.githubusercontent.com/Xevel/usb2ax/master/firmware/lufa_usb2ax/USB2AX.inf), the [CP210x driver](http://www.silabs.com/products/mcu/pages/usbtouartbridgevcpdrivers.aspx), or the official [FTDI driver](http://www.ftdichip.com/Drivers/D2XX.htm)).
-
-Latency over the serial port will limit the number of instructions you can send each second even more than bandwidth limitations.
-A few tips to minimize latency and reduce traffic on your serial bus:
-* You can use [these tips](https://projectgus.com/2011/10/notes-on-ftdi-latency-with-arduino/) to reduce latency on serial ports adapter using FTDI chips!  
-* For both Dynamixel and HerkuleX devices, you can set the "Status Return Level" / "Ack Policy" to '1' in order to minimize the number of status packets (only if you do not need them), or even '2' to disable them ALL. Check your servo manual for more info on this.  
-* If you are using Dynamixel devices, you may want to reduce the "Return Delay Time" value to a minimum, from the default of '250' to something like '25' (check what value works best for you). Check your servo manual for more info on this.  
 
 #### Communication with Dynamixel devices
 

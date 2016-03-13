@@ -308,7 +308,7 @@ void Dynamixel::dxl_tx_packet()
     // Set a timeout for the response packet
     if (protocolVersion == 2)
     {
-        // 11 is the min size for a v2 status packet
+        // 11 is the min size of a v2 status packet
         if (txPacket[PKT1_INSTRUCTION] == INST_READ)
         {
             serial->setTimeOut(11 + make_short_word(txPacket[PKT2_PARAMETER+2], txPacket[PKT2_PARAMETER+3]));
@@ -320,7 +320,7 @@ void Dynamixel::dxl_tx_packet()
     }
     else
     {
-        // 6 is the min size for a v1 status packet
+        // 6 is the min size of a v1 status packet
         if (txPacket[PKT1_INSTRUCTION] == INST_READ)
         {
             serial->setTimeOut(6 + txPacket[PKT1_PARAMETER+1]);
@@ -360,7 +360,7 @@ void Dynamixel::dxl_rx_packet()
     // Minimum status packet size estimation
     if (commStatus == COMM_TXSUCCESS)
     {
-        // Min size for protocol v2 is 11, for v1 is 6
+        // Min size with protocol v2 is 11, for v1 is 6
         (protocolVersion == 2) ? rxPacketSize = 11 : rxPacketSize = 6;
         rxPacketSizeReceived = 0;
     }

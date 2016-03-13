@@ -255,7 +255,7 @@ void HerkuleX::hkx_tx_packet()
     }
 
     // Set a timeout for the response packet
-    // Min size for an RX packet is 9
+    // Min size of an RX packet is 9
     if (txPacket[PKT_CMD] == CMD_EEP_READ || txPacket[PKT_CMD] == CMD_RAM_READ)
     {
         serial->setTimeOut(9 + txPacket[PKT_DATA+1]);
@@ -293,7 +293,7 @@ void HerkuleX::hkx_rx_packet()
     // Minimum status packet size estimation
     if (commStatus == COMM_TXSUCCESS)
     {
-        // Min size for an RX packet is 9
+        // Min size of an RX packet is 9
         rxPacketSize = 9;
         rxPacketSizeReceived = 0;
     }

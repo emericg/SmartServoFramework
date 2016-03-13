@@ -17,7 +17,7 @@
  *
  * \file ControlTablesHerkuleX.h
  * \date 24/07/2014
- * \author Emeric Grange <emeric.grange@inria.fr>
+ * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
 #ifndef CONTROL_TABLES_HERKULEX_H

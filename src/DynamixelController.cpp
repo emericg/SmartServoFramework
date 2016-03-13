@@ -32,8 +32,8 @@
 // Enable latency timer
 //#define LATENCY_TIMER
 
-DynamixelController::DynamixelController(int freq, int servoSerie):
-    ControllerAPI(freq)
+DynamixelController::DynamixelController(int ctrlFrequency, int servoSerie):
+    ControllerAPI(ctrlFrequency)
 {
     this->servoSerie = servoSerie;
 }

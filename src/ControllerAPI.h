@@ -17,7 +17,7 @@
  *
  * \file ControllerAPI.h
  * \date 25/08/2014
- * \author Emeric Grange <emeric.grange@inria.fr>
+ * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
 #ifndef CONTROLLER_API_H
@@ -31,7 +31,7 @@
 #include <thread>
 #include <mutex>
 
-/** \addtogroup ControllerAPIs
+/** \addtogroup ManagedAPIs
  *  @{
  */
 
@@ -51,7 +51,7 @@ enum controllerState_e
 };
 
 /*!
- * \brief The ControllerAPI base class.
+ * \brief The ControllerAPI abstract class, root of the ManagedAPI.
  *
  * A "controller" provide a high level API to handle several servos object at the
  * same time. A program must instanciate servos instances and register them to
@@ -146,9 +146,9 @@ protected:
 public:
     /*!
      * \brief ControllerAPI constructor.
-     * \param freq: This is the synchronization frequency between the controller and the servos devices. Range is [1;120].
+     * \param ctrlFrequency: This is the synchronization frequency between the controller and the servos devices. Range is [1;120].
      */
-    ControllerAPI(int freq);
+    ControllerAPI(int ctrlFrequency);
 
     /*!
      * \brief ControllerAPI destructor. Stop the controller's thread and close the serial connection.
