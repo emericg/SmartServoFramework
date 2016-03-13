@@ -120,8 +120,9 @@ protected:
 
     // Debug methods
     int hkx_get_last_packet_id();
-    int hkx_get_com_status();       //!< Get communication status (gbCommStatus) of the latest TX/RX instruction
-    int hkx_get_com_error();        //!< Get communication error (if gbCommStatus is not success) of the latest TX/RX instruction
+    int hkx_get_com_status();       //!< Get communication status (commStatus) of the latest TX/RX instruction
+    int hkx_get_com_error();        //!< Get communication error (if commStatus is an error) of the latest TX/RX instruction
+    int hkx_get_com_error_count();  //!< 1 if commStatus is an error, 0 otherwise
     int hkx_print_error();          //!< Print the last communication error
     int hkx_print_status();         //!< Print the current status
     void printRxPacket();           //!< Print the RX buffer (last packet received)

@@ -67,15 +67,17 @@ enum SerialDevices_e
  */
 enum SerialErrorCodes_e
 {
-    COMM_TXSUCCESS = 0,                     //!< Instruction packet was sent successfully
-    COMM_RXSUCCESS,                         //!< Status packet was received successfully
+    COMM_TXSUCCESS  = 0,                     //!< Instruction packet was sent successfully
+    COMM_RXSUCCESS  = 1,                     //!< Status packet was received successfully
 
-    COMM_TXFAIL,                            //!< Error when sending instruction packet
-    COMM_RXFAIL,                            //!< Error when receiving status packet
-    COMM_TXERROR,                           //!< Invalid instruction packet, nothing was sent
-    COMM_RXWAITING,                         //!< Waiting for a status packet
-    COMM_RXTIMEOUT,                         //!< Timeout reached while waiting for a status packet
-    COMM_RXCORRUPT                          //!< Status packet corrupted
+    COMM_UNKNOWN    = -1,                    //!< Unknown error
+
+    COMM_TXFAIL     = -2,                    //!< Error when sending instruction packet
+    COMM_RXFAIL     = -3,                    //!< Error when receiving status packet
+    COMM_TXERROR    = -4,                    //!< Invalid instruction packet, nothing was sent
+    COMM_RXWAITING  = -5,                    //!< Waiting for a status packet
+    COMM_RXTIMEOUT  = -6,                    //!< Timeout reached while waiting for a status packet
+    COMM_RXCORRUPT  = -7                     //!< Status packet corrupted
 };
 
 /*!

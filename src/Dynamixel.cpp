@@ -917,13 +917,22 @@ int Dynamixel::dxl_get_com_status()
 
 int Dynamixel::dxl_get_com_error()
 {
-    int error = 0;
-    if (commStatus > COMM_RXSUCCESS)
+    if (commStatus < 0)
     {
-        error = commStatus;
+        return commStatus;
     }
 
-    return error;
+    return 0;
+}
+
+int Dynamixel::dxl_get_com_error_count()
+{
+    if (commStatus < 0)
+    {
+        return 1;
+    }
+
+    return 0;
 }
 
 int Dynamixel::dxl_print_error()
@@ -985,6 +994,10 @@ int Dynamixel::dxl_print_error()
             if (error & ERRBIT1_INSTRUCTION)
                 TRACE_ERROR(DXL, "[#%i] Protocol Error: Instruction code error!\n", id);
         }
+        break;
+
+    case COMM_UNKNOWN:
+        TRACE_ERROR(DXL, "[#%i] COMM_UNKNOWN: Unknown communication error!\n", id);
         break;
 
     case COMM_TXFAIL:
@@ -1252,6 +1265,10 @@ int Dynamixel::dxl_read_byte(const int id, const int address, const int ack)
                     value = static_cast<int>(rxPacket[PKT1_PARAMETER]);
                 }
             }
+            else
+            {
+                value = commStatus;
+            }
         }
     }
 
@@ -1335,6 +1352,10 @@ int Dynamixel::dxl_read_word(const int id, const int address, const int ack)
                 {
                     value = make_short_word(rxPacket[PKT1_PARAMETER], rxPacket[PKT1_PARAMETER+1]);
                 }
+            }
+            else
+            {
+                value = commStatus;
             }
         }
     }

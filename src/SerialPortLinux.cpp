@@ -675,7 +675,7 @@ void SerialPortLinux::setLatency(int latency)
     }
     else
     {
-        TRACE_ERROR(SERIAL, "Invalid latency value: '%i', not in ]0;128[ range.\n", latency);
+        TRACE_WARNING(SERIAL, "Invalid latency value: '%i', not in ]0;128[ range.\n", latency);
     }
 }
 

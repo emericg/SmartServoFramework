@@ -454,7 +454,7 @@ void DynamixelController::run()
                                 s->updateValue(reg_name, dxl_read_word(id, reg_addr, ack));
                             }
                             s->setError(dxl_get_rxpacket_error());
-                            updateErrorCount(dxl_get_com_error());
+                            updateErrorCount(dxl_get_com_error_count());
                             dxl_print_error();
                         }
 
@@ -524,7 +524,7 @@ void DynamixelController::run()
 
                                 s->commitValue(reg_name, 0);
                                 s->setError(dxl_get_rxpacket_error());
-                                updateErrorCount(dxl_get_com_error());
+                                updateErrorCount(dxl_get_com_error_count());
                                 dxl_print_error();
 
                                 if (reg_name == REG_ID)
@@ -545,13 +545,13 @@ void DynamixelController::run()
                         // Read voltage
                         s->updateValue(REG_CURRENT_VOLTAGE, dxl_read_byte(id, s->gaddr(REG_CURRENT_VOLTAGE), ack));
                         s->setError(dxl_get_rxpacket_error());
-                        updateErrorCount(dxl_get_com_error());
+                        updateErrorCount(dxl_get_com_error_count());
                         dxl_print_error();
 
                         // Read temp
                         s->updateValue(REG_CURRENT_TEMPERATURE, dxl_read_byte(id, s->gaddr(REG_CURRENT_TEMPERATURE), ack));
                         s->setError(dxl_get_rxpacket_error());
-                        updateErrorCount(dxl_get_com_error());
+                        updateErrorCount(dxl_get_com_error_count());
                         dxl_print_error();
                     }
 
@@ -561,18 +561,18 @@ void DynamixelController::run()
                     {
                         s->updateValue(REG_CURRENT_SPEED, dxl_read_word(id, s->gaddr(REG_CURRENT_SPEED), ack));
                         s->setError(dxl_get_rxpacket_error());
-                        updateErrorCount(dxl_get_com_error());
+                        updateErrorCount(dxl_get_com_error_count());
                         dxl_print_error();
 
                         s->updateValue(REG_CURRENT_LOAD, dxl_read_word(id, s->gaddr(REG_CURRENT_LOAD), ack));
                         s->setError(dxl_get_rxpacket_error());
-                        updateErrorCount(dxl_get_com_error());
+                        updateErrorCount(dxl_get_com_error_count());
                         dxl_print_error();
 
                         // Read moving
                         s->updateValue(REG_MOVING, dxl_read_byte(id, s->gaddr(REG_MOVING), ack));
                         s->setError(dxl_get_rxpacket_error());
-                        updateErrorCount(dxl_get_com_error());
+                        updateErrorCount(dxl_get_com_error_count());
                         dxl_print_error();
                     }
 
@@ -582,7 +582,7 @@ void DynamixelController::run()
                         int cpos = dxl_read_word(id, s->gaddr(REG_CURRENT_POSITION), ack);
                         s->updateValue(REG_CURRENT_POSITION, cpos);
                         s->setError(dxl_get_rxpacket_error());
-                        updateErrorCount(dxl_get_com_error());
+                        updateErrorCount(dxl_get_com_error_count());
                         dxl_print_error();
 
                         // Goal pos
@@ -608,7 +608,7 @@ void DynamixelController::run()
                                     {
                                         // SPEED
                                         dxl_write_word(id, s->gaddr(REG_GOAL_SPEED), speed, ack);
-                                        updateErrorCount(dxl_get_com_error());
+                                        updateErrorCount(dxl_get_com_error_count());
                                         dxl_print_error();
                                         s->setError(dxl_get_rxpacket_error());
 
@@ -617,14 +617,14 @@ void DynamixelController::run()
                                         {
                                             dxl_write_word(id, s->gaddr(REG_GOAL_POSITION), s->getSteps() - 1, ack);
                                             s->setError(dxl_get_rxpacket_error());
-                                            updateErrorCount(dxl_get_com_error());
+                                            updateErrorCount(dxl_get_com_error_count());
                                             dxl_print_error();
                                         }
                                         else
                                         {
                                             dxl_write_word(id, s->gaddr(REG_GOAL_POSITION), 0, ack);
                                             s->setError(dxl_get_rxpacket_error());
-                                            updateErrorCount(dxl_get_com_error());
+                                            updateErrorCount(dxl_get_com_error_count());
                                             dxl_print_error();
                                         }
 
@@ -635,12 +635,12 @@ void DynamixelController::run()
                                     {
                                         dxl_write_word(id, s->gaddr(REG_GOAL_SPEED), movingSpeed, ack);
                                         s->setError(dxl_get_rxpacket_error());
-                                        updateErrorCount(dxl_get_com_error());
+                                        updateErrorCount(dxl_get_com_error_count());
                                         dxl_print_error();
 
                                         dxl_write_word(id, s->gaddr(REG_GOAL_POSITION), s->getGoalPosition(), ack);
                                         s->setError(dxl_get_rxpacket_error());
-                                        updateErrorCount(dxl_get_com_error());
+                                        updateErrorCount(dxl_get_com_error_count());
                                         dxl_print_error();
 
                                         TRACE_2(DXL, "[STOP] pos: '%i' speed: '%i'   |   (> %i) (angle: %i)",
@@ -666,7 +666,7 @@ void DynamixelController::run()
                                             // SPEED (counter clockwise)
                                             dxl_write_word(id, s->gaddr(REG_GOAL_SPEED), speed, ack);
                                             s->setError(dxl_get_rxpacket_error());
-                                            updateErrorCount(dxl_get_com_error());
+                                            updateErrorCount(dxl_get_com_error_count());
                                             dxl_print_error();
                                         }
                                         else
@@ -675,7 +675,7 @@ void DynamixelController::run()
                                             speed +=  1024;
                                             dxl_write_word(id, s->gaddr(REG_GOAL_SPEED), speed, ack);
                                             s->setError(dxl_get_rxpacket_error());
-                                            updateErrorCount(dxl_get_com_error());
+                                            updateErrorCount(dxl_get_com_error_count());
                                             dxl_print_error();
                                         }
 
@@ -688,20 +688,20 @@ void DynamixelController::run()
                                         {
                                             dxl_write_word(id, s->gaddr(REG_GOAL_SPEED), ack, 1024);
                                             s->setError(dxl_get_rxpacket_error());
-                                            updateErrorCount(dxl_get_com_error());
+                                            updateErrorCount(dxl_get_com_error_count());
                                             dxl_print_error();
                                         }
                                         else
                                         {
                                             dxl_write_word(id, s->gaddr(REG_GOAL_SPEED), 0, ack);
                                             s->setError(dxl_get_rxpacket_error());
-                                            updateErrorCount(dxl_get_com_error());
+                                            updateErrorCount(dxl_get_com_error_count());
                                             dxl_print_error();
                                         }
 
                                         dxl_write_word(id, s->gaddr(REG_GOAL_POSITION), s->getGoalPosition(), ack);
                                         s->setError(dxl_get_rxpacket_error());
-                                        updateErrorCount(dxl_get_com_error());
+                                        updateErrorCount(dxl_get_com_error_count());
                                         dxl_print_error();
 
                                         TRACE_2(DXL, "[STOP] pos: '%i' speed: '%i'   |   (> %i) (angle: %i)",

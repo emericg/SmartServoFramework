@@ -122,8 +122,9 @@ protected:
 
     // Debug methods
     int dxl_get_last_packet_id();
-    int dxl_get_com_status();       //!< Get communication status (gbCommStatus) of the latest TX/RX instruction
-    int dxl_get_com_error();        //!< Get communication error (if gbCommStatus is not success) of the latest TX/RX instruction
+    int dxl_get_com_status();       //!< Get communication status (commStatus) of the latest TX/RX instruction
+    int dxl_get_com_error();        //!< Get communication error (if commStatus is an error) of the latest TX/RX instruction
+    int dxl_get_com_error_count();  //!< 1 if commStatus is an error, 0 otherwise
     int dxl_print_error();          //!< Print the last communication error
     void printRxPacket();           //!< Print the RX buffer (last packet received)
     void printTxPacket();           //!< Print the TX buffer (last packet sent)

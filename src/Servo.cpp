@@ -522,8 +522,12 @@ void Servo::updateValue(int reg_name, int reg_value, int reg_type)
                 valueErrors++;
                 errorCount++;
 
-                TRACE_ERROR(SERVO, "[#%i] updateValue(reg %i / %s to %i) [REGISTER VALUE ERROR] (min: %i / max: %i)\n", servoId,
-                            reg_name, getRegisterNameTxt(reg_name).c_str(), reg_value, infos.reg_value_min, infos.reg_value_max);
+                // If the value is out of bound but correspond to an error code [-1;-7], no need to print it as a 'REGISTER VALUE ERROR'
+                if ( !(reg_value < 0 && reg_value > -8) )
+                {
+                    TRACE_ERROR(SERVO, "[#%i] updateValue(reg %i / %s to %i) [REGISTER VALUE ERROR] (min: %i / max: %i)\n", servoId,
+                                reg_name, getRegisterNameTxt(reg_name).c_str(), reg_value, infos.reg_value_min, infos.reg_value_max);
+                }
             }
         }
         else

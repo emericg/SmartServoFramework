@@ -434,7 +434,7 @@ void HerkuleXController::run()
 
                             s->setError(hkx_get_rxpacket_error());
                             s->setStatus(hkx_get_rxpacket_status_detail());
-                            updateErrorCount(hkx_get_com_error());
+                            updateErrorCount(hkx_get_com_error_count());
                             hkx_print_error();
                         }
 
@@ -502,7 +502,7 @@ void HerkuleXController::run()
                             s->setError(hkx_get_rxpacket_error());
                             s->setStatus(hkx_get_rxpacket_status_detail());
                             s->commitValue(regname, 0, REGISTER_ROM);
-                            updateErrorCount(hkx_get_com_error());
+                            updateErrorCount(hkx_get_com_error_count());
                             hkx_print_error();
 
                             if (regname == REG_ID)
@@ -533,7 +533,7 @@ void HerkuleXController::run()
                             s->setError(hkx_get_rxpacket_error());
                             s->setStatus(hkx_get_rxpacket_status_detail());
                             s->commitValue(regname, 0, REGISTER_RAM);
-                            updateErrorCount(hkx_get_com_error());
+                            updateErrorCount(hkx_get_com_error_count());
                             hkx_print_error();
 
                             // FIXME: probably doesn't work...
@@ -556,14 +556,14 @@ void HerkuleXController::run()
                         s->updateValue(REG_CURRENT_VOLTAGE, hkx_read_byte(id, s->gaddr(REG_CURRENT_VOLTAGE), REGISTER_RAM, ack));
                         s->setError(hkx_get_rxpacket_error());
                         s->setStatus(hkx_get_rxpacket_status_detail());
-                        updateErrorCount(hkx_get_com_error());
+                        updateErrorCount(hkx_get_com_error_count());
                         hkx_print_error();
 
                         // Read temp
                         s->updateValue(REG_CURRENT_TEMPERATURE, hkx_read_byte(id, s->gaddr(REG_CURRENT_TEMPERATURE), REGISTER_RAM, ack));
                         s->setError(hkx_get_rxpacket_error());
                         s->setStatus(hkx_get_rxpacket_status_detail());
-                        updateErrorCount(hkx_get_com_error());
+                        updateErrorCount(hkx_get_com_error_count());
                         hkx_print_error();
                     }
 
@@ -574,25 +574,25 @@ void HerkuleXController::run()
                         s->updateValue(REG_STATUS_ERROR, hkx_read_byte(id, s->gaddr(REG_STATUS_ERROR), REGISTER_RAM, ack));
                         s->setError(hkx_get_rxpacket_error());
                         s->setStatus(hkx_get_rxpacket_status_detail());
-                        updateErrorCount(hkx_get_com_error());
+                        updateErrorCount(hkx_get_com_error_count());
                         hkx_print_error();
 
                         s->updateValue(REG_STATUS_DETAIL, hkx_read_byte(id, s->gaddr(REG_STATUS_DETAIL), REGISTER_RAM, ack));
                         s->setError(hkx_get_rxpacket_error());
                         s->setStatus(hkx_get_rxpacket_status_detail());
-                        updateErrorCount(hkx_get_com_error());
+                        updateErrorCount(hkx_get_com_error_count());
                         hkx_print_error();
 /*
                         s->updateCurrentSpeed(hkx_read_word(id, s->gaddr(SERVO_CURRENT_SPEED), REGISTER_RAM, ack));
                         s->setError(hkx_get_rxpacket_error());
                         s->setStatus(hkx_get_rxpacket_status_detail());
-                        updateErrorCount(hkx_get_com_error());
+                        updateErrorCount(hkx_get_com_error_count());
                         hkx_print_error();
 
                         s->updateCurrentLoad(hkx_read_word(id, s->gaddr(SERVO_CURRENT_LOAD), REGISTER_RAM, ack));
                         s->setError(hkx_get_rxpacket_error());
                         s->setStatus(hkx_get_rxpacket_status_detail());
-                        updateErrorCount(hkx_get_com_error());
+                        updateErrorCount(hkx_get_com_error_count());
                         hkx_print_error();
 */
                     }
@@ -604,7 +604,7 @@ void HerkuleXController::run()
                         s->updateValue(REG_ABSOLUTE_POSITION, cpos);
                         s->setError(hkx_get_rxpacket_error());
                         s->setStatus(hkx_get_rxpacket_status_detail());
-                        updateErrorCount(hkx_get_com_error());
+                        updateErrorCount(hkx_get_com_error_count());
                         hkx_print_error();
 
                         if (s->getGoalPositionCommited() == 1)
@@ -621,7 +621,7 @@ void HerkuleXController::run()
                         s->updateValue(REG_ABSOLUTE_GOAL_POSITION, hkx_read_word(id, s->gaddr(REG_ABSOLUTE_GOAL_POSITION), REGISTER_RAM, ack));
                         s->setError(hkx_get_rxpacket_error());
                         s->setStatus(hkx_get_rxpacket_status_detail());
-                        updateErrorCount(hkx_get_com_error());
+                        updateErrorCount(hkx_get_com_error_count());
                         hkx_print_error();
                     }
                 }
