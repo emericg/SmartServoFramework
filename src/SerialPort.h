@@ -30,11 +30,17 @@
 /*!
  * \brief Latency time (in milliseconds) on the serial port.
  *
- * This timer should be carefully choosed depending on your OS and the speed of
- * your serial port implementation. Default is set to a high value to avoid any
- * problem.
+ * Set the serial port latency time, used to compute the timeout duration (packet
+ * transfert time + 2 * latency time) for packet reception.
+ *
+ * This value should be carefully choosed depending on your OS and serial adapter.
+ * You can tweak this value on the fly by calling serialSetLatency() on your
+ * controller or SimpleAPI instance.
+ *
+ * Default is set to an high value in order to avoid a maximum of timeout errors
+ * and lost of response packets, at the expense of introducing latency.
  */
-#define LATENCY_TIME_DEFAULT    (48)
+#define LATENCY_TIME_DEFAULT    (32)
 
 /*!
  * \brief Specify which serial device chip we are using.
