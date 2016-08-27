@@ -178,7 +178,7 @@ void MainWindow::loadingScreen(bool enabled)
         }
         else
         {
-            QPixmap load(":/help/help/Dynamixel_help.png");
+            QPixmap load(":/help/help/HerkuleX_help.png");
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
             load.setDevicePixelRatio(qApp->devicePixelRatio());
 #endif
