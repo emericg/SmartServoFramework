@@ -54,6 +54,7 @@
 
 // Device lock support
 #define LOCK_TIOCEXCL
+//#define LOCK_LOCKFILE
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -137,7 +138,7 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
     kern_return_t kernResult = KERN_FAILURE;
     io_iterator_t serialPortIterator = 0;
 
-    TRACE_INFO(SERIAL, "serialPortsScanner() [MacOS variant]\n");
+    TRACE_INFO(SERIAL, "serialPortsScanner() [macOS variant]\n");
 
     // Serial devices are instances of class IOSerialBSDClient. Create a matching dictionary to find those.
     CFMutableDictionaryRef classesToMatch = NULL;

@@ -16,6 +16,7 @@ SmartServoFramework.includes
 
 # QMake temporary project files (gui)
 gui/SmartServoGui.pro.*
+gui/.qmake.stash
 gui/Makefile
 gui/build/*
 
@@ -23,5 +24,6 @@ gui/build/*
 examples/.scon*
 examples/build/*
 
-# Netbeans project files
+# Others
+stash/*
 nbproject/*
