@@ -14,7 +14,7 @@ Build system:
 * Doxygen (**ONLY** needed to generate the documentation)  
 
 Using Linux?
-* liblockdev (used to lock the serial port to a single software instance, which will save you from a lot of potential head scratching errors...)  
+* liblockdev (OPTIONAL) (used to lock the serial port to a single software instance, which will save you from a lot of potential head scratching errors...)  
 
 ### Building SmartServoFramework library (Linux and Mac OS X)
 

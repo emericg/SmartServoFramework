@@ -36,7 +36,6 @@ unix {
 
     unix:!macx {
         message("Building on Linux/BSD plateform")
-        LIBS += -llockdev
     }
     unix:macx {
         message("Building on MAC OS X plateform")

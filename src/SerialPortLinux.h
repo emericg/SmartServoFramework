@@ -87,10 +87,10 @@ class SerialPortLinux: public SerialPort
      * \return True if a lock has been placed successfully for this serial device, false otherwise.
      *
      * We have several ways of doing that:
+     * - Use flock(). Should work on Linux and Mac if carefully implemented. Not working ATM.
      * - Use a file lock in "/tmp" directory. Will only work accross SmartServoFramework instances.
      * - Use a file lock in "/var/lock/lockdev" directory. Almost standard way of locking devices, but need "lock" group credential.
      * - Use a file lock with lockdev library. Standard way of locking devices, but need "lockdev" library.
-     * - Use flock(). Should work on Linux and Mac if carefully implemented. Not working ATM.
      */
     bool setLock();
 

@@ -42,9 +42,9 @@ You will need to make sure your software can access your serial port:
 It is important to guaranty that your application will be the only one to send commands and read the results back. Otherwise things will start to go wrong fast... We provide locking mechanisms in order to protect you against things like launching two instances of your application on the same port, or using one application and one SmartServoGui on two different ports.
 
 The framework will handle locking/unlocking the serial port if a locking method is available with your serial port implementation:
+* Linux: "flock()" support (default)
 * Linux: "lockfile" support
-* Linux: "liblockdev" support (default)
-* Linux: "flock()" support
+* Linux: "liblockdev" support
 * macOS: "lockfile" support
 * macOS: "TIOCEXCL ioctl" support (default)
 * Windows: TODO!

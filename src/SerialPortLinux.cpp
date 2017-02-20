@@ -33,9 +33,16 @@
 #include <sys/time.h>
 
 // Device lock support
-#include <lockdev.h>
+//#define LOCK_FLOCK
+//#define LOCK_LOCKFILE
+//#define LOCK_LOCKDEV
+
+#ifdef LOCK_FLOCK
 #include <sys/file.h>
-#define LOCK_LOCKDEV
+#endif
+#ifdef LOCK_LOCKDEV
+#include <lockdev.h>
+#endif
 
 // "open" and "close" calls
 #include <unistd.h>

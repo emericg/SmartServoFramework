@@ -75,7 +75,7 @@ endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
     message(STATUS "Building on Linux plateform")
-    set(EXTRALIBS "lockdev")
+    #set(EXTRALIBS "lockdev")
 
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
