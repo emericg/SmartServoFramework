@@ -5,7 +5,7 @@ SmartServoGui is a fully featured Qt GUI application that helps you discover dev
 
 **Features:**
 * Works with Dynamixel and HerkuleX devices
-* Works on Linux, Mac OS and Windows
+* Works on Linux, macOS and Windows
 * Works with any number of serial ports, each on its own protocol (dxl v1/v2 or hkx)
 * Visualize and change every servo registers
 * Check out your servo characteristic and access the manuals
@@ -24,13 +24,13 @@ SmartServoGui is a fully featured Qt GUI application that helps you discover dev
 ### Dependencies
 
 You will need a modern C++11 capable compiler:
-* GCC >= 4.6  
-* LLVM >= 3.0  
-* MSVC >= 2012  
+* GCC >= 4.8
+* LLVM >= 3.6
+* MSVC >= 2015
 
 Libraries:
-* Qt (version 4 or 5)  
-* SmartServoFramework (we got this one covered)  
+* Qt (version 4 or 5)
+* SmartServoFramework (we got this one covered)
 
 Using Linux?
 * liblockdev (used to lock the serial port to a single software instance, which will save you from a lot of potential head scratching errors...)
@@ -41,10 +41,10 @@ Yes, it works better if you have a serial port adapter and a servo.
 
 ### Building SmartServoGui
 
-> $ cd SmartServoFramework/gui/  
-> $ qmake-qt${4-5}  
-> $ make  
-> $ ./build/SmartServoGui  
+> $ cd SmartServoFramework/gui/
+> $ qmake-qt${4-5}
+> $ make
+> $ ./build/SmartServoGui
 
 ## Get involved!
 

@@ -48,7 +48,7 @@ unix {
         message("Building on Linux/BSD plateform")
     }
     unix:macx {
-        message("Building on MAC OS X plateform")
+        message("Building on macOS plateform")
         QMAKE_LFLAGS += -F /System/Library/Frameworks/
         LIBS += -framework IOKit -framework CoreFoundation
 
@@ -94,7 +94,7 @@ TRANSLATIONS = resources/lang/es.ts resources/lang/fr.ts resources/lang/it.ts
 
 
 
-# Mac OS X deploy rules:
+# macOS deploy rules:
 # (Or you can just use macdeployqt...)
 unix:macx {
     FW_DIR = build/$${TARGET}.app/Contents/Frameworks

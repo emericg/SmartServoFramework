@@ -23,7 +23,7 @@ Depending on the devices:
 > Note: Regular "full-duplex" TTL converters will NOT work with "half-duplex TTL" Dynamixel servos (AX serie, MX-T serie, XL-320, ...).
 
 * [USB2AX](http://www.xevelabs.com/doku.php?id=product:usb2ax:usb2ax): Unofficial but awesome device designed to manage TTL communication with your Dynamixels (AX serie, MX-T serie, XL-320, ...).
-* [USB2Dynamixel](http://support.robotis.com/en/product/auxdevice/interface/usb2dxl_manual.htm): Official device that can manage all Dynamixel devices through RS232 / RS485 / TTL communications.  
+* [USB2Dynamixel](http://support.robotis.com/en/product/auxdevice/interface/usb2dxl_manual.htm): Official device that can manage all Dynamixel devices through RS232 / RS485 / TTL communications.
 * Home made TTL half-duplex device: [like this setup](http://savageelectronics.blogspot.fr/2011/01/arduino-y-dynamixel-ax-12.html) from Savage Electronics (in spanish), or [this one](http://www.memememememememe.me/the-dynamixel/) from memememe (in english).
 
 #### HerkuleX devices
@@ -52,17 +52,17 @@ The framework will handle locking/unlocking the serial port if a locking method 
 ### About latency
 
 The thing is: serial ports are **usually** slow and handle communication errors poorly...
-* Communication speeds are low (from 115.2 KBps to 1 MBps)  
-* Depending on your serial port / device combination, you can even go as low as 9.6 KBps (Dynamixel PRO devices) or 57.6 KBps (HerkuleX) and as high as 3 MBps (MX devices) and even up to 10.5 Mbps for PRO devices  
-* Latency over the serial bus (caused by adapters and servos) will limit the number of instructions you can send each second even more than bandwidth limitations  
+* Communication speeds are low (from 115.2 KBps to 1 MBps)
+* Depending on your serial port / device combination, you can even go as low as 9.6 KBps (Dynamixel PRO devices) or 57.6 KBps (HerkuleX) and as high as 3 MBps (MX devices) and even up to 10.5 Mbps for PRO devices
+* Latency over the serial bus (caused by adapters and servos) will limit the number of instructions you can send each second even more than bandwidth limitations
 
-A few tips to minimize latency and reduce traffic on your serial bus:  
-* You can use [these tips](https://projectgus.com/2011/10/notes-on-ftdi-latency-with-arduino/) to reduce latency on serial ports adapter using FTDI chips!  
-* For both Dynamixel and HerkuleX devices, you can set the "Status Return Level" / "Ack Policy" to '1' in order to minimize the number of status packets (only if you do not need them), or even '2' to disable them ALL. **Check your servo manual for more info on this**.  
-* If you are using Dynamixel devices, you may want to reduce the "Return Delay Time" value to a minimum, from the default of '250' to something like '25' (check what value works best for you). It represent *"the time (2 µs steps) from the transmission of Instruction Packet until the return of Status Packet"*. **Check your servo manual for more info on this**.  
+A few tips to minimize latency and reduce traffic on your serial bus:
+* You can use [these tips](https://projectgus.com/2011/10/notes-on-ftdi-latency-with-arduino/) to reduce latency on serial ports adapter using FTDI chips!
+* For both Dynamixel and HerkuleX devices, you can set the "Status Return Level" / "Ack Policy" to '1' in order to minimize the number of status packets (only if you do not need them), or even '2' to disable them ALL. **Check your servo manual for more info on this**.
+* If you are using Dynamixel devices, you may want to reduce the "Return Delay Time" value to a minimum, from the default of '250' to something like '25' (check what value works best for you). It represent *"the time (2 µs steps) from the transmission of Instruction Packet until the return of Status Packet"*. **Check your servo manual for more info on this**.
 
 Timeout issues are common with Dynamixel, HerkuleX (and probably most) serial devices.
 
-* Some Linux systems are handling the FTDI latency tweaks better than other  
-Some servos models can have very different response time (depending the CPU / running frequency used)  
-* Some particular registers can (sometimes) takes WAY more time to return values than others. For instance I think I remember MX servos and max torque values taking more than 100ms to return values. So do we want to wait for these (which would makes us use insame timeout timers) or do we just ignore them?  
+* Some Linux systems are handling the FTDI latency tweaks better than other
+Some servos models can have very different response time (depending the CPU / running frequency used)
+* Some particular registers can (sometimes) takes WAY more time to return values than others. For instance I think I remember MX servos and max torque values taking more than 100ms to return values. So do we want to wait for these (which would makes us use insame timeout timers) or do we just ignore them?

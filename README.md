@@ -1,4 +1,4 @@
-SmartServoFramework 0.95
+SmartServoFramework 0.96
 ========================
 
 [![Build Status](https://travis-ci.org/emericg/SmartServoFramework.svg?branch=master)](https://travis-ci.org/emericg/SmartServoFramework)
@@ -42,9 +42,9 @@ If you have problems with the command line, it's just as easy to generate the do
 ### Dependencies
 
 You will need a modern C++11 capable compiler:
-* GCC >= 4.6  
-* LLVM >= 3.0  
-* MSVC >= 2013  
+* GCC >= 4.8  
+* LLVM >= 3.6  
+* MSVC >= 2015  
 
 Build system:
 * CMake (**ONLY** needed to build the standalone library)  

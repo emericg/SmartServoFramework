@@ -84,7 +84,7 @@ enum SerialErrorCodes_e
  * \brief The SerialPort base class.
  *
  * This class provide abstraction to use the serial port across Linux, Windows
- * and Mac OS operating systems. Almost all of this code is heavily OS dependent,
+ * and macOS operating systems. Almost all of this code is heavily OS dependent,
  * and therefore most functions are only implemented in child classes.
  *
  * Both Dynamixel and HerkuleX devices are using the same settings:
