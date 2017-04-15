@@ -26,6 +26,7 @@
 #include "minitraces.h"
 
 // Include the OS specific serialPortsScanner()
+#include "SerialPortQt.h"
 #include "SerialPortLinux.h"
 #include "SerialPortMacOS.h"
 #include "SerialPortWindows.h"
@@ -191,8 +192,12 @@ std::vector <std::string> SerialPort::scanSerialPorts()
 {
     std::vector <std::string> availableSerialPorts;
 
+#if defined(FEATURE_QTSERIAL)
+    if (serialPortsScannerQt(availableSerialPorts) == 0)
+#else
     // This function is OS specific
     if (serialPortsScanner(availableSerialPorts) == 0)
+#endif
     {
         TRACE_WARNING(SERIAL, "No serial ports found during scan...\n");
     }

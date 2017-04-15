@@ -14,6 +14,17 @@ UI_DIR      = build/
 MOC_DIR     = build/
 OBJECTS_DIR = build/
 
+# QtSerialPort
+QT_VERSION = $$[QT_VERSION]
+QT_VERSION = $$split(QT_VERSION, ".")
+QT_VER_MAJ = $$member(QT_VERSION, 0)
+QT_VER_MIN = $$member(QT_VERSION, 1)
+contains(QT_VER_MAJ, 5) | greaterThan(QT_VER_MIN, 6) {
+   QT += serialport
+   #DEFINES += FEATURE_QTSERIAL
+   #message(Using QtSerialPort instead of OS specific implementation.)
+}
+
 # OS specifics build settings
 unix {
     *-g++* {
@@ -97,6 +108,7 @@ unix:macx {
     #QMAKE_POST_LINK += && (if [ ! -d $${FW_DIR}/QtSvg.framework/ ]; then cp -R $${QT_DIR}/QtSvg.framework $${FW_DIR}; fi)
     #QMAKE_POST_LINK += && (if [ ! -d $${FW_DIR}/QtGui.framework/ ]; then cp -R $${QT_DIR}/QtGui.framework $${FW_DIR}; fi)
     #QMAKE_POST_LINK += && (if [ ! -d $${FW_DIR}/QtWidgets.framework/ ]; then cp -R $${QT_DIR}/QtWidgets.framework $${FW_DIR}; fi)
+    #QMAKE_POST_LINK += && (if [ ! -d $${FW_DIR}/QtSerialPort.framework/ ]; then cp -R $${QT_DIR}/QtSerialPort.framework $${FW_DIR}; fi)
 
     # Use bundled libraries (rewrite rpaths)
     APP = build/$${TARGET}.app/Contents/MacOS/$${TARGET}
@@ -105,4 +117,5 @@ unix:macx {
     #QMAKE_POST_LINK += && (install_name_tool -change @rpath/QtSvg.framework/Versions/5/QtSvg @executable_path/../Frameworks/QtSvg.framework/Versions/5/QtSvg $${APP})
     #QMAKE_POST_LINK += && (install_name_tool -change @rpath/QtGui.framework/Versions/5/QtGui @executable_path/../Frameworks/QtGui.framework/Versions/5/QtGui $${APP})
     #QMAKE_POST_LINK += && (install_name_tool -change @rpath/QtWidgets.framework/Versions/5/QtWidgets @executable_path/../Frameworks/QtWidgets.framework/Versions/5/QtWidgets $${APP})
+    #QMAKE_POST_LINK += && (install_name_tool -change @rpath/QtSerialPort.framework/Versions/5/QtSerialPort @executable_path/../Frameworks/QtSerialPort.framework/Versions/5/QtSerialPort $${APP})
 }

@@ -109,14 +109,18 @@ int HerkuleX::serialInitialize(std::string &devicePath, const int baud)
     }
 
     // Instanciate a different serial subclass, depending on the current OS
+#if defined(FEATURE_QTSERIAL)
+    serial = new SerialPortQt(devicePath, baud, serialDevice, servoSerie);
+#else
 #if defined(__linux__) || defined(__gnu_linux)
-    serial = new SerialPortLinux(devicePath, baud, serialDevice, SERVO_DRS);
+    serial = new SerialPortLinux(devicePath, baud, serialDevice, servoSerie);
 #elif defined(_WIN32) || defined(_WIN64)
-    serial = new SerialPortWindows(devicePath, baud, serialDevice, SERVO_DRS);
+    serial = new SerialPortWindows(devicePath, baud, serialDevice, servoSerie);
 #elif defined(__APPLE__) || defined(__MACH__)
-    serial = new SerialPortMacOS(devicePath, baud, serialDevice, SERVO_DRS);
+    serial = new SerialPortMacOS(devicePath, baud, serialDevice, servoSerie);
 #else
     #error "No compatible operating system detected!"
+#endif
 #endif
 
     // Initialize the serial link

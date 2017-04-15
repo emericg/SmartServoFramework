@@ -1,12 +1,17 @@
 # SmartServoFramework "library" build system
 # This file allows you to build a shared library of SmartServoFramework
+################################################################################
 
-project(SmartServoFramework)
 cmake_minimum_required(VERSION 2.8)
 
+project(SmartServoFramework)
+
 set(SmartServoFramework_VERSION_MAJOR 0)
-set(SmartServoFramework_VERSION_MINOR 95)
+set(SmartServoFramework_VERSION_MINOR 96)
 set(SmartServoFramework_VERSION_PATCH 0)
+
+# Build settings
+###############################################################################
 
 set(ENABLE_DEBUG   1) # "Toggle debug traces"
 set(ENABLE_COLORS  1) # "Toggle colored terminal output"
@@ -14,14 +19,14 @@ set(ENABLE_COLORS  1) # "Toggle colored terminal output"
 # Dependencies
 ################################################################################
 
-# Doxygen module
+# Doxygen OPTIONAL module
 find_package(Doxygen) # FindDoxygen.cmake
 
 if(DOXYGEN_FOUND)
     message(STATUS "* Doxygen found, you can use it to generate a nice API documentation!")
 endif(DOXYGEN_FOUND)
 
-# Build options
+# Build configuration
 ################################################################################
 
 if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
@@ -129,6 +134,8 @@ set(SmartServoFramework_SRC
     src/HerkuleXTools.h
     src/SerialPort.cpp
     src/SerialPort.h
+    src/SerialPortQt.cpp
+    src/SerialPortQt.h
     src/SerialPortLinux.cpp
     src/SerialPortLinux.h
     src/SerialPortMacOS.cpp

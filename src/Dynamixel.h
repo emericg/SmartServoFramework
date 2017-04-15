@@ -23,6 +23,7 @@
 #ifndef DYNAMIXEL_H
 #define DYNAMIXEL_H
 
+#include "SerialPortQt.h"
 #include "SerialPortLinux.h"
 #include "SerialPortWindows.h"
 #include "SerialPortMacOS.h"

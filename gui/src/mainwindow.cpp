@@ -254,7 +254,12 @@ void MainWindow::scanSerialPorts(bool autoscan)
 
     // Scan for available/new serial ports
     std::vector <std::string> availablePorts;
+
+#if defined(FEATURE_QTSERIAL)
+    serialPortsScannerQt(availablePorts);
+#else
     serialPortsScanner(availablePorts);
+#endif
 
     if (availablePorts.size() == 0)
     {
