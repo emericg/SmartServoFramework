@@ -20,8 +20,9 @@
  * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
-#include <QtGlobal>
+#if defined(FEATURE_QTSERIAL)
 
+#include <QtGlobal>
 #if QT_VERSION >= QT_VERSION_CHECK(5, 7, 0)
 
 #include "SerialPortQt.h"
@@ -449,4 +450,5 @@ int SerialPortQt::checkTimeOut()
     return status;
 }
 
-#endif /* QT_VERSION >= QT_VERSION_CHECK(5, 7, 0) */
+#endif // QT_VERSION >= QT_VERSION_CHECK(5, 7, 0)
+#endif // FEATURE_QTSERIAL

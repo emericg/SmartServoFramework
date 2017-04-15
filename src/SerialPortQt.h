@@ -23,8 +23,9 @@
 #ifndef SERIALPORT_QT_H
 #define SERIALPORT_QT_H
 
-#include <QtGlobal>
+#if defined(FEATURE_QTSERIAL)
 
+#include <QtGlobal>
 #if QT_VERSION >= QT_VERSION_CHECK(5, 7, 0)
 
 #include "SerialPort.h"
@@ -140,6 +141,6 @@ public:
     int checkTimeOut();
 };
 
-#endif /* QT_VERSION >= QT_VERSION_CHECK(5, 7, 0) */
-
-#endif /* SERIALPORT_QT_H */
+#endif // QT_VERSION >= QT_VERSION_CHECK(5, 7, 0)
+#endif // FEATURE_QTSERIAL
+#endif // SERIALPORT_QT_H
