@@ -1,5 +1,6 @@
 # Binaries and build artifacts
 build/*
+gui/build/*
 *.o
 
 # Doxygen
@@ -7,6 +8,10 @@ doc/html
 
 # CMake temporary project files
 CMakeLists.txt.*
+
+# CMake generated files
+src/SmartServoFramework_export.h
+src/SmartServoFramework_settings.h
 
 # QtCreator temporary project files
 SmartServoFramework.config

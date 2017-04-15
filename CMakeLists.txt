@@ -16,7 +16,22 @@ set(SmartServoFramework_VERSION_PATCH 0)
 set(ENABLE_DEBUG   1) # "Toggle debug traces"
 set(ENABLE_COLORS  1) # "Toggle colored terminal output"
 
-# Dependencies
+if(WIN32)
+    # Turn on the ability to create folders to organize projects (.vcproj)
+    # It creates "CMakePredefinedTargets" folder by default and adds CMake
+    # defined projects like INSTALL.vcproj and ZERO_CHECK.vcproj
+    set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+    # Set policy for interpretation of if() arguments as variables or keywords
+    # when unquoted to NEW to avoid warnings.
+    cmake_policy(SET CMP0054 NEW)
+
+    if (CMAKE_VERSION VERSION_GREATER "3.3")
+        include(GenerateExportHeader)
+    endif()
+endif()
+
+# Build dependencies
 ################################################################################
 
 # Doxygen OPTIONAL module
@@ -29,49 +44,37 @@ endif(DOXYGEN_FOUND)
 # Build configuration
 ################################################################################
 
-if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-    message(STATUS "* Building with Clang compiler")
-    set(CMAKE_CXX_FLAGS "-stdlib=libc++")
-elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    message(STATUS "* Building with GCC compiler")
-elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
-    message(STATUS "* Building with Intel Cpp compiler")
-elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    message(STATUS "* Building with Visual Studio Cpp compiler")
-endif()
-
 # Require C++11 standard by default
 set(CMAKE_CXX_FLAGS "-std=c++11")
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Detect build type. You can change it using "-DCMAKE_BUILD_TYPE="
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+# Add per-compiler custom rules
+if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+    message(STATUS "* Building with Clang compiler")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -Wall -Wno-unused-but-set-variable -Wno-unused-function -Wno-unused-parameter -Wno-unused-variable")
+elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
+    message(STATUS "* Building with Intel Cpp compiler")
+elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    message(STATUS "* Building with GCC compiler")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unused-but-set-variable -Wno-unused-function -Wno-unused-parameter -Wno-unused-variable -Wno-unused-but-set-variable")
+elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    message(STATUS "* Building with Visual Studio Cpp compiler")
+endif()
 
+# Detect build type (default is release)
+# Change it using "-DCMAKE_BUILD_TYPE= Debug / Release / RelWithDebInfo / MinSizeRel"
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "!! * This is a DEBUG build. You can change it using -DCMAKE_BUILD_TYPE=Release.")
     set(ENABLE_DEBUG 1)
-    set(CMAKE_BUILD_TYPE debug)
     # Custom cflags? Use "debug mode" and "-O0 -g" if you want better support for GDB and Valgrind.
-    if(UNIX)
-        set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g -Wall -Wextra -Wno-unused -Wno-unused-parameter")
-    else()
-        set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g -Wall -Wextra")
-    endif()
-
+    set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g")
 else()
-
     message(STATUS "* This is a RELEASE build. You can change it using -DCMAKE_BUILD_TYPE=Debug.")
     set(ENABLE_DEBUG 0)
-    set(CMAKE_BUILD_TYPE release)
-
     # Custom cflags? Use "release mode" and "-O2" for better speed.
-    if(UNIX)
-        set(CMAKE_CXX_FLAGS_RELEASE "-O2 -Wno-unused -Wno-unused-parameter")
-    else()
-        set(CMAKE_CXX_FLAGS_RELEASE "-O2")
-    endif()
-
-endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(CMAKE_CXX_FLAGS_RELEASE "-O2")
+endif()
 
 # Platform specific
 ################################################################################
@@ -82,29 +85,47 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     message(STATUS "Building on Linux plateform")
     #set(EXTRALIBS "lockdev")
 
-endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+endif()
 
-# Mac OS X specific stuff
+# macOS specific stuff
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
-    message(STATUS "Building on Mac OS X plateform")
+    message(STATUS "Building on macOS plateform")
     find_library(IOKIT_FRAMEWORK IOKit)
     find_library(COREFOUNDATION_FRAMEWORK CoreFoundation)
     message(STATUS "* Finding library IOKit: ${IOKIT_FRAMEWORK}")
     message(STATUS "* Finding library CoreFoundation: ${COREFOUNDATION_FRAMEWORK}")
     set(EXTRA_LIBS ${IOKIT_FRAMEWORK} ${COREFOUNDATION_FRAMEWORK})
 
-endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+endif()
 
 # Windows specific stuff
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
     message(STATUS "Building on Windows plateform")
+    # Turn on the ability to create folders to organize projects (.vcproj)
+    # It creates "CMakePredefinedTargets" folder by default and adds CMake
+    # defined projects like INSTALL.vcproj and ZERO_CHECK.vcproj
+    set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    # Set policy for interpretation of if() arguments as variables or keywords
+    # when unquoted to NEW to avoid warnings.
+    cmake_policy(SET CMP0054 NEW)
+
+    if(CMAKE_VERSION VERSION_GREATER "3.3")
+        include(GenerateExportHeader)
+    endif()
+
+endif()
 
 # Source files
 ###############################################################################
+
+# Generate "SmartServoFramework_settings.h" file from a template
+configure_file(
+    "${CMAKE_SOURCE_DIR}/src/SmartServoFramework_settings.h.in"
+    "${CMAKE_SOURCE_DIR}/src/SmartServoFramework_settings.h"
+)
 
 set(SmartServoFramework_SRC
     src/minitraces.cpp
@@ -171,6 +192,17 @@ add_library(SmartServoFramework_shared SHARED ${SmartServoFramework_SRC})
 target_link_libraries(SmartServoFramework_shared ${EXTRA_LIBS})
 set_target_properties(SmartServoFramework_shared PROPERTIES OUTPUT_NAME SmartServoFramework)
 
+if(WIN32)
+if (CMAKE_VERSION VERSION_GREATER "3.3")
+    message("* Generating symbols export header")
+    GENERATE_EXPORT_HEADER(SmartServoFramework_shared
+                           BASE_NAME SmartServoFramework_shared
+                           EXPORT_MACRO_NAME SmartServoFramework_EXPORT
+                           EXPORT_FILE_NAME "${CMAKE_SOURCE_DIR}/src/SmartServoFramework_export.h"
+                           STATIC_DEFINE SmartServoFramework_BUILT_AS_STATIC)
+endif()
+endif()
+
 if(CMAKE_BUILD_MODE STREQUAL "Static")
     message(STATUS "** Building static library")
     add_library(SmartServoFramework_static STATIC ${SmartServoFramework_SRC})
@@ -185,6 +217,6 @@ endif(CMAKE_BUILD_MODE STREQUAL "Static")
 if(UNIX)
     install(TARGETS SmartServoFramework_shared DESTINATION lib/)
     install(DIRECTORY src/ DESTINATION include/SmartServoFramework/ FILES_MATCHING PATTERN "*.h")
-else(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+elseif(WIN32)
     # TODO
 endif()

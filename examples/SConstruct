@@ -28,12 +28,9 @@ if sys.platform.startswith('linux') == True:
     CC_VERSION = subprocess.check_output([env['CC'], "-dumpversion"]).strip('\n')
     if env['CC'] == 'gcc':
         print '> Gcc ' + CC_VERSION + ' compiler'
-        if StrictVersion(CC_VERSION) < StrictVersion('4.6'):
-            print 'You need at least GCC 4.6+ to use C++11 features!'
+        if StrictVersion(CC_VERSION) < StrictVersion('4.8'):
+            print 'You need at least GCC 4.8+ to use C++11 features!'
             exit(0)
-        elif StrictVersion(CC_VERSION) < StrictVersion('4.8'):
-            # GCC 4.6 needs a different flag to enable C++11
-            env.Append(CCFLAGS = "-std=c++0x -pthread ")
         else:
             env.Append(CCFLAGS = "-std=c++11 -pthread ")
     elif env['CC'] == 'clang':

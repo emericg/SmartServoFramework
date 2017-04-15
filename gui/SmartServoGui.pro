@@ -6,6 +6,7 @@
 TARGET      = SmartServoGui
 TEMPLATE    = app
 CONFIG     += qt
+CONFIG     += c++11
 QT         += core svg gui widgets
 
 DESTDIR     = build/
@@ -33,15 +34,13 @@ unix {
 
         if: system("gcc -dumpversion | grep 4.[0-5]") {
             error("You need at least GCC 4.6+ to use C++11 features")
-        } else: system("gcc -dumpversion | grep 4.6") {
-            QMAKE_CXXFLAGS += -std=c++0x -Wno-unused-parameter -Wno-unused-variable
         } else: {
-            QMAKE_CXXFLAGS += -std=c++11 -Wno-unused-parameter -Wno-unused-variable
+            QMAKE_CXXFLAGS += -Wno-unused-parameter -Wno-unused-variable
         }
     }
     *clang* {
         message("Using LLVM compiler")
-        QMAKE_CXXFLAGS += -std=c++11 -stdlib=libc++ -Wno-unused-parameter -Wno-unused-variable
+        QMAKE_CXXFLAGS += -stdlib=libc++ -Wno-unused-parameter -Wno-unused-variable
         LIBS += -stdlib=libc++
     }
 
@@ -67,7 +66,7 @@ win32 {
 
     *-g++* {
         message("Using MinGW compiler")
-        QMAKE_CXXFLAGS += -std=c++11 -pthread -Wno-unused-parameter -Wno-unused-variable
+        QMAKE_CXXFLAGS += -pthread -Wno-unused-parameter -Wno-unused-variable
     }
     *-msvc* {
         message("Using MSVC compiler")
