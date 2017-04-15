@@ -108,6 +108,10 @@ MainWindow::MainWindow(QWidget *parent):
     tableServoSerie = 0;
     tableServoModel = 0;
     tableAutoSelection = false;
+
+#ifdef Q_OS_OSX
+    ui->toolBar->setStyleSheet("");
+#endif
 }
 
 MainWindow::~MainWindow()

@@ -92,10 +92,17 @@
       <item>
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>You can use these fields to pre-configure serial ports. Just tick the &quot;enable&quot; box to use them.</string>
+         <string>You can use these fields to pre-configure serial ports.</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Just tick the &quot;enable&quot; checkbox to the left in order to use these settings.</string>
         </property>
        </widget>
       </item>

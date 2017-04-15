@@ -91,7 +91,7 @@ unix:macx {
     QT_DIR = /usr/local/lib/
 
     # Copy libraries into the package
-    QMAKE_POST_LINK += (mkdir -p $${FW_DIR})
+    #QMAKE_POST_LINK += (mkdir -p $${FW_DIR})
     #QMAKE_POST_LINK += && (cp ../build/libSmartServoFramework.dylib $${FW_DIR})
     #QMAKE_POST_LINK += && (if [ ! -d $${FW_DIR}/QtCore.framework/ ]; then cp -R $${QT_DIR}/QtCore.framework $${FW_DIR}; fi)
     #QMAKE_POST_LINK += && (if [ ! -d $${FW_DIR}/QtSvg.framework/ ]; then cp -R $${QT_DIR}/QtSvg.framework $${FW_DIR}; fi)
