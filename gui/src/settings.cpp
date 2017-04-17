@@ -23,10 +23,10 @@
 #include "settings.h"
 #include "ui_settings.h"
 
-#include "rapidjson/filereadstream.h"
-#include "rapidjson/filewritestream.h"
-#include "rapidjson/document.h"
-#include "rapidjson/prettywriter.h"
+#include "thirdparty/rapidjson/filereadstream.h"
+#include "thirdparty/rapidjson/filewritestream.h"
+#include "thirdparty/rapidjson/document.h"
+#include "thirdparty/rapidjson/prettywriter.h"
 
 #if defined(__linux__) || defined(__gnu_linux)
 #include <sys/types.h>

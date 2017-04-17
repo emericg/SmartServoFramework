@@ -25,7 +25,7 @@
 
 #include <QWidget>
 
-#include "rapidjson/document.h"
+#include "thirdparty/rapidjson/document.h"
 
 namespace Ui {
 class Settings;
