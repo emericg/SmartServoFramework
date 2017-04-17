@@ -138,7 +138,7 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
     kern_return_t kernResult = KERN_FAILURE;
     io_iterator_t serialPortIterator = 0;
 
-    TRACE_INFO(SERIAL, "serialPortsScanner() [macOS variant]\n");
+    TRACE_INFO(SERIAL, "serialPortsScanner() [macOS variant]");
 
     // Serial devices are instances of class IOSerialBSDClient. Create a matching dictionary to find those.
     CFMutableDictionaryRef classesToMatch = NULL;
@@ -154,12 +154,12 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
 
         if (kernResult != KERN_SUCCESS)
         {
-            TRACE_ERROR(SERIAL, "IOServiceGetMatchingServices returned %d\n", kernResult);
+            TRACE_ERROR(SERIAL, "IOServiceGetMatchingServices returned %d", kernResult);
         }
     }
     else
     {
-        TRACE_ERROR(SERIAL, "IOServiceMatching returned a NULL dictionary.\n");
+        TRACE_ERROR(SERIAL, "IOServiceMatching returned a NULL dictionary.");
     }
 
     if (kernResult == KERN_SUCCESS)
@@ -175,7 +175,7 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
             //    return EX_IOERR;
             //}
 
-            TRACE_INFO(SERIAL, "- Scanning for serial port on '%s' > FOUND\n", modemPath);
+            TRACE_INFO(SERIAL, "- Scanning for serial port on '%s' > FOUND", modemPath);
             retcode++;
 
             // Add it to the list
@@ -184,12 +184,12 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
         }
         else
         {
-            TRACE_ERROR(SERIAL, "Could not get path for modem.\n");
+            TRACE_ERROR(SERIAL, "Could not get path for modem.");
         }
     }
     else
     {
-        TRACE_WARNING(SERIAL, "No modem port were found.\n");
+        TRACE_WARNING(SERIAL, "No modem port were found.");
     }
 
     IOObjectRelease(serialPortIterator);
@@ -226,9 +226,9 @@ SerialPortMacOS::SerialPortMacOS(std::string &devicePath, const int baud, const 
 
         setBaudRate(baud);
 
-        TRACE_INFO(SERIAL, "- Device name has been set to: '%s'\n", ttyDeviceName.c_str());
-        TRACE_INFO(SERIAL, "- Device node has been set to: '%s'\n", ttyDevicePath.c_str());
-        TRACE_INFO(SERIAL, "- Device baud rate has been set to: '%i'\n", ttyDeviceBaudRate);
+        TRACE_INFO(SERIAL, "- Device name has been set to: '%s'", ttyDeviceName.c_str());
+        TRACE_INFO(SERIAL, "- Device node has been set to: '%s'", ttyDevicePath.c_str());
+        TRACE_INFO(SERIAL, "- Device baud rate has been set to: '%i'", ttyDeviceBaudRate);
     }
 }
 
@@ -278,7 +278,7 @@ int SerialPortMacOS::convertBaudRateFlag(int baudrate)
 
         if (baudRateFlag != 0)
         {
-            TRACE_1(SERIAL, "convertBaudRateFlag(%i) has been set to %i (exact match)\n", baudrate, baudrate);
+            TRACE_1(SERIAL, "convertBaudRateFlag(%i) has been set to %i (exact match)", baudrate, baudrate);
         }
         else
         {
@@ -292,7 +292,7 @@ int SerialPortMacOS::convertBaudRateFlag(int baudrate)
                 if ((baudrate > (static_cast<double>(speeds[i]) * 98.5 / 100.0)) && (baudrate < (static_cast<double>(speeds[i]) * 101.5 / 100.0)))
                 {
                     baudRateFlag = rate_to_constant(speeds[i]);
-                    TRACE_WARNING(SERIAL, "convertBaudRateFlag(%i) has been set to B%i (close enough match, ±1.5%)\n", baudrate, speeds[i]);
+                    TRACE_WARNING(SERIAL, "convertBaudRateFlag(%i) has been set to B%i (close enough match, ±1.5%)", baudrate, speeds[i]);
                     break;
                 }
             }
@@ -302,21 +302,21 @@ int SerialPortMacOS::convertBaudRateFlag(int baudrate)
             {
                 ttyCustomSpeed = true;
                 baudRateFlag = B38400;
-                TRACE_WARNING(SERIAL, "convertBaudRateFlag(%i) has been set to B38400 (custom speed will be used)\n", baudrate);
+                TRACE_WARNING(SERIAL, "convertBaudRateFlag(%i) has been set to B38400 (custom speed will be used)", baudrate);
             }
         }
     }
     else
     {
-        TRACE_ERROR(SERIAL, "Invalid baudrate, using default value of: B1000000\n");
+        TRACE_ERROR(SERIAL, "Invalid baudrate, using default value of: B1000000");
     }
 
     // Fallback
     if (baudRateFlag == 0)
     {
         baudRateFlag = B1000000;
-        TRACE_ERROR(SERIAL, "Unable to set baud speed at %i: too slow!\n", baudrate);
-        TRACE_ERROR(SERIAL, "Invalid baudrate, using default value of: B1000000\n");
+        TRACE_ERROR(SERIAL, "Unable to set baud speed at %i: too slow!", baudrate);
+        TRACE_ERROR(SERIAL, "Invalid baudrate, using default value of: B1000000");
     }
 
     return baudRateFlag;
@@ -340,15 +340,15 @@ bool SerialPortMacOS::isLocked()
 
                 if (strcmp(buf, ss.str().c_str()) != 0)
                 {
-                    TRACE_WARNING(SERIAL, "- Device '%s' is LOCKED\n", ttyDevicePath.c_str());
-                    TRACE_1(SERIAL, "Lock from another instance or program found at: '%s'\n", ttyDeviceLockPath.c_str());
+                    TRACE_WARNING(SERIAL, "- Device '%s' is LOCKED", ttyDevicePath.c_str());
+                    TRACE_1(SERIAL, "Lock from another instance or program found at: '%s'", ttyDeviceLockPath.c_str());
                     status = true;
                 }
             }
             else
             {
-                TRACE_WARNING(SERIAL, "- Device '%s' is LOCKED\n", ttyDevicePath.c_str());
-                TRACE_1(SERIAL, "Lock found at: '%s'\n", ttyDeviceLockPath.c_str());
+                TRACE_WARNING(SERIAL, "- Device '%s' is LOCKED", ttyDevicePath.c_str());
+                TRACE_1(SERIAL, "Lock found at: '%s'", ttyDeviceLockPath.c_str());
                 status = true;
             }
 
@@ -385,11 +385,11 @@ bool SerialPortMacOS::setLock()
                 std::fclose(lock);
 
                 status = true;
-                TRACE_INFO(SERIAL, "- Device lock set at: '%s' for tid: '%i'\n", ttyDeviceLockPath.c_str(), std::this_thread::get_id());
+                TRACE_INFO(SERIAL, "- Device lock set at: '%s' for tid: '%i'", ttyDeviceLockPath.c_str(), std::this_thread::get_id());
             }
             else
             {
-                TRACE_ERROR(SERIAL, "- Unable to set lockfile '%s':  do you have necessary permissions to write in this directory?\n", ttyDeviceLockPath.c_str());
+                TRACE_ERROR(SERIAL, "- Unable to set lockfile '%s':  do you have necessary permissions to write in this directory?", ttyDeviceLockPath.c_str());
             }
         }
 #endif
@@ -399,13 +399,13 @@ bool SerialPortMacOS::setLock()
         // unless the TIOCEXCL ioctl is issued. This will prevent additional opens except by root-owned processes.
         if (ioctl(ttyDeviceFileDescriptor, TIOCEXCL) == -1)
         {
-            TRACE_ERROR(SERIAL, "- Unable to set TIOCEXCL lock for '%s': %s(%d).\n",
+            TRACE_ERROR(SERIAL, "- Unable to set TIOCEXCL lock for '%s': %s(%d).",
                         ttyDevicePath.c_str(), strerror(errno), errno);
         }
         else
         {
             status = true;
-            TRACE_INFO(SERIAL, "- TIOCEXCL lock set for: '%s'\n", ttyDeviceLockPath.c_str());
+            TRACE_INFO(SERIAL, "- TIOCEXCL lock set for: '%s'", ttyDeviceLockPath.c_str());
         }
 #endif
     }
@@ -423,11 +423,11 @@ bool SerialPortMacOS::removeLock()
         if (std::remove(ttyDeviceLockPath.c_str()) == 0)
         {
             status = true;
-            TRACE_INFO(SERIAL, "Lock removed for device '%s'\n", ttyDevicePath.c_str());
+            TRACE_INFO(SERIAL, "Lock removed for device '%s'", ttyDevicePath.c_str());
         }
         else
         {
-            TRACE_ERROR(SERIAL, "Error when unlocking port '%s'!\n", ttyDevicePath.c_str());
+            TRACE_ERROR(SERIAL, "Error when unlocking port '%s'!", ttyDevicePath.c_str());
         }
     }
 #endif
@@ -446,7 +446,7 @@ int SerialPortMacOS::openLink()
     // Check if another instance is using this port
     if (isLocked() == true)
     {
-        TRACE_ERROR(SERIAL, "Cannot connect to serial port: '%s': interface is locked!\n", ttyDevicePath.c_str());
+        TRACE_ERROR(SERIAL, "Cannot connect to serial port: '%s': interface is locked!", ttyDevicePath.c_str());
         goto OPEN_LINK_LOCKED;
     }
 
@@ -458,7 +458,7 @@ int SerialPortMacOS::openLink()
     ttyDeviceFileDescriptor = open(ttyDevicePath.c_str(), O_RDWR | O_NOCTTY);
     if (ttyDeviceFileDescriptor < 0)
     {
-        TRACE_ERROR(SERIAL, "Unable to open device on serial port: '%s', %s(%d)\n",
+        TRACE_ERROR(SERIAL, "Unable to open device on serial port: '%s', %s(%d)",
                     ttyDevicePath.c_str(), strerror(errno), errno);
         goto OPEN_LINK_ERROR;
     }
@@ -469,7 +469,7 @@ int SerialPortMacOS::openLink()
     // Get the current options and save them so we can restore the default settings later.
     if (tcgetattr(ttyDeviceFileDescriptor, &tty) == -1)
     {
-        TRACE_ERROR(SERIAL, "Error getting tty attributes %s - %s(%d).\n",
+        TRACE_ERROR(SERIAL, "Error getting tty attributes %s - %s(%d).",
                     ttyDevicePath.c_str(), strerror(errno), errno);
         goto OPEN_LINK_ERROR;
     }
@@ -494,19 +494,19 @@ int SerialPortMacOS::openLink()
     // Cause the new options to take effect immediately.
     if (tcsetattr(ttyDeviceFileDescriptor, TCSANOW, &tty) == -1)
     {
-       TRACE_ERROR(SERIAL, "Error setting tty attributes %s - %s(%d).\n",
+       TRACE_ERROR(SERIAL, "Error setting tty attributes %s - %s(%d).",
                   ttyDevicePath.c_str(), strerror(errno), errno);
        goto OPEN_LINK_ERROR;
     }
 
-    TRACE_1(SERIAL, "Current input baud rate is %d\n", (int)cfgetispeed(&tty));
-    TRACE_1(SERIAL, "Current output baud rate is %d\n", (int)cfgetospeed(&tty));
+    TRACE_1(SERIAL, "Current input baud rate is %d", (int)cfgetispeed(&tty));
+    TRACE_1(SERIAL, "Current output baud rate is %d", (int)cfgetospeed(&tty));
 
     sleep(1); // FIXME why is this necessary for our serial port to work?
 
     if (ttyDeviceBaudRate < 1)
     {
-        TRACE_ERROR(SERIAL, "Unable to set baud rate to '%i'bps: invalid value\n", ttyDeviceBaudRate);
+        TRACE_ERROR(SERIAL, "Unable to set baud rate to '%i'bps: invalid value", ttyDeviceBaudRate);
         goto OPEN_LINK_ERROR;
     }
 
@@ -521,7 +521,7 @@ int SerialPortMacOS::openLink()
 
         if (ioctl(ttyDeviceFileDescriptor, IOSSIOSPEED, &(ttyDeviceBaudRate)) == -1)
         {
-            TRACE_ERROR(SERIAL, "Error calling ioctl(..., IOSSIOSPEED, ...) %s - %s(%d).\n",
+            TRACE_ERROR(SERIAL, "Error calling ioctl(..., IOSSIOSPEED, ...) %s - %s(%d).",
                         ttyDevicePath.c_str(), strerror(errno), errno);
         }
 
@@ -530,14 +530,14 @@ int SerialPortMacOS::openLink()
         // the current baud rate if the IOSSIOSPEED ioctl was used but will instead return the speed set by the last call
         // to cfsetspeed.
 
-        TRACE_1(SERIAL, "Input baud rate changed to %d\n", (int) cfgetispeed(&tty));
-        TRACE_1(SERIAL, "Output baud rate changed to %d\n", (int) cfgetospeed(&tty));
+        TRACE_1(SERIAL, "Input baud rate changed to %d", (int) cfgetispeed(&tty));
+        TRACE_1(SERIAL, "Output baud rate changed to %d", (int) cfgetospeed(&tty));
 
         unsigned long mics = 1UL;
         if (ioctl(ttyDeviceFileDescriptor, IOSSDATALAT, &mics) == -1)
         {
             // set latency to 1 microsecond
-            TRACE_ERROR(SERIAL, "Error setting read latency %s - %s(%d).\n",
+            TRACE_ERROR(SERIAL, "Error setting read latency %s - %s(%d).",
                         ttyDevicePath.c_str(), strerror(errno), errno);
             goto OPEN_LINK_ERROR;
         }
@@ -552,7 +552,7 @@ int SerialPortMacOS::openLink()
         // Get current serial_struct values
         if (ioctl(ttyDeviceFileDescriptor, TIOCGSERIAL, &serinfo) < 0)
         {
-            TRACE_ERROR(SERIAL, "Cannot get serial infos structure from serial port: '%s'\n", ttyDevicePath.c_str());
+            TRACE_ERROR(SERIAL, "Cannot get serial infos structure from serial port: '%s'", ttyDevicePath.c_str());
             goto OPEN_LINK_ERROR;
         }
 
@@ -575,7 +575,7 @@ int SerialPortMacOS::openLink()
         // Set serial_struct
         if (ioctl(ttyDeviceFileDescriptor, TIOCSSERIAL, &serinfo) < 0)
         {
-            TRACE_ERROR(SERIAL, "Cannot set serial infos structure with custom baud divisor (%s) to serial port: '%s'\n", ttyDeviceBaudRate, ttyDevicePath.c_str());
+            TRACE_ERROR(SERIAL, "Cannot set serial infos structure with custom baud divisor (%s) to serial port: '%s'", ttyDeviceBaudRate, ttyDevicePath.c_str());
             goto OPEN_LINK_ERROR;
         }
     }
@@ -630,17 +630,17 @@ int SerialPortMacOS::tx(unsigned char *packet, int packetLength)
 
             if (writeStatus < 0)
             {
-                TRACE_ERROR(SERIAL, "Cannot write to serial port '%s': write() failed with error code '%i'!\n", ttyDevicePath.c_str(), errno);
+                TRACE_ERROR(SERIAL, "Cannot write to serial port '%s': write() failed with error code '%i'!", ttyDevicePath.c_str(), errno);
             }
         }
         else
         {
-            TRACE_ERROR(SERIAL, "Cannot write to serial port '%s': invalid packet buffer or size!\n", ttyDevicePath.c_str());
+            TRACE_ERROR(SERIAL, "Cannot write to serial port '%s': invalid packet buffer or size!", ttyDevicePath.c_str());
         }
     }
     else
     {
-        TRACE_ERROR(SERIAL, "Cannot write to serial port '%s': invalid device!\n", ttyDevicePath.c_str());
+        TRACE_ERROR(SERIAL, "Cannot write to serial port '%s': invalid device!", ttyDevicePath.c_str());
     }
 
     return writeStatus;
@@ -659,17 +659,17 @@ int SerialPortMacOS::rx(unsigned char *packet, int packetLength)
 
             if (readStatus < 0)
             {
-                TRACE_ERROR(SERIAL, "Cannot read from serial port '%s': read() failed with error code '%i'!\n", ttyDevicePath.c_str(), errno);
+                TRACE_ERROR(SERIAL, "Cannot read from serial port '%s': read() failed with error code '%i'!", ttyDevicePath.c_str(), errno);
             }
         }
         else
         {
-            TRACE_ERROR(SERIAL, "Cannot read from serial port '%s': invalid packet buffer or size!\n", ttyDevicePath.c_str());
+            TRACE_ERROR(SERIAL, "Cannot read from serial port '%s': invalid packet buffer or size!", ttyDevicePath.c_str());
         }
     }
     else
     {
-        TRACE_ERROR(SERIAL, "Cannot read from serial port '%s': invalid device!\n", ttyDevicePath.c_str());
+        TRACE_ERROR(SERIAL, "Cannot read from serial port '%s': invalid device!", ttyDevicePath.c_str());
     }
 
     return readStatus;
@@ -684,7 +684,7 @@ void SerialPortMacOS::flush()
         // Note that this call is simply passed on to the serial device driver.
         if (tcdrain(ttyDeviceFileDescriptor) == -1)
         {
-            TRACE_ERROR(SERIAL, "Error waiting for drain - %s(%d).\n", strerror(errno), errno);
+            TRACE_ERROR(SERIAL, "Error waiting for drain - %s(%d).", strerror(errno), errno);
         }
 */
         //TCIFLUSH: Flushes data received but not read.

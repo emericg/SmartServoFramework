@@ -43,7 +43,7 @@ int serialPortsScannerQt(std::vector <std::string> &availableSerialPorts)
 {
     int retcode = 0;
 
-    TRACE_INFO(SERIAL, "serialPortsScanner() [QtSerialPort variant]\n");
+    TRACE_INFO(SERIAL, "serialPortsScanner() [QtSerialPort variant]");
 
     QSerialPortInfo spi;
 
@@ -59,7 +59,7 @@ int serialPortsScannerQt(std::vector <std::string> &availableSerialPorts)
         qDebug() << "- manufacturer: " << sp.manufacturer();
         qDebug() << "- standard BaudRates: " << sp.standardBaudRates();
 
-        TRACE_INFO(SERIAL, "> Scanning for serial port on '%s' > FOUND\n", sp.systemLocation().toLocal8Bit().data());
+        TRACE_INFO(SERIAL, "> Scanning for serial port on '%s' > FOUND", sp.systemLocation().toLocal8Bit().data());
         availableSerialPorts.push_back(sp.systemLocation().toLocal8Bit().data());
         retcode++;
     }
@@ -93,9 +93,9 @@ SerialPortQt::SerialPortQt(std::string &devicePath, const int baud, const int se
 
         setBaudRate(baud);
 
-        TRACE_INFO(SERIAL, "- Device name has been set to: '%s'\n", ttyDeviceName.c_str());
-        TRACE_INFO(SERIAL, "- Device node has been set to: '%s'\n", ttyDevicePath.c_str());
-        TRACE_INFO(SERIAL, "- Device baud rate has been set to: '%i'\n", ttyDeviceBaudRate);
+        TRACE_INFO(SERIAL, "- Device name has been set to: '%s'", ttyDeviceName.c_str());
+        TRACE_INFO(SERIAL, "- Device node has been set to: '%s'", ttyDevicePath.c_str());
+        TRACE_INFO(SERIAL, "- Device baud rate has been set to: '%i'", ttyDeviceBaudRate);
     }
 
     serial = new QSerialPort();
@@ -139,7 +139,7 @@ int SerialPortQt::convertBaudRateFlag(int baudrate)
 
         if (baudRateFlag != 0)
         {
-            TRACE_1(SERIAL, "convertBaudRateFlag(%i) has been set to %i (exact match)\n", baudrate, baudrate);
+            TRACE_1(SERIAL, "convertBaudRateFlag(%i) has been set to %i (exact match)", baudrate, baudrate);
         }
         else
         {
@@ -153,7 +153,7 @@ int SerialPortQt::convertBaudRateFlag(int baudrate)
                 if ((baudrate > (static_cast<double>(speeds[i]) * 98.5 / 100.0)) && (baudrate < (static_cast<double>(speeds[i]) * 101.5 / 100.0)))
                 {
                     //baudRateFlag = rate_to_constant(speeds[i]);
-                    TRACE_WARNING(SERIAL, "convertBaudRateFlag(%i) has been set to B%i (close enough match, ±1.5%)\n", baudrate, speeds[i]);
+                    TRACE_WARNING(SERIAL, "convertBaudRateFlag(%i) has been set to B%i (close enough match, ±1.5%)", baudrate, speeds[i]);
                     break;
                 }
             }
@@ -163,21 +163,21 @@ int SerialPortQt::convertBaudRateFlag(int baudrate)
             {
                 //ttyCustomSpeed = true;
                 //baudRateFlag = B38400;
-                TRACE_WARNING(SERIAL, "convertBaudRateFlag(%i) has been set to B38400 (custom speed will be used)\n", baudrate);
+                TRACE_WARNING(SERIAL, "convertBaudRateFlag(%i) has been set to B38400 (custom speed will be used)", baudrate);
             }
         }
     }
     else
     {
-        TRACE_ERROR(SERIAL, "Invalid baudrate, using default value of: B1000000\n");
+        TRACE_ERROR(SERIAL, "Invalid baudrate, using default value of: B1000000");
     }
 
     // Fallback
     if (baudRateFlag == 0)
     {
         //baudRateFlag = B1000000;
-        TRACE_ERROR(SERIAL, "Unable to set baud speed at %i: too slow!\n", baudrate);
-        TRACE_ERROR(SERIAL, "Invalid baudrate, using default value of: B1000000\n");
+        TRACE_ERROR(SERIAL, "Unable to set baud speed at %i: too slow!", baudrate);
+        TRACE_ERROR(SERIAL, "Invalid baudrate, using default value of: B1000000");
     }
 
     return baudRateFlag;
@@ -238,7 +238,7 @@ int SerialPortQt::openLink()
     // Check if another instance is using this port
     if (isLocked() == true)
     {
-        TRACE_ERROR(SERIAL, "Cannot connect to serial port: '%s': interface is locked!\n", ttyDevicePath.c_str());
+        TRACE_ERROR(SERIAL, "Cannot connect to serial port: '%s': interface is locked!", ttyDevicePath.c_str());
         goto OPEN_LINK_LOCKED;
     }
 
@@ -248,7 +248,7 @@ int SerialPortQt::openLink()
 
     if (serial->open(QIODevice::ReadWrite) == false)
     {
-        TRACE_ERROR(SERIAL, "Unable to open device on serial port: '%s'\n", ttyDevicePath.c_str());
+        TRACE_ERROR(SERIAL, "Unable to open device on serial port: '%s'", ttyDevicePath.c_str());
         goto OPEN_LINK_ERROR;
     }
 
@@ -259,7 +259,7 @@ int SerialPortQt::openLink()
 
     if (ttyDeviceBaudRate < 1)
     {
-        TRACE_ERROR(SERIAL, "Unable to set baud rate to '%i'bps: invalid value\n", ttyDeviceBaudRate);
+        TRACE_ERROR(SERIAL, "Unable to set baud rate to '%i'bps: invalid value", ttyDeviceBaudRate);
         goto OPEN_LINK_ERROR;
     }
 
@@ -312,17 +312,17 @@ int SerialPortQt::tx(unsigned char *packet, int packetLength)
 
             if (writeStatus < 0)
             {
-                TRACE_ERROR(SERIAL, "Cannot write to serial port '%s': write() failed with error code '%i'!\n", ttyDevicePath.c_str(), errno);
+                TRACE_ERROR(SERIAL, "Cannot write to serial port '%s': write() failed with error code '%i'!", ttyDevicePath.c_str(), errno);
             }
         }
         else
         {
-            TRACE_ERROR(SERIAL, "Cannot write to serial port '%s': invalid packet buffer or size!\n", ttyDevicePath.c_str());
+            TRACE_ERROR(SERIAL, "Cannot write to serial port '%s': invalid packet buffer or size!", ttyDevicePath.c_str());
         }
     }
     else
     {
-        TRACE_ERROR(SERIAL, "Cannot write to serial port '%s': invalid device!\n", ttyDevicePath.c_str());
+        TRACE_ERROR(SERIAL, "Cannot write to serial port '%s': invalid device!", ttyDevicePath.c_str());
     }
 
     return writeStatus;
@@ -342,17 +342,17 @@ int SerialPortQt::rx(unsigned char *packet, int packetLength)
 
             if (readStatus < 0)
             {
-                TRACE_ERROR(SERIAL, "Cannot read from serial port '%s': read() failed with error code '%i'!\n", ttyDevicePath.c_str(), errno);
+                TRACE_ERROR(SERIAL, "Cannot read from serial port '%s': read() failed with error code '%i'!", ttyDevicePath.c_str(), errno);
             }
         }
         else
         {
-            TRACE_ERROR(SERIAL, "Cannot read from serial port '%s': invalid packet buffer or size!\n", ttyDevicePath.c_str());
+            TRACE_ERROR(SERIAL, "Cannot read from serial port '%s': invalid packet buffer or size!", ttyDevicePath.c_str());
         }
     }
     else
     {
-        TRACE_ERROR(SERIAL, "Cannot read from serial port '%s': invalid device!\n", ttyDevicePath.c_str());
+        TRACE_ERROR(SERIAL, "Cannot read from serial port '%s': invalid device!", ttyDevicePath.c_str());
     }
 
     return readStatus;
@@ -407,7 +407,7 @@ void SerialPortQt::setLatency(int latency)
         }
         else
         {
-            TRACE_ERROR(SERIAL, "Unable to find latency info for the current device: '%s'\n", ttyDevicePath.substr(lastbackslash+1).c_str());
+            TRACE_ERROR(SERIAL, "Unable to find latency info for the current device: '%s'", ttyDevicePath.substr(lastbackslash+1).c_str());
         }
     }
 
@@ -417,7 +417,7 @@ void SerialPortQt::setLatency(int latency)
     }
     else
     {
-        TRACE_WARNING(SERIAL, "Invalid latency value: '%i', not in ]0;128[ range.\n", latency);
+        TRACE_WARNING(SERIAL, "Invalid latency value: '%i', not in ]0;128[ range.", latency);
     }
 }
 

@@ -107,7 +107,7 @@ int SerialPort::checkBaudRate(const int baud)
             }
             else
             {
-                TRACE_ERROR(SERIAL, "Invalid baudrate '%i' bps for a HerkuleX device, using default baudrate value of: '%i' bps\n", baud, baudRate);
+                TRACE_ERROR(SERIAL, "Invalid baudrate '%i' bps for a HerkuleX device, using default baudrate value of: '%i' bps", baud, baudRate);
             }
         }
         else if (servoDevices >= SERVO_DYNAMIXEL)
@@ -124,7 +124,7 @@ int SerialPort::checkBaudRate(const int baud)
             }
             else
             {
-                TRACE_ERROR(SERIAL, "Invalid baudrate '%i' bps for a Dynamixel device, using default baudrate value of: '%i' bps\n", baud, baudRate);
+                TRACE_ERROR(SERIAL, "Invalid baudrate '%i' bps for a Dynamixel device, using default baudrate value of: '%i' bps", baud, baudRate);
             }
         }
         else
@@ -136,13 +136,13 @@ int SerialPort::checkBaudRate(const int baud)
             }
             else
             {
-                TRACE_ERROR(SERIAL, "Invalid device class '%i' with baudrate '%i' bps, using default baudrate value of: '%i'bps\n", servoDevices, baud, baudRate);
+                TRACE_ERROR(SERIAL, "Invalid device class '%i' with baudrate '%i' bps, using default baudrate value of: '%i'bps", servoDevices, baud, baudRate);
             }
         }
     }
     else
     {
-        TRACE_ERROR(SERIAL, "Invalid baudrate '%i' bps, using default baudrate value of: '%i' bps\n", baud, baudRate);
+        TRACE_ERROR(SERIAL, "Invalid baudrate '%i' bps, using default baudrate value of: '%i' bps", baud, baudRate);
     }
 
     // Apply bandwith restriction depending on the adapter chip
@@ -151,7 +151,7 @@ int SerialPort::checkBaudRate(const int baud)
         if (baudRate > 4500000)
         {
             baudRate = 4500000;
-            TRACE_ERROR(SERIAL, "Invalid baudrate ('%i' > 4500000): too high for SERIAL_USB2DYNAMIXEL or or FTDI based device, using default baudrate value of: '1000000'\n", baud);
+            TRACE_ERROR(SERIAL, "Invalid baudrate ('%i' > 4500000): too high for SERIAL_USB2DYNAMIXEL or or FTDI based device, using default baudrate value of: '1000000'", baud);
         }
     }
     else if (serialDevice == SERIAL_USB2AX)
@@ -159,7 +159,7 @@ int SerialPort::checkBaudRate(const int baud)
         if (baudRate > 1000000)
         {
             baudRate = 1000000;
-            TRACE_ERROR(SERIAL, "Invalid baudrate ('%i' > 1000000): too high for USB2AX device, using default baudrate value of: '1000000'\n", baud);
+            TRACE_ERROR(SERIAL, "Invalid baudrate ('%i' > 1000000): too high for USB2AX device, using default baudrate value of: '1000000'", baud);
         }
     }
     else if (serialDevice == SERIAL_ZIG100)
@@ -167,7 +167,7 @@ int SerialPort::checkBaudRate(const int baud)
         if (baudRate > 115200)
         {
             baudRate = 115200;
-            TRACE_ERROR(SERIAL, "Invalid baudrate ('%i' > 115200): too high for ZIG-100/110A device, using fallback baudrate value of: '115200'\n", baud);
+            TRACE_ERROR(SERIAL, "Invalid baudrate ('%i' > 115200): too high for ZIG-100/110A device, using fallback baudrate value of: '115200'", baud);
         }
     }
 
@@ -199,7 +199,7 @@ std::vector <std::string> SerialPort::scanSerialPorts()
     if (serialPortsScanner(availableSerialPorts) == 0)
 #endif
     {
-        TRACE_WARNING(SERIAL, "No serial ports found during scan...\n");
+        TRACE_WARNING(SERIAL, "No serial ports found during scan...");
     }
 
     return availableSerialPorts;
@@ -228,7 +228,7 @@ void SerialPort::setLatency(int latency)
     }
     else
     {
-        TRACE_WARNING(SERIAL, "Invalid latency value: '%i', not in ]0;128[ range.\n", latency);
+        TRACE_WARNING(SERIAL, "Invalid latency value: '%i', not in ]0;128[ range.", latency);
     }
 }
 

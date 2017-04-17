@@ -90,7 +90,7 @@ const int (*getRegisterTable(const int servo_model))[8]
 
     if (ct == NULL)
     {
-        TRACE_ERROR(TABLES, "Unable to find a suitable 'Control Table' for servo_model: '%i'\n", servo_model);
+        TRACE_ERROR(TABLES, "Unable to find a suitable 'Control Table' for servo_model: '%i'", servo_model);
     }
 
     return ct;
@@ -157,7 +157,7 @@ const int (*getRegisterTable(const int servo_serie, const int servo_model))[8]
 
     if (ct == NULL)
     {
-        TRACE_ERROR(TABLES, "Unable to find a suitable 'Control Table' for servo_serie: '%i' / servo_model: '%i'\n", servo_serie, servo_model);
+        TRACE_ERROR(TABLES, "Unable to find a suitable 'Control Table' for servo_serie: '%i' / servo_model: '%i'", servo_serie, servo_model);
     }
 
     return ct;
@@ -174,7 +174,7 @@ unsigned getRegisterCount(const int ct[][8])
         {
             if (ct[i][0] == 999)
             {
-                TRACE_1(TABLES, "Control table size is: '%i'\n", i);
+                TRACE_1(TABLES, "Control table size is: '%i'", i);
                 count = i;
                 break; // exit search loop
             }
@@ -190,11 +190,11 @@ int getRegisterInfos(const int ct[][8], const int reg_name, RegisterInfos &infos
 
     if (ct != NULL)
     {
-        TRACE_1(TABLES, "Control table size is: '%i'\n", getRegisterCount(ct));
+        TRACE_1(TABLES, "Control table size is: '%i'", getRegisterCount(ct));
 
         for (unsigned i = 0; i < getRegisterCount(ct); i++)
         {
-            TRACE_1(TABLES, "Control table [%i / %i] value: '%i'\n", i, getRegisterCount(ct), ct[i][0]);
+            TRACE_1(TABLES, "Control table [%i / %i] value: '%i'", i, getRegisterCount(ct), ct[i][0]);
 
             if (ct[i][0] == reg_name) // match register name
             {

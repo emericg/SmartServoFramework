@@ -99,31 +99,31 @@ void ServoDynamixel::status()
 {
     std::lock_guard <std::mutex> lock(access);
 
-    TRACE_INFO(DXL, "Status(#%i)\n", servoId);
+    TRACE_INFO(DXL, "Status(#%i)", servoId);
 
-    TRACE_INFO(DXL, "> model      : %i\n", servoModel);
-    TRACE_INFO(DXL, "> firmware   : %i\n", registerTableValues[gid(REG_FIRMWARE_VERSION)]);
-    TRACE_INFO(DXL, "> baudrate   : %i\n", dxl_get_baudrate(registerTableValues[gid(REG_BAUD_RATE)]));
+    TRACE_INFO(DXL, "> model      : %i", servoModel);
+    TRACE_INFO(DXL, "> firmware   : %i", registerTableValues[gid(REG_FIRMWARE_VERSION)]);
+    TRACE_INFO(DXL, "> baudrate   : %i", dxl_get_baudrate(registerTableValues[gid(REG_BAUD_RATE)]));
 
-    TRACE_INFO(DXL, ">> speed mode     : %i\n", speedMode);
-    TRACE_INFO(DXL, ">> steps          : %i\n", steps);
-    TRACE_INFO(DXL, ">> runningDegrees : %i\n", runningDegrees);
+    TRACE_INFO(DXL, ">> speed mode     : %i", speedMode);
+    TRACE_INFO(DXL, ">> steps          : %i", steps);
+    TRACE_INFO(DXL, ">> runningDegrees : %i", runningDegrees);
 
-    TRACE_INFO(DXL, "> torque enabled  : %i\n", registerTableValues[gid(REG_TORQUE_ENABLE)]);
-    TRACE_INFO(DXL, "> max torque      : %i\n", registerTableValues[gid(REG_MAX_TORQUE)]);
-    TRACE_INFO(DXL, "> torque limit    : %i\n", registerTableValues[gid(REG_TORQUE_LIMIT)]);
+    TRACE_INFO(DXL, "> torque enabled  : %i", registerTableValues[gid(REG_TORQUE_ENABLE)]);
+    TRACE_INFO(DXL, "> max torque      : %i", registerTableValues[gid(REG_MAX_TORQUE)]);
+    TRACE_INFO(DXL, "> torque limit    : %i", registerTableValues[gid(REG_TORQUE_LIMIT)]);
 
-    TRACE_INFO(DXL, "> goal position   : %i\n", registerTableValues[gid(REG_GOAL_POSITION)]);
-    TRACE_INFO(DXL, "> goal speed      : %i\n", registerTableValues[gid(REG_GOAL_SPEED)]);
-    TRACE_INFO(DXL, "> current position: %i\n", registerTableValues[gid(REG_CURRENT_POSITION)]);
-    TRACE_INFO(DXL, "> current speed   : %i\n", registerTableValues[gid(REG_CURRENT_SPEED)]);
-    TRACE_INFO(DXL, "> current load    : %i\n", registerTableValues[gid(REG_CURRENT_LOAD)]);
-    TRACE_INFO(DXL, "> current voltage : %i\n", registerTableValues[gid(REG_CURRENT_VOLTAGE)]);
-    TRACE_INFO(DXL, "> current temp    : %i\n", registerTableValues[gid(REG_CURRENT_TEMPERATURE)]);
-    TRACE_INFO(DXL, "> registered      : %i\n", registerTableValues[gid(REG_REGISTERED)]);
-    TRACE_INFO(DXL, "> moving          : %i\n", registerTableValues[gid(REG_MOVING)]);
-    TRACE_INFO(DXL, "> lock            : %i\n", registerTableValues[gid(REG_LOCK)]);
-    TRACE_INFO(DXL, "> punch           : %i\n", registerTableValues[gid(REG_PUNCH)]);
+    TRACE_INFO(DXL, "> goal position   : %i", registerTableValues[gid(REG_GOAL_POSITION)]);
+    TRACE_INFO(DXL, "> goal speed      : %i", registerTableValues[gid(REG_GOAL_SPEED)]);
+    TRACE_INFO(DXL, "> current position: %i", registerTableValues[gid(REG_CURRENT_POSITION)]);
+    TRACE_INFO(DXL, "> current speed   : %i", registerTableValues[gid(REG_CURRENT_SPEED)]);
+    TRACE_INFO(DXL, "> current load    : %i", registerTableValues[gid(REG_CURRENT_LOAD)]);
+    TRACE_INFO(DXL, "> current voltage : %i", registerTableValues[gid(REG_CURRENT_VOLTAGE)]);
+    TRACE_INFO(DXL, "> current temp    : %i", registerTableValues[gid(REG_CURRENT_TEMPERATURE)]);
+    TRACE_INFO(DXL, "> registered      : %i", registerTableValues[gid(REG_REGISTERED)]);
+    TRACE_INFO(DXL, "> moving          : %i", registerTableValues[gid(REG_MOVING)]);
+    TRACE_INFO(DXL, "> lock            : %i", registerTableValues[gid(REG_LOCK)]);
+    TRACE_INFO(DXL, "> punch           : %i", registerTableValues[gid(REG_PUNCH)]);
 }
 
 std::string ServoDynamixel::getModelString()
@@ -178,11 +178,11 @@ void ServoDynamixel::waitMovementCompletion(int timeout_ms)
     {
         access.unlock();
 
-        TRACE_2(DXL, "waitMovementCompletion(%i < pos: %i < %i)\n", margin_dw, c, margin_up);
+        TRACE_2(DXL, "waitMovementCompletion(%i < pos: %i < %i)", margin_dw, c, margin_up);
 
         if ((start + timeout_duration) < std::chrono::system_clock::now())
         {
-            TRACE_WARNING(DXL, "waitMovementCompletion() timeout!\n", margin_dw, c, margin_up);
+            TRACE_WARNING(DXL, "waitMovementCompletion() timeout!", margin_dw, c, margin_up);
             return;
         }
 
@@ -317,7 +317,7 @@ int ServoDynamixel::getPunch()
 
 void ServoDynamixel::setId(int id)
 {
-    TRACE_1(DXL, "[#%i] setId(from %i to %i)\n", servoId, servoId, id);
+    TRACE_1(DXL, "[#%i] setId(from %i to %i)", servoId, servoId, id);
 
     if (id > -1 && id < 254)
     {
@@ -331,7 +331,7 @@ void ServoDynamixel::setId(int id)
 
 void ServoDynamixel::setCWLimit(int limit)
 {
-    TRACE_1(DXL, "[#%i] setCWLimit(%i)\n", servoId, limit);
+    TRACE_1(DXL, "[#%i] setCWLimit(%i)", servoId, limit);
 
     if (limit > -1 && limit < steps)
     {
@@ -344,7 +344,7 @@ void ServoDynamixel::setCWLimit(int limit)
 
 void ServoDynamixel::setCCWLimit(int limit)
 {
-    TRACE_1(DXL, "[#%i] setCCWLimit(%i)\n", servoId, limit);
+    TRACE_1(DXL, "[#%i] setCCWLimit(%i)", servoId, limit);
 
     if (limit > -1 && limit < steps)
     {
@@ -357,7 +357,7 @@ void ServoDynamixel::setCCWLimit(int limit)
 
 void ServoDynamixel::setGoalPosition(int pos)
 {
-    TRACE_1(DXL, "[#%i] setGoalPosition(%i)\n", servoId, pos);
+    TRACE_1(DXL, "[#%i] setGoalPosition(%i)", servoId, pos);
 
     if (pos > -1 && pos < steps)
     {
@@ -379,13 +379,13 @@ void ServoDynamixel::setGoalPosition(int pos)
     }
     else
     {
-        TRACE_ERROR(DXL, "[#%i] setGoalPosition(%i > %i) [VALUE ERROR]\n", servoId, registerTableValues[gid(REG_CURRENT_POSITION)], pos);
+        TRACE_ERROR(DXL, "[#%i] setGoalPosition(%i > %i) [VALUE ERROR]", servoId, registerTableValues[gid(REG_CURRENT_POSITION)], pos);
     }
 }
 
 void ServoDynamixel::setGoalPosition(int pos, int time_budget_ms)
 {
-    TRACE_1(DXL, "[#%i] setGoalPosition(%i in %ims)\n", servoId, pos, time_budget_ms);
+    TRACE_1(DXL, "[#%i] setGoalPosition(%i in %ims)", servoId, pos, time_budget_ms);
 
     if (time_budget_ms > 0)
     {
@@ -425,14 +425,14 @@ void ServoDynamixel::setGoalPosition(int pos, int time_budget_ms)
         }
         else
         {
-            TRACE_ERROR(DXL, "[#%i] setGoalPosition(%i > %i) [VALUE ERROR]\n", servoId, registerTableValues[gid(REG_CURRENT_POSITION)], pos);
+            TRACE_ERROR(DXL, "[#%i] setGoalPosition(%i > %i) [VALUE ERROR]", servoId, registerTableValues[gid(REG_CURRENT_POSITION)], pos);
         }
     }
 }
 
 void ServoDynamixel::moveGoalPosition(int move)
 {
-    TRACE_1(DXL, "[#%i] moveGoalPosition(%i)\n", servoId, move);
+    TRACE_1(DXL, "[#%i] moveGoalPosition(%i)", servoId, move);
 
     access.lock();
 
@@ -446,7 +446,7 @@ void ServoDynamixel::moveGoalPosition(int move)
         {
             int mod = newpos % steps;
 
-            TRACE_ERROR(DXL, "[#%i]  moveGoalPosition([%i > %i]) [VALUE ERROR] with modulo: %i\n", servoId, curr, newpos, mod);
+            TRACE_ERROR(DXL, "[#%i]  moveGoalPosition([%i > %i]) [VALUE ERROR] with modulo: %i", servoId, curr, newpos, mod);
         }
     }
 
@@ -457,7 +457,7 @@ void ServoDynamixel::moveGoalPosition(int move)
 
 void ServoDynamixel::setMovingSpeed(int speed)
 {
-    TRACE_1(DXL, "[#%i] setMovingSpeed(%i)\n", servoId, speed);
+    TRACE_1(DXL, "[#%i] setMovingSpeed(%i)", servoId, speed);
 
     std::lock_guard <std::mutex> lock(access);
 
@@ -482,7 +482,7 @@ void ServoDynamixel::setMovingSpeed(int speed)
 
 void ServoDynamixel::setMaxTorque(int torque)
 {
-    TRACE_1(DXL, "[#%i] setMaxTorque(%i)\n", servoId, torque);
+    TRACE_1(DXL, "[#%i] setMaxTorque(%i)", servoId, torque);
 
     if (torque < 1024)
     {
@@ -495,7 +495,7 @@ void ServoDynamixel::setMaxTorque(int torque)
 
 void ServoDynamixel::setLed(int led)
 {
-    TRACE_1(DXL, "[#%i] setLed(%i)\n", servoId, led);
+    TRACE_1(DXL, "[#%i] setLed(%i)", servoId, led);
 
     // Normalize value
     if (led >= 1)
@@ -515,7 +515,7 @@ void ServoDynamixel::setLed(int led)
 
 void ServoDynamixel::setTorqueEnabled(int torque)
 {
-    TRACE_1(DXL, "[#%i] setTorqueEnabled(%i)\n", servoId, torque);
+    TRACE_1(DXL, "[#%i] setTorqueEnabled(%i)", servoId, torque);
 
     // Normalize value
     (torque > 0) ? torque = 1 : torque = 0;

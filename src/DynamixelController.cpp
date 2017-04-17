@@ -53,7 +53,7 @@ void DynamixelController::updateInternalSettings()
             maxId = 253;
 
             protocolVersion = 1;
-            TRACE_INFO(CAPI, "- Using HerkuleX communication protocol\n");
+            TRACE_INFO(CAPI, "- Using HerkuleX communication protocol");
         }
         else if (servoSerie >= SERVO_DYNAMIXEL)
         {
@@ -81,17 +81,17 @@ void DynamixelController::updateInternalSettings()
 
             if (protocolVersion == 2)
             {
-                TRACE_INFO(CAPI, "- Using Dynamixel communication protocol version 2\n");
+                TRACE_INFO(CAPI, "- Using Dynamixel communication protocol version 2");
             }
             else
             {
-                TRACE_INFO(CAPI, "- Using Dynamixel communication protocol version 1\n");
+                TRACE_INFO(CAPI, "- Using Dynamixel communication protocol version 1");
             }
         }
     }
     else
     {
-        TRACE_WARNING(CAPI, "Warning: Unknown servo serie!\n");
+        TRACE_WARNING(CAPI, "Warning: Unknown servo serie!");
     }
 }
 
@@ -111,17 +111,17 @@ void DynamixelController::changeProtocolVersion(int protocol)
             {
                 maxId = 253;
             }
-            TRACE_INFO(CAPI, "- Using Dynamixel communication protocol version 1\n");
+            TRACE_INFO(CAPI, "- Using Dynamixel communication protocol version 1");
         }
         else if (protocol == 2)
         {
             protocolVersion = 2;
             maxId = 252;
-            TRACE_INFO(CAPI, "- Using Dynamixel communication protocol version 2\n");
+            TRACE_INFO(CAPI, "- Using Dynamixel communication protocol version 2");
         }
         else
         {
-            TRACE_ERROR(CAPI, "- Unknown Dynamixel communication protocol (version %i), unable to use it!\n", protocol);
+            TRACE_ERROR(CAPI, "- Unknown Dynamixel communication protocol (version %i), unable to use it!", protocol);
         }
     }
 }
@@ -189,10 +189,10 @@ void DynamixelController::autodetect_internal(int start, int stop)
     serialSetLatency(8);
 #endif
 
-    TRACE_INFO(CAPI, "DXL ctrl_device_autodetect(port: '%s' / tid: '%i')\n",
+    TRACE_INFO(CAPI, "DXL ctrl_device_autodetect(port: '%s' / tid: '%i')",
                serialGetCurrentDevice().c_str(), std::this_thread::get_id());
 
-    TRACE_INFO(CAPI, "> THREADED Scanning for DXL devices on '%s', protocol v%i, range is [%i,%i[\n",
+    TRACE_INFO(CAPI, "> THREADED Scanning for DXL devices on '%s', protocol v%i, range is [%i,%i[",
                serialGetCurrentDevice().c_str(), protocolVersion, start, stop);
 
     for (int id = start; id <= stop; id++)
@@ -208,7 +208,7 @@ void DynamixelController::autodetect_internal(int start, int stop)
             dxl_get_model_infos(pingstats.model_number, serie, model);
             ServoDynamixel *servo = NULL;
 
-            TRACE_INFO(DXL, "[#%i] %s servo found!\n", id, dxl_get_model_name(pingstats.model_number).c_str());
+            TRACE_INFO(DXL, "[#%i] %s servo found!", id, dxl_get_model_name(pingstats.model_number).c_str());
 
             // Instanciate the device found
             switch (serie)
@@ -269,7 +269,7 @@ void DynamixelController::autodetect_internal(int start, int stop)
 
 void DynamixelController::run()
 {
-    TRACE_INFO(CAPI, "DynamixelController::run(port: '%s' / tid: '%i')\n",
+    TRACE_INFO(CAPI, "DynamixelController::run(port: '%s' / tid: '%i')",
                serialGetCurrentDevice().c_str(), std::this_thread::get_id());
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
@@ -316,14 +316,14 @@ void DynamixelController::run()
                 break;
 
             case ctrl_state_pause:
-                TRACE_INFO(CAPI, ">> THREAD (tid: '%i') paused by message\n", std::this_thread::get_id());
+                TRACE_INFO(CAPI, ">> THREAD (tid: '%i') paused by message", std::this_thread::get_id());
                 m_mutex.lock();
                 m_queue.pop_front();
                 m_mutex.unlock();
                 return;
                 break;
             case ctrl_state_stop:
-                TRACE_INFO(CAPI, ">> THREAD (tid: '%i') termination by 'stop message'\n", std::this_thread::get_id());
+                TRACE_INFO(CAPI, ">> THREAD (tid: '%i') termination by 'stop message'", std::this_thread::get_id());
                 m_mutex.lock();
                 m_queue.pop_front();
                 m_mutex.unlock();
@@ -331,7 +331,7 @@ void DynamixelController::run()
                 break;
 
             default:
-                TRACE_WARNING(DXL, "Unknown message type: '%i'\n", m.msg);
+                TRACE_WARNING(DXL, "Unknown message type: '%i'", m.msg);
                 break;
             }
 
@@ -356,13 +356,13 @@ void DynamixelController::run()
             {
                 // Every servo register value will be updated
                 updateList.push_back(id);
-                TRACE_INFO(DXL, "Refresh servo #%i registers\n", id);
+                TRACE_INFO(DXL, "Refresh servo #%i registers", id);
             }
 
             if (actionProgrammed == 1)
             {
                 dxl_action(id, ack);
-                TRACE_INFO(DXL, "Action for servo #%i\n", id);
+                TRACE_INFO(DXL, "Action for servo #%i", id);
             }
 
             if (rebootProgrammed == 1)
@@ -385,7 +385,7 @@ void DynamixelController::run()
 
                 // Reboot
                 dxl_reboot(id, ack);
-                TRACE_INFO(DXL, "Rebooting servo #%i...\n", id);
+                TRACE_INFO(DXL, "Rebooting servo #%i...", id);
 
                 miniMessages m {ctrl_device_delayed_add, std::chrono::system_clock::now() + std::chrono::seconds(2), NULL, id, 0};
                 sendMessage(&m);
@@ -411,7 +411,7 @@ void DynamixelController::run()
 
                 // Reset
                 dxl_reset(id, resetProgrammed, ack);
-                TRACE_INFO(DXL, "Resetting servo #%i (setting: %i)...\n", id, resetProgrammed);
+                TRACE_INFO(DXL, "Resetting servo #%i (setting: %i)...", id, resetProgrammed);
 
                 miniMessages m {ctrl_device_delayed_add, std::chrono::system_clock::now() + std::chrono::seconds(2), NULL, id, 1};
                 sendMessage(&m);
@@ -493,7 +493,7 @@ void DynamixelController::run()
                     // Count must be high enough to avoid "false positive": device producing a lot of errors but still present on the serial link
                     if (s->getErrorCount() > 16)
                     {
-                        TRACE_ERROR(DXL, "Device #%i has an error count too high and is going to be unregistered from its controller on '%s'...\n", id, serialGetCurrentDevice().c_str());
+                        TRACE_ERROR(DXL, "Device #%i has an error count too high and is going to be unregistered from its controller on '%s'...", id, serialGetCurrentDevice().c_str());
                         unregisterServo(s);
                         continue;
                     }
@@ -740,11 +740,11 @@ void DynamixelController::run()
 #ifdef LATENCY_TIMER
         if ((loopd / 1000.0) > syncloopDuration)
         {
-            TRACE_WARNING(DXL, "Sync loop duration: %fms of the %fms budget.\n", (loopd / 1000.0), syncloopDuration);
+            TRACE_WARNING(DXL, "Sync loop duration: %fms of the %fms budget.", (loopd / 1000.0), syncloopDuration);
         }
         else
         {
-            TRACE_INFO(DXL, "Sync loop duration: %fms of the %fms budget.\n", (loopd / 1000.0), syncloopDuration);
+            TRACE_INFO(DXL, "Sync loop duration: %fms of the %fms budget.", (loopd / 1000.0), syncloopDuration);
         }
 #endif
 
@@ -755,5 +755,5 @@ void DynamixelController::run()
         }
     }
 
-    TRACE_INFO(DXL, ">> THREAD (tid: '%i') termination by 'loop exit'\n", std::this_thread::get_id());
+    TRACE_INFO(DXL, ">> THREAD (tid: '%i') termination by 'loop exit'", std::this_thread::get_id());
 }

@@ -61,7 +61,7 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
     std::string portBase = "/dev/tty";
     std::string portVariations[4] = {"USB", "ACM", "S", ""};
 
-    TRACE_INFO(SERIAL, "serialPortsScanner() [Linux variant]\n");
+    TRACE_INFO(SERIAL, "serialPortsScanner() [Linux variant]");
 
     // Serial ports from USB adapters (/dev/ttyUSB*) (ftdi or other chips)
     // Serial ports from USB adapters (/dev/ttyACM*) ("abstract control model")
@@ -90,7 +90,7 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
                     //struct serial_struct serinfo;
                     //if (ioctl(fd, TIOCGSERIAL, &serinfo) > -1)
                     {
-                        TRACE_INFO(SERIAL, "- Scanning for serial port on '%s' > FOUND\n", portPath.c_str());
+                        TRACE_INFO(SERIAL, "- Scanning for serial port on '%s' > FOUND", portPath.c_str());
                         availableSerialPorts.push_back(portPath);
                         retcode++;
                     }
@@ -98,7 +98,7 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
 //#ifdef LOCK_LOCKDEV
 //                else
 //                {
-//                    TRACE_WARNING(SERIAL, "- Scanning for serial port on '%s' > LOCKED\n", portPath.c_str());
+//                    TRACE_WARNING(SERIAL, "- Scanning for serial port on '%s' > LOCKED", portPath.c_str());
 //                }
 //#endif
                 close(fd);
@@ -139,16 +139,16 @@ SerialPortLinux::SerialPortLinux(std::string &devicePath, const int baud, const 
 
         setBaudRate(baud);
 
-        TRACE_INFO(SERIAL, "- Device name has been set to: '%s'\n", ttyDeviceName.c_str());
-        TRACE_INFO(SERIAL, "- Device node has been set to: '%s'\n", ttyDevicePath.c_str());
-        TRACE_INFO(SERIAL, "- Device baud rate has been set to: '%i'\n", ttyDeviceBaudRate);
+        TRACE_INFO(SERIAL, "- Device name has been set to: '%s'", ttyDeviceName.c_str());
+        TRACE_INFO(SERIAL, "- Device node has been set to: '%s'", ttyDevicePath.c_str());
+        TRACE_INFO(SERIAL, "- Device baud rate has been set to: '%i'", ttyDeviceBaudRate);
     }
 /*
     // Autodetect latency time value for FTDI based devices
     if (serialDevice == SERIAL_USB2DYNAMIXEL || serialDevice == SERIAL_OTHER_FTDI)
     {
         setLatency(0);
-        TRACE_INFO(SERIAL, "- Device latency time has been set to: '%i'\n", ttyDeviceLatencyTime);
+        TRACE_INFO(SERIAL, "- Device latency time has been set to: '%i'", ttyDeviceLatencyTime);
     }
 */
 }
@@ -199,7 +199,7 @@ int SerialPortLinux::convertBaudRateFlag(int baudrate)
 
         if (baudRateFlag != 0)
         {
-            TRACE_1(SERIAL, "convertBaudRateFlag(%i) has been set to %i (exact match)\n", baudrate, baudrate);
+            TRACE_1(SERIAL, "convertBaudRateFlag(%i) has been set to %i (exact match)", baudrate, baudrate);
         }
         else
         {
@@ -213,7 +213,7 @@ int SerialPortLinux::convertBaudRateFlag(int baudrate)
                 if ((baudrate > (static_cast<double>(speeds[i]) * 98.5 / 100.0)) && (baudrate < (static_cast<double>(speeds[i]) * 101.5 / 100.0)))
                 {
                     baudRateFlag = rate_to_constant(speeds[i]);
-                    TRACE_WARNING(SERIAL, "convertBaudRateFlag(%i) has been set to B%i (close enough match, ±1.5%)\n", baudrate, speeds[i]);
+                    TRACE_WARNING(SERIAL, "convertBaudRateFlag(%i) has been set to B%i (close enough match, ±1.5%)", baudrate, speeds[i]);
                     break;
                 }
             }
@@ -223,21 +223,21 @@ int SerialPortLinux::convertBaudRateFlag(int baudrate)
             {
                 ttyCustomSpeed = true;
                 baudRateFlag = B38400;
-                TRACE_WARNING(SERIAL, "convertBaudRateFlag(%i) has been set to B38400 (custom speed will be used)\n", baudrate);
+                TRACE_WARNING(SERIAL, "convertBaudRateFlag(%i) has been set to B38400 (custom speed will be used)", baudrate);
             }
         }
     }
     else
     {
-        TRACE_ERROR(SERIAL, "Invalid baudrate, using default value of: B1000000\n");
+        TRACE_ERROR(SERIAL, "Invalid baudrate, using default value of: B1000000");
     }
 
     // Fallback
     if (baudRateFlag == 0)
     {
         baudRateFlag = B1000000;
-        TRACE_ERROR(SERIAL, "Unable to set baud speed at %i: too slow!\n", baudrate);
-        TRACE_ERROR(SERIAL, "Invalid baudrate, using default value of: B1000000\n");
+        TRACE_ERROR(SERIAL, "Unable to set baud speed at %i: too slow!", baudrate);
+        TRACE_ERROR(SERIAL, "Invalid baudrate, using default value of: B1000000");
     }
 
     return baudRateFlag;
@@ -261,15 +261,15 @@ bool SerialPortLinux::isLocked()
 
                 if (strcmp(buf, ss.str().c_str()) != 0)
                 {
-                    TRACE_WARNING(SERIAL, "- Device '%s' is LOCKED\n", ttyDevicePath.c_str());
-                    TRACE_1(SERIAL, "Lock from another instance or program found at: '%s'\n", ttyDeviceLockPath.c_str());
+                    TRACE_WARNING(SERIAL, "- Device '%s' is LOCKED", ttyDevicePath.c_str());
+                    TRACE_1(SERIAL, "Lock from another instance or program found at: '%s'", ttyDeviceLockPath.c_str());
                     status = true;
                 }
             }
             else
             {
-                TRACE_WARNING(SERIAL, "- Device '%s' is LOCKED\n", ttyDevicePath.c_str());
-                TRACE_1(SERIAL, "Lock found at: '%s'\n", ttyDeviceLockPath.c_str());
+                TRACE_WARNING(SERIAL, "- Device '%s' is LOCKED", ttyDevicePath.c_str());
+                TRACE_1(SERIAL, "Lock found at: '%s'", ttyDeviceLockPath.c_str());
                 status = true;
             }
 
@@ -282,7 +282,7 @@ bool SerialPortLinux::isLocked()
     if (dev_testlock(ttyDeviceName.c_str()) != 0)
     {
         status = true;
-        TRACE_WARNING(SERIAL, "- Device '%s' is LOCKED\n", ttyDevicePath.c_str());
+        TRACE_WARNING(SERIAL, "- Device '%s' is LOCKED", ttyDevicePath.c_str());
     }
 #endif
 
@@ -295,7 +295,7 @@ bool SerialPortLinux::isLocked()
     else
     {
         status = true;
-        TRACE_WARNING(SERIAL, "- Device '%s' is LOCKED\n", ttyDevicePath.c_str());
+        TRACE_WARNING(SERIAL, "- Device '%s' is LOCKED", ttyDevicePath.c_str());
     }
 #endif
 
@@ -323,11 +323,11 @@ bool SerialPortLinux::setLock()
                 std::fclose(lock);
 
                 status = true;
-                TRACE_INFO(SERIAL, "- Device lock set at: '%s' for tid: '%i'\n", ttyDeviceLockPath.c_str(), std::this_thread::get_id());
+                TRACE_INFO(SERIAL, "- Device lock set at: '%s' for tid: '%i'", ttyDeviceLockPath.c_str(), std::this_thread::get_id());
             }
             else
             {
-                TRACE_ERROR(SERIAL, "- Unable to set lockfile '%s':  do you have necessary permissions to write in this directory?\n", ttyDeviceLockPath.c_str());
+                TRACE_ERROR(SERIAL, "- Unable to set lockfile '%s':  do you have necessary permissions to write in this directory?", ttyDeviceLockPath.c_str());
             }
         }
 #endif
@@ -336,11 +336,11 @@ bool SerialPortLinux::setLock()
         if (dev_lock(ttyDeviceName.c_str()) == 0)
         {
             status = true;
-            TRACE_INFO(SERIAL, "- Device lock set at: '%s' for tid: '%i'\n", ttyDeviceLockPath.c_str(), std::this_thread::get_id());
+            TRACE_INFO(SERIAL, "- Device lock set at: '%s' for tid: '%i'", ttyDeviceLockPath.c_str(), std::this_thread::get_id());
         }
         else
         {
-            TRACE_ERROR(SERIAL, "- Unable to use lockdev for '%s':  do you have necessary permissions?\n", ttyDevicePath.c_str());
+            TRACE_ERROR(SERIAL, "- Unable to use lockdev for '%s':  do you have necessary permissions?", ttyDevicePath.c_str());
         }
 #endif
 
@@ -351,31 +351,31 @@ bool SerialPortLinux::setLock()
         if (flock(ttyDeviceFileDescriptor, LOCK_EX | LOCK_NB) == 0)
         {
             status = true;
-            TRACE_INFO(SERIAL, "- Device lock set for '%s'\n", ttyDevicePath.c_str());
+            TRACE_INFO(SERIAL, "- Device lock set for '%s'", ttyDevicePath.c_str());
         }
         else
         {
-            TRACE_ERROR(SERIAL, "- Unable to use flock for '%s':  do you have necessary permissions?\n", ttyDevicePath.c_str());
+            TRACE_ERROR(SERIAL, "- Unable to use flock for '%s':  do you have necessary permissions?", ttyDevicePath.c_str());
 
             if (errno == EBADF)
             {
-                TRACE_ERROR(SERIAL, "EBADF\n");
+                TRACE_ERROR(SERIAL, "EBADF");
             }
             if (errno == EINTR)
             {
-                TRACE_ERROR(SERIAL, "EINTR\n");
+                TRACE_ERROR(SERIAL, "EINTR");
             }
             if (errno == EINVAL)
             {
-                TRACE_ERROR(SERIAL, "EINVAL\n");
+                TRACE_ERROR(SERIAL, "EINVAL");
             }
             if (errno == ENOLCK)
             {
-                TRACE_ERROR(SERIAL, "ENOLCK\n");
+                TRACE_ERROR(SERIAL, "ENOLCK");
             }
             if (errno == EWOULDBLOCK)
             {
-                TRACE_ERROR(SERIAL, "EWOULDBLOCK\n");
+                TRACE_ERROR(SERIAL, "EWOULDBLOCK");
             }
         }
 #endif
@@ -394,11 +394,11 @@ bool SerialPortLinux::removeLock()
         if (std::remove(ttyDeviceLockPath.c_str()) == 0)
         {
             status = true;
-            TRACE_INFO(SERIAL, "Lock removed for device '%s'\n", ttyDevicePath.c_str());
+            TRACE_INFO(SERIAL, "Lock removed for device '%s'", ttyDevicePath.c_str());
         }
         else
         {
-            TRACE_ERROR(SERIAL, "Error when unlocking port '%s'!\n", ttyDevicePath.c_str());
+            TRACE_ERROR(SERIAL, "Error when unlocking port '%s'!", ttyDevicePath.c_str());
         }
     }
 #endif
@@ -408,11 +408,11 @@ bool SerialPortLinux::removeLock()
     if (dev_unlock(ttyDeviceName.c_str(), pid) == 0)
     {
         status = true;
-        TRACE_INFO(SERIAL, "Lock removed for device '%s'\n", ttyDevicePath.c_str());
+        TRACE_INFO(SERIAL, "Lock removed for device '%s'", ttyDevicePath.c_str());
     }
     else
     {
-        TRACE_ERROR(SERIAL, "Error when unlocking port '%s'! error: %i!\n", ttyDevicePath.c_str(), errno);
+        TRACE_ERROR(SERIAL, "Error when unlocking port '%s'! error: %i!", ttyDevicePath.c_str(), errno);
     }
 #endif
 
@@ -423,11 +423,11 @@ bool SerialPortLinux::removeLock()
     if (flock(ttyDeviceFileDescriptor, LOCK_UN | LOCK_NB) == 0)
     {
         status = true;
-        TRACE_INFO(SERIAL, "Lock removed for device '%s'\n", ttyDevicePath);
+        TRACE_INFO(SERIAL, "Lock removed for device '%s'", ttyDevicePath);
     }
     else
     {
-        TRACE_ERROR(SERIAL, "Error when unlocking port '%s'! error: %i!\n", ttyDevicePath, errno);
+        TRACE_ERROR(SERIAL, "Error when unlocking port '%s'! error: %i!", ttyDevicePath, errno);
     }
 #endif
 
@@ -445,7 +445,7 @@ int SerialPortLinux::openLink()
     // Check if another instance is using this port
     if (isLocked() == true)
     {
-        TRACE_ERROR(SERIAL, "Cannot connect to serial port: '%s': interface is locked!\n", ttyDevicePath.c_str());
+        TRACE_ERROR(SERIAL, "Cannot connect to serial port: '%s': interface is locked!", ttyDevicePath.c_str());
         goto OPEN_LINK_LOCKED;
     }
 
@@ -457,7 +457,7 @@ int SerialPortLinux::openLink()
     ttyDeviceFileDescriptor = open(ttyDevicePath.c_str(), O_RDWR | O_NOCTTY);
     if (ttyDeviceFileDescriptor < 0)
     {
-        TRACE_ERROR(SERIAL, "Unable to open device on serial port: '%s'\n", ttyDevicePath.c_str());
+        TRACE_ERROR(SERIAL, "Unable to open device on serial port: '%s'", ttyDevicePath.c_str());
         goto OPEN_LINK_ERROR;
     }
 
@@ -483,7 +483,7 @@ int SerialPortLinux::openLink()
 
     if (ttyDeviceBaudRate < 1)
     {
-        TRACE_ERROR(SERIAL, "Unable to set baud rate to '%i'bps: invalid value\n", ttyDeviceBaudRate);
+        TRACE_ERROR(SERIAL, "Unable to set baud rate to '%i'bps: invalid value", ttyDeviceBaudRate);
         goto OPEN_LINK_ERROR;
     }
 
@@ -496,7 +496,7 @@ int SerialPortLinux::openLink()
         // Get current serial_struct values
         if (ioctl(ttyDeviceFileDescriptor, TIOCGSERIAL, &serinfo) < 0)
         {
-            TRACE_ERROR(SERIAL, "Cannot get serial infos structure from serial port: '%s'\n", ttyDevicePath.c_str());
+            TRACE_ERROR(SERIAL, "Cannot get serial infos structure from serial port: '%s'", ttyDevicePath.c_str());
             goto OPEN_LINK_ERROR;
         }
 
@@ -519,7 +519,7 @@ int SerialPortLinux::openLink()
         // Set serial_struct
         if (ioctl(ttyDeviceFileDescriptor, TIOCSSERIAL, &serinfo) < 0)
         {
-            TRACE_ERROR(SERIAL, "Cannot set serial infos structure with custom baud divisor (%s) to serial port: '%s'\n", ttyDeviceBaudRate, ttyDevicePath.c_str());
+            TRACE_ERROR(SERIAL, "Cannot set serial infos structure with custom baud divisor (%s) to serial port: '%s'", ttyDeviceBaudRate, ttyDevicePath.c_str());
             goto OPEN_LINK_ERROR;
         }
     }
@@ -574,17 +574,17 @@ int SerialPortLinux::tx(unsigned char *packet, int packetLength)
 
             if (writeStatus < 0)
             {
-                TRACE_ERROR(SERIAL, "Cannot write to serial port '%s': write() failed with error code '%i'!\n", ttyDevicePath.c_str(), errno);
+                TRACE_ERROR(SERIAL, "Cannot write to serial port '%s': write() failed with error code '%i'!", ttyDevicePath.c_str(), errno);
             }
         }
         else
         {
-            TRACE_ERROR(SERIAL, "Cannot write to serial port '%s': invalid packet buffer or size!\n", ttyDevicePath.c_str());
+            TRACE_ERROR(SERIAL, "Cannot write to serial port '%s': invalid packet buffer or size!", ttyDevicePath.c_str());
         }
     }
     else
     {
-        TRACE_ERROR(SERIAL, "Cannot write to serial port '%s': invalid device!\n", ttyDevicePath.c_str());
+        TRACE_ERROR(SERIAL, "Cannot write to serial port '%s': invalid device!", ttyDevicePath.c_str());
     }
 
     return writeStatus;
@@ -603,17 +603,17 @@ int SerialPortLinux::rx(unsigned char *packet, int packetLength)
 
             if (readStatus < 0)
             {
-                TRACE_ERROR(SERIAL, "Cannot read from serial port '%s': read() failed with error code '%i'!\n", ttyDevicePath.c_str(), errno);
+                TRACE_ERROR(SERIAL, "Cannot read from serial port '%s': read() failed with error code '%i'!", ttyDevicePath.c_str(), errno);
             }
         }
         else
         {
-            TRACE_ERROR(SERIAL, "Cannot read from serial port '%s': invalid packet buffer or size!\n", ttyDevicePath.c_str());
+            TRACE_ERROR(SERIAL, "Cannot read from serial port '%s': invalid packet buffer or size!", ttyDevicePath.c_str());
         }
     }
     else
     {
-        TRACE_ERROR(SERIAL, "Cannot read from serial port '%s': invalid device!\n", ttyDevicePath.c_str());
+        TRACE_ERROR(SERIAL, "Cannot read from serial port '%s': invalid device!", ttyDevicePath.c_str());
     }
 
     return readStatus;
@@ -672,7 +672,7 @@ void SerialPortLinux::setLatency(int latency)
         }
         else
         {
-            TRACE_ERROR(SERIAL, "Unable to find latency info for the current device: '%s'\n", ttyDevicePath.substr(lastbackslash+1).c_str());
+            TRACE_ERROR(SERIAL, "Unable to find latency info for the current device: '%s'", ttyDevicePath.substr(lastbackslash+1).c_str());
         }
     }
 
@@ -682,7 +682,7 @@ void SerialPortLinux::setLatency(int latency)
     }
     else
     {
-        TRACE_WARNING(SERIAL, "Invalid latency value: '%i', not in ]0;128[ range.\n", latency);
+        TRACE_WARNING(SERIAL, "Invalid latency value: '%i', not in ]0;128[ range.", latency);
     }
 }
 

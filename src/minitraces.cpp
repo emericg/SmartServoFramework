@@ -1,5 +1,5 @@
 /*!
- * COPYRIGHT (C) 2015 Emeric Grange - All Rights Reserved
+ * COPYRIGHT (C) 2017 Emeric Grange - All Rights Reserved
  *
  * This file is part of MiniTraces.
  *
@@ -16,27 +16,38 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with MiniTraces.  If not, see <http://www.gnu.org/licenses/>.
  *
- * \file      minitraces.c
+ * \file      minitraces.cpp
  * \author    Emeric Grange <emeric.grange@gmail.com>
- * \date      2014
- * \version   0.4
+ * \date      2017
+ * \version   0.51
  */
-
-// C standard libraries
-#include <stdio.h>
-#include <string.h>
-#include <stdarg.h>
-#include <stdlib.h>
 
 // MiniTraces header
 #include "minitraces.h"
 
+// C standard libraries
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdarg.h>
+#include <string.h>
+
+#if defined(_WIN16) || defined(_WIN32) || defined(_WIN64)
+#define MINITRACES_EOL "\n\r"
+#else // linux, macOS, and everyone else...
+#define MINITRACES_EOL "\n"
+#endif
+
 /* ************************************************************************** */
 /* ************************************************************************** */
 
-#if DEBUG_WITH_TIMESTAMPS
+#if MINITRACES_TIMESTAMPS
 
 #include <time.h>
+
+#ifdef defined(__APPLE__) || defined(__MACH__)
+#include <mach/clock.h>
+#include <mach/mach.h>
+#endif
 
 /*!
  * \brief Print trace tick with millisecond precision.
@@ -46,15 +57,30 @@
  */
 static void print_trace_tick(void)
 {
-    struct timespec tp;
     long long int time = 0;
 
-    if (clock_gettime(CLOCK_REALTIME, &tp) == 0)
+#if defined(__APPLE__) || defined(__MACH__) // OS X does not have clock_gettime > use clock_get_time
+
+    clock_serv_t cclock;
+    mach_timespec_t mts;
+    host_get_clock_service(mach_host_self(), CALENDAR_CLOCK, &cclock);
+    if (clock_get_time(cclock, &mts));
     {
-        time = (tp.tv_sec * 1000) + (tp.tv_nsec / 1000000);
+        time = (mts.tv_sec * 1000) + (mts.tv_nsec / 1000000);
+    }
+    mach_port_deallocate(mach_task_self(), cclock);
+
+#else
+
+    struct timespec ts;
+    if (clock_gettime(CLOCK_REALTIME, &ts) == 0)
+    {
+        time = (ts.tv_sec * 1000) + (ts.tv_nsec / 1000000);
     }
 
-    printf("[%lld] ", time);
+#endif
+
+    printf("[%lld]", time);
 }
 
 /*!
@@ -70,17 +96,17 @@ static void print_trace_time(void)
 
     if (tm_info != NULL)
     {
-        char buffer[8];
-        strftime(buffer, 8, "%H:%M:%S", tm_info);
-        printf("[%s] ", buffer);
+        char buffer[12];
+        strftime(buffer, 12, "%H:%M:%S", tm_info);
+        printf("[%s]", buffer);
     }
     else
     {
-        printf("[0] ");
+        printf("[0]");
     }
 }
 
-#endif /* DEBUG_WITH_TIMESTAMPS */
+#endif // MINITRACES_TIMESTAMPS
 
 /* ************************************************************************** */
 
@@ -132,20 +158,18 @@ static const unsigned int trace_module_count = sizeof(trace_modules_table) / siz
 
 void MiniTraces_info(void)
 {
-    unsigned i = 0;
-
     printf(PID BLD_GREEN "\nMiniTraces_infos()" CLR_RESET " version 0.4\n");
 
     printf(PID "\n* TRACE LEVELS ENABLED:\n");
-    TRACE_ERROR(MAIN, "ERROR traces enabled\n");
-    TRACE_WARNING(MAIN, "WARNING traces enabled\n");
-    TRACE_INFO(MAIN, "INFO traces enabled\n");
-    TRACE_1(MAIN, "LVL 1 traces enabled\n");
-    TRACE_2(MAIN, "LVL 2 traces enabled\n");
-    TRACE_3(MAIN, "LVL 3 traces enabled\n");
+    TRACE_ERROR(MAIN, "ERROR traces enabled");
+    TRACE_WARNING(MAIN, "WARNING traces enabled");
+    TRACE_INFO(MAIN, "INFO traces enabled");
+    TRACE_1(MAIN, "LVL 1 traces enabled");
+    TRACE_2(MAIN, "LVL 2 traces enabled");
+    TRACE_3(MAIN, "LVL 3 traces enabled");
 
     printf(PID "\n* TRACE MODULES CONFIGURATION:\n");
-    for (i = 0; i < trace_module_count; i++)
+    for (unsigned i = 0; i < trace_module_count; i++)
     {
         printf(PID "[%02x][%5s] Trace Mask 0x%X: ", i,
                trace_modules_table[i].module_name,
@@ -160,7 +184,7 @@ void MiniTraces_info(void)
 void MiniTraces_print(const char *file, const int line, const char *func,
                       const unsigned level, const unsigned module, const char *payload, ...)
 {
-#if ENABLE_TRACES > 0
+#if MINITRACES_LEVEL > 0
     if (module > trace_module_count)
     {
         printf("[TRACE][%s] module[%d] unknown\n", __FUNCTION__, (int)module);
@@ -179,41 +203,42 @@ void MiniTraces_print(const char *file, const int line, const char *func,
         ////////////////////////////////////////////////////////////////////////
 
         // Print the trace timestamp
-#if DEBUG_WITH_TIMESTAMPS == 1
+#if MINITRACES_TIMESTAMPS == 1
         print_trace_tick();
-#elif DEBUG_WITH_TIMESTAMPS == 2
+#elif MINITRACES_TIMESTAMPS == 2
         print_trace_time();
 #endif
 
-        // Print trace module_name (6 chars paddding)
+        // Print trace module_name, 5 chars, left padded
         const char *level_string = get_trace_level_string(level);
-        printf("[%s][%6s]", level_string, trace_modules_table[module].module_name);
+        printf("[%s][%5s]", level_string, trace_modules_table[module].module_name);
 
-#if DEBUG_WITH_FUNC_INFO
+#if MINITRACES_FUNC_INFO
         // Print the function where the trace came from
         printf(BLD_WHITE "[%s]" CLR_RESET, func);
 #endif
 
-#if DEBUG_WITH_FILE_INFO
-        // Print the file (no padding) and line (3 chars padding) of code that triggered the trace output
+#if MINITRACES_FILE_INFO
+        // Print the line of code that triggered the trace output
         const char *tmp = strrchr(file, '/');
-        printf("{%s:%3d}", tmp ? ++tmp : file, line);
+        printf("{%s:%d}", tmp ? ++tmp : file, line);
 #endif
-
-        // Customizable header / body separator
-        ////////////////////////////////////////////////////////////////////////
-
-        printf(" ");
 
         // Trace body
         ////////////////////////////////////////////////////////////////////////
+
+        // Customizable header / body separator
+        printf(" ");
 
         va_list args;
         va_start(args, payload);
         vprintf(payload, args);
         va_end(args);
 
-#if DEBUG_WITH_FORCED_SYNC
+        // End of the line
+        printf(MINITRACES_EOL);
+
+#if MINITRACES_FORCED_SYNC
         // Force terminal synchronisazion (very slow!)
         fflush(stdout);
 #endif

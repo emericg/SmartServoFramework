@@ -112,30 +112,30 @@ void ServoHerkuleX::status()
 {
     std::lock_guard <std::mutex> lock(access);
 
-    TRACE_INFO(HKX, "Status(#%i)\n", servoId);
+    TRACE_INFO(HKX, "Status(#%i)", servoId);
 
-    TRACE_INFO(HKX, "> model      : %i\n", servoModel);
-    TRACE_INFO(HKX, "> firmware   : %i\n", registerTableValues[gid(REG_FIRMWARE_VERSION)]);
-    TRACE_INFO(HKX, "> baudrate   : %i\n", hkx_get_baudrate(registerTableValues[gid(REG_BAUD_RATE)]));
+    TRACE_INFO(HKX, "> model      : %i", servoModel);
+    TRACE_INFO(HKX, "> firmware   : %i", registerTableValues[gid(REG_FIRMWARE_VERSION)]);
+    TRACE_INFO(HKX, "> baudrate   : %i", hkx_get_baudrate(registerTableValues[gid(REG_BAUD_RATE)]));
 
-    TRACE_INFO(HKX, ">> steps          : %i\n", steps);
-    TRACE_INFO(HKX, ">> runningDegrees : %i\n", runningDegrees);
+    TRACE_INFO(HKX, ">> steps          : %i", steps);
+    TRACE_INFO(HKX, ">> runningDegrees : %i", runningDegrees);
 
-    TRACE_INFO(HKX, "> torque enabled  : %i\n", registerTableValues[gid(REG_TORQUE_ENABLE)]);
-    TRACE_INFO(HKX, "> max torque      : %i\n", registerTableValues[gid(REG_MAX_TORQUE)]);
-    TRACE_INFO(HKX, "> torque limit    : %i\n", registerTableValues[gid(REG_TORQUE_LIMIT)]);
+    TRACE_INFO(HKX, "> torque enabled  : %i", registerTableValues[gid(REG_TORQUE_ENABLE)]);
+    TRACE_INFO(HKX, "> max torque      : %i", registerTableValues[gid(REG_MAX_TORQUE)]);
+    TRACE_INFO(HKX, "> torque limit    : %i", registerTableValues[gid(REG_TORQUE_LIMIT)]);
 
-    TRACE_INFO(HKX, "> goal position   : %i\n", registerTableValues[gid(REG_GOAL_POSITION)]);
-    TRACE_INFO(HKX, "> goal speed      : %i\n", registerTableValues[gid(REG_GOAL_SPEED)]);
-    TRACE_INFO(HKX, "> current position: %i\n", registerTableValues[gid(REG_CURRENT_POSITION)]);
-    TRACE_INFO(HKX, "> current speed   : %i\n", registerTableValues[gid(REG_CURRENT_SPEED)]);
-    TRACE_INFO(HKX, "> current load    : %i\n", registerTableValues[gid(REG_CURRENT_LOAD)]);
-    TRACE_INFO(HKX, "> current voltage : %i\n", registerTableValues[gid(REG_CURRENT_VOLTAGE)]);
-    TRACE_INFO(HKX, "> current temp    : %i\n", registerTableValues[gid(REG_CURRENT_TEMPERATURE)]);
-    TRACE_INFO(HKX, "> registered      : %i\n", registerTableValues[gid(REG_REGISTERED)]);
-    TRACE_INFO(HKX, "> moving          : %i\n", registerTableValues[gid(REG_MOVING)]);
-    TRACE_INFO(HKX, "> lock            : %i\n", registerTableValues[gid(REG_LOCK)]);
-    TRACE_INFO(HKX, "> punch           : %i\n", registerTableValues[gid(REG_PUNCH)]);
+    TRACE_INFO(HKX, "> goal position   : %i", registerTableValues[gid(REG_GOAL_POSITION)]);
+    TRACE_INFO(HKX, "> goal speed      : %i", registerTableValues[gid(REG_GOAL_SPEED)]);
+    TRACE_INFO(HKX, "> current position: %i", registerTableValues[gid(REG_CURRENT_POSITION)]);
+    TRACE_INFO(HKX, "> current speed   : %i", registerTableValues[gid(REG_CURRENT_SPEED)]);
+    TRACE_INFO(HKX, "> current load    : %i", registerTableValues[gid(REG_CURRENT_LOAD)]);
+    TRACE_INFO(HKX, "> current voltage : %i", registerTableValues[gid(REG_CURRENT_VOLTAGE)]);
+    TRACE_INFO(HKX, "> current temp    : %i", registerTableValues[gid(REG_CURRENT_TEMPERATURE)]);
+    TRACE_INFO(HKX, "> registered      : %i", registerTableValues[gid(REG_REGISTERED)]);
+    TRACE_INFO(HKX, "> moving          : %i", registerTableValues[gid(REG_MOVING)]);
+    TRACE_INFO(HKX, "> lock            : %i", registerTableValues[gid(REG_LOCK)]);
+    TRACE_INFO(HKX, "> punch           : %i", registerTableValues[gid(REG_PUNCH)]);
 }
 
 std::string ServoHerkuleX::getModelString()
@@ -416,7 +416,7 @@ int ServoHerkuleX::getMoving()
 
 void ServoHerkuleX::setId(int id)
 {
-    TRACE_1(HKX, "[#%i] setId(from %i to %i)\n", servoId, servoId, id);
+    TRACE_1(HKX, "[#%i] setId(from %i to %i)", servoId, servoId, id);
 
     // TODO use maxId
     if (id > -1 && id < 254)
@@ -431,7 +431,7 @@ void ServoHerkuleX::setId(int id)
 
 void ServoHerkuleX::setCWLimit(int limit, const int reg_type)
 {
-    TRACE_1(HKX, "[#%i] setCWLimit(%i)\n", servoId, limit);
+    TRACE_1(HKX, "[#%i] setCWLimit(%i)", servoId, limit);
 
     if (limit > -1 && limit < steps)
     {
@@ -444,7 +444,7 @@ void ServoHerkuleX::setCWLimit(int limit, const int reg_type)
 
 void ServoHerkuleX::setCCWLimit(int limit, const int reg_type)
 {
-    TRACE_1(HKX, "[#%i] setCCWLimit(%i)\n", servoId, limit);
+    TRACE_1(HKX, "[#%i] setCCWLimit(%i)", servoId, limit);
 
     if (limit > -1 && limit < steps)
     {
@@ -457,7 +457,7 @@ void ServoHerkuleX::setCCWLimit(int limit, const int reg_type)
 
 void ServoHerkuleX::setGoalPosition(int pos)
 {
-    TRACE_1(HKX, "[#%i] setGoalPosition(%i)\n", servoId, pos);
+    TRACE_1(HKX, "[#%i] setGoalPosition(%i)", servoId, pos);
 
     if (pos > -1 && pos < steps)
     {
@@ -468,7 +468,7 @@ void ServoHerkuleX::setGoalPosition(int pos)
     }
     else
     {
-        TRACE_ERROR(HKX, "[#%i] setGoalPosition(%i > %i) [VALUE ERROR]\n", servoId, registerTableValues[gid(REG_CURRENT_POSITION)], pos);
+        TRACE_ERROR(HKX, "[#%i] setGoalPosition(%i > %i) [VALUE ERROR]", servoId, registerTableValues[gid(REG_CURRENT_POSITION)], pos);
     }
 }
 
@@ -479,7 +479,7 @@ void ServoHerkuleX::setGoalPosition(int pos, int time_budget_ms)
 
 void ServoHerkuleX::setLed(int led)
 {
-    TRACE_1(HKX, "[#%i] setLed(%i)\n", servoId, led);
+    TRACE_1(HKX, "[#%i] setLed(%i)", servoId, led);
     int color = 0;
 
     // Normalize value
@@ -505,7 +505,7 @@ void ServoHerkuleX::setLed(int led)
 
 void ServoHerkuleX::setTorqueEnabled(int torque)
 {
-    TRACE_1(HKX, "[#%i] setTorqueEnabled(%i)\n", servoId, torque);
+    TRACE_1(HKX, "[#%i] setTorqueEnabled(%i)", servoId, torque);
 
     // Normalize value, 1 means 'torque on' for Dynamixel devices
     if (torque == 1)
@@ -523,7 +523,7 @@ void ServoHerkuleX::setTorqueEnabled(int torque)
     }
     else
     {
-        TRACE_ERROR(HKX, "[#%i]  setTorqueEnabled(%i) [VALUE ERROR]\n", servoId, torque);
+        TRACE_ERROR(HKX, "[#%i]  setTorqueEnabled(%i) [VALUE ERROR]", servoId, torque);
 
     }
 }
@@ -531,7 +531,7 @@ void ServoHerkuleX::setTorqueEnabled(int torque)
 void ServoHerkuleX::moveGoalPosition(int move)
 {
 /*
-    TRACE_1(HKX, "[#%i] moveGoalPosition(%i)\n", servoId, move);
+    TRACE_1(HKX, "[#%i] moveGoalPosition(%i)", servoId, move);
 
     std::lock_guard <std::mutex> lock(access);
     int curr = registerTableValues[gid(SERVO_CURRENT_POSITION)];
@@ -544,7 +544,7 @@ void ServoHerkuleX::moveGoalPosition(int move)
         {
             int mod = newpos % steps;
 
-            TRACE_ERROR(HKX, "[#%i]  moveGoalPosition([%i > %i]) [VALUE ERROR] with modulo: %i\n", servoId, curr, newpos, mod);
+            TRACE_ERROR(HKX, "[#%i]  moveGoalPosition([%i > %i]) [VALUE ERROR] with modulo: %i", servoId, curr, newpos, mod);
         }
     }
 
@@ -555,14 +555,14 @@ void ServoHerkuleX::moveGoalPosition(int move)
     }
     else
     {
-        TRACE_ERROR(HKX, "[#%i]  moveGoalPosition([%i > %i]) [VALUE ERROR]\n", servoId, curr, newpos);
+        TRACE_ERROR(HKX, "[#%i]  moveGoalPosition([%i > %i]) [VALUE ERROR]", servoId, curr, newpos);
     }
 */
 }
 /*
 void ServoHerkuleX::setMovingSpeed(int speed)
 {
-    TRACE_1(HKX, "[#%i] setMovingSpeed(%i)\n", servoId, speed);
+    TRACE_1(HKX, "[#%i] setMovingSpeed(%i)", servoId, speed);
 
     std::lock_guard <std::mutex> lock(access);
 
@@ -587,7 +587,7 @@ void ServoHerkuleX::setMovingSpeed(int speed)
 
 void ServoHerkuleX::setMaxTorque(int torque)
 {
-    TRACE_1(HKX, "[#%i] setMovingSpeed(%i)\n", servoId, speed);
+    TRACE_1(HKX, "[#%i] setMovingSpeed(%i)", servoId, speed);
 
     if (torque < 1024)
     {
@@ -630,12 +630,12 @@ int ServoHerkuleX::getValue(int reg_name, int reg_type)
         }
         else
         {
-            TRACE_ERROR(HKX, "[#%i] getValue(reg %i / %s) [REGISTER ID ERROR]\n", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
+            TRACE_ERROR(HKX, "[#%i] getValue(reg %i / %s) [REGISTER ID ERROR]", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
         }
     }
     else
     {
-        TRACE_ERROR(HKX, "[#%i] getValue(reg %i / %s) [REGISTER NAME ERROR]\n", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
+        TRACE_ERROR(HKX, "[#%i] getValue(reg %i / %s) [REGISTER NAME ERROR]", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
     }
 
     return value;
@@ -675,12 +675,12 @@ int ServoHerkuleX::getValueCommit(int reg_name, int reg_type)
         }
         else
         {
-            TRACE_ERROR(HKX, "[#%i] getValueCommit(reg %i / %s) [REGISTER ID ERROR]\n", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
+            TRACE_ERROR(HKX, "[#%i] getValueCommit(reg %i / %s) [REGISTER ID ERROR]", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
         }
     }
     else
     {
-        TRACE_ERROR(HKX, "[#%i] getValueCommit(reg %i / %s) [REGISTER NAME ERROR]\n", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
+        TRACE_ERROR(HKX, "[#%i] getValueCommit(reg %i / %s) [REGISTER NAME ERROR]", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
     }
 
     return commit;
@@ -729,23 +729,23 @@ void ServoHerkuleX::setValue(int reg_name, int reg_value, int reg_type)
                 }
                 else
                 {
-                    TRACE_ERROR(HKX, "[#%i] setValue(reg %i / %s to %i) [REGISTER VALUE ERROR] (min: %i / max: %i)\n", servoId,
+                    TRACE_ERROR(HKX, "[#%i] setValue(reg %i / %s to %i) [REGISTER VALUE ERROR] (min: %i / max: %i)", servoId,
                                 reg_name, getRegisterNameTxt(reg_name).c_str(), reg_value, infos.reg_value_min, infos.reg_value_max);
                 }
             }
             else
             {
-                TRACE_ERROR(HKX, "[#%i] setValue(reg %i / %s) [REGISTER ACCESS ERROR]\n", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
+                TRACE_ERROR(HKX, "[#%i] setValue(reg %i / %s) [REGISTER ACCESS ERROR]", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
             }
         }
         else
         {
-            TRACE_ERROR(HKX, "[#%i] setValue(reg %i / %s) [REGISTER ID ERROR]\n", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
+            TRACE_ERROR(HKX, "[#%i] setValue(reg %i / %s) [REGISTER ID ERROR]", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
         }
     }
     else
     {
-        TRACE_ERROR(HKX, "[#%i] setValue(reg %i / %s) [REGISTER NAME ERROR]\n", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
+        TRACE_ERROR(HKX, "[#%i] setValue(reg %i / %s) [REGISTER NAME ERROR]", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
     }
 }
 
@@ -791,19 +791,19 @@ void ServoHerkuleX::updateValue(int reg_name, int reg_value, int reg_type)
                 // If the value is out of bound but correspond to an error code [-1;-7], no need to print it as a 'REGISTER VALUE ERROR'
                 if ( !(reg_value < 0 && reg_value > -8) )
                 {
-                    TRACE_ERROR(HKX, "[#%i] updateValue(reg %i / %s to %i) [REGISTER VALUE ERROR] (min: %i / max: %i)\n", servoId,
+                    TRACE_ERROR(HKX, "[#%i] updateValue(reg %i / %s to %i) [REGISTER VALUE ERROR] (min: %i / max: %i)", servoId,
                                 reg_name, getRegisterNameTxt(reg_name).c_str(), reg_value, infos.reg_value_min, infos.reg_value_max);
                 }
             }
         }
         else
         {
-            TRACE_ERROR(HKX, "[#%i] updateValue(reg %i / %s) [REGISTER ID ERROR]\n", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
+            TRACE_ERROR(HKX, "[#%i] updateValue(reg %i / %s) [REGISTER ID ERROR]", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
         }
     }
     else
     {
-        TRACE_ERROR(HKX, "[#%i] updateValue(reg %i / %s) [REGISTER NAME ERROR]\n", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
+        TRACE_ERROR(HKX, "[#%i] updateValue(reg %i / %s) [REGISTER NAME ERROR]", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
     }
 }
 
@@ -848,16 +848,16 @@ void ServoHerkuleX::commitValue(int reg_name, int commit, int reg_type)
             }
             else
             {
-                TRACE_ERROR(HKX, "[#%i] commitValue(reg %i / %s) [REGISTER ACCESS ERROR]\n", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
+                TRACE_ERROR(HKX, "[#%i] commitValue(reg %i / %s) [REGISTER ACCESS ERROR]", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
             }
         }
         else
         {
-            TRACE_ERROR(HKX, "[#%i] commitValue(reg %i / %s) [REGISTER ID ERROR]\n", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
+            TRACE_ERROR(HKX, "[#%i] commitValue(reg %i / %s) [REGISTER ID ERROR]", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
         }
     }
     else
     {
-        TRACE_ERROR(HKX, "[#%i] commitValue(reg %i / %s) [REGISTER NAME ERROR]\n", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
+        TRACE_ERROR(HKX, "[#%i] commitValue(reg %i / %s) [REGISTER NAME ERROR]", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
     }
 }

@@ -106,7 +106,7 @@ int hkx_get_baudrate(const int baudnum, const int servo_serie)
 
     if (servo_serie == 0)
     {
-        TRACE_ERROR(TOOLS, "Unknown servo serie, using default baudrate of: '%i' bps\n", baudRate);
+        TRACE_ERROR(TOOLS, "Unknown servo serie, using default baudrate of: '%i' bps", baudRate);
     }
     else if (servo_serie >= SERVO_DRS)
     {
@@ -137,13 +137,13 @@ int hkx_get_baudrate(const int baudnum, const int servo_serie)
             baudRate = 57600;
             break;
         default:
-            TRACE_ERROR(TOOLS, "Invalid baudnum '%i' for DRS serie, using default baudrate of: '%i' bps\n", baudnum, baudRate);
+            TRACE_ERROR(TOOLS, "Invalid baudnum '%i' for DRS serie, using default baudrate of: '%i' bps", baudnum, baudRate);
             break;
         }
     }
     else
     {
-        TRACE_ERROR(TOOLS, "Unsupported HerkuleX servo serie, using default baudrate of: '%i' bps\n", baudRate);
+        TRACE_ERROR(TOOLS, "Unsupported HerkuleX servo serie, using default baudrate of: '%i' bps", baudRate);
     }
 
     return baudRate;

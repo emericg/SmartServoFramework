@@ -1,5 +1,5 @@
 /*!
- * COPYRIGHT (C) 2015 Emeric Grange - All Rights Reserved
+ * COPYRIGHT (C) 2017 Emeric Grange - All Rights Reserved
  *
  * This file is part of MiniTraces.
  *
@@ -18,8 +18,8 @@
  *
  * \file      minitraces_conf.h
  * \author    Emeric Grange <emeric.grange@gmail.com>
- * \date      2015
- * \version   0.4
+ * \date      2017
+ * \version   0.51
  */
 
 #ifndef MINITRACES_CONF_H
@@ -30,20 +30,34 @@ extern "C" {
 #endif // __cplusplus
 /* ************************************************************************** */
 
+// Import setting macros from SmartServoFramework
+#include "SmartServoFramework_settings.h"
+
 // =============================================================================
 // GENERAL SETTINGS
 // =============================================================================
 
-#define ENABLE_TRACES    2    //!< 0: disabled, 1: enables error and warning levels, 2: enable all trace levels
-#define ENABLE_COLORS    1    //!< Enable colors on terminal output
+#if ENABLE_DEBUG == 1
+#define MINITRACES_LEVEL    2   // Enables all traces levels
+#else
+#define MINITRACES_LEVEL    1   // Only error and warnings traces
+#endif
+
+// Enable terminal colored output
+#if ENABLE_COLORS == 1
+#undef MINITRACES_COLORS
+#define MINITRACES_COLORS   1
+#else
+#undef ENABLE_COLORS
+#define MINITRACES_COLORS   0
+#endif
 
 // Advanced debugging features
-#define DEBUG_WITH_PID              0   //!< Enable "program identifier"
-#define DEBUG_WITH_TIMESTAMPS       0   //!< 0: disabled, 1: trace tick (in milliseconds), 2: trace time (hh:mm:ss)
-#define DEBUG_WITH_FUNC_INFO        1
-#define DEBUG_WITH_FILE_INFO        0
-#define DEBUG_WITH_FORCED_SYNC      0
-#define DEBUG_WITH_STRICT_PADDING   0   //!< Not implemented yet
+#define MINITRACES_TIMESTAMPS       0   //!< 0: disabled, 1: trace tick (in milliseconds), 2: trace time (hh:mm:ss)
+#define MINITRACES_FUNC_INFO        1
+#define MINITRACES_FILE_INFO        0
+#define MINITRACES_FORCED_SYNC      1
+#define MINITRACES_STRICT_PADDING   0   //!< Not implemented yet
 
 // =============================================================================
 // PROGRAM IDENTIFIER
@@ -52,16 +66,12 @@ extern "C" {
 /*!
  * This string will be used to easily identify from which program a trace comes
  * from if multiple program are outputting traces with MiniTraces at the same time.
- * Leave blank if you don't need this feature!
- *
  * You can use bracket, spaces, colors...
  * Example: #define PID OUT_BLUE "[MINITRACE]" CLR_RESET " "
+ *
+ * Leave it blank if you don't need this feature!
  */
-#if DEBUG_WITH_PID == 1
-#define PID OUT_BLUE "[SSF]" CLR_RESET
-#else
 #define PID ""
-#endif
 
 // =============================================================================
 // TRACE MODULES
@@ -71,8 +81,9 @@ extern "C" {
  * \brief This is the list of module you can use when creating a trace with a TRACE_xxx macro.
  * \note The content of this enum must ALWAYS be in sync with the trace_modules_table[] below.
  *
- * When a TRACE_xxx macro is called with a given module, it will try to match it with a
- * TraceModule_t entry inside the trace_modules_table[] to get access to the module parameters.
+ * When a TRACE_xxx macro is called with a given module, it will try to match it
+ * with a TraceModule_t entry inside the trace_modules_table[] to get access to
+ * the module parameters.
  */
 enum TraceModule_e
 {
