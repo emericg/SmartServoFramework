@@ -46,13 +46,13 @@ class AdvanceScanner : public QMainWindow
     Ui::AdvanceScanner *ui;
     QWidget *parent;
 
-    bool exit_programmed;
+    bool exit_programmed = false;
 
-    bool scan_running;
-    int scans_rounds;
-    int scans_id_interval;
-    double progress_global;
-    double progress_current;
+    bool scan_running = false;
+    int scans_rounds = 0;
+    int scans_id_interval = 0;
+    double progress_global = 0.0;
+    double progress_current = 0.0;
 
     void setProfil(int profile);
     int servoscan_dxl(DynamixelSimpleAPI *dxl, QTreeWidgetItem *port, int baudrate);

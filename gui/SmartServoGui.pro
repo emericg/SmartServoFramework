@@ -31,12 +31,7 @@ unix {
     *-g++* {
         message("Using GCC compiler")
         QMAKE_CXXFLAGS += -pthread
-
-        if: system("gcc -dumpversion | grep 4.[0-5]") {
-            error("You need at least GCC 4.6+ to use C++11 features")
-        } else: {
-            QMAKE_CXXFLAGS += -Wno-unused-parameter -Wno-unused-variable
-        }
+        QMAKE_CXXFLAGS += -Wno-unused-parameter -Wno-unused-variable
     }
     *clang* {
         message("Using LLVM compiler")

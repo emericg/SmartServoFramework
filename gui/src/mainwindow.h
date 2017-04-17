@@ -50,10 +50,10 @@ class MainWindow : public QMainWindow
     QWidget *loadingTabWidget;
 
     //! "Advance Scanner" window
-    AdvanceScanner *asw;
+    AdvanceScanner *asw = nullptr;
 
     //! "Settings" window
-    Settings *stw;
+    Settings *stw = nullptr;
 
     struct SerialPortHelper
     {
@@ -76,9 +76,9 @@ class MainWindow : public QMainWindow
     //! List of all serial ports (gui elements, controller) handled by the application
     std::vector <SerialPortHelper *> serialPorts;
 
-    int tableServoSerie;
-    int tableServoModel;
-    bool tableAutoSelection;
+    int tableServoSerie = 0;
+    int tableServoModel = 0;
+    bool tableAutoSelection = false;
 
     void loadingScreen(bool enabled);
 

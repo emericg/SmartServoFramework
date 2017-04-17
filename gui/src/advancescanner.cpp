@@ -34,11 +34,6 @@ AdvanceScanner::AdvanceScanner(QMainWindow *main, QWidget *parent) :
     this->parent = main;
     ui->setupUi(this);
 
-    exit_programmed = false;
-    scan_running = false;
-    progress_global = 0.0;
-    progress_current = 0.0;
-
     ui->label_scan_errors->setVisible(false);
     ui->actionStartScan->setEnabled(false);
     ui->actionStopScan->setEnabled(false);
@@ -57,6 +52,10 @@ AdvanceScanner::AdvanceScanner(QMainWindow *main, QWidget *parent) :
     fillWidgets_ports();
     fillWidgets_speeds();
     quickProfile();
+
+#ifdef Q_OS_OSX
+    ui->toolBar->setStyleSheet("");
+#endif
 }
 
 AdvanceScanner::~AdvanceScanner()
@@ -572,7 +571,7 @@ int AdvanceScanner::servoscan_dxl(DynamixelSimpleAPI *dxl, QTreeWidgetItem *port
     int results = 0;
     int start = ui->spinBox_minid->value();
     int stop = ui->spinBox_maxid->value();
-    QTreeWidgetItem *speed = NULL;
+    QTreeWidgetItem *speed = nullptr;
 
     // Check start/stop boundaries
     if (start < 0 || start > (254 - 1))
@@ -612,7 +611,7 @@ int AdvanceScanner::servoscan_dxl(DynamixelSimpleAPI *dxl, QTreeWidgetItem *port
             //std::cout << "[#" << id << "] DYNAMIXEL servo found!" << std::endl;
             //std::cout << "[#" << id << "] model: " << pingstats.model_number << " (" << model << ")" << std::endl;
 
-            if (speed == NULL)
+            if (speed == nullptr)
             {
                 // Add it to the interface
                 speed = new QTreeWidgetItem();
@@ -648,7 +647,7 @@ int AdvanceScanner::servoscan_hkx(HerkuleXSimpleAPI *hkx, QTreeWidgetItem *port,
     int results = 0;
     int start = ui->spinBox_minid->value();
     int stop = ui->spinBox_maxid->value();
-    QTreeWidgetItem *speed = NULL;
+    QTreeWidgetItem *speed = nullptr;
 
     // Check start/stop boundaries
     if (start < 0 || start > (254 - 1))
@@ -687,7 +686,7 @@ int AdvanceScanner::servoscan_hkx(HerkuleXSimpleAPI *hkx, QTreeWidgetItem *port,
             //std::cout << "[#" << id << "] HerkuleX servo found!" << std::endl;
             //std::cout << "[#" << id << "] model: " << pingstats.model_number << " (" << model << ")" << std::endl;
 
-            if (speed == NULL)
+            if (speed == nullptr)
             {
                 // Add it to the interface
                 speed = new QTreeWidgetItem();

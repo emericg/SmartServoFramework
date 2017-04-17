@@ -52,11 +52,6 @@ Settings::Settings(QWidget *parent):
     // Init json parser
     parser = new Document();
 
-    ui_pause = false;
-    ctrl_autoscan = true;
-    ctrl_locks = true;
-    ctrl_freq = 10;
-
     // Configuration file path
     filepath.clear();
 
@@ -232,7 +227,7 @@ int Settings::readSettings()
     FILE *fp = std::fopen(filepath.c_str(), "r");
 
     // Parse from file, if it exists
-    if (fp == NULL)
+    if (fp == nullptr)
     {
         std::cerr << "Warning: no configuration file, using default values! A new one will be created next time you change a setting." << std::endl;
     }
@@ -336,7 +331,7 @@ int Settings::writeSettings()
     {
         FILE *fp = std::fopen(filepath.c_str(), "w");
 
-        if (fp != NULL)
+        if (fp != nullptr)
         {
             char writeBuffer[8192];
             FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));

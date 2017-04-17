@@ -97,17 +97,10 @@ MainWindow::MainWindow(QWidget *parent):
     selfRefreshTimer = new QTimer(this);
     connect(selfRefreshTimer, SIGNAL(timeout()), this, SLOT(servoUpdate()));
 
-    // Advance Scanner window
-    asw = NULL;
-
     // Setting window
     stw = new Settings();
     stw->readSettings();
     stw->loadSettings();
-
-    tableServoSerie = 0;
-    tableServoModel = 0;
-    tableAutoSelection = false;
 
 #ifdef Q_OS_OSX
     ui->toolBar->setStyleSheet("");
@@ -120,14 +113,14 @@ MainWindow::~MainWindow()
     {
         asw->close();
         delete asw;
-        asw = NULL;
+        asw = nullptr;
     }
 
     if (stw)
     {
         stw->close();
         delete stw;
-        stw = NULL;
+        stw = nullptr;
     }
 
     delete ui;
@@ -136,16 +129,16 @@ MainWindow::~MainWindow()
     // Clean up controllers
     for (auto p: serialPorts)
     {
-        if (p != NULL)
+        if (p != nullptr)
         {
-            if (p->deviceController != NULL)
+            if (p->deviceController != nullptr)
             {
                 delete p->deviceController;
-                p->deviceController = NULL;
+                p->deviceController = nullptr;
             }
 
             delete p;
-            p = NULL;
+            p = nullptr;
         }
     }
 }
@@ -238,16 +231,16 @@ void MainWindow::scanSerialPorts(bool autoscan)
     // Clean existing serial ports list and associated controllers
     for (auto p: serialPorts)
     {
-        if (p != NULL)
+        if (p != nullptr)
         {
-            if (p->deviceController != NULL)
+            if (p->deviceController != nullptr)
             {
                 delete p->deviceController;
-                p->deviceController = NULL;
+                p->deviceController = nullptr;
             }
 
             delete p;
-            p = NULL;
+            p = nullptr;
         }
     }
     serialPorts.clear();
@@ -415,7 +408,7 @@ void MainWindow::scanServos(QString port_qstring)
             }
 
             // Clean devices attached to the corresponding deviceTreeWidget port (if needed)
-            QTreeWidgetItem *port = NULL;
+            QTreeWidgetItem *port = nullptr;
             for (int i = 0; i < ui->deviceTreeWidget->topLevelItemCount(); i++)
             {
                 if (ui->deviceTreeWidget->topLevelItem(i)->text(0) == h->deviceName->text())
@@ -431,7 +424,7 @@ void MainWindow::scanServos(QString port_qstring)
             }
 
             // Add port in deviceTreeWidget (if needed)
-            if (port == NULL)
+            if (port == nullptr)
             {
                 port = new QTreeWidgetItem();
                 ui->deviceTreeWidget->addTopLevelItem(port);
@@ -533,16 +526,16 @@ void MainWindow::scanServos(QString port_qstring)
                 // Do we need a new controller for this serial port?
                 // - no controller instanciated
                 // - controller with new protocol or speed
-                if (h->deviceController == NULL ||
+                if (h->deviceController == nullptr ||
                     deviceControllerProtocolSAVED != h->deviceControllerProtocol ||
                     deviceControllerSpeedSAVED != h->deviceControllerSpeed)
                 {
                     // Delete old controller (if needed)
-                    if (h->deviceController != NULL)
+                    if (h->deviceController != nullptr)
                     {
                         h->deviceController->disconnect();
                         delete h->deviceController;
-                        h->deviceController = NULL;
+                        h->deviceController = nullptr;
                     }
 
                     // Create a new one
@@ -560,7 +553,7 @@ void MainWindow::scanServos(QString port_qstring)
                     }
 
                     // Connect the controller to its serial port
-                    if (h->deviceController != NULL)
+                    if (h->deviceController != nullptr)
                     {
                         scan_results = h->deviceController->connect(port_stdstring, h->deviceControllerSpeed);
 
@@ -568,18 +561,18 @@ void MainWindow::scanServos(QString port_qstring)
                         {
                             h->deviceController->disconnect();
                             delete h->deviceController;
-                            h->deviceController = NULL;
+                            h->deviceController = nullptr;
                         }
                     }
                 }
 
                 // Scan
-                if (scan_running == true && h->deviceController != NULL)
+                if (scan_running == true && h->deviceController != nullptr)
                 {
                     loadingScreen(true);
 /*
                     // Are we scanning the currently selected port? Then go to the loading screen
-                    ControllerAPI *ctrl = NULL;
+                    ControllerAPI *ctrl = nullptr;
                     getCurrentController(ctrl);
 
                     if (h->deviceController == ctrl)
@@ -726,7 +719,7 @@ void MainWindow::scanServos(QString port_qstring)
 
                 // No need to keep this "empty" controller working
                 delete h->deviceController;
-                h->deviceController = NULL;
+                h->deviceController = nullptr;
             }
 
             // Unlock windows size
@@ -756,7 +749,7 @@ int MainWindow::getCurrentController(ControllerAPI *&ctrl)
         QTreeWidgetItem *item = ui->deviceTreeWidget->selectedItems().at(0);
 
         // Check if the item exist, plus if this a device and not a port
-        if (item != NULL && item->parent() != NULL)
+        if (item != nullptr && item->parent() != nullptr)
         {
             // Print status?
             std::string port = item->parent()->text(0).toStdString();
@@ -770,7 +763,7 @@ int MainWindow::getCurrentController(ControllerAPI *&ctrl)
                 {
                     ctrl = p->deviceController;
 
-                    if (ctrl != NULL)
+                    if (ctrl != nullptr)
                     {
                         retcode = 1;
                     }
@@ -792,7 +785,7 @@ int MainWindow::getCurrentServo(ControllerAPI *&ctrl, int &id)
         QTreeWidgetItem *item = ui->deviceTreeWidget->selectedItems().at(0);
 
         // Check if the item exist, plus if tis a device and not a port
-        if (item != NULL && item->parent() != NULL)
+        if (item != nullptr && item->parent() != nullptr)
         {
             int sid = 0;
 
@@ -819,12 +812,12 @@ int MainWindow::getCurrentServo(ControllerAPI *&ctrl, int &id)
             for (auto p: serialPorts)
             {
                 // We have the port
-                if (p != NULL && p->deviceName->text().toStdString() == port)
+                if (p != nullptr && p->deviceName->text().toStdString() == port)
                 {
                     // We have the servo
                     if (sid >= 0 && sid < 254)
                     {
-                        if (p->deviceController != NULL)
+                        if (p->deviceController != nullptr)
                         {
                             ctrl = p->deviceController;
                             id = sid;
@@ -849,7 +842,7 @@ int MainWindow::getCurrentServo(Servo *&servo)
         QTreeWidgetItem *item = ui->deviceTreeWidget->selectedItems().at(0);
 
         // Check if the item exist, plus if this a device and not a port
-        if (item != NULL && item->parent() != NULL)
+        if (item != nullptr && item->parent() != nullptr)
         {
             int sid = 0;
 
@@ -876,15 +869,15 @@ int MainWindow::getCurrentServo(Servo *&servo)
             for (auto p: serialPorts)
             {
                 // We found the port
-                if (p != NULL && p->deviceName->text().toStdString() == port)
+                if (p != nullptr && p->deviceName->text().toStdString() == port)
                 {
                     // We found the servo
                     if (sid >= 0 && sid < 254)
                     {
-                        if (p->deviceController != NULL)
+                        if (p->deviceController != nullptr)
                         {
                             servo = p->deviceController->getServo(sid);
-                            if (servo != NULL)
+                            if (servo != nullptr)
                             {
                                 retcode = 1;
                             }
@@ -914,7 +907,7 @@ void MainWindow::changeEvent(QEvent *event)
             // Pause controllers
             for (SerialPortHelper *p: serialPorts)
             {
-                if (p->deviceController != NULL)
+                if (p->deviceController != nullptr)
                 {
                     p->deviceController->pauseThread();
                 }
@@ -930,7 +923,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     // Check if a controller is not currently busy scanning
     for (auto p: serialPorts)
     {
-        if (p->deviceController != NULL)
+        if (p->deviceController != nullptr)
         {
             if (!(p->deviceController->getState() == state_stopped ||
                   p->deviceController->getState() == state_ready ||
@@ -998,7 +991,7 @@ void MainWindow::resizeTabWidgetContent()
 
 void MainWindow::servoSelection()
 {
-    Servo *servo = NULL;
+    Servo *servo = nullptr;
 
     // Get currently selected servo
     if (getCurrentServo(servo) > 0)
@@ -1286,7 +1279,7 @@ void MainWindow::servoSelection()
 
 void MainWindow::servoUpdate()
 {
-    Servo *servo = NULL;
+    Servo *servo = nullptr;
 
     // Get selected servo
     if (getCurrentServo(servo) > 0)
@@ -1684,7 +1677,7 @@ void MainWindow::errorHandling(Servo *servo, const int servoSerie, const int ser
     QString css_ok_left("border-left: 1px solid rgb(10, 100, 255);\nborder-top: 1px solid rgb(10, 100, 255);\nborder-bottom: 1px solid rgb(10, 100, 255);\nbackground: rgba(12, 170, 255, 128);\ncolor: white;");
     QString css_ok_right("border-right: 1px solid rgb(10, 100, 255);\nborder-top: 1px solid rgb(10, 100, 255);\nborder-bottom: 1px solid rgb(10, 100, 255);\nbackground: rgba(12, 170, 255, 128);\ncolor: white;");
 
-    ControllerAPI *ctrl = NULL;
+    ControllerAPI *ctrl = nullptr;
     if (getCurrentController(ctrl) > 0)
     {
         if (ctrl->getErrorCount() > 0)
@@ -2482,7 +2475,7 @@ void MainWindow::advanceScannerStart()
     // Check if a controller is not currently busy scanning or reading
     for (auto p: serialPorts)
     {
-        if (p->deviceController != NULL)
+        if (p->deviceController != nullptr)
         {
             if (!(p->deviceController->getState() == state_stopped ||
                   p->deviceController->getState() == state_scanned ||
@@ -2493,12 +2486,12 @@ void MainWindow::advanceScannerStart()
         }
     }
 
-    if (asw == NULL)
+    if (asw == nullptr)
     {
         // Pause controllers
         for (auto p: serialPorts)
         {
-            if (p->deviceController != NULL)
+            if (p->deviceController != nullptr)
             {
                 p->deviceController->pauseThread();
             }
@@ -2516,12 +2509,12 @@ void MainWindow::advanceScannerStart()
 
 void MainWindow::advanceScannerStop()
 {
-    if (asw != NULL)
+    if (asw != nullptr)
     {
         // Un-pause controllers
         for (auto p: serialPorts)
         {
-            if (p->deviceController != NULL)
+            if (p->deviceController != nullptr)
             {
                 p->deviceController->pauseThread();
             }
@@ -2532,7 +2525,7 @@ void MainWindow::advanceScannerStop()
 
         // Delete the advance scanner window
         delete asw;
-        asw = NULL;
+        asw = nullptr;
     }
 }
 
@@ -2540,7 +2533,7 @@ void MainWindow::advanceScannerStop()
 
 void MainWindow::settingsStart()
 {
-    if (stw == NULL)
+    if (stw == nullptr)
     {
         stw = new Settings();
         stw->show();
@@ -2553,7 +2546,7 @@ void MainWindow::settingsStart()
 
 void MainWindow::settingsStop()
 {
-    if (asw != NULL)
+    if (asw != nullptr)
     {
         asw->hide();
     }
@@ -2576,7 +2569,7 @@ void MainWindow::aboutQt()
 
 void MainWindow::resetServo()
 {
-    Servo *s = NULL;
+    Servo *s = nullptr;
 
     // Get selected servo
     if (getCurrentServo(s) > 0)
@@ -2618,7 +2611,7 @@ void MainWindow::resetServo()
 
 void MainWindow::rebootServo()
 {
-    Servo *s = NULL;
+    Servo *s = nullptr;
 
     // Get selected servo
     if (getCurrentServo(s) > 0)
@@ -2629,7 +2622,7 @@ void MainWindow::rebootServo()
 
 void MainWindow::refreshServo()
 {
-    Servo *s = NULL;
+    Servo *s = nullptr;
 
     // Get selected servo
     if (getCurrentServo(s) > 0)
@@ -2642,14 +2635,14 @@ void MainWindow::refreshServo()
 
 void MainWindow::clearErrors()
 {
-    ControllerAPI *c = NULL;
+    ControllerAPI *c = nullptr;
 
     if (getCurrentController(c) > 0)
     {
         c->clearErrorCount();
     }
 
-    Servo *s = NULL;
+    Servo *s = nullptr;
 
     if (getCurrentServo(s) > 0)
     {
@@ -2661,7 +2654,7 @@ void MainWindow::clearErrors()
 
 void MainWindow::toggleRunningMode()
 {
-    Servo *s = NULL;
+    Servo *s = nullptr;
 
     // Get selected servo
     if (getCurrentServo(s) > 0)
@@ -2725,7 +2718,7 @@ void MainWindow::toggleRunningMode()
 
 void MainWindow::toggleTorque(bool torque)
 {
-    Servo *s = NULL;
+    Servo *s = nullptr;
 
     // Get selected servo
     if (getCurrentServo(s) > 0)
@@ -2739,7 +2732,7 @@ void MainWindow::toggleTorque(bool torque)
 
 void MainWindow::toggleLED(bool led)
 {
-    Servo *s = NULL;
+    Servo *s = nullptr;
 
     // Get selected servo
     if (getCurrentServo(s) > 0)
@@ -2753,7 +2746,7 @@ void MainWindow::toggleLED(bool led)
 
 void MainWindow::moveMaxTorque(int torque)
 {
-    Servo *s = NULL;
+    Servo *s = nullptr;
 
     // Get selected servo
     if (getCurrentServo(s) > 0)
@@ -2770,7 +2763,7 @@ void MainWindow::moveMaxTorque(int torque)
 
 void MainWindow::moveTorqueLimit(int limit)
 {
-    Servo *s = NULL;
+    Servo *s = nullptr;
 
     // Get selected servo
     if (getCurrentServo(s) > 0)
@@ -2791,7 +2784,7 @@ void MainWindow::moveTorqueLimit(int limit)
 
 void MainWindow::moveMovingSpeed(int speed)
 {
-    Servo *s = NULL;
+    Servo *s = nullptr;
 
     // Get selected servo
     if (getCurrentServo(s) > 0)
@@ -2808,7 +2801,7 @@ void MainWindow::moveMovingSpeed(int speed)
 
 void MainWindow::moveCWLimit(int limit)
 {
-    Servo *s = NULL;
+    Servo *s = nullptr;
 
     // Get selected servo
     if (getCurrentServo(s) > 0)
@@ -2824,7 +2817,7 @@ void MainWindow::moveCWLimit(int limit)
 
 void MainWindow::moveCCWLimit(int limit)
 {
-    Servo *s = NULL;
+    Servo *s = nullptr;
 
     // Get selected servo
     if (getCurrentServo(s) > 0)
@@ -2840,7 +2833,7 @@ void MainWindow::moveCCWLimit(int limit)
 
 void MainWindow::moveServo(int goal)
 {
-    Servo *s = NULL;
+    Servo *s = nullptr;
 
     // Get selected servo
     if (getCurrentServo(s) > 0)
@@ -2856,7 +2849,7 @@ void MainWindow::moveServo(int goal)
 
 void MainWindow::modifier(int row, int column)
 {
-    Servo *s = NULL;
+    Servo *s = nullptr;
 
     // Get selected servo
     if (getCurrentServo(s) > 0)
@@ -2893,7 +2886,7 @@ void MainWindow::modifier(int row, int column)
                 QTreeWidgetItem *item = ui->deviceTreeWidget->selectedItems().at(0);
 
                 // Check if the item exist, plus if this a device and not a port
-                if (item != NULL && item->parent() != NULL)
+                if (item != nullptr && item->parent() != nullptr)
                 {
                     // Finaly change the item text
                     QString device_txt = "[#" + QString::number(reg_value) + "]  " + QString::fromStdString(s->getModelString());

@@ -49,13 +49,13 @@ class Settings : public QWidget
     std::string filepath;
 
     //! Config file parser
-    rapidjson::Document *parser;
+    rapidjson::Document *parser = nullptr;
 
     // Settings
-    bool ui_pause;
-    bool ctrl_autoscan;
-    bool ctrl_locks;
-    int ctrl_freq;
+    bool ui_pause = false;
+    bool ctrl_autoscan = true;
+    bool ctrl_locks = true;
+    int ctrl_freq = 10;
     std::vector <struct portconfig_s> serial_ports;
 
 private slots:
