@@ -360,7 +360,7 @@ background: rgba(255, 170, 0, 128);</string>
       <property name="currentIndex">
        <number>0</number>
       </property>
-      <widget class="QWidget" name="tab_1">
+      <widget class="QWidget" name="tab_overview">
        <attribute name="icon">
         <iconset resource="../resources/resources.qrc">
          <normaloff>:/icons/icons/package-install.svg</normaloff>:/icons/icons/package-install.svg</iconset>
@@ -1877,7 +1877,7 @@ background: rgba(255, 170, 0, 128);</string>
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab_2">
+      <widget class="QWidget" name="tab_spec">
        <attribute name="icon">
         <iconset resource="../resources/resources.qrc">
          <normaloff>:/icons/icons/hardinfo.svg</normaloff>:/icons/icons/hardinfo.svg</iconset>
@@ -1983,7 +1983,7 @@ background: rgb(255, 255, 222);</string>
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab_3">
+      <widget class="QWidget" name="tab_advanced">
        <attribute name="icon">
         <iconset resource="../resources/resources.qrc">
          <normaloff>:/icons/icons/controls.svg</normaloff>:/icons/icons/controls.svg</iconset>
@@ -2014,7 +2014,7 @@ background: rgba(255, 170, 0, 128);</string>
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab_4">
+      <widget class="QWidget" name="tab_motor">
        <attribute name="icon">
         <iconset resource="../resources/resources.qrc">
          <normaloff>:/icons/icons/utilities-system-monitor.svg</normaloff>:/icons/icons/utilities-system-monitor.svg</iconset>
@@ -2042,6 +2042,16 @@ background: rgba(255, 170, 0, 128);</string>
            <set>Qt::AlignCenter</set>
           </property>
          </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_serial">
+       <attribute name="title">
+        <string>Serial port</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_8">
+        <item row="0" column="0">
+         <widget class="tabSerial" name="widget_serial" native="true"/>
         </item>
        </layout>
       </widget>
@@ -3234,6 +3244,14 @@ color: white;</string>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="6"/>
+ <customwidgets>
+  <customwidget>
+   <class>tabSerial</class>
+   <extends>QWidget</extends>
+   <header>../src/tabSerial.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../resources/resources.qrc"/>
  </resources>

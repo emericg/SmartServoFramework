@@ -20,12 +20,24 @@
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
     <widget class="QGroupBox" name="groupBox_ui">
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
      <property name="title">
       <string>UI</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
        <widget class="QCheckBox" name="checkBox_pause">
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
         <property name="text">
          <string>Pause controllers when SmartServoGUI window is out of focus.</string>
         </property>
@@ -36,12 +48,24 @@
    </item>
    <item>
     <widget class="QGroupBox" name="groupBox_controllers">
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
      <property name="title">
       <string>Device Controllers</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="3" column="1">
        <widget class="QLabel" name="label">
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
         <property name="text">
          <string>Synchronization frequency between controllers and devices.</string>
         </property>
@@ -54,6 +78,12 @@
           <width>128</width>
           <height>16777215</height>
          </size>
+        </property>
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
         </property>
         <property name="minimum">
          <number>1</number>
@@ -68,6 +98,12 @@
       </item>
       <item row="2" column="0" colspan="2">
        <widget class="QCheckBox" name="checkBox_locks">
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
         <property name="text">
          <string>Use &quot;file locks&quot; to avoid concurent use of the serial ports.</string>
         </property>
@@ -75,6 +111,12 @@
       </item>
       <item row="1" column="0" colspan="2">
        <widget class="QCheckBox" name="checkBox_autoscan">
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
         <property name="text">
          <string>Auto-scan serial ports at launch</string>
         </property>
@@ -85,14 +127,26 @@
    </item>
    <item>
     <widget class="QGroupBox" name="groupBox_ports">
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
      <property name="title">
       <string>Serial port(s)</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
        <widget class="QLabel" name="label_2">
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
         <property name="text">
-         <string>You can use these fields to pre-configure serial ports.</string>
+         <string>You can use these fields to pre-configure up to four serial ports.</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
@@ -101,6 +155,12 @@
       </item>
       <item>
        <widget class="QLabel" name="label_3">
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
         <property name="text">
          <string>Just tick the &quot;enable&quot; checkbox to the left in order to use these settings.</string>
         </property>
@@ -117,6 +177,12 @@
         </item>
         <item>
          <widget class="QLineEdit" name="lineEdit_0">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
           <property name="text">
            <string>/dev/ttyUSB0</string>
           </property>
@@ -129,6 +195,12 @@
             <width>128</width>
             <height>0</height>
            </size>
+          </property>
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
           </property>
           <item>
            <property name="text">
@@ -149,11 +221,17 @@
         </item>
         <item>
          <widget class="QSpinBox" name="spinBox_0">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
           <property name="minimum">
            <number>2400</number>
           </property>
           <property name="maximum">
-           <number>1000000</number>
+           <number>4000000</number>
           </property>
           <property name="value">
            <number>1000000</number>
@@ -173,8 +251,14 @@
         </item>
         <item>
          <widget class="QLineEdit" name="lineEdit_1">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
           <property name="text">
-           <string>/dev/ttyUSB1</string>
+           <string>/dev/ttyACM0</string>
           </property>
          </widget>
         </item>
@@ -185,6 +269,12 @@
             <width>128</width>
             <height>0</height>
            </size>
+          </property>
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
           </property>
           <item>
            <property name="text">
@@ -205,11 +295,17 @@
         </item>
         <item>
          <widget class="QSpinBox" name="spinBox_1">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
           <property name="minimum">
            <number>2400</number>
           </property>
           <property name="maximum">
-           <number>1000000</number>
+           <number>4000000</number>
           </property>
           <property name="value">
            <number>1000000</number>
@@ -229,8 +325,14 @@
         </item>
         <item>
          <widget class="QLineEdit" name="lineEdit_2">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
           <property name="text">
-           <string>/dev/ttyACM0</string>
+           <string>/dev/cu.usbserial</string>
           </property>
          </widget>
         </item>
@@ -241,6 +343,12 @@
             <width>128</width>
             <height>0</height>
            </size>
+          </property>
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
           </property>
           <item>
            <property name="text">
@@ -261,11 +369,17 @@
         </item>
         <item>
          <widget class="QSpinBox" name="spinBox_2">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
           <property name="minimum">
            <number>2400</number>
           </property>
           <property name="maximum">
-           <number>1000000</number>
+           <number>4000000</number>
           </property>
           <property name="value">
            <number>1000000</number>
@@ -285,8 +399,14 @@
         </item>
         <item>
          <widget class="QLineEdit" name="lineEdit_3">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
           <property name="text">
-           <string>/dev/ttyACM1</string>
+           <string>\\COM1</string>
           </property>
          </widget>
         </item>
@@ -297,6 +417,12 @@
             <width>128</width>
             <height>0</height>
            </size>
+          </property>
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
           </property>
           <item>
            <property name="text">
@@ -317,11 +443,17 @@
         </item>
         <item>
          <widget class="QSpinBox" name="spinBox_3">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
           <property name="minimum">
            <number>2400</number>
           </property>
           <property name="maximum">
-           <number>1000000</number>
+           <number>4000000</number>
           </property>
           <property name="value">
            <number>1000000</number>
@@ -370,7 +502,7 @@
         </size>
        </property>
        <property name="text">
-        <string>Exit</string>
+        <string>Cancel</string>
        </property>
        <property name="icon">
         <iconset resource="../resources/resources.qrc">
@@ -385,6 +517,12 @@
          <width>128</width>
          <height>0</height>
         </size>
+       </property>
+       <property name="font">
+        <font>
+         <weight>50</weight>
+         <bold>false</bold>
+        </font>
        </property>
        <property name="text">
         <string>Save and exit</string>

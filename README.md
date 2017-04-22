@@ -98,9 +98,9 @@ You need a serial port with a regular "full-duplex" TTL converter to use Herkule
 
 ## SmartServoGui
 
-SmartServoGui is a fully featured Qt GUI application that helps you discover devices on available serial links, get an overview of all of their registers, and easily tweak their settings!
-
 > SmartServoGui has its own README in the `gui/` directory, where you can learn more about its features!
+
+SmartServoGui is a fully featured Qt GUI application that helps you discover devices on available serial links, get an overview of all of their registers, and easily tweak their settings! Like the framework, it is fully multi-platform.
 
 ### Quick installation
 

@@ -1,0 +1,994 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>widgetSerialError</class>
+ <widget class="QWidget" name="widgetSerialError">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>128</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <property name="leftMargin">
+    <number>4</number>
+   </property>
+   <property name="topMargin">
+    <number>4</number>
+   </property>
+   <property name="rightMargin">
+    <number>4</number>
+   </property>
+   <property name="bottomMargin">
+    <number>4</number>
+   </property>
+   <property name="verticalSpacing">
+    <number>0</number>
+   </property>
+   <item row="1" column="3">
+    <widget class="QFrame" name="frame_err_dxl2">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="label_err_res">
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>32</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>32</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-top: 1px solid rgb(10, 100, 255);
+border-bottom: 1px solid rgb(10, 100, 255);
+border-left: 1px solid rgb(10, 100, 255);
+background: rgba(12, 170, 255, 128);
+color: white;</string>
+        </property>
+        <property name="text">
+         <string>Result</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_err_cmd_2">
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>32</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-top: 1px solid rgb(10, 100, 255);
+border-bottom: 1px solid rgb(10, 100, 255);
+background: rgba(12, 170, 255, 128);
+color: white;</string>
+        </property>
+        <property name="text">
+         <string>Instruction</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_err_crc_2">
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>32</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-top: 1px solid rgb(10, 100, 255);
+border-bottom: 1px solid rgb(10, 100, 255);
+background: rgba(12, 170, 255, 128);
+color: white;</string>
+        </property>
+        <property name="text">
+         <string>Checksum</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_err_range_2">
+        <property name="minimumSize">
+         <size>
+          <width>60</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>32</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-top: 1px solid rgb(10, 100, 255);
+border-bottom: 1px solid rgb(10, 100, 255);
+background: rgba(12, 170, 255, 128);
+color: white;</string>
+        </property>
+        <property name="text">
+         <string>Data Range</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_err_length">
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>32</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-top: 1px solid rgb(10, 100, 255);
+border-bottom: 1px solid rgb(10, 100, 255);
+background: rgba(12, 170, 255, 128);
+color: white;</string>
+        </property>
+        <property name="text">
+         <string>Data Length</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_err_limit">
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>32</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-top: 1px solid rgb(10, 100, 255);
+border-bottom: 1px solid rgb(10, 100, 255);
+background: rgba(12, 170, 255, 128);
+color: white;</string>
+        </property>
+        <property name="text">
+         <string>Data Limit</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_err_access">
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>32</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-top: 1px solid rgb(10, 100, 255);
+border-bottom: 1px solid rgb(10, 100, 255);
+border-right: 1px solid rgb(10, 100, 255);
+background: rgba(12, 170, 255, 128);
+color: white;</string>
+        </property>
+        <property name="text">
+         <string>Access</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="3">
+    <widget class="QFrame" name="frame_err_hkx">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_4">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <layout class="QHBoxLayout" name="frame_err_hkx1">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="label_err_vin_2">
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>24</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">border-top: 1px solid rgb(10, 100, 255);
+border-bottom: 1px solid rgb(10, 100, 255);
+border-left: 1px solid rgb(10, 100, 255);
+background: rgba(12, 170, 255, 128);
+color: white;;
+color: white;</string>
+          </property>
+          <property name="text">
+           <string>Input Voltage</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_err_angle_2">
+          <property name="minimumSize">
+           <size>
+            <width>80</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">border-top: 1px solid rgb(10, 100, 255);
+border-bottom: 1px solid rgb(10, 100, 255);
+background: rgba(12, 170, 255, 128);
+color: white;</string>
+          </property>
+          <property name="text">
+           <string>Angle limits</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_err_heat_2">
+          <property name="minimumSize">
+           <size>
+            <width>80</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">border-top: 1px solid rgb(10, 100, 255);
+border-bottom: 1px solid rgb(10, 100, 255);
+background: rgba(12, 170, 255, 128);
+color: white;</string>
+          </property>
+          <property name="text">
+           <string>Overheat</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_err_packet">
+          <property name="minimumSize">
+           <size>
+            <width>80</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">border-top: 1px solid rgb(10, 100, 255);
+border-bottom: 1px solid rgb(10, 100, 255);
+background: rgba(12, 170, 255, 128);
+color: white;</string>
+          </property>
+          <property name="text">
+           <string>Packet</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_err_overload_2">
+          <property name="minimumSize">
+           <size>
+            <width>80</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">border-top: 1px solid rgb(10, 100, 255);
+border-bottom: 1px solid rgb(10, 100, 255);
+background: rgba(12, 170, 255, 128);
+color: white;</string>
+          </property>
+          <property name="text">
+           <string>Overload</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_err_driver">
+          <property name="minimumSize">
+           <size>
+            <width>60</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">border-top: 1px solid rgb(10, 100, 255);
+border-bottom: 1px solid rgb(10, 100, 255);
+background: rgba(12, 170, 255, 128);
+color: white;</string>
+          </property>
+          <property name="text">
+           <string>Driver</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_err_eep">
+          <property name="minimumSize">
+           <size>
+            <width>60</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">border-top: 1px solid rgb(10, 100, 255);
+border-bottom: 1px solid rgb(10, 100, 255);
+border-right: 1px solid rgb(10, 100, 255);
+background: rgba(12, 170, 255, 128);
+color: white;</string>
+          </property>
+          <property name="text">
+           <string>EEP</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="label_stat_moving">
+          <property name="minimumSize">
+           <size>
+            <width>80</width>
+            <height>24</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">border-top: 1px solid rgb(10, 100, 255);
+border-bottom: 1px solid rgb(10, 100, 255);
+border-left: 1px solid rgb(10, 100, 255);
+background: rgba(12, 170, 255, 128);
+color: white;</string>
+          </property>
+          <property name="text">
+           <string>Moving</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_stat_inpos">
+          <property name="minimumSize">
+           <size>
+            <width>80</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">border-top: 1px solid rgb(10, 100, 255);
+border-bottom: 1px solid rgb(10, 100, 255);
+background: rgba(12, 170, 255, 128);
+color: white;</string>
+          </property>
+          <property name="text">
+           <string>In Position</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_stat_crc">
+          <property name="minimumSize">
+           <size>
+            <width>80</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">border-top: 1px solid rgb(10, 100, 255);
+border-bottom: 1px solid rgb(10, 100, 255);
+background: rgba(12, 170, 255, 128);
+color: white;</string>
+          </property>
+          <property name="text">
+           <string>Checksum</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_stat_cmd">
+          <property name="minimumSize">
+           <size>
+            <width>80</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">border-top: 1px solid rgb(10, 100, 255);
+border-bottom: 1px solid rgb(10, 100, 255);
+background: rgba(12, 170, 255, 128);
+color: white;</string>
+          </property>
+          <property name="text">
+           <string>Instruction</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_stat_addr">
+          <property name="minimumSize">
+           <size>
+            <width>60</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">border-top: 1px solid rgb(10, 100, 255);
+border-bottom: 1px solid rgb(10, 100, 255);
+background: rgba(12, 170, 255, 128);
+color: white;</string>
+          </property>
+          <property name="text">
+           <string>ADDR</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_stat_gbg">
+          <property name="minimumSize">
+           <size>
+            <width>60</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">border-top: 1px solid rgb(10, 100, 255);
+border-bottom: 1px solid rgb(10, 100, 255);
+background: rgba(12, 170, 255, 128);
+color: white;</string>
+          </property>
+          <property name="text">
+           <string>Garbage</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_stat_ton">
+          <property name="minimumSize">
+           <size>
+            <width>80</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">border-top: 1px solid rgb(10, 100, 255);
+border-bottom: 1px solid rgb(10, 100, 255);
+border-right: 1px solid rgb(10, 100, 255);
+background: rgba(12, 170, 255, 128);
+color: white;</string>
+          </property>
+          <property name="text">
+           <string>Motor ON</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="0" column="3">
+    <widget class="QFrame" name="frame_err_dxl1">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="label_err_cmd">
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>32</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>32</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-top: 1px solid rgb(10, 100, 255);
+border-bottom: 1px solid rgb(10, 100, 255);
+border-left: 1px solid rgb(10, 100, 255);
+background: rgba(12, 170, 255, 128);
+color: white;</string>
+        </property>
+        <property name="text">
+         <string>Instruction</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_err_angle">
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>32</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-top: 1px solid rgb(10, 100, 255);
+border-bottom: 1px solid rgb(10, 100, 255);
+background: rgba(12, 170, 255, 128);
+color: white;</string>
+        </property>
+        <property name="text">
+         <string>Angle limits</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_err_overload">
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>32</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-top: 1px solid rgb(10, 100, 255);
+border-bottom: 1px solid rgb(10, 100, 255);
+background: rgba(12, 170, 255, 128);
+color: white;</string>
+        </property>
+        <property name="text">
+         <string>Overload</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_err_range">
+        <property name="minimumSize">
+         <size>
+          <width>60</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>32</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-top: 1px solid rgb(10, 100, 255);
+border-bottom: 1px solid rgb(10, 100, 255);
+background: rgba(12, 170, 255, 128);
+color: white;</string>
+        </property>
+        <property name="text">
+         <string>Data Range</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_err_crc">
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>32</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-top: 1px solid rgb(10, 100, 255);
+border-bottom: 1px solid rgb(10, 100, 255);
+background: rgba(12, 170, 255, 128);
+color: white;</string>
+        </property>
+        <property name="text">
+         <string>Checksum</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_err_heat">
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>32</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-top: 1px solid rgb(10, 100, 255);
+border-bottom: 1px solid rgb(10, 100, 255);
+background: rgba(12, 170, 255, 128);
+color: white;</string>
+        </property>
+        <property name="text">
+         <string>Overheat</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_err_vin">
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>32</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-top: 1px solid rgb(10, 100, 255);
+border-bottom: 1px solid rgb(10, 100, 255);
+border-right: 1px solid rgb(10, 100, 255);
+background: rgba(12, 170, 255, 128);
+color: white;</string>
+        </property>
+        <property name="text">
+         <string>Input Voltage</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="0" column="0" rowspan="3">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="spacing">
+      <number>4</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="serialLinkErrors_label2">
+       <property name="minimumSize">
+        <size>
+         <width>60</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>80</width>
+         <height>32</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: white;
+border: 1px solid rgb(85, 170, 0);
+background: rgba(85, 200, 0, 128);</string>
+       </property>
+       <property name="text">
+        <string>COM</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_clearStatus">
+       <property name="maximumSize">
+        <size>
+         <width>32</width>
+         <height>32</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources/resources.qrc">
+         <normaloff>:/icons/icons/emblem-unreadable.svg</normaloff>:/icons/icons/emblem-unreadable.svg</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_updateStatus">
+       <property name="maximumSize">
+        <size>
+         <width>32</width>
+         <height>32</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources/resources.qrc">
+         <normaloff>:/icons/icons/emblem-ubuntuone-updating.svg</normaloff>:/icons/icons/emblem-ubuntuone-updating.svg</iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../resources/resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>

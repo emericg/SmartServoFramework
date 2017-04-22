@@ -28,6 +28,7 @@
 
 #include "../../src/ControllerAPI.h"
 
+#include <vector>
 #include <QMainWindow>
 
 class QCheckBox;
@@ -48,6 +49,7 @@ class MainWindow : public QMainWindow
     QAction *resetAction;
     QTimer *selfRefreshTimer;
     QWidget *loadingTabWidget;
+    QWidget *serialTabWidget;
 
     //! "Advance Scanner" window
     AdvanceScanner *asw = nullptr;
@@ -81,6 +83,7 @@ class MainWindow : public QMainWindow
     bool tableAutoSelection = false;
 
     void loadingScreen(bool enabled);
+    void serialScreen(bool enabled);
 
     int getCurrentController(ControllerAPI *&ctrl);
     int getCurrentServo(ControllerAPI *&ctrl, int &id);

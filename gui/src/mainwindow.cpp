@@ -64,8 +64,9 @@ MainWindow::MainWindow(QWidget *parent):
     // Force custom window size
     setGeometry(0, 0, 1200, 640);
 
-    // Save "loading" tab widget, it's the 5th (and last) tab
-    loadingTabWidget = ui->tabWidget->widget(ui->tabWidget->count() - 1);
+    // Save "serial" and "loading" tab widgets
+    serialTabWidget = ui->tabWidget->widget(ui->tabWidget->count() - 2); // 5th tab
+    loadingTabWidget = ui->tabWidget->widget(ui->tabWidget->count() - 1); // 6th (and last) tab
 
     // QTreeWidget contextual actions
     ui->deviceTreeWidget->setContextMenuPolicy(Qt::ActionsContextMenu);
@@ -153,7 +154,13 @@ void MainWindow::loadingScreen(bool enabled)
     {
         ui->frame_loading->show();
 
-        if (ui->tabWidget->count() != 5)
+        bool tabalreadythere = false;
+        for (int i = 0; i < ui->tabWidget->count(); i++)
+        {
+            if (ui->tabWidget->tabText(i) == "loading")
+                tabalreadythere = true;
+        }
+        if (tabalreadythere == false)
         {
             ui->tabWidget->addTab(loadingTabWidget, "loading");
         }
@@ -185,9 +192,44 @@ void MainWindow::loadingScreen(bool enabled)
     else
     {
         ui->frame_loading->hide();
-
-        ui->tabWidget->removeTab(4);
         ui->tabWidget->setCurrentIndex(0);
+
+        for (int i = 0; i < ui->tabWidget->count(); i++)
+        {
+            if (ui->tabWidget->tabText(i) == "loading")
+                ui->tabWidget->removeTab(i);
+        }
+    }
+}
+
+void MainWindow::serialScreen(bool enabled)
+{
+    QTabBar *tabBar = ui->tabWidget->findChild<QTabBar *>();
+    tabBar->setVisible(!enabled);
+    ui->tabWidget->setDocumentMode(enabled);
+
+    if (enabled)
+    {
+        bool tabalreadythere = false;
+        for (int i = 0; i < ui->tabWidget->count(); i++)
+        {
+            if (ui->tabWidget->tabText(i) == "serial")
+                tabalreadythere = true;
+        }
+        if (tabalreadythere == false)
+        {
+            ui->tabWidget->addTab(serialTabWidget, "serial");
+        }
+        ui->tabWidget->setCurrentIndex(ui->tabWidget->count() - 1);
+    }
+    else
+    {
+        ui->tabWidget->setCurrentIndex(0);
+        for (int i = 0; i < ui->tabWidget->count(); i++)
+        {
+            if (ui->tabWidget->tabText(i) == "serial")
+                ui->tabWidget->removeTab(i);
+        }
     }
 }
 
@@ -206,8 +248,7 @@ void MainWindow::autoScan()
 void MainWindow::scanSerialPorts(bool autoscan)
 {
     // Disable scan buttons, indicate we are starting to scan
-    ui->pushScanSerial->setDisabled(true);
-    ui->pushScanServo->setDisabled(true);
+    ui->frameDevices->setDisabled(true);
     loadingScreen(true);
 
     // Clean the deviceTreeWidget content
@@ -318,8 +359,7 @@ void MainWindow::scanSerialPorts(bool autoscan)
     }
 
     // Indicate that we are no longer scanning
-    ui->pushScanSerial->setEnabled(true);
-    ui->pushScanServo->setEnabled(true);
+    ui->frameDevices->setEnabled(true);
 
     // Maybe this scan did not yield any results, to avoid showing a blank interface,
     // we do not turn off loading screen, only the loading animation
@@ -331,10 +371,9 @@ void MainWindow::scanSerialPorts(bool autoscan)
 
 void MainWindow::scanServos()
 {
-    ui->pushScanSerial->setDisabled(true);
-    ui->pushScanServo->setDisabled(true);
-    tableAutoSelection = false;
+    ui->frameDevices->setDisabled(true);
     scan_running = true;
+    tableAutoSelection = false;
 
     for (SerialPortHelper *h: serialPorts)
     {
@@ -350,32 +389,26 @@ void MainWindow::scanServos()
     }
 
     scan_running = false;
-
-    ui->pushScanSerial->setEnabled(true);
-    ui->pushScanServo->setEnabled(true);
+    ui->frameDevices->setEnabled(true);
 }
 
 void MainWindow::refreshSerialPort(QString port_qstring)
 {
-    ui->pushScanSerial->setDisabled(true);
-    ui->pushScanServo->setDisabled(true);
-    tableAutoSelection = false;
+    ui->frameDevices->setDisabled(true);
     scan_running = true;
+    tableAutoSelection = false;
 
     // Launch a scan
     scanServos(port_qstring);
 
     scan_running = false;
-
-    ui->pushScanSerial->setEnabled(true);
-    ui->pushScanServo->setEnabled(true);
+    ui->frameDevices->setEnabled(true);
 }
 
 void MainWindow::scanServos(QString port_qstring)
 {
     // Disable scan buttons
-    ui->pushScanSerial->setDisabled(true);
-    ui->pushScanServo->setDisabled(true);
+    ui->frameDevices->setDisabled(true);
 
     bool ctrl_locks = stw->getLock();
     int ctrl_freq = stw->getFreq();
@@ -735,8 +768,7 @@ void MainWindow::scanServos(QString port_qstring)
         }
     }
 
-    ui->pushScanSerial->setEnabled(true);
-    ui->pushScanServo->setEnabled(true);
+    ui->frameDevices->setEnabled(true);
 }
 
 int MainWindow::getCurrentController(ControllerAPI *&ctrl)
@@ -996,6 +1028,7 @@ void MainWindow::servoSelection()
     // Get currently selected servo
     if (getCurrentServo(servo) > 0)
     {
+        serialScreen(false);
         toggleServoPanel(true);
 
         // Contextual menu actions
@@ -1272,6 +1305,8 @@ void MainWindow::servoSelection()
         // Clean servo register panel
         cleanRegisterTable();
         toggleServoPanel(false);
+
+        serialScreen(true);
     }
 
     resizeTabWidgetContent();

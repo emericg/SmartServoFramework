@@ -73,15 +73,29 @@ SOURCES    += ../src/*.cpp
 HEADERS    += ../src/*.h
 
 # GUI application sources
-SOURCES    += src/main.cpp src/mainwindow.cpp src/advancescanner.cpp src/qabout.cpp src/settings.cpp
-HEADERS    += src/mainwindow.h src/advancescanner.h src/qabout.h src/settings.h
+SOURCES    += src/main.cpp \
+              src/mainwindow.cpp \
+              src/tabSerial.cpp \
+              src/advancescanner.cpp \
+              src/widgetSerialError.cpp \
+              src/qabout.cpp \
+              src/settings.cpp
 
-RESOURCES  += resources/resources.qrc
+HEADERS    += src/mainwindow.h \
+              src/tabSerial.h \
+              src/widgetSerialError.h \
+              src/advancescanner.h \
+              src/qabout.h \
+              src/settings.h
 
 FORMS      += ui/mainwindow.ui \
               ui/advancescanner.ui \
               ui/qabout.ui \
-              ui/settings.ui
+              ui/settings.ui \
+              ui/tabSerial.ui \
+              ui/widgetSerialError.ui
+
+RESOURCES  += resources/resources.qrc
 
 # Use "lupdate SmartServoGui.pro" to update translation files
 # Then "lrelease SmartServoGui.pro" to build translated files
