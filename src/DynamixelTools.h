@@ -112,4 +112,4 @@ int dxl_get_servo_model(const int model_number);
  */
 int dxl_get_baudrate(const int baudnum, const int servo_serie = SERVO_AX);
 
-#endif /* DYNAMIXEL_TOOLS_H */
+#endif // DYNAMIXEL_TOOLS_H

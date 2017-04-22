@@ -175,4 +175,4 @@ public:
     void setAckPolicy(int ack);
 };
 
-#endif /* HERKULEX_H */
+#endif // HERKULEX_H

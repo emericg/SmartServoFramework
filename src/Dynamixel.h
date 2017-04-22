@@ -199,4 +199,4 @@ public:
     void setAckPolicy(int ack);
 };
 
-#endif /* DYNAMIXEL_H */
+#endif // DYNAMIXEL_H

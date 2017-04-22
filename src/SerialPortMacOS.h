@@ -112,6 +112,6 @@ public:
     int checkTimeOut();
 };
 
-#endif /* defined(__APPLE__) || defined(__MACH__) */
+#endif // defined(__APPLE__) || defined(__MACH__)
 
-#endif /* SERIALPORT_MACOS_H */
+#endif // SERIALPORT_MACOS_H

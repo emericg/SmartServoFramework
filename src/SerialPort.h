@@ -279,4 +279,4 @@ public:
     int getDeviceBaudRate();
 };
 
-#endif /* SERIALPORT_H */
+#endif // SERIALPORT_H

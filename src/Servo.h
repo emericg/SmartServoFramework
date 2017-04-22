@@ -166,4 +166,4 @@ public:
 
 /** @}*/
 
-#endif /* SERVO_H */
+#endif // SERVO_H

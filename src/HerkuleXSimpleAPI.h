@@ -179,4 +179,4 @@ public:
 
 /** @}*/
 
-#endif /* HERKULEX_SIMPLE_API_H */
+#endif // HERKULEX_SIMPLE_API_H

@@ -136,6 +136,6 @@ public:
     int checkTimeOut();
 };
 
-#endif /* __linux__ || __gnu_linux */
+#endif // __linux__ || __gnu_linux
 
-#endif /* SERIALPORT_LINUX_H */
+#endif // SERIALPORT_LINUX_H

@@ -194,4 +194,4 @@ public:
 
 /** @}*/
 
-#endif /* DYNAMIXEL_SIMPLE_API_H */
+#endif // DYNAMIXEL_SIMPLE_API_H

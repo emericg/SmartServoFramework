@@ -98,4 +98,4 @@ public:
 
 /** @}*/
 
-#endif /* HERKULEX_CONTROLLER_H */
+#endif // HERKULEX_CONTROLLER_H

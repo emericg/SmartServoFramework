@@ -97,4 +97,4 @@ public:
 
 /** @}*/
 
-#endif /* SERVO_DYNAMIXEL_H */
+#endif // SERVO_DYNAMIXEL_H

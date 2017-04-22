@@ -97,6 +97,6 @@ public:
     int checkTimeOut();
 };
 
-#endif /* defined(_WIN32) || defined(_WIN64) */
+#endif // defined(_WIN32) || defined(_WIN64)
 
-#endif /* SERIALPORT_WINDOWS_H */
+#endif // SERIALPORT_WINDOWS_H

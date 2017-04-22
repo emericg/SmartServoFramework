@@ -89,4 +89,4 @@ int hkx_get_servo_model(const int model_number);
  */
 int hkx_get_baudrate(const int baudnum, const int servo_serie = SERVO_DRS);
 
-#endif /* HERKULEX_TOOLS_H */
+#endif // HERKULEX_TOOLS_H

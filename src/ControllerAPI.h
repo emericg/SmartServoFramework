@@ -271,4 +271,4 @@ public:
 
 /** @}*/
 
-#endif /* CONTROLLER_API_H */
+#endif // CONTROLLER_API_H

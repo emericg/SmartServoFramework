@@ -436,4 +436,4 @@ std::string getRegisterNameTxt(const int reg_name);
 
 /* ************************************************************************** */
 /** @}*/
-#endif /* UTILS_H */
+#endif // UTILS_H

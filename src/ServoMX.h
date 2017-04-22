@@ -62,4 +62,4 @@ public:
 
 /** @}*/
 
-#endif /* SERVO_MX_H */
+#endif // SERVO_MX_H

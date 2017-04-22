@@ -117,4 +117,4 @@ int getRegisterBounds(const int ct[][8], const int reg_name, int &min, int &max)
 /** @}*/
 
 /* ************************************************************************** */
-#endif /* CONTROL_TABLES_H */
+#endif // CONTROL_TABLES_H

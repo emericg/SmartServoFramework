@@ -715,4 +715,4 @@ int SerialPortLinux::checkTimeOut()
     return status;
 }
 
-#endif /* __linux__ || __gnu_linux */
+#endif // __linux__ || __gnu_linux

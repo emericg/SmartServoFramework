@@ -257,4 +257,4 @@ const int DRS0x02_control_table[54][8] =
 /** @}*/
 
 /* ************************************************************************** */
-#endif /* CONTROL_TABLES_HERKULEX_H */
+#endif // CONTROL_TABLES_HERKULEX_H

@@ -67,4 +67,4 @@ public:
 
 /** @}*/
 
-#endif /* SERVO_XL_H */
+#endif // SERVO_XL_H

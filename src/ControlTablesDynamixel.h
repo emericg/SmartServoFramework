@@ -390,4 +390,4 @@ const int PRO_control_table[49][8] =
 /** @}*/
 
 /* ************************************************************************** */
-#endif /* CONTROL_TABLES_DYNAMIXEL_H */
+#endif // CONTROL_TABLES_DYNAMIXEL_H

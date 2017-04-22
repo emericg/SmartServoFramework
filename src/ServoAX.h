@@ -56,4 +56,4 @@ public:
 
 /** @}*/
 
-#endif /* SERVO_AX_H */
+#endif // SERVO_AX_H

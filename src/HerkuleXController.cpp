@@ -651,7 +651,7 @@ void HerkuleXController::run()
         {
             TRACE_INFO(HKX, "Sync loop duration: %fms of the %fms budget.", (loopd / 1000.0), syncloopDuration);
         }
-#endif
+#endif // LATENCY_TIMER
 
         if (waitd > 0.0)
         {

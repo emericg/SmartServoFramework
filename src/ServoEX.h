@@ -58,4 +58,4 @@ public:
 
 /** @}*/
 
-#endif /* SERVO_EX_H */
+#endif // SERVO_EX_H

@@ -49,4 +49,4 @@ public:
 
 /** @}*/
 
-#endif /* SERVO_DRS_H */
+#endif // SERVO_DRS_H

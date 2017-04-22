@@ -120,4 +120,4 @@ public:
 
 /** @}*/
 
-#endif /* SERVO_HERKULEX_H */
+#endif // SERVO_HERKULEX_H

@@ -116,4 +116,4 @@ public:
 
 /** @}*/
 
-#endif /* DYNAMIXEL_CONTROLLER_H */
+#endif // DYNAMIXEL_CONTROLLER_H
