@@ -488,21 +488,25 @@ int SerialPortMacOS::openLink()
     tty.c_cc[VTIME] = 0;
     tty.c_cc[VMIN]  = 0;
 
-    sleep(1); // FIXME why is this necessary for our serial port to work?
+    // This used to be necessary for the serial port to connect with older versions
+    // of macOS (< 10.12). Try uncommenting this if you experience problems...
+    //sleep(1);
 
     tcflush(ttyDeviceFileDescriptor, TCIFLUSH);
     // Cause the new options to take effect immediately.
     if (tcsetattr(ttyDeviceFileDescriptor, TCSANOW, &tty) == -1)
     {
        TRACE_ERROR(SERIAL, "Error setting tty attributes %s - %s(%d).",
-                  ttyDevicePath.c_str(), strerror(errno), errno);
+                   ttyDevicePath.c_str(), strerror(errno), errno);
        goto OPEN_LINK_ERROR;
     }
 
     TRACE_1(SERIAL, "Current input baud rate is %d", (int)cfgetispeed(&tty));
     TRACE_1(SERIAL, "Current output baud rate is %d", (int)cfgetospeed(&tty));
 
-    sleep(1); // FIXME why is this necessary for our serial port to work?
+    // This used to be necessary for the serial port to connect with older versions
+    // of macOS (< 10.12). Try uncommenting this if you experience problems...
+    //sleep(1);
 
     if (ttyDeviceBaudRate < 1)
     {
