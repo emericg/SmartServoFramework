@@ -384,7 +384,7 @@ int Settings::readSettings()
     // Parse from string (fallback)
     if (retcode == 0)
     {
-        std::string fallback_json = "{\"ui\":{\"pause\":false},\"ctrl\":{\"autoscan\":true,\"locks\":true,\"freq\":10},\"serial\":{\"ports\":[{\"on\":false,\"path\":\"/dev/ttyUSB0\",\"protocol\":0,\"speed\":1000000},{\"on\":false,\"path\":\"/dev/ttyACM0\",\"protocol\":1,\"speed\":1000000},{\"on\":false,\"path\":\"/dev/cu.usbserial\",\"protocol\":2,\"speed\":1000000},{\"on\":false,\"path\":\"\dev/ttyS1\",\"protocol\":2,\"speed\":1000000}]}}";
+        std::string fallback_json = "{\"ui\":{\"pause\":false},\"ctrl\":{\"autoscan\":true,\"locks\":true,\"freq\":10},\"serial\":{\"ports\":[{\"on\":false,\"path\":\"/dev/ttyUSB0\",\"protocol\":0,\"speed\":1000000},{\"on\":false,\"path\":\"/dev/ttyACM0\",\"protocol\":1,\"speed\":1000000},{\"on\":false,\"path\":\"/dev/cu.usbserial\",\"protocol\":2,\"speed\":1000000},{\"on\":false,\"path\":\"/dev/ttyS1\",\"protocol\":2,\"speed\":1000000}]}}";
 
         if (parser->Parse(fallback_json.c_str()).HasParseError() == true)
         {
@@ -442,7 +442,8 @@ int Settings::readSettings()
                         struct portConfig port;
                         port.on = p[i]["on"].GetBool();
                         port.path = p[i]["path"].GetString();
-                        port.protocol = p[i]["protocol"].GetInt();
+                        if (p[i]["protocol"].IsInt()) // compatibility: this used to be a string
+                            port.protocol = p[i]["protocol"].GetInt();
                         port.speed = p[i]["speed"].GetInt();
                         serial_ports.push_back(port);
                     }
