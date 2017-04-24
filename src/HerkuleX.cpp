@@ -24,10 +24,12 @@
 #include "minitraces.h"
 
 // C++ standard libraries
+#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <map>
 #include <mutex>
+#include <iostream>
 
 /* ************************************************************************** */
 
@@ -742,9 +744,9 @@ int HerkuleX::hkx_print_status()
             TRACE_ERROR(HKX, "[#%i] Protocol Error: ERRBIT_EEP_REG_DIST", id);
 
         if (status & STATBIT_MOVING)
-            TRACE_INFO(HKX, "[#%i] Protocol Status: STATBIT_MOVING", id);
+            { TRACE_INFO(HKX, "[#%i] Protocol Status: STATBIT_MOVING", id); }
         if (status & STATBIT_INPOSITION)
-            TRACE_INFO(HKX, "[#%i] Protocol Status: STATBIT_INPOSITION", id);
+            { TRACE_INFO(HKX, "[#%i] Protocol Status: STATBIT_INPOSITION", id); }
         if (status & STATBIT_CHECKSUM_FLAG)
             TRACE_ERROR(HKX, "[#%i] Packet Status: STATBIT_CHECKSUM_FLAG", id);
         if (status & STATBIT_UNKWOWN_CMD)
@@ -754,7 +756,7 @@ int HerkuleX::hkx_print_status()
         if (status & STATBIT_GARBAGE)
             TRACE_ERROR(HKX, "[#%i] Packet Status: STATBIT_GARBAGE", id);
         if (status & STATBIT_TORQUE_ON)
-            TRACE_INFO(HKX, "[#%i] Protocol Status: STATBIT_TORQUE_ON", id);
+        { TRACE_INFO(HKX, "[#%i] Protocol Status: STATBIT_TORQUE_ON", id); }
         break;
     }
 
