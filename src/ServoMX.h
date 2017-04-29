@@ -35,9 +35,12 @@
 
 /*!
  * \brief MX servo serie.
+ * \ref ServoDynamixel
+ * \ref MX_control_table
  *
  * More informations about them on Robotis website:
- * - http://support.robotis.com/en/product/dynamixel/dxl_mx_main.htm
+ * - http://www.robotis.us/mx-series/
+ * - http://support.robotis.com/en/product/actuator/dynamixel/dxl_mx_main.htm
  */
 class ServoMX: public ServoDynamixel
 {

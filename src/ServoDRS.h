@@ -35,6 +35,10 @@
 
 /*!
  * \brief DRS servo serie.
+ * \ref ServoHerkuleX
+ * \ref DRS0101_control_table
+ * \ref DRS0x01_control_table
+ * \ref DRS0x02_control_table
  *
  * More informations about them on Dongbu Robot website:
  * - http://hovis.co.kr/guide/herkulex_eng.html

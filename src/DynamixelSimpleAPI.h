@@ -47,7 +47,7 @@
  * - 'SERVO_MX' should be fine for almost every use cases when using Dynamixel v1 devices.
  * - 'SERVO_DRS' should be fine for almost every use cases when using Dynamixel v1 devices.
  *
- * So for instance, if you want to use this API with XL-320 devices, you need
+ * So for instance, if you want to use this API with X series devices, you need
  * to specify it when calling the constructor.
  *
  * The "getter" functions return the wanted value or '-1' if an error occurs.
@@ -124,7 +124,7 @@ public:
      * \brief Reboot a servo.
      * \param id: The servo to reboot.
      *
-     * Only "v2" devices can be rebooted (XL-320, PRO series).
+     * Only Dynamixel "v2" devices can be rebooted (X series, PRO series).
      * Be careful when rebooting a device, do not try to use it righ afer sending
      * a reboot command, it will be unavailable for a short periode of time.
      */

@@ -35,10 +35,14 @@
 
 /*!
  * \brief XL servo serie.
- *
- * This servo serie use the new "protocol v2", also used by the Dynamixel PRO serie.
+ * \ref ServoDynamixel
+ * \ref XL320_control_table
+ * \note The X servo serie use the new "protocol v2", also used by the Dynamixel PRO serie.
+
  * More informations about them on Robotis website:
- * - http://support.robotis.com/en/product/dynamixel/xl-320.htm
+ * - http://www.robotis.us/dynamixel-xl-320/
+ * - http://support.robotis.com/en/product/actuator/dynamixel_x/xl-series_main.htm
+ * - http://support.robotis.com/en/product/actuator/dynamixel_x/xl_series/xl-320.htm
  */
 class ServoXL: public ServoDynamixel
 {

@@ -35,6 +35,14 @@
 
 /*!
  * \brief The HerkuleX servo class.
+ * \ref ServoDRS
+ * \ref DRS0101_control_table
+ * \ref DRS0x01_control_table
+ * \ref DRS0x02_control_table
+ *
+ * More informations about them on Dongbu Robot website:
+ * - http://hovis.co.kr/guide/herkulex_eng.html
+ * - http://www.dongburobot.com/jsp/cms/view.jsp?code=100782
  */
 class ServoHerkuleX: public Servo
 {

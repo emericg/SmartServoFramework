@@ -108,6 +108,8 @@ const int DRS0101_control_table[50][8] =
 
 /*!
  * \brief DRS-0401 / DRS-0601 servo series control table.
+ * \ref ServoHerkuleX
+ * \ref ServoDRS
  *
  * More details:
  * - http://hovis.co.kr/guide/herkulex_eng.html

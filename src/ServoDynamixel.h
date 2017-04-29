@@ -35,6 +35,11 @@
 
 /*!
  * \brief The Dynamixel servo class.
+ * \ref ServoAX
+ * \ref ServoEX
+ * \ref ServoMX
+ * \ref ServoXMXH
+ * \ref ServoXL
  */
 class ServoDynamixel: public Servo
 {

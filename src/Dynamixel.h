@@ -45,8 +45,8 @@
  * will be used by both "SimpleAPIs" and "Controllers".
  *
  * It implements both Dynamixel v1 and v2 communication protocols:
- * http://support.robotis.com/en/product/dynamixel/dxl_communication.htm
- * http://support.robotis.com/en/product/dynamixel_pro/communication.htm
+ * - http://support.robotis.com/en/product/actuator/dynamixel/dxl_communication.htm
+ * - http://support.robotis.com/en/product/actuator/dynamixel_pro/communication.htm
  */
 class Dynamixel
 {

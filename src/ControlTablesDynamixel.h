@@ -38,9 +38,11 @@
  * AX, DX and RX series are using the exact same control table.
  *
  * More details:
- * http://support.robotis.com/en/product/dynamixel/dxl_dx_main.htm
- * http://support.robotis.com/en/product/dynamixel/dxl_ax_main.htm
- * http://support.robotis.com/en/product/dynamixel/dxl_rx_main.htm
+ * - http://www.robotis.us/ax-series/
+ * - http://www.robotis.us/rx-series/
+ * - http://support.robotis.com/en/product/actuator/dynamixel/dxl_ax_main.htm
+ * - http://support.robotis.com/en/product/actuator/dynamixel/dxl_dx_main.htm
+ * - http://support.robotis.com/en/product/actuator/dynamixel/dxl_rx_main.htm
  */
 const int AXDXRX_control_table[33][8] =
 {
@@ -85,9 +87,11 @@ const int AXDXRX_control_table[33][8] =
 
 /*!
  * \brief EX-106 / 106+ control table.
+ * \ref ServoEX
  *
  * More details:
- * http://support.robotis.com/en/product/dynamixel/dxl_ex_main.htm
+ * - http://support.robotis.com/en/product/actuator/dynamixel/dxl_ex_main.htm
+ * - http://support.robotis.com/en/product/actuator/dynamixel/ex_series/ex-106.htm
  */
 const int EX_control_table[35][8] =
 {
@@ -134,9 +138,11 @@ const int EX_control_table[35][8] =
 
 /*!
  * \brief MX control table.
+ * \ref ServoMX
  *
  * More details:
- * http://support.robotis.com/en/product/dynamixel/dxl_mx_main.htm
+ * - http://www.robotis.us/mx-series/
+ * - http://support.robotis.com/en/product/actuator/dynamixel/dxl_mx_main.htm
  */
 const int MX_control_table[39][8] =
 {
@@ -187,9 +193,12 @@ const int MX_control_table[39][8] =
 
 /*!
  * \brief XL-320 control table.
+ * \ref ServoXL
  *
  * More details:
- * http://support.robotis.com/en/product/dynamixel/xl-320.htm
+ * - http://www.robotis.us/dynamixel-xl-320/
+ * - http://support.robotis.com/en/product/actuator/dynamixel_x/xl-series_main.htm
+ * - http://support.robotis.com/en/product/actuator/dynamixel_x/xl_series/xl-320.htm
  */
 const int XL320_control_table[32][8] =
 {
@@ -238,7 +247,7 @@ const int XL320_control_table[32][8] =
  * device is similar to AX-12A's, but it is not operated as a servo motor.
  *
  * More details:
- * http://support.robotis.com/en/product/auxdevice/sensor/dxl_ax_s1.htm
+ * - http://support.robotis.com/en/product/auxdevice/sensor/dxl_ax_s1.htm
  */
 const int AXS1_control_table[30][8] =
 {
@@ -286,7 +295,7 @@ const int AXS1_control_table[30][8] =
  * The array is capable of emitting sounds.
  *
  * More details:
- * http://support.robotis.com/en/product/auxdevice/sensor/ir_sensor_array.htm
+ * - http://support.robotis.com/en/product/auxdevice/sensor/ir_sensor_array.htm
  */
 const int IR_ARRAY_control_table[28][8] =
 {
@@ -328,7 +337,8 @@ const int IR_ARRAY_control_table[28][8] =
  * All PRO series servos are using the same control table except for L42 (???).
  *
  * More details:
- * http://support.robotis.com/en/product/dynamixel_pro.htm
+ * - http://www.robotis.us/dynamixel-pro/
+ * - http://support.robotis.com/en/product/actuator/dynamixel_pro.htm
  */
 const int PRO_control_table[49][8] =
 {

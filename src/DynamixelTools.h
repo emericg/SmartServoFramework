@@ -107,7 +107,7 @@ int dxl_get_servo_model(const int model_number);
  * the forumla for the baudnum in range 1-249 and interpret values 250 to 254
  * differently.
  *
- * Dynamixel XL-320 and PRO series use different calculations, and PRO series speeds
+ * Dynamixel X series and PRO series use different calculations, and PRO series speeds
  * can go as high as 10.5MB/s!
  */
 int dxl_get_baudrate(const int baudnum, const int servo_serie = SERVO_AX);

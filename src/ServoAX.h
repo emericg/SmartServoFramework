@@ -35,11 +35,15 @@
 
 /*!
  * \brief AX/DX/RX servo series.
+ * \ref ServoDynamixel
+ * \ref AXDXRX_control_table
  *
  * More informations about them on Robotis website:
- * - http://support.robotis.com/en/product/dynamixel/dxl_ax_main.htm
- * - http://support.robotis.com/en/product/dynamixel/dxl_dx_main.htm
- * - http://support.robotis.com/en/product/dynamixel/dxl_rx_main.htm
+ * - http://www.robotis.us/ax-series/
+ * - http://www.robotis.us/rx-series/
+ * - http://support.robotis.com/en/product/actuator/dynamixel/dxl_ax_main.htm
+ * - http://support.robotis.com/en/product/actuator/dynamixel/dxl_dx_main.htm
+ * - http://support.robotis.com/en/product/actuator/dynamixel/dxl_rx_main.htm
  */
 class ServoAX: public ServoDynamixel
 {

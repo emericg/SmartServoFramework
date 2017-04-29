@@ -35,9 +35,12 @@
 
 /*!
  * \brief EX servo serie.
+ * \ref ServoDynamixel
+ * \ref EX_control_table
  *
  * More informations about them on Robotis website:
- * - http://support.robotis.com/en/product/dynamixel/dxl_ex_main.htm
+ * - http://support.robotis.com/en/product/actuator/dynamixel/dxl_ex_main.htm
+ * - http://support.robotis.com/en/product/actuator/dynamixel/ex_series/ex-106.htm
  */
 class ServoEX: public ServoDynamixel
 {
