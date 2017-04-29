@@ -154,7 +154,7 @@ public:
      */
     int readFirmwareVersion(const int id);
 
-    int changeId(const int old_id, const int new_id);
+    int changeId(const int id, const int new_id);
     int changeBaudRate(const int id, const int baudnum);
 
     void getMinMaxPositions(const int id, int &min, int &max);

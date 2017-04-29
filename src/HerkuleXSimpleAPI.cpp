@@ -255,12 +255,12 @@ int HerkuleXSimpleAPI::readFirmwareVersion(const int id)
     return value;
 }
 
-int HerkuleXSimpleAPI::changeId(const int old_id, const int new_id)
+int HerkuleXSimpleAPI::changeId(const int id, const int new_id)
 {
     int status = 0;
 
     // Check 'old' ID
-    if (checkId(old_id, false) == true)
+    if (checkId(id, false) == true)
     {
         // Check 'new' ID // Valid IDs are in range [0:maxId]
         if ((new_id >= 0) && (new_id <= maxId))
@@ -270,19 +270,19 @@ int HerkuleXSimpleAPI::changeId(const int old_id, const int new_id)
 
             if (hkx_get_com_status() == COMM_RXSUCCESS)
             {
-                TRACE_ERROR(DAPI, "[#%i] Cannot set new ID '%i' for this servo: already in use", old_id, new_id);
+                TRACE_ERROR(DAPI, "[#%i] Cannot set new ID '%i' for this servo: already in use", id, new_id);
             }
             else
             {
                 int addr_rom = getRegisterAddr(ct, REG_ID, REGISTER_ROM);
-                hkx_write_byte(old_id, addr_rom, new_id, REGISTER_ROM);
+                hkx_write_byte(id, addr_rom, new_id, REGISTER_ROM);
                 if (hkx_print_error() == 0)
                 {
                     status = 1;
                 }
 
                 int addr_ram = getRegisterAddr(ct, REG_ID, REGISTER_RAM);
-                hkx_write_byte(old_id, addr_ram, new_id, REGISTER_RAM);
+                hkx_write_byte(id, addr_ram, new_id, REGISTER_RAM);
                 if (hkx_print_error() == 0)
                 {
                     status = 1;
@@ -291,7 +291,7 @@ int HerkuleXSimpleAPI::changeId(const int old_id, const int new_id)
         }
         else
         {
-            TRACE_ERROR(DAPI, "[#%i] Cannot set new ID '%i' for this servo: out of range", old_id, new_id);
+            TRACE_ERROR(DAPI, "[#%i] Cannot set new ID '%i' for this servo: out of range", id, new_id);
         }
     }
 

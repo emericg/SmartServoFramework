@@ -263,12 +263,12 @@ int DynamixelSimpleAPI::readFirmwareVersion(const int id)
     return value;
 }
 
-int DynamixelSimpleAPI::changeId(const int old_id, const int new_id)
+int DynamixelSimpleAPI::changeId(const int id, const int new_id)
 {
     int status = 0;
 
     // Check 'old' ID
-    if (checkId(old_id, false) == true)
+    if (checkId(id, false) == true)
     {
         // Check 'new' ID // Valid IDs are in range [0:maxId]
         if ((new_id >= 0) && (new_id <= maxId))
@@ -284,7 +284,7 @@ int DynamixelSimpleAPI::changeId(const int old_id, const int new_id)
             {
                 int addr = getRegisterAddr(ct, REG_ID);
 
-                dxl_write_byte(old_id, addr, new_id);
+                dxl_write_byte(id, addr, new_id);
                 if (dxl_print_error() == 0)
                 {
                     status = 1;
