@@ -15,23 +15,23 @@
 <body><table class="tg" width="100%">
   <tr>
     <th class="tg-legend" width="33%"></th>
-    <th class="tg-title" width="66%">XL-320</th>
+    <th class="tg-title" width="66%">XM-430-W210</th>
   </tr>
   <tr>
     <td class="tg-legend" width="33%">Dimensions</td>
-    <td class="tg-tech" width="66%">24mm * 36mm * 27mm</td>
+    <td class="tg-tech" width="66%">28.5mm * 46.5mm * 34mm</td>
   </tr>
   <tr>
     <td class="tg-legend" width="33%">Weight</td>
-    <td class="tg-tech" width="66%">16.7g</td>
+    <td class="tg-tech" width="66%">82g</td>
   </tr>
   <tr>
     <td class="tg-legend" width="33%">Materials</td>
-    <td class="tg-tech" width="66%">Engineering Plastic</td>
+    <td class="tg-tech" width="66%">Aluminum case (with plastic back)</td>
   </tr>
   <tr>
     <td class="tg-legend" width="33%">MCU</td>
-    <td class="tg-tech" width="66%">Unknown</td>
+    <td class="tg-tech" width="66%">STM CORTEX-M3 (STM32F103C8 @ 72MHZ)</td>
   </tr>
   <tr>
     <td class="tg-legend" width="33%"></td>
@@ -39,15 +39,15 @@
   </tr>
   <tr>
     <td class="tg-legend" width="33%">Motor</td>
-    <td class="tg-tech" width="66%">Cored Motor</td>
+    <td class="tg-tech" width="66%">Maxon Motor</td>
   </tr>
   <tr>
     <td class="tg-legend" width="33%">Gear Material</td>
-    <td class="tg-tech" width="66%">Engineering Plastic</td>
+    <td class="tg-tech" width="66%">Full Metal Gear</td>
   </tr>
   <tr>
     <td class="tg-legend" width="33%">Reduction Ratio</td>
-    <td class="tg-tech" width="66%">238:1</td>
+    <td class="tg-tech" width="66%">212.6:1</td>
   </tr>
   <tr>
     <td class="tg-legend" width="33%"></td>
@@ -55,11 +55,11 @@
   </tr>
   <tr>
     <td class="tg-legend" width="33%">Resolution</td>
-    <td class="tg-tech" width="66%">0.29° (1024 steps)</td>
+    <td class="tg-tech" width="66%">0.088° (4096 steps)</td>
   </tr>
   <tr>
     <td class="tg-legend" width="33%">Operating Angle</td>
-    <td class="tg-tech" width="66%">0° ~ 300° / Endless Turn</td>
+    <td class="tg-tech" width="66%">0° ~ 360° / Endless Turn</td>
   </tr>
   <tr>
     <td class="tg-legend" width="33%"></td>
@@ -67,23 +67,27 @@
   </tr>
   <tr>
     <td class="tg-legend" width="33%">Input Voltage</td>
-    <td class="tg-tech" width="66%">6V ~ 8.4V (Recommended Voltage 7.4V)</td>
+    <td class="tg-tech" width="66%">10V ~ 14.8V (Recommended Voltage 12V)</td>
   </tr>
   <tr>
     <td class="tg-legend" width="33%">Rated Current</td>
-    <td class="tg-tech" width="66%">Unknown</td>
+    <td class="tg-tech" width="66%">40 mA (standby) / ? mA (maximum)</td>
   </tr>
   <tr>
     <td class="tg-legend" width="33%">Stall Torque</td>
-    <td class="tg-tech" width="66%">0.39 N·m (at 7.4V)</td>
+    <td class="tg-tech" width="66%">2.7 N·m (at 11.1V)<br>3.0 N·m (at 12V)<br>3.7 N·m (at 14.8V)</td>
+  </tr>
+  <tr>
+    <td class="tg-legend" width="33%">Stall Current</td>
+    <td class="tg-tech" width="66%">2.1A (at 11.1V)<br>2.3A (at 12V)<br>2.7A (at 14.8V)</td>
   </tr>
   <tr>
     <td class="tg-legend" width="33%">No Load Speed</td>
-    <td class="tg-tech" width="66%">114 RPM (at 7.4V)</td>
+    <td class="tg-tech" width="66%">70 RPM (at 11.1V)<br>77 RPM (at 12V)<br>95 RPM (at 14.8V)</td>
   </tr>
   <tr>
     <td class="tg-legend" width="33%">Running Temperature</td>
-    <td class="tg-tech" width="66%">-5°C ~ +70°C</td>
+    <td class="tg-tech" width="66%">-5°C ~ +80°C</td>
   </tr>
   <tr>
     <td class="tg-legend" width="33%"></td>
@@ -95,7 +99,7 @@
   </tr>
   <tr>
     <td class="tg-legend" width="33%">Feedbacks</td>
-    <td class="tg-tech" width="66%">Position (potentiometer), Speed, Temperature, Load (estimated from consumed current), Input Voltage</td>
+    <td class="tg-tech" width="66%">Position (Contactless Absolute Encoder), Velocity, Current, Realtime tick, Trajectory, Temperature, Input Voltage, etc</td>
   </tr>
   <tr>
     <td class="tg-legend" width="33%"></td>
@@ -103,11 +107,11 @@
   </tr>
   <tr>
     <td class="tg-legend" width="33%">Communication link</td>
-    <td class="tg-tech" width="66%">TTL Level Multi Drop (daisy chain type connector)</td>
+    <td class="tg-tech" width="66%">- XM430-*210-T (TTL Level Multi Drop Bus)<br>- XM430-*210-R (RS485 Multi Drop Bus)</td>
   </tr>
   <tr>
     <td class="tg-legend" width="33%">Baudrates</td>
-    <td class="tg-tech" width="66%">7343 bps ~ 1 Mbps</td>
+    <td class="tg-tech" width="66%">9600 bps ~ 4.5 Mbps</td>
   </tr>
   <tr>
     <td class="tg-legend" width="33%">IDs Range</td>
