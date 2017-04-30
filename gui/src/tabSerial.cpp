@@ -34,3 +34,43 @@ tabSerial::~tabSerial()
 {
     delete ui;
 }
+
+void tabSerial::setInfos(std::string device_path, int baudrate, int protocol, int device_connected)
+{
+    ui->label_title->setText(QString::fromStdString(device_path));
+
+    QString baudrate_qstr;
+    if (baudrate  >= 1000000)
+        baudrate_qstr = QString::number(baudrate / 1000000) + " Mbps";
+    else if (baudrate  > 1000)
+        baudrate_qstr = QString::number(baudrate / 1000.0, 'f', 1) + " Kbps";
+    else
+        baudrate_qstr = QString::number(baudrate) + " bps";
+    ui->label_speed_current->setText(baudrate_qstr);
+
+    if (protocol == 1)
+        ui->label_protocol_current->setText("Dynamixel v1");
+    else if (protocol == 2)
+        ui->label_protocol_current->setText("Dynamixel v2");
+    else if (protocol == 3)
+        ui->label_protocol_current->setText("HerkuleX");
+
+    ui->label_device_count->setText(QString::number(device_connected));
+
+    QPixmap serialPortIcon;
+    if (device_connected > 0)
+    {
+        serialPortIcon.load(":/icons/icons/network-transmit-receive.svg");
+    }
+    else
+    {
+        serialPortIcon.load(":/icons/icons/network-error.svg");
+    }
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+    serialPortIcon.setDevicePixelRatio(qApp->devicePixelRatio());
+#endif
+    ui->label_icon->setPixmap(serialPortIcon);
+
+    //ui->label_speed_saved->setText("None");
+    //ui->label_protocol_saved->setText("None");
+}

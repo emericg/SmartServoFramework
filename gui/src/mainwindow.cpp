@@ -32,19 +32,22 @@
 #include "../../src/HerkuleXTools.h"
 
 // Qt
-#include <QFile>
-#include <QTimer>
 #include <QApplication>
 #include <QLabel>
+#include <QCheckBox>
 #include <QComboBox>
 #include <QTextStream>
 #include <QTextBrowser>
 #include <QMessageBox>
 #include <QSignalMapper>
 #include <QCloseEvent>
+#include <QFile>
+#include <QTimer>
 
 // C++ standard libraries
 #include <iostream>
+
+/* ************************************************************************** */
 
 MainWindow::MainWindow(QWidget *parent):
     QMainWindow(parent),
@@ -141,94 +144,89 @@ MainWindow::~MainWindow()
     }
 }
 
-void MainWindow::loadingScreen(bool enabled)
+/* ************************************************************************** */
+
+void MainWindow::helpScreen(bool loading)
 {
-    QTabBar *tabBar = ui->tabWidget->findChild<QTabBar *>();
-    tabBar->setVisible(!enabled);
-    ui->tabWidget->setDocumentMode(enabled);
+    ui->tabWidget->findChild<QTabBar *>()->setVisible(false);
+    ui->tabWidget->setDocumentMode(true);
 
-    if (enabled == true)
+    bool tabalreadythere = false;
+    for (int i = 0; i < ui->tabWidget->count(); i++)
     {
-        ui->frame_loading->show();
+        if (ui->tabWidget->tabText(i) == "serial")
+            ui->tabWidget->removeTab(i);
+        else if (ui->tabWidget->tabText(i) == "loading")
+            tabalreadythere = true;
+    }
+    if (tabalreadythere == false)
+        ui->tabWidget->addTab(loadingTabWidget, "loading");
+    ui->tabWidget->setCurrentIndex(ui->tabWidget->count() - 1);
 
-        bool tabalreadythere = false;
-        for (int i = 0; i < ui->tabWidget->count(); i++)
-        {
-            if (ui->tabWidget->tabText(i) == "loading")
-                tabalreadythere = true;
-        }
-        if (tabalreadythere == false)
-        {
-            ui->tabWidget->addTab(loadingTabWidget, "loading");
-        }
-        ui->tabWidget->setCurrentIndex(ui->tabWidget->count() - 1);
+    // Loading bar
+     ui->frame_loading->setVisible(loading);
 
-        // Show "help" panel while loading GUI
-        int x = ui->label_loading_img->size().width();
-        int y = ui->label_loading_img->size().height();
-        ui->label_loading_img->setMaximumWidth(x);
-        ui->label_loading_img->setMaximumHeight(y);
+    // Show "help" panel while loading GUI
+    int x = ui->label_loading_img->size().width();
+    int y = ui->label_loading_img->size().height();
+    ui->label_loading_img->setMaximumWidth(x);
+    ui->label_loading_img->setMaximumHeight(y);
 
-        if ((rand() % 1024) >= 512)
-        {
-            QPixmap load(":/help/help/Dynamixel_help.png");
+    if ((rand() % 1024) >= 512)
+    {
+        QPixmap load(":/help/help/Dynamixel_help.png");
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-            load.setDevicePixelRatio(qApp->devicePixelRatio());
+        load.setDevicePixelRatio(qApp->devicePixelRatio());
 #endif
-            ui->label_loading_img->setPixmap(load);
-        }
-        else
-        {
-            QPixmap load(":/help/help/HerkuleX_help.png");
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-            load.setDevicePixelRatio(qApp->devicePixelRatio());
-#endif
-            ui->label_loading_img->setPixmap(load);
-        }
+        ui->label_loading_img->setPixmap(load);
     }
     else
     {
-        ui->frame_loading->hide();
-        ui->tabWidget->setCurrentIndex(0);
-
-        for (int i = 0; i < ui->tabWidget->count(); i++)
-        {
-            if (ui->tabWidget->tabText(i) == "loading")
-                ui->tabWidget->removeTab(i);
-        }
+        QPixmap load(":/help/help/HerkuleX_help.png");
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+        load.setDevicePixelRatio(qApp->devicePixelRatio());
+#endif
+        ui->label_loading_img->setPixmap(load);
     }
 }
 
-void MainWindow::serialScreen(bool enabled)
+void MainWindow::serialScreen()
 {
-    QTabBar *tabBar = ui->tabWidget->findChild<QTabBar *>();
-    tabBar->setVisible(!enabled);
-    ui->tabWidget->setDocumentMode(enabled);
+    ui->tabWidget->findChild<QTabBar *>()->hide();
+    ui->tabWidget->setDocumentMode(true);
 
-    if (enabled)
+    bool tabalreadythere = false;
+    for (int i = 0; i < ui->tabWidget->count(); i++)
     {
-        bool tabalreadythere = false;
-        for (int i = 0; i < ui->tabWidget->count(); i++)
-        {
-            if (ui->tabWidget->tabText(i) == "serial")
-                tabalreadythere = true;
-        }
-        if (tabalreadythere == false)
-        {
-            ui->tabWidget->addTab(serialTabWidget, "serial");
-        }
-        ui->tabWidget->setCurrentIndex(ui->tabWidget->count() - 1);
+        if (ui->tabWidget->tabText(i) == "serial")
+            tabalreadythere = true;
+        else if (ui->tabWidget->tabText(i) == "loading")
+            ui->tabWidget->removeTab(i);
     }
-    else
+    if (tabalreadythere == false)
     {
-        ui->tabWidget->setCurrentIndex(0);
-        for (int i = 0; i < ui->tabWidget->count(); i++)
-        {
-            if (ui->tabWidget->tabText(i) == "serial")
-                ui->tabWidget->removeTab(i);
-        }
+        ui->tabWidget->addTab(serialTabWidget, "serial");
     }
+    ui->tabWidget->setCurrentIndex(ui->tabWidget->count() - 1);
 }
+
+void MainWindow::servoScreen()
+{
+    ui->tabWidget->findChild<QTabBar *>()->setVisible(true);
+    ui->tabWidget->setDocumentMode(false);
+
+    for (int i = 0; i < ui->tabWidget->count(); i++)
+    {
+        if (ui->tabWidget->tabText(i) == "serial")
+            ui->tabWidget->removeTab(i);
+        else if (ui->tabWidget->tabText(i) == "loading")
+            ui->tabWidget->removeTab(i);
+    }
+
+    ui->tabWidget->setCurrentIndex(0);
+}
+
+/* ************************************************************************** */
 
 void MainWindow::autoScan()
 {
@@ -246,7 +244,7 @@ void MainWindow::scanSerialPorts(bool autoscan)
 {
     // Disable scan buttons, indicate we are starting to scan
     ui->frameDevices->setDisabled(true);
-    loadingScreen(true);
+    helpScreen(true);
 
     // Clean the deviceTreeWidget content
     while (QWidget *item = ui->deviceTreeWidget->childAt(0,0))
@@ -505,51 +503,51 @@ void MainWindow::scanServos(QString port_qstring)
                 case 1:
                     h->deviceControllerProtocol = 1;
                     h->deviceControllerSpeed = 1000000;
-                    h->deviceControllerDevices = SERVO_MX;
+                    h->deviceControllerDeviceClass = SERVO_MX;
                     break;
                 case 2:
                     h->deviceControllerProtocol = 1;
                     h->deviceControllerSpeed = 115200;
-                    h->deviceControllerDevices = SERVO_MX;
+                    h->deviceControllerDeviceClass = SERVO_MX;
                     break;
                 case 3:
                     h->deviceControllerProtocol = 1;
                     h->deviceControllerSpeed = 57600;
-                    h->deviceControllerDevices = SERVO_MX;
+                    h->deviceControllerDeviceClass = SERVO_MX;
                     break;
 
                 // DXL v2
                 case 4:
                     h->deviceControllerProtocol = 2;
                     h->deviceControllerSpeed = 1000000;
-                    h->deviceControllerDevices = SERVO_XL;
+                    h->deviceControllerDeviceClass = SERVO_XL;
                     break;
                 case 5:
                     h->deviceControllerProtocol = 2;
                     h->deviceControllerSpeed = 115200;
-                    h->deviceControllerDevices = SERVO_XL;
+                    h->deviceControllerDeviceClass = SERVO_XL;
                     break;
                 case 6:
                     h->deviceControllerProtocol = 2;
                     h->deviceControllerSpeed = 57600;
-                    h->deviceControllerDevices = SERVO_XL;
+                    h->deviceControllerDeviceClass = SERVO_XL;
                     break;
 
                 // HKX
                 case 7:
                     h->deviceControllerProtocol = 3;
                     h->deviceControllerSpeed = 115200;
-                    h->deviceControllerDevices = SERVO_DRS;
+                    h->deviceControllerDeviceClass = SERVO_DRS;
                     break;
                 case 8:
                     h->deviceControllerProtocol = 3;
                     h->deviceControllerSpeed = 57600;
-                    h->deviceControllerDevices = SERVO_DRS;
+                    h->deviceControllerDeviceClass = SERVO_DRS;
                     break;
                 case 9:
                     h->deviceControllerProtocol = 3;
                     h->deviceControllerSpeed = 1000000;
-                    h->deviceControllerDevices = SERVO_DRS;
+                    h->deviceControllerDeviceClass = SERVO_DRS;
                     break;
                 }
 
@@ -571,15 +569,15 @@ void MainWindow::scanServos(QString port_qstring)
                     // Create a new one
                     if (h->deviceControllerProtocol == 1)
                     {
-                        h->deviceController = new DynamixelController(ctrl_freq, h->deviceControllerDevices);
+                        h->deviceController = new DynamixelController(ctrl_freq, h->deviceControllerDeviceClass);
                     }
                     else if (h->deviceControllerProtocol == 2)
                     {
-                        h->deviceController = new DynamixelController(ctrl_freq, h->deviceControllerDevices);
+                        h->deviceController = new DynamixelController(ctrl_freq, h->deviceControllerDeviceClass);
                     }
                     else if (h->deviceControllerProtocol == 3)
                     {
-                        h->deviceController = new HerkuleXController(ctrl_freq, h->deviceControllerDevices);
+                        h->deviceController = new HerkuleXController(ctrl_freq, h->deviceControllerDeviceClass);
                     }
 
                     // Connect the controller to its serial port
@@ -599,7 +597,7 @@ void MainWindow::scanServos(QString port_qstring)
                 // Scan
                 if (scan_running == true && h->deviceController != nullptr)
                 {
-                    loadingScreen(true);
+                    helpScreen(true);
 /*
                     // Are we scanning the currently selected port? Then go to the loading screen
                     ControllerAPI *ctrl = nullptr;
@@ -680,7 +678,7 @@ void MainWindow::scanServos(QString port_qstring)
                                 device->setSelected(true);
                                 tableAutoSelection = true;
 
-                                loadingScreen(false);
+                                servoScreen();
                                 selfRefreshTimer->start(125);
                             }
                         }
@@ -767,6 +765,8 @@ void MainWindow::scanServos(QString port_qstring)
 
     ui->frameDevices->setEnabled(true);
 }
+
+/* ************************************************************************** */
 
 int MainWindow::getCurrentController(ControllerAPI *&ctrl)
 {
@@ -861,6 +861,37 @@ int MainWindow::getCurrentServo(ControllerAPI *&ctrl, int &id)
     return retcode;
 }
 
+int MainWindow::getCurrentSerialPort(SerialPortHelper **port)
+{
+    int retcode = 0;
+
+    // Get selected item
+    if (ui->deviceTreeWidget->selectedItems().size() > 0)
+    {
+        QTreeWidgetItem *item = ui->deviceTreeWidget->selectedItems().at(0);
+
+        // Check if the item exist, plus if this a device and not a port
+        if (item != nullptr && item->parent() == nullptr)
+        {
+            std::string port_name = item->text(0).toStdString();
+
+            // Search for the port into our serialPorts vector
+            for (auto p: serialPorts)
+            {
+                // We found the port
+                if (p != nullptr && p->deviceName->text().toStdString() == port_name)
+                {
+                    //std::cout << "> Serial port: " << port_name << std::endl;
+                    *port = p;
+                    retcode = 1;
+                }
+            }
+        }
+    }
+
+    return retcode;
+}
+
 int MainWindow::getCurrentServo(Servo *&servo)
 {
     int retcode = 0;
@@ -919,6 +950,8 @@ int MainWindow::getCurrentServo(Servo *&servo)
 
     return retcode;
 }
+
+/* ************************************************************************** */
 
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
@@ -1018,14 +1051,22 @@ void MainWindow::resizeTabWidgetContent()
     ui->tabWidget->update();
 }
 
+/* ************************************************************************** */
+
+void MainWindow::serialportSelection()
+{
+    //
+}
+
 void MainWindow::servoSelection()
 {
     Servo *servo = nullptr;
+    SerialPortHelper *serial = nullptr;
 
     // Get currently selected servo
     if (getCurrentServo(servo) > 0)
     {
-        serialScreen(false);
+        servoScreen();
         toggleServoPanel(true);
 
         // Contextual menu actions
@@ -1130,16 +1171,9 @@ void MainWindow::servoSelection()
         ui->cvolt->setPalette(QPalette(QColor(85,85,128)));
         ui->ctemp->setPalette(QPalette(QColor(85,85,128)));
 
-        // Picture and doc
+        // Model specific picture and doc
         QFile servoSpec;
         QPixmap servoIcon;
-
-        int pictureSize = ui->tabWidget->size().height() * 0.33; // All of our pictures are square
-        ui->servoPicture_label->setMaximumWidth(pictureSize);
-        ui->servoPicture_label->setMaximumHeight(pictureSize);
-        ui->servoPicture_label->setScaledContents(true);
-
-        // Model specific
         switch (servoSerie)
         {
         case SERVO_DRS:
@@ -1276,6 +1310,10 @@ void MainWindow::servoSelection()
         }
 
         // Set icon
+        int pictureSize = ui->tabWidget->size().height() * 0.33; // All of our pictures are square
+        ui->servoPicture_label->setMaximumWidth(pictureSize);
+        ui->servoPicture_label->setMaximumHeight(pictureSize);
+        ui->servoPicture_label->setScaledContents(true);
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
         servoIcon.setDevicePixelRatio(qApp->devicePixelRatio());
 #endif
@@ -1296,6 +1334,29 @@ void MainWindow::servoSelection()
         // Read register values and stuff
         servoUpdate();
     }
+    else if (getCurrentSerialPort(&serial) > 0)
+    {
+        // Clean contextual menu
+        ui->deviceTreeWidget->removeAction(refreshAction);
+        ui->deviceTreeWidget->removeAction(rebootAction);
+        ui->deviceTreeWidget->removeAction(resetAction);
+
+        // Show serial screen
+        serialScreen();
+
+        // Populate the serial screen with relevent infos
+        if (serial->deviceControllerDeviceClass > 0)
+        {
+            int deviceCount = 0;
+            if (serial->deviceController)
+                deviceCount = serial->deviceController->getServos().size();
+
+            ui->widget_serial->setInfos(serial->deviceName->text().toStdString(),
+                                        serial->deviceControllerSpeed,
+                                        serial->deviceControllerProtocol,
+                                        deviceCount);
+        }
+    }
     else
     {
         // Clean contextual menu
@@ -1303,11 +1364,8 @@ void MainWindow::servoSelection()
         ui->deviceTreeWidget->removeAction(rebootAction);
         ui->deviceTreeWidget->removeAction(resetAction);
 
-        // Clean servo register panel
-        cleanRegisterTable();
-        toggleServoPanel(false);
-
-        serialScreen(true);
+        // Show help screen
+        helpScreen(false);
     }
 
     resizeTabWidgetContent();
@@ -1377,6 +1435,8 @@ void MainWindow::servoUpdate()
     // Update
     ui->tableWidget->update();
 }
+
+/* ************************************************************************** */
 
 void MainWindow::updateRegisterTableHerkuleX(Servo *servo_hkx, const int servoSerie, const int servoModel)
 {

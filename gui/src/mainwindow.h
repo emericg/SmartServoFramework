@@ -69,7 +69,7 @@ class MainWindow : public QMainWindow
         // Controller settings
         int deviceControllerProtocol;
         int deviceControllerSpeed;
-        int deviceControllerDevices;
+        int deviceControllerDeviceClass;
 
         // Controller
         ControllerAPI *deviceController;
@@ -84,12 +84,14 @@ class MainWindow : public QMainWindow
     int tableServoModel = 0;
     bool tableAutoSelection = false;
 
-    void loadingScreen(bool enabled);
-    void serialScreen(bool enabled);
+    void helpScreen(bool loading);
+    void serialScreen();
+    void servoScreen();
 
     int getCurrentController(ControllerAPI *&ctrl);
     int getCurrentServo(ControllerAPI *&ctrl, int &id);
     int getCurrentServo(Servo *&servo);
+    int getCurrentSerialPort(SerialPortHelper **port);
 
     int getRegisterNameFromTableIndex(const int servo_serie, const int servo_model, int table_index);
     int getTableIndex(const int servo_serie, const int servo_model, const int reg_name);
@@ -109,6 +111,7 @@ private slots:
     void about();
     void aboutQt();
 
+    void serialportSelection();
     void servoSelection();
 
     void servoUpdate();
