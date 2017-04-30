@@ -31,6 +31,7 @@
 #include "ServoEX.h"
 #include "ServoMX.h"
 #include "ServoXL.h"
+#include "ServoX.h"
 
 #include <vector>
 

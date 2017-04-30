@@ -144,9 +144,9 @@ void AdvanceScanner::fillWidgets_speeds()
 */
     // DXL v2
     row = 0;
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 8; i++)
     {
-        QTableWidgetItem *rate = new QTableWidgetItem(QString::number(dxl_get_baudrate(i, SERVO_XL)));
+        QTableWidgetItem *rate = new QTableWidgetItem(QString::number(dxl_get_baudrate(i, SERVO_X)));
         rate->setFlags(rate->flags() ^ Qt::ItemIsEditable ^ Qt::ItemIsSelectable);
         rate->setCheckState(Qt::Checked);
         ui->tableWidget_speed_dxl_v2->insertRow(row);

@@ -241,6 +241,80 @@ const int XL320_control_table[32][8] =
 };
 
 /*!
+ * \brief XM / XH control table.
+ * \ref ServoXMXH
+ *
+ * More details:
+ * - http://www.robotis.us/x-series/
+ * - http://en.robotis.com/index/product.php?cate_code=101210
+ * - http://support.robotis.com/en/product/actuator/dynamixel_x/xm_series.htm
+ */
+const int XMXH_control_table[55][8] =
+{
+    // Instruction // size // RW Access // ROM addr // RAM addr // initial value // min value // max value
+
+    // Control table // EEPROM area
+    { REG_MODEL_NUMBER          , 2, READ_ONLY,   0, -1,  350,   -1,   -1 },
+    { REG_MODEL_INFORMATION     , 4, READ_ONLY,   2, -1,  350,   -1,   -1 },
+    { REG_FIRMWARE_VERSION      , 1, READ_ONLY,   6, -1,   -1,   -1,   -1 },
+    { REG_ID                    , 1, READ_WRITE,  7, -1,    1,    0,  252 },
+    { REG_BAUD_RATE             , 1, READ_WRITE,  8, -1,    3,    0,    3 },
+    { REG_RETURN_DELAY_TIME     , 1, READ_WRITE,  9, -1,  250,    0,  254 },
+    { REG_DRIVE_MODE            , 1, READ_WRITE, 10, -1,    0,    0,    1 },
+    { REG_CONTROL_MODE          , 1, READ_WRITE, 11, -1,    3,    0,   16 },
+    { REG_SHADOW_ID             , 1, READ_WRITE, 12, -1,  255,    0,  255 },
+    { REG_PROTOCOL_VERSION      , 1, READ_WRITE, 13, -1,    2,    1,    2 },
+    { REG_HOMING_OFFSET         , 4, READ_WRITE, 20, -1,    0,   -1,   -1 },
+    { REG_MOVING_THRESHOLD      , 4, READ_WRITE, 24, -1,   10,   -1,   -1 },
+    { REG_TEMPERATURE_LIMIT     , 1, READ_WRITE, 31, -1,   80,   -1,   -1 },
+    { REG_VOLTAGE_HIGHEST_LIMIT , 2, READ_WRITE, 32, -1,  160,   -1,   -1 },
+    { REG_VOLTAGE_LOWEST_LIMIT  , 2, READ_WRITE, 34, -1,   95,   -1,   -1 },
+    { REG_PWM_LIMIT             , 2, READ_WRITE, 36, -1,  885,   -1,   -1 },
+    { REG_CURRENT_LIMIT         , 2, READ_WRITE, 38, -1,  648,   -1,   -1 },
+    { REG_ACCELERATION_LIMIT    , 4, READ_WRITE, 40, -1,32767,   -1,   -1 },
+    { REG_VELOCITY_LIMIT        , 4, READ_WRITE, 44, -1,  360,   -1,   -1 },
+    { REG_MAX_POSITION          , 4, READ_WRITE, 48, -1, 4095,    0, 4095 },
+    { REG_MIN_POSITION          , 4, READ_WRITE, 52, -1,    0,    0, 4095 },
+    { REG_SHUTDOWN              , 1, READ_WRITE, 63, -1,    0,    0,    1 },
+    // Control table // RAM area
+    { REG_TORQUE_ENABLE         , 1, READ_WRITE, -1, 64,    0,    0,    1 },
+    { REG_LED                   , 1, READ_WRITE, -1, 65,    0,    0,    1 },
+    { REG_STATUS_RETURN_LEVEL   , 1, READ_WRITE, -1, 68,    2,    0,    2 },
+    { REG_REGISTERED            , 1, READ_ONLY,  -1, 69,    0,   -1,   -1 },
+    { REG_HW_ERROR_STATUS       , 1, READ_ONLY,  -1, 70,    0,   -1,   -1 },
+    { REG_VELOCITY_I_GAIN       , 2, READ_WRITE, -1, 76, 1920,   -1,   -1 },
+    { REG_VELOCITY_P_GAIN       , 2, READ_WRITE, -1, 78,   50,   -1,   -1 },
+    { REG_D_GAIN                , 2, READ_WRITE, -1, 80,    0,   -1,   -1 },
+    { REG_I_GAIN                , 2, READ_WRITE, -1, 82,    0,   -1,   -1 },
+    { REG_P_GAIN                , 2, READ_WRITE, -1, 84,  800,   -1,   -1 },
+    { REG_POS_FEED_FRW_2nd_GAIN , 2, READ_WRITE, -1, 88,    0,   -1,   -1 },
+    { REG_POS_FEED_FRW_1st_GAIN , 2, READ_WRITE, -1, 90,    0,   -1,   -1 },
+    { REG_BUS_WATCHDOG          , 2, READ_WRITE, -1, 98,    0,   -1,  -1 },
+    { REG_GOAL_PWM              , 2, READ_WRITE, -1,100,   -1,   -1,   -1 },
+    { REG_GOAL_CURRENT          , 2, READ_WRITE, -1,102,   -1,   -1,   -1 },
+    { REG_GOAL_VELOCITY         , 4, READ_WRITE, -1,104,   -1,   -1,   -1 },
+    { REG_PROFILE_ACCELERATION  , 4, READ_WRITE, -1,108,    0,   -1,   -1 },
+    { REG_PROFILE_VELOCITY      , 4, READ_WRITE, -1,112,    0,   -1,   -1 },
+    { REG_GOAL_POSITION         , 4, READ_WRITE, -1,116,    0,   -1,   -1 },
+    { REG_REALTIME_TICK         , 2, READ_ONLY,  -1,120,   -1,   -1,   -1 },
+    { REG_MOVING                , 1, READ_ONLY,  -1,122,    0,   -1,   -1 },
+    { REG_MOVING_STATUS         , 1, READ_ONLY,  -1,123,    0,   -1,   -1 },
+    { REG_CURRENT_PWM           , 2, READ_ONLY,  -1,124,   -1,   -1,   -1 },
+    { REG_CURRENT_CURRENT       , 2, READ_ONLY,  -1,126,   -1,   -1,   -1 },
+    { REG_CURRENT_VELOCITY      , 4, READ_ONLY,  -1,128,   -1,   -1,   -1 },
+    { REG_CURRENT_POSITION      , 4, READ_ONLY,  -1,132,   -1,   -1,   -1 },
+    { REG_VELOCITY_TRAJECTORY   , 4, READ_ONLY,  -1,136,   -1,   -1,   -1 },
+    { REG_POSITION_TRAJECTORY   , 4, READ_ONLY,  -1,140,   -1,   -1,   -1 },
+    { REG_CURRENT_VOLTAGE       , 2, READ_ONLY,  -1,144,   -1,   -1,   -1 },
+    { REG_CURRENT_TEMPERATURE   , 1, READ_ONLY,  -1,146,   -1,   -1,   -1 },
+    { REG_INDIRECT_ADDRESS_X    , 2, READ_WRITE, -1,168,  224,   -1,   -1 },
+    // ...
+    { REG_INDIRECT_DATA_X       , 1, READ_WRITE, -1,224,    0,   -1,   -1 },
+    // ...
+    { 999, 999, 999, 999, 999, 999, 999, 999 },
+};
+
+/*!
  * \brief AX-S1 control table.
  *
  * AX-S1 is a sensor device. The configuration and the communication of this

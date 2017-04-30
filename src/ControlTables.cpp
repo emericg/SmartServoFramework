@@ -54,27 +54,7 @@ const int (*getRegisterTable(const int servo_model))[8]
         }
         else if (servo_model >= SERVO_DYNAMIXEL)
         {
-            if (servo_model < SERVO_EX)
-            {
-                ct = AXDXRX_control_table;
-            }
-            else if (servo_model < SERVO_MX)
-            {
-                ct = EX_control_table;
-            }
-            else if (servo_model < SERVO_XL)
-            {
-                ct = MX_control_table;
-            }
-            else if (servo_model < SERVO_PRO)
-            {
-                ct = XL320_control_table;
-            }
-            else if (servo_model < SENSOR_DYNAMIXEL)
-            {
-                ct = PRO_control_table;
-            }
-            else if (servo_model < 100)
+            if (servo_model >= SENSOR_DYNAMIXEL)
             {
                 if (servo_model == SENSOR_AXS1)
                 {
@@ -84,6 +64,30 @@ const int (*getRegisterTable(const int servo_model))[8]
                 {
                     ct = IR_ARRAY_control_table;
                 }
+            }
+            else if (servo_model >= SERVO_PRO)
+            {
+                ct = PRO_control_table;
+            }
+            else if (servo_model >= SERVO_X)
+            {
+                ct = XMXH_control_table;
+            }
+            else if (servo_model >= SERVO_XL)
+            {
+                ct = XL320_control_table;
+            }
+            else if (servo_model >= SERVO_MX)
+            {
+                ct = MX_control_table;
+            }
+            else if (servo_model >= SERVO_EX)
+            {
+                ct = EX_control_table;
+            }
+            else if (servo_model >= SERVO_AX)
+            {
+                ct = AXDXRX_control_table;
             }
         }
     }
@@ -126,7 +130,7 @@ const int (*getRegisterTable(const int servo_serie, const int servo_model))[8]
         {
             ct = AXDXRX_control_table;
         }
-        else if (servo_serie == SERVO_EX || servo_model == SERVO_EX106)
+        else if (servo_serie == SERVO_EX)
         {
             ct = EX_control_table;
         }
@@ -134,9 +138,13 @@ const int (*getRegisterTable(const int servo_serie, const int servo_model))[8]
         {
             ct = MX_control_table;
         }
-        else if (servo_serie == SERVO_XL || servo_model == SERVO_XL320)
+        else if (servo_serie == SERVO_XL)
         {
             ct = XL320_control_table;
+        }
+        else if (servo_serie == SERVO_X)
+        {
+            ct = XMXH_control_table;
         }
         else if (servo_serie == SERVO_PRO)
         {

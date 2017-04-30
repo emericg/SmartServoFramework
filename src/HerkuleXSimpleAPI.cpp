@@ -68,13 +68,19 @@ HerkuleXSimpleAPI::HerkuleXSimpleAPI(int servoSerie)
                 servoSerie = SERVO_PRO;
                 ct = PRO_control_table;
             }
+            else if (servoSerie >= SERVO_X)
+            {
+                protocolVersion = 2;
+                servoSerie = SERVO_X;
+                ct = XMXH_control_table;
+            }
             else if (servoSerie >= SERVO_XL)
             {
                 protocolVersion = 2;
                 servoSerie = SERVO_XL;
                 ct = XL320_control_table;
             }
-            else // if (servos >= SERVO_MX)
+            else // SERVO AX to MX
             {
                 // We set the servo serie to 'MX' which is the more capable of the Dynamixel v1 serie
                 protocolVersion = 1;

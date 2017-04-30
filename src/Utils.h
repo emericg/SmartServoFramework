@@ -58,6 +58,16 @@
  */
 
 /*!
+ * \brief Serial communication protocol.
+ */
+enum ServoProtocol
+{
+    PROTOCOL_DXLv1  = 0,    //!<
+    PROTOCOL_DXLv2  = 1,    //!<
+    PROTOCOL_HKX    = 2,    //!<
+};
+
+/*!
  * \brief Broadcast address.
  *
  * If an instruction packet is sent to the broadcast ID, all linked Dynamixels
@@ -130,10 +140,10 @@ enum LedColors_e
  */
 enum ServoDevices_e
 {
-    SERVO_UNKNOWN   = 0,
+    SERVO_UNKNOWN = 0,
 
     // Dynamixel servo devices:
-    SERVO_DYNAMIXEL = 1,
+    SERVO_DYNAMIXEL      = 1,
 
         SERVO_AX         = 10,
             SERVO_AX12A  = 11,
@@ -164,7 +174,17 @@ enum ServoDevices_e
         SERVO_XL         = 60,
             SERVO_XL320  = 61,
 
-        SERVO_PRO        = 70,
+        SERVO_X          = 70,
+            SERVO_XM430_W210 = 71,
+            SERVO_XM430_W350 = 72,
+
+            SERVO_XH430_W210 = 81,
+            SERVO_XH430_W350 = 82,
+            SERVO_XH430_V210 = 83,
+            SERVO_XH430_V350 = 84,
+
+        // Dynamixel PRO servo devices:
+        SERVO_PRO        = 170,
             SERVO_H54,
             SERVO_H42,
             SERVO_H30,
@@ -176,9 +196,9 @@ enum ServoDevices_e
             SERVO_L30,
 
         // Dynamixel sensor devices:
-        SENSOR_DYNAMIXEL     = 90,
-            SENSOR_AXS1      = 91,
-            SENSOR_IR_ARRAY  = 92,
+        SENSOR_DYNAMIXEL     = 190,
+            SENSOR_AXS1      = 191,
+            SENSOR_IR_ARRAY  = 192,
 
     // HerkuleX servo devices:
     SERVO_HERKULEX       = 200,
@@ -215,30 +235,30 @@ enum RegisterNames_e
 
     REG_MAX_TORQUE,
     REG_TORQUE_LIMIT,
-    REG_STATUS_RETURN_LEVEL, //!< Exact equivalent to "ACK_POLICY" on HerkuleX
+    REG_STATUS_RETURN_LEVEL,    //!< Exact equivalent to "ACK_POLICY" on HerkuleX
 
     REG_LED,
-    REG_LED_BLINKING, //!< Only on HerkuleX
-    REG_ALARM_LED, //!< HerkuleX has ALARM_LED_POLICY, similar but not quite the same
-    REG_ALARM_SHUTDOWN, //!< HerkuleX has TORQUE_POLICY, similar but not quite the same
+    REG_LED_BLINKING,           //!< Only on HerkuleX
+    REG_ALARM_LED,              //!< HerkuleX has ALARM_LED_POLICY, similar but not quite the same
+    REG_ALARM_SHUTDOWN,         //!< HerkuleX has TORQUE_POLICY, similar but not quite the same
 
-    REG_MULTI_TURN_OFFSET, //!< Only on latest MX firmware
-    REG_RESOLUTION_DIVIDER, //!< Only on latest MX firmware
+    REG_MULTI_TURN_OFFSET,      //!< Only on latest MX firmware
+    REG_RESOLUTION_DIVIDER,     //!< Only on latest MX firmware
 
-    REG_CW_COMPLIANCE_MARGIN , //!< "Compliance Margins" only on AX, DX and RX series
+    REG_CW_COMPLIANCE_MARGIN ,  //!< "Compliance Margins" only on AX, DX and RX series
     REG_CCW_COMPLIANCE_MARGIN,
     REG_CW_COMPLIANCE_SLOPE,
     REG_CCW_COMPLIANCE_SLOPE,
 
-    REG_P_GAIN, //!< "PID control" only on EX and MX, XL and HerkuleX.
+    REG_P_GAIN,                 //!< "PID control" only on EX and MX, X and HerkuleX.
     REG_I_GAIN,
     REG_D_GAIN,
 
     REG_GOAL_POSITION,
     REG_GOAL_SPEED,
     REG_GOAL_VELOCITY,
-    REG_GOAL_TORQUE, //!< Only on MX-64, MX-106
-    REG_GOAL_ACCELERATION, //!< Only on MX, PRO
+    REG_GOAL_TORQUE,            //!< Only on MX-64, MX-106
+    REG_GOAL_ACCELERATION,      //!< Only on MX, PRO
 
     REG_CURRENT_POSITION,
     REG_CURRENT_SPEED,
@@ -246,23 +266,23 @@ enum RegisterNames_e
     REG_CURRENT_LOAD,
     REG_CURRENT_VOLTAGE,
     REG_CURRENT_TEMPERATURE,
-    REG_CURRENT_CURRENT, //!< Only on EX-106, MX-64 and MX-106
+    REG_CURRENT_CURRENT,        //!< Only on EX-106, MX-64 and MX-106
 
-    REG_REGISTERED,
+    REG_REGISTERED,             //!< "Registered Instruction" on Dynamixels
     REG_MOVING,
     REG_LOCK,
     REG_PUNCH,
 
-    REG_TORQUE_ENABLE, //!< Closest match on HerkuleX is "TORQUE_CONTROL"
-    REG_CONTROL_MODE, //!< Only on MX-64 and MX-106, XL-320 and HerkuleX devices.
+    REG_TORQUE_ENABLE,          //!< Closest match on HerkuleX is "TORQUE_CONTROL"
+    REG_CONTROL_MODE,           //!< Only on MX-64 and MX-106, X and HerkuleX devices.
 
     // Dynamixel specific registers
     ////////////////////////////////////////////////////////////////////////////
 
-    REG_DRIVE_MODE, //!< Only on EX and MX-106
-    REG_OPERATING_MODE, //!< Only PRO
-    REG_HW_ERROR_STATUS, //!< Only on XL, PRO // Similar to HerkuleX SERVO_STATUS_ERROR ???
-    REG_MODEL_INFORMATION, //!< Only PRO
+    REG_DRIVE_MODE,             //!< Only on EX, MX-106 and XH/XM
+    REG_OPERATING_MODE,         //!< Only PRO
+    REG_HW_ERROR_STATUS,        //!< Only on X, PRO // Similar to HerkuleX SERVO_STATUS_ERROR ???
+    REG_MODEL_INFORMATION,      //!< Only PRO, XH/XM
     REG_HOMING_OFFSET,
     REG_MOVING_THRESHOLD,
     REG_ACCELERATION_LIMIT,
@@ -281,6 +301,22 @@ enum RegisterNames_e
     REG_EXTERNAL_PORT_DATA_3,
     REG_EXTERNAL_PORT_DATA_4,
     REG_INDIRECT_DATA_X,
+    REG_SHADOW_ID,
+    REG_PROTOCOL_VERSION,
+    REG_PWM_LIMIT,
+    REG_CURRENT_LIMIT,
+    REG_VELOCITY_I_GAIN,
+    REG_VELOCITY_P_GAIN,
+    REG_BUS_WATCHDOG,
+    REG_GOAL_PWM,
+    REG_GOAL_CURRENT,
+    REG_PROFILE_ACCELERATION,
+    REG_PROFILE_VELOCITY,
+    REG_REALTIME_TICK,
+    REG_MOVING_STATUS,
+    REG_CURRENT_PWM,
+    REG_VELOCITY_TRAJECTORY,
+    REG_POSITION_TRAJECTORY,
 
     // HerkuleX specific registers
     ////////////////////////////////////////////////////////////////////////////
@@ -434,6 +470,7 @@ std::string getRegisterDescriptionTxt(const int reg_name);
  */
 std::string getRegisterNameTxt(const int reg_name);
 
-/* ************************************************************************** */
 /** @}*/
+
+/* ************************************************************************** */
 #endif // UTILS_H

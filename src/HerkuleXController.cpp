@@ -54,6 +54,10 @@ void HerkuleXController::updateInternalSettings()
             protocolVersion = 1;
             TRACE_INFO(CAPI, "- Using HerkuleX communication protocol");
         }
+        else if (servoSerie >= SENSOR_DYNAMIXEL)
+        {
+            // TODO
+        }
         else if (servoSerie >= SERVO_DYNAMIXEL)
         {
             ackPolicy = 2;

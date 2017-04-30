@@ -180,6 +180,8 @@ set(SmartServoFramework_SRC
     src/ServoMX.h
     src/ServoXL.cpp
     src/ServoXL.h
+    src/ServoX.cpp
+    src/ServoX.h
     src/Utils.cpp
     src/Utils.h
 )

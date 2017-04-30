@@ -69,6 +69,11 @@ int SerialPort::checkBaudRate(const int baud)
             // Default baudrate for Dynamixel PRO devices
             baudRate = 57600;
         }
+        else if (servoDevices >= SERVO_X)
+        {
+            // Default baudrate for Dynamixel X devices
+            baudRate = 57600;
+        }
         else if (servoDevices >= SERVO_XL)
         {
             // Default baudrate for Dynamixel XL-320 devices

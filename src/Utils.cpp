@@ -186,6 +186,97 @@ std::string getRegisterNameTxt(const int reg_name)
         name = "VELOCITY_LIMIT";
         break;
 
+    case REG_EXTERNAL_PORT_MODE_1:
+        name = "REG_EXTERNAL_PORT_MODE_1";
+        break;
+    case REG_EXTERNAL_PORT_MODE_2:
+        name = "REG_EXTERNAL_PORT_MODE_2";
+        break;
+    case REG_EXTERNAL_PORT_MODE_3:
+        name = "REG_EXTERNAL_PORT_MODE_3";
+        break;
+    case REG_EXTERNAL_PORT_MODE_4:
+        name = "REG_EXTERNAL_PORT_MODE_4";
+        break;
+    case REG_INDIRECT_ADDRESS_X:
+        name = "REG_INDIRECT_ADDRESS_X";
+        break;
+    case REG_SHUTDOWN:
+        name = "REG_SHUTDOWN";
+        break;
+    case REG_LED_RED:
+        name = "REG_LED_RED";
+        break;
+    case REG_LED_GREEN:
+        name = "REG_LED_GREEN";
+        break;
+    case REG_LED_BLUE:
+        name = "REG_LED_BLUE";
+        break;
+    case REG_EXTERNAL_PORT_DATA_1:
+        name = "REG_EXTERNAL_PORT_DATA_1";
+        break;
+    case REG_EXTERNAL_PORT_DATA_2:
+        name = "REG_EXTERNAL_PORT_DATA_2";
+        break;
+    case REG_EXTERNAL_PORT_DATA_3:
+        name = "REG_EXTERNAL_PORT_DATA_3";
+        break;
+    case REG_EXTERNAL_PORT_DATA_4:
+        name = "REG_EXTERNAL_PORT_DATA_4";
+        break;
+    case REG_INDIRECT_DATA_X:
+        name = "REG_INDIRECT_DATA_X";
+        break;
+    case REG_SHADOW_ID:
+        name = "REG_SHADOW_ID";
+        break;
+    case REG_PROTOCOL_VERSION:
+        name = "REG_PROTOCOL_VERSION";
+        break;
+    case REG_PWM_LIMIT:
+        name = "REG_PWM_LIMIT";
+        break;
+    case REG_CURRENT_LIMIT:
+        name = "REG_CURRENT_LIMIT";
+        break;
+    case REG_VELOCITY_I_GAIN:
+        name = "REG_VELOCITY_I_GAIN";
+        break;
+    case REG_VELOCITY_P_GAIN:
+        name = "REG_VELOCITY_P_GAIN";
+        break;
+    case REG_BUS_WATCHDOG:
+        name = "REG_BUS_WATCHDOG";
+        break;
+    case REG_GOAL_PWM:
+        name = "REG_GOAL_PWM";
+        break;
+    case REG_GOAL_CURRENT:
+        name = "REG_GOAL_CURRENT";
+        break;
+    case REG_PROFILE_ACCELERATION:
+        name = "REG_PROFILE_ACCELERATION";
+        break;
+    case REG_PROFILE_VELOCITY:
+        name = "REG_PROFILE_VELOCITY";
+        break;
+    case REG_REALTIME_TICK:
+        name = "REG_REALTIME_TICK";
+        break;
+    case REG_MOVING_STATUS:
+        name = "REG_MOVING_STATUS";
+        break;
+    case REG_CURRENT_PWM:
+        name = "REG_CURRENT_PWM";
+        break;
+    case REG_VELOCITY_TRAJECTORY:
+        name = "REG_VELOCITY_TRAJECTORY";
+        break;
+    case REG_POSITION_TRAJECTORY:
+        name = "REG_POSITION_TRAJECTORY";
+        break;
+
     case REG_ABSOLUTE_POSITION:
         name = "ABSOLUTE_POSITION";
         break;

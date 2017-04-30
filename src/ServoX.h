@@ -15,13 +15,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software. If not, see <http://www.gnu.org/licenses/lgpl-3.0.txt>.
  *
- * \file ServoXL.h
- * \date 08/07/2014
+ * \file ServoX.h
+ * \date 29/04/2017
  * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
-#ifndef SERVO_XL_H
-#define SERVO_XL_H
+#ifndef SERVO_X_H
+#define SERVO_X_H
 
 #include "ServoDynamixel.h"
 
@@ -34,21 +34,21 @@
  */
 
 /*!
- * \brief XL servo serie.
+ * \brief XM/XH servo series.
  * \ref ServoDynamixel
- * \ref XL320_control_table
+ * \ref XMXH_control_table
  * \note The X series use the new "protocol v2", also used by the Dynamixel PRO serie.
 
  * More informations about them on Robotis website:
- * - http://www.robotis.us/dynamixel-xl-320/
- * - http://support.robotis.com/en/product/actuator/dynamixel_x/xl-series_main.htm
- * - http://support.robotis.com/en/product/actuator/dynamixel_x/xl_series/xl-320.htm
+ * - http://www.robotis.us/x-series/
+ * - http://en.robotis.com/index/product.php?cate_code=101210
+ * - http://support.robotis.com/en/product/actuator/dynamixel_x/xm_series.htm
  */
-class ServoXL: public ServoDynamixel
+class ServoX: public ServoDynamixel
 {
 public:
-    ServoXL(int dynamixel_id, int dynamixel_model, int control_mode = SPEED_MANUAL);
-    ~ServoXL();
+    ServoX(int dynamixel_id, int dynamixel_model, int control_mode = SPEED_MANUAL);
+    ~ServoX();
 
     // Not available on X series:
     int getAlarmLed();
@@ -61,7 +61,6 @@ public:
     int getDGain();
     int getIGain();
     int getPGain();
-    int getGoalTorque();
     int getHardwareErrorStatus(); // Only on X series
 
     // Setters
@@ -71,4 +70,4 @@ public:
 
 /** @}*/
 
-#endif // SERVO_XL_H
+#endif // SERVO_X_H

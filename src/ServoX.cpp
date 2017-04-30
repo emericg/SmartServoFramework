@@ -15,12 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software. If not, see <http://www.gnu.org/licenses/lgpl-3.0.txt>.
  *
- * \file ServoXL.cpp
- * \date 08/07/2014
+ * \file ServoX.cpp
+ * \date 29/04/2017
  * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
-#include "ServoXL.h"
+#include "ServoX.h"
 
 #include "Dynamixel.h"
 #include "DynamixelTools.h"
@@ -30,73 +30,67 @@
 
 #include "minitraces.h"
 
-ServoXL::ServoXL(int dynamixel_id, int dynamixel_model, int control_mode):
-    ServoDynamixel(XL320_control_table, dynamixel_id, dynamixel_model, control_mode)
+ServoX::ServoX(int dynamixel_id, int dynamixel_model, int control_mode):
+    ServoDynamixel(XMXH_control_table, dynamixel_id, dynamixel_model, control_mode)
 {
-    runningDegrees = 300;
-    steps = 1024;
+    runningDegrees = 360;
+    steps = 4096;
 }
 
-ServoXL::~ServoXL()
+ServoX::~ServoX()
 {
     //
 }
 
 /* ************************************************************************** */
 
-int ServoXL::getAlarmLed()
+int ServoX::getAlarmLed()
 {
     return 0; // Not available on X series
 }
 
-void ServoXL::setAlarmLed()
+void ServoX::setAlarmLed()
 {
     return; // Not available on X series
 }
 
-int ServoXL::getLock()
+int ServoX::getLock()
 {
     return 0; // Not available on X series
 }
 
-void ServoXL::setLock()
+void ServoX::setLock()
 {
     return; // Not available on X series
 }
 
 /* ************************************************************************** */
 
-int ServoXL::getControlMode()
+int ServoX::getControlMode()
 {
     std::lock_guard <std::mutex> lock(access);
     return registerTableValues[gid(REG_CONTROL_MODE)];
 }
 
-int ServoXL::getDGain()
+int ServoX::getDGain()
 {
     std::lock_guard <std::mutex> lock(access);
     return registerTableValues[gid(REG_D_GAIN)];
 }
 
-int ServoXL::getIGain()
+int ServoX::getIGain()
 {
     std::lock_guard <std::mutex> lock(access);
     return registerTableValues[gid(REG_I_GAIN)];
 }
 
-int ServoXL::getPGain()
+int ServoX::getPGain()
 {
     std::lock_guard <std::mutex> lock(access);
     return registerTableValues[gid(REG_P_GAIN)];
 }
 
-int ServoXL::getGoalTorque()
-{
-    std::lock_guard <std::mutex> lock(access);
-    return registerTableValues[gid(REG_GOAL_TORQUE)];
-}
-
-int ServoXL::getHardwareErrorStatus()
+int ServoX::getHardwareErrorStatus()
 {
     std::lock_guard <std::mutex> lock(access);
     return registerTableValues[gid(REG_HW_ERROR_STATUS)];
@@ -104,7 +98,7 @@ int ServoXL::getHardwareErrorStatus()
 
 /* ************************************************************************** */
 
-void ServoXL::setId(int id)
+void ServoX::setId(int id)
 {
     TRACE_1(DXL, "[#%i] setId(from %i to %i)", servoId, servoId, id);
 
@@ -118,7 +112,7 @@ void ServoXL::setId(int id)
     }
 }
 
-void ServoXL::setError(const int error)
+void ServoX::setError(const int error)
 {
     // On protocol v2, the error is not a bitfield but a simple error number,
     // so we cannot keep adding errors fields

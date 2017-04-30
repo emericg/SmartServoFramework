@@ -55,6 +55,10 @@ void DynamixelController::updateInternalSettings()
             protocolVersion = 1;
             TRACE_INFO(CAPI, "- Using HerkuleX communication protocol");
         }
+        else if (servoSerie >= SENSOR_DYNAMIXEL)
+        {
+            // TODO
+        }
         else if (servoSerie >= SERVO_DYNAMIXEL)
         {
             ackPolicy = 2;
@@ -229,6 +233,11 @@ void DynamixelController::autodetect_internal(int start, int stop)
 
             case SERVO_XL:
                 servo = new ServoXL(id, pingstats.model_number);
+                break;
+
+            case SERVO_X:
+                servo = new ServoX(id, pingstats.model_number);
+                break;
 
             default:
                 break;

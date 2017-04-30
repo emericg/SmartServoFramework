@@ -1199,6 +1199,26 @@ void MainWindow::servoSelection()
             servoSpec.setFileName(":/specs/specs/XL-320.html");
             break;
 
+        case SERVO_X:
+            servoIcon.load(":/devices/devices/X-Series.jpg");
+            if (servoModel == SERVO_XH430_V210 || servoModel == SERVO_XH430_W210)
+            {
+                servoSpec.setFileName(":/specs/specs/XH-430-VW210.html");
+            }
+            if (servoModel == SERVO_XH430_V350 || servoModel == SERVO_XH430_W350)
+            {
+                servoSpec.setFileName(":/specs/specs/XH-430-VW350.html");
+            }
+            if (servoModel == SERVO_XM430_W210)
+            {
+                servoSpec.setFileName(":/specs/specs/XM-430-W210.html");
+            }
+            if (servoModel == SERVO_XM430_W350)
+            {
+                servoSpec.setFileName(":/specs/specs/XM-430-W350.html");
+            }
+            break;
+
         case SERVO_EX:
             if (servoSerie == SERVO_EX106)
             {
@@ -1612,7 +1632,8 @@ void MainWindow::updateRegisterTableDynamixel(Servo *servo_dxl, const int servoS
     int led = servo->getLed();
     ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_LED),1)->setText(QString::number(led));
     ui->led_checkBox->setChecked(led);
-    if (servoSerie != SERVO_MX && servoSerie != SERVO_XL)
+    if (servoSerie == SERVO_AX || servoSerie == SERVO_DX ||
+        servoSerie == SERVO_RX || servoSerie == SERVO_EX)
     {
         // Only on AX, DX, RX and EX
         ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_CW_COMPLIANCE_MARGIN),1)->setText(QString::number(static_cast<ServoAX*>(servo)->getCwComplianceMargin()));

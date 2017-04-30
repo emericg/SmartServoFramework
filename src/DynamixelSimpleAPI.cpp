@@ -68,6 +68,12 @@ DynamixelSimpleAPI::DynamixelSimpleAPI(int servoSerie)
                 servoSerie = SERVO_PRO;
                 ct = PRO_control_table;
             }
+            else if (servoSerie >= SERVO_X)
+            {
+                protocolVersion = 2;
+                servoSerie = SERVO_X;
+                ct = XMXH_control_table;
+            }
             else if (servoSerie >= SERVO_XL)
             {
                 protocolVersion = 2;
@@ -76,7 +82,7 @@ DynamixelSimpleAPI::DynamixelSimpleAPI(int servoSerie)
             }
             else // SERVO AX to MX
             {
-                // Default is Dynamixel MX, the more 'capable' of the Dynamixel v1 series
+                // We set the servo serie to 'MX' which is the more capable of the Dynamixel v1 serie
                 protocolVersion = 1;
                 servoSerie = SERVO_MX;
                 ct = MX_control_table;
