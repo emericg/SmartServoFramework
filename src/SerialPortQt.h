@@ -52,8 +52,8 @@ int serialPortsScannerQt(std::vector <std::string> &availableSerialPorts);
  */
 class SerialPortQt: public SerialPort
 {
-    QSerialPort *serial = NULL;
-    QLockFile *lock = NULL;
+    QSerialPort *serial = nullptr;
+    QLockFile *lock = nullptr;
 
     /*!
      * \brief Get current time since the Epoch.

@@ -178,7 +178,7 @@ void HerkuleXController::autodetect_internal(int start, int stop)
 
             int serie, model;
             hkx_get_model_infos(pingstats.model_number, serie, model);
-            ServoHerkuleX *servo = NULL;
+            ServoHerkuleX *servo = nullptr;
 
             TRACE_INFO(HKX, "[#%i] %s servo found!", id, hkx_get_model_name(pingstats.model_number).c_str());
 
@@ -193,7 +193,7 @@ void HerkuleXController::autodetect_internal(int start, int stop)
                 break;
             }
 
-            if (servo != NULL)
+            if (servo != nullptr)
             {
                 servoListLock.lock();
 
@@ -337,7 +337,7 @@ void HerkuleXController::run()
                 hkx_reboot(id, ack);
                 TRACE_INFO(HKX, "Rebooting servo #%i...", id);
 
-                miniMessages m {ctrl_device_delayed_add, std::chrono::system_clock::now() + std::chrono::seconds(2), NULL, id, 1};
+                miniMessages m {ctrl_device_delayed_add, std::chrono::system_clock::now() + std::chrono::seconds(2), nullptr, id, 1};
                 sendMessage(&m);
             }
 
@@ -363,7 +363,7 @@ void HerkuleXController::run()
                 hkx_reset(id, resetProgrammed, ack);
                 TRACE_INFO(HKX, "Resetting servo #%i (setting: %i)...", id, resetProgrammed);
 
-                miniMessages m {ctrl_device_delayed_add, std::chrono::system_clock::now() + std::chrono::seconds(2), NULL, id, 1};
+                miniMessages m {ctrl_device_delayed_add, std::chrono::system_clock::now() + std::chrono::seconds(2), nullptr, id, 1};
                 sendMessage(&m);
             }
         }

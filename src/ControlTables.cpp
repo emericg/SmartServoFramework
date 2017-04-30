@@ -30,7 +30,7 @@
 
 const int (*getRegisterTable(const int servo_model))[8]
 {
-    const int (*ct)[8] = NULL;
+    const int (*ct)[8] = nullptr;
 
     if (servo_model != SERVO_UNKNOWN)
     {
@@ -92,7 +92,7 @@ const int (*getRegisterTable(const int servo_model))[8]
         }
     }
 
-    if (ct == NULL)
+    if (ct == nullptr)
     {
         TRACE_ERROR(TABLES, "Unable to find a suitable 'Control Table' for servo_model: '%i'", servo_model);
     }
@@ -102,7 +102,7 @@ const int (*getRegisterTable(const int servo_model))[8]
 
 const int (*getRegisterTable(const int servo_serie, const int servo_model))[8]
 {
-    const int (*ct)[8] = NULL;
+    const int (*ct)[8] = nullptr;
 
     if (servo_serie >= SERVO_HERKULEX)
     {
@@ -163,7 +163,7 @@ const int (*getRegisterTable(const int servo_serie, const int servo_model))[8]
         }
     }
 
-    if (ct == NULL)
+    if (ct == nullptr)
     {
         TRACE_ERROR(TABLES, "Unable to find a suitable 'Control Table' for servo_serie: '%i' / servo_model: '%i'", servo_serie, servo_model);
     }
@@ -175,7 +175,7 @@ unsigned getRegisterCount(const int ct[][8])
 {
     unsigned count = 0;
 
-    if (ct != NULL)
+    if (ct != nullptr)
     {
         // Register count // Horrible hack
         for (unsigned i = 0; i < 64; i++)
@@ -196,7 +196,7 @@ int getRegisterInfos(const int ct[][8], const int reg_name, RegisterInfos &infos
 {
     int status = -1;
 
-    if (ct != NULL)
+    if (ct != nullptr)
     {
         TRACE_1(TABLES, "Control table size is: '%i'", getRegisterCount(ct));
 
@@ -233,7 +233,7 @@ int getRegisterInfos(const int ct[][8], const int reg_name, RegisterInfos &infos
                 {
                     if (ct[i][1] < 5)
                     {
-                        infos.reg_value_max = static_cast<int>(pow(2, infos.reg_size*8));
+                        infos.reg_value_max = static_cast<int>(std::pow(2, infos.reg_size*8));
                     }
                     else
                     {
@@ -253,7 +253,7 @@ int getRegisterName(const int ct[][8], const int reg_index)
 {
     int name = -1;
 
-    if (ct != NULL)
+    if (ct != nullptr)
     {
         if (reg_index >= 0 && reg_index < static_cast<int>(getRegisterCount(ct)))
         {
@@ -268,7 +268,7 @@ int getRegisterTableIndex(const int ct[][8], const int reg_name)
 {
     int index = -1;
 
-    if (ct != NULL)
+    if (ct != nullptr)
     {
         for (unsigned i = 0; i < getRegisterCount(ct); i++)
         {
@@ -287,7 +287,7 @@ int getRegisterAddr(const int ct[][8], const int reg_name, const int reg_type)
 {
     int addr = -1;
 
-    if (ct != NULL)
+    if (ct != nullptr)
     {
         for (unsigned i = 0; i < getRegisterCount(ct); i++)
         {
@@ -323,7 +323,7 @@ int getRegisterSize(const int ct[][8], const int reg_name)
 {
     int size = -1;
 
-    if (ct != NULL)
+    if (ct != nullptr)
     {
         for (unsigned i = 0; i < getRegisterCount(ct); i++)
         {
@@ -342,7 +342,7 @@ int getRegisterAccessMode(const int ct[][8], const int reg_name)
 {
     int mode = -1;
 
-    if (ct != NULL)
+    if (ct != nullptr)
     {
         for (unsigned i = 0; i < getRegisterCount(ct); i++)
         {
@@ -361,7 +361,7 @@ int getRegisterInitialValue(const int ct[][8], const int reg_name)
 {
     int value = -1;
 
-    if (ct != NULL)
+    if (ct != nullptr)
     {
         for (unsigned i = 0; i < getRegisterCount(ct); i++)
         {
@@ -380,7 +380,7 @@ int getRegisterBounds(const int ct[][8], const int reg_name, int &min, int &max)
 {
     int status = -1;
 
-    if (ct != NULL)
+    if (ct != nullptr)
     {
         for (unsigned i = 0; i < getRegisterCount(ct); i++)
         {
@@ -398,7 +398,7 @@ int getRegisterBounds(const int ct[][8], const int reg_name, int &min, int &max)
                 {
                     if (ct[i][1] < 5)
                     {
-                        max = static_cast<int>(pow(2, (ct[i][1])*8));
+                        max = static_cast<int>(std::pow(2, (ct[i][1])*8));
                     }
                     else
                     {

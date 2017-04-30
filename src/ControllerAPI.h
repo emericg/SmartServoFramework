@@ -60,10 +60,10 @@ enum controllerState_e
  */
 class ControllerAPI
 {
-    int controllerState;                //!< The current state of the controller, used by client apps to know.
+    int controllerState = 0;            //!< The current state of the controller, used by client apps to know.
     std::mutex controllerStateLock;     //!< Lock for the controllerState.
 
-    int errorCount;                     //!< Store the number of transmission errors.
+    int errorCount = 0;                 //!< Store the number of transmission errors.
     std::mutex errorCountLock;          //!< Lock for the error count.
 
 protected:
@@ -90,7 +90,7 @@ protected:
     };
 
     int syncloopFrequency;              //!< Frequency of the synchronization loop, in Hz. May not be respected if there is too much traffic on the serial port.
-    int syncloopCounter;
+    int syncloopCounter = 0;
     double syncloopDuration;            //!< Maximum duration for the synchronization loop, in milliseconds.
 
     std::thread syncloopThread;         //!< Controller's thread.

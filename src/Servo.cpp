@@ -31,43 +31,21 @@
 
 Servo::Servo()
 {
-    ct = NULL;
-
-    registerTableSize = 0;
-    registerTableValues = NULL;
-    registerTableCommits = NULL;
-
-    servoId = 0;
-    servoModel = 0;
-    servoSerie = 0;
-
-    steps = 0;
-    runningDegrees = 0;
-
-    commError = 0;
-    statusError = 0;
-    statusDetail = 0;
-    valueErrors = 0;
-    errorCount = 0;
-
-    actionProgrammed = 0;
-    rebootProgrammed = 0;
-    refreshProgrammed = 0;
-    resetProgrammed = 0;
+    //
 }
 
 Servo::~Servo()
 {
-    if (registerTableValues != NULL)
+    if (registerTableValues != nullptr)
     {
         delete [] registerTableValues;
-        registerTableValues = NULL;
+        registerTableValues = nullptr;
     }
 
-    if (registerTableCommits != NULL)
+    if (registerTableCommits != nullptr)
     {
         delete [] registerTableCommits;
-        registerTableCommits = NULL;
+        registerTableCommits = nullptr;
     }
 }
 
@@ -172,7 +150,9 @@ void Servo::refresh()
 
 void Servo::reset(int setting)
 {
-    if (setting == RESET_ALL || setting == RESET_ALL_EXCEPT_ID || setting == RESET_ALL_EXCEPT_ID_BAUDRATE)
+    if (setting == RESET_ALL ||
+        setting == RESET_ALL_EXCEPT_ID ||
+        setting == RESET_ALL_EXCEPT_ID_BAUDRATE)
     {
         std::lock_guard <std::mutex> lock(access);
         resetProgrammed = setting;
@@ -418,12 +398,14 @@ int Servo::getValue(int reg_name, int reg_type)
         }
         else
         {
-            TRACE_ERROR(SERVO, "[#%i] getValue(reg %i / %s) [REGISTER ID ERROR]", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
+            TRACE_ERROR(SERVO, "[#%i] getValue(reg %i / %s) [REGISTER ID ERROR]",
+                        servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
         }
     }
     else
     {
-        TRACE_ERROR(SERVO, "[#%i] getValue(reg %i / %s) [REGISTER NAME ERROR]", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
+        TRACE_ERROR(SERVO, "[#%i] getValue(reg %i / %s) [REGISTER NAME ERROR]",
+                    servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
     }
 
     return value;
@@ -446,12 +428,14 @@ int Servo::getValueCommit(int reg_name, int reg_type)
         }
         else
         {
-            TRACE_ERROR(SERVO, "[#%i] getValueCommit(reg %i / %s) [REGISTER ID ERROR]", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
+            TRACE_ERROR(SERVO, "[#%i] getValueCommit(reg %i / %s) [REGISTER ID ERROR]",
+                        servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
         }
     }
     else
     {
-        TRACE_ERROR(SERVO, "[#%i] getValueCommit(reg %i / %s) [REGISTER NAME ERROR]", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
+        TRACE_ERROR(SERVO, "[#%i] getValueCommit(reg %i / %s) [REGISTER NAME ERROR]",
+                    servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
     }
 
     return commit;
@@ -481,23 +465,27 @@ void Servo::setValue(int reg_name, int reg_value, int reg_type)
                 }
                 else
                 {
-                    TRACE_ERROR(SERVO, "[#%i] setValue(reg %i / %s to %i) [REGISTER VALUE ERROR] (min: %i / max: %i)", servoId,
-                                reg_name, getRegisterNameTxt(reg_name).c_str(), reg_value, infos.reg_value_min, infos.reg_value_max);
+                    TRACE_ERROR(SERVO, "[#%i] setValue(reg %i / %s to %i) [REGISTER VALUE ERROR] (min: %i / max: %i)",
+                                servoId, reg_name, getRegisterNameTxt(reg_name).c_str(),
+                                reg_value, infos.reg_value_min, infos.reg_value_max);
                 }
             }
             else
             {
-                TRACE_ERROR(SERVO, "[#%i] setValue(reg %i / %s) [REGISTER ACCESS ERROR]", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
+                TRACE_ERROR(SERVO, "[#%i] setValue(reg %i / %s) [REGISTER ACCESS ERROR]",
+                            servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
             }
         }
         else
         {
-            TRACE_ERROR(SERVO, "[#%i] setValue(reg %i / %s) [REGISTER ID ERROR]", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
+            TRACE_ERROR(SERVO, "[#%i] setValue(reg %i / %s) [REGISTER ID ERROR]",
+                        servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
         }
     }
     else
     {
-        TRACE_ERROR(SERVO, "[#%i] setValue(reg %i / %s) [REGISTER NAME ERROR]", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
+        TRACE_ERROR(SERVO, "[#%i] setValue(reg %i / %s) [REGISTER NAME ERROR]",
+                    servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
     }
 }
 
@@ -525,19 +513,21 @@ void Servo::updateValue(int reg_name, int reg_value, int reg_type)
                 // If the value is out of bound but correspond to an error code [-1;-7], no need to print it as a 'REGISTER VALUE ERROR'
                 if ( !(reg_value < 0 && reg_value > -8) )
                 {
-                    TRACE_ERROR(SERVO, "[#%i] updateValue(reg %i / %s to %i) [REGISTER VALUE ERROR] (min: %i / max: %i)", servoId,
-                                reg_name, getRegisterNameTxt(reg_name).c_str(), reg_value, infos.reg_value_min, infos.reg_value_max);
+                    TRACE_ERROR(SERVO, "[#%i] updateValue(reg %i / %s to %i) [REGISTER VALUE ERROR] (min: %i / max: %i)",
+                                servoId, reg_name, getRegisterNameTxt(reg_name).c_str(), reg_value, infos.reg_value_min, infos.reg_value_max);
                 }
             }
         }
         else
         {
-            TRACE_ERROR(SERVO, "[#%i] updateValue(reg %i / %s) [REGISTER ID ERROR]", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
+            TRACE_ERROR(SERVO, "[#%i] updateValue(reg %i / %s) [REGISTER ID ERROR]",
+                        servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
         }
     }
     else
     {
-        TRACE_ERROR(SERVO, "[#%i] updateValue(reg %i / %s) [REGISTER NAME ERROR]", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
+        TRACE_ERROR(SERVO, "[#%i] updateValue(reg %i / %s) [REGISTER NAME ERROR]",
+                    servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
     }
 }
 
@@ -564,17 +554,20 @@ void Servo::commitValue(int reg_name, int commit, int reg_type)
             }
             else
             {
-                TRACE_ERROR(SERVO, "[#%i] commitValue(reg %i / %s) [REGISTER ACCESS ERROR]", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
+                TRACE_ERROR(SERVO, "[#%i] commitValue(reg %i / %s) [REGISTER ACCESS ERROR]",
+                            servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
             }
         }
         else
         {
-            TRACE_ERROR(SERVO, "[#%i] commitValue(reg %i / %s) [REGISTER ID ERROR]", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
+            TRACE_ERROR(SERVO, "[#%i] commitValue(reg %i / %s) [REGISTER ID ERROR]",
+                        servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
         }
     }
     else
     {
-        TRACE_ERROR(SERVO, "[#%i] commitValue(reg %i / %s) [REGISTER NAME ERROR]", servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
+        TRACE_ERROR(SERVO, "[#%i] commitValue(reg %i / %s) [REGISTER NAME ERROR]",
+                    servoId, reg_name, getRegisterNameTxt(reg_name).c_str());
     }
 }
 

@@ -80,16 +80,16 @@ ServoDynamixel::ServoDynamixel(const int control_table[][8], int dynamixel_id, i
 
 ServoDynamixel::~ServoDynamixel()
 {
-    if (registerTableValues != NULL)
+    if (registerTableValues != nullptr)
     {
         delete [] registerTableValues;
-        registerTableValues = NULL;
+        registerTableValues = nullptr;
     }
 
-    if (registerTableCommits != NULL)
+    if (registerTableCommits != nullptr)
     {
         delete [] registerTableCommits;
-        registerTableCommits = NULL;
+        registerTableCommits = nullptr;
     }
 }
 

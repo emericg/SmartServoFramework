@@ -24,6 +24,8 @@
 #include "minitraces.h"
 
 // C++ standard libraries
+#include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <map>
 #include <mutex>
@@ -133,18 +135,9 @@ unsigned short crc_table[256] =
 
 /* ************************************************************************** */
 
-Dynamixel::Dynamixel():
-    serial(NULL),
-    rxPacketSize(0),
-    rxPacketSizeReceived(0),
-    commLock(0),
-    commStatus(COMM_RXSUCCESS),
-    serialDevice(SERIAL_UNKNOWN),
-    servoSerie(SERVO_MX),
-    protocolVersion(1)
+Dynamixel::Dynamixel()
 {
-    memset(txPacket, 0, sizeof(txPacket));
-    memset(rxPacket, 0, sizeof(rxPacket));
+    //
 }
 
 Dynamixel::~Dynamixel()
@@ -156,7 +149,7 @@ int Dynamixel::serialInitialize(std::string &devicePath, const int baud)
 {
     int status = 0;
 
-    if (serial != NULL)
+    if (serial != nullptr)
     {
         serialTerminate();
     }
@@ -177,7 +170,7 @@ int Dynamixel::serialInitialize(std::string &devicePath, const int baud)
 #endif
 
     // Initialize the serial link
-    if (serial != NULL)
+    if (serial != nullptr)
     {
         status = serial->openLink();
 
@@ -196,12 +189,12 @@ int Dynamixel::serialInitialize(std::string &devicePath, const int baud)
 
 void Dynamixel::serialTerminate()
 {
-    if (serial != NULL)
+    if (serial != nullptr)
     {
         // Close serial link
         serial->closeLink();
         delete serial;
-        serial = NULL;
+        serial = nullptr;
 
         // Clear incoming packet?
         rxPacketSize = 0;
@@ -213,7 +206,7 @@ std::string Dynamixel::serialGetCurrentDevice()
 {
     std::string serialName;
 
-    if (serial != NULL)
+    if (serial != nullptr)
     {
         serialName = serial->getDevicePath();
     }
@@ -229,7 +222,7 @@ std::vector <std::string> Dynamixel::serialGetAvailableDevices()
 {
     std::vector <std::string> devices;
 
-    if (serial == NULL)
+    if (serial == nullptr)
     {
         TRACE_ERROR(DXL, "Serial interface is not initialized!");
     }
@@ -260,7 +253,7 @@ void Dynamixel::setAckPolicy(int ack)
 
 void Dynamixel::dxl_tx_packet()
 {
-    if (serial == NULL)
+    if (serial == nullptr)
     {
         TRACE_ERROR(DXL, "Serial interface is not initialized!");
         return;
@@ -291,7 +284,7 @@ void Dynamixel::dxl_tx_packet()
     unsigned char txPacketSize = dxl_get_txpacket_size();
     unsigned char txPacketSizeSent = 0;
 
-    if (serial != NULL)
+    if (serial != nullptr)
     {
         txPacketSizeSent = serial->tx(txPacket, txPacketSize);
     }
@@ -340,7 +333,7 @@ void Dynamixel::dxl_tx_packet()
 
 void Dynamixel::dxl_rx_packet()
 {
-    if (serial == NULL)
+    if (serial == nullptr)
     {
         TRACE_ERROR(DXL, "Serial interface is not initialized!");
         return;
@@ -370,7 +363,7 @@ void Dynamixel::dxl_rx_packet()
     }
 
     int nRead = 0;
-    if (serial != NULL)
+    if (serial != nullptr)
     {
         // Receive packet
         nRead = serial->rx((unsigned char*)&rxPacket[rxPacketSizeReceived], rxPacketSize - rxPacketSizeReceived);
@@ -1128,7 +1121,7 @@ bool Dynamixel::dxl_ping(const int id, PingResponse *status, const int ack)
     {
         retcode = true;
 
-        if (status != NULL)
+        if (status != nullptr)
         {
             if (protocolVersion == 2)
             {

@@ -112,7 +112,7 @@ public:
      * \param id: The servo to ping.
      * \param status: A pointer to a PingResponse structure, containing model_number and firmware version infos.
      */
-    bool ping(const int id, PingResponse *status = NULL);
+    bool ping(const int id, PingResponse *status = nullptr);
 
     /*!
      * \brief Send "action" command to a servo to execute registered instructions.

@@ -141,10 +141,10 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
     TRACE_INFO(SERIAL, "serialPortsScanner() [macOS variant]");
 
     // Serial devices are instances of class IOSerialBSDClient. Create a matching dictionary to find those.
-    CFMutableDictionaryRef classesToMatch = NULL;
+    CFMutableDictionaryRef classesToMatch = nullptr;
     classesToMatch = IOServiceMatching(kIOSerialBSDServiceValue);
 
-    if (classesToMatch != NULL)
+    if (classesToMatch != nullptr)
     {
         // Look for devices that claim to be modems (will pick up usb adapters, but not regular RS232 ports)
         CFDictionarySetValue(classesToMatch, CFSTR(kIOSerialBSDTypeKey), CFSTR(kIOSerialBSDModemType));
@@ -333,7 +333,7 @@ bool SerialPortMacOS::isLocked()
         if (lock)
         {
             char buf[16] = {0};
-            if (std::fgets(buf, sizeof buf, lock) != NULL)
+            if (std::fgets(buf, sizeof buf, lock) != nullptr)
             {
                 std::stringstream ss;
                 ss << std::this_thread::get_id();
@@ -501,8 +501,8 @@ int SerialPortMacOS::openLink()
        goto OPEN_LINK_ERROR;
     }
 
-    TRACE_1(SERIAL, "Current input baud rate is %d", (int)cfgetispeed(&tty));
-    TRACE_1(SERIAL, "Current output baud rate is %d", (int)cfgetospeed(&tty));
+    TRACE_1(SERIAL, "Current input baud rate is %d", static_cast<int>(cfgetispeed(&tty)));
+    TRACE_1(SERIAL, "Current output baud rate is %d", static_cast<int>(cfgetospeed(&tty)));
 
     // This used to be necessary for the serial port to connect with older versions
     // of macOS (< 10.12). Try uncommenting this if you experience problems...
@@ -534,8 +534,8 @@ int SerialPortMacOS::openLink()
         // the current baud rate if the IOSSIOSPEED ioctl was used but will instead return the speed set by the last call
         // to cfsetspeed.
 
-        TRACE_1(SERIAL, "Input baud rate changed to %d", (int) cfgetispeed(&tty));
-        TRACE_1(SERIAL, "Output baud rate changed to %d", (int) cfgetospeed(&tty));
+        TRACE_1(SERIAL, "Input baud rate changed to %d", static_cast<int>(cfgetispeed(&tty)));
+        TRACE_1(SERIAL, "Output baud rate changed to %d", static_cast<int>(cfgetospeed(&tty)));
 
         unsigned long mics = 1UL;
         if (ioctl(ttyDeviceFileDescriptor, IOSSDATALAT, &mics) == -1)
@@ -628,7 +628,7 @@ int SerialPortMacOS::tx(unsigned char *packet, int packetLength)
 
     if (isOpen() == true)
     {
-        if (packet != NULL && packetLength > 0)
+        if (packet != nullptr && packetLength > 0)
         {
             writeStatus = write(ttyDeviceFileDescriptor, packet, packetLength);
 
@@ -656,7 +656,7 @@ int SerialPortMacOS::rx(unsigned char *packet, int packetLength)
 
     if (isOpen() == true)
     {
-        if (packet != NULL && packetLength > 0)
+        if (packet != nullptr && packetLength > 0)
         {
             memset(packet, 0, packetLength);
             readStatus = read(ttyDeviceFileDescriptor, packet, packetLength);
@@ -702,7 +702,7 @@ void SerialPortMacOS::flush()
 double SerialPortMacOS::getTime()
 {
     struct timeval tv;
-    gettimeofday(&tv, NULL);
+    gettimeofday(&tv, nullptr);
 
     return (static_cast<double>(tv.tv_sec) * 1000.0 + static_cast<double>(tv.tv_usec) / 1000.0);
 }

@@ -275,7 +275,7 @@ int SerialPortWindows::tx(unsigned char *packet, int packetLength)
 
     if (isOpen())
     {
-        if (packet != NULL && packetLength > 0)
+        if (packet != nullptr && packetLength > 0)
         {
             DWORD dwToWrite = (DWORD)packetLength;
             DWORD dwWritten = 0;
@@ -320,7 +320,7 @@ int SerialPortWindows::rx(unsigned char *packet, int packetLength)
 
     if (isOpen())
     {
-        if (packet != NULL && packetLength > 0)
+        if (packet != nullptr && packetLength > 0)
         {
             DWORD dwToRead = (DWORD)packetLength;
             DWORD dwRead = 0;

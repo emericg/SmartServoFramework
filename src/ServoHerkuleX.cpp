@@ -81,28 +81,28 @@ ServoHerkuleX::ServoHerkuleX(const int control_table[][8], int herkulex_id, int 
 
 ServoHerkuleX::~ServoHerkuleX()
 {
-    if (registerTableValues != NULL)
+    if (registerTableValues != nullptr)
     {
         delete [] registerTableValues;
-        registerTableValues = NULL;
+        registerTableValues = nullptr;
     }
 
-    if (registerTableCommits != NULL)
+    if (registerTableCommits != nullptr)
     {
         delete [] registerTableCommits;
-        registerTableCommits = NULL;
+        registerTableCommits = nullptr;
     }
 
-    if (registerTableValuesRAM != NULL)
+    if (registerTableValuesRAM != nullptr)
     {
         delete [] registerTableValuesRAM;
-        registerTableValuesRAM = NULL;
+        registerTableValuesRAM = nullptr;
     }
 
-    if (registerTableCommitsRAM != NULL)
+    if (registerTableCommitsRAM != nullptr)
     {
         delete [] registerTableCommitsRAM;
-        registerTableCommitsRAM = NULL;
+        registerTableCommitsRAM = nullptr;
     }
 }
 

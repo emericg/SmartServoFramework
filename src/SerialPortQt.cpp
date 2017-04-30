@@ -106,10 +106,10 @@ SerialPortQt::SerialPortQt(std::string &devicePath, const int baud, const int se
 SerialPortQt::~SerialPortQt()
 {
     delete serial;
-    serial = NULL;
+    serial = nullptr;
 
     delete lock;
-    lock = NULL;
+    lock = nullptr;
 
     closeLink();
 }
@@ -305,7 +305,7 @@ int SerialPortQt::tx(unsigned char *packet, int packetLength)
 
     if (isOpen() == true)
     {
-        if (packet != NULL && packetLength > 0)
+        if (packet != nullptr && packetLength > 0)
         {
             writeStatus = serial->write((char *)packet, packetLength);
             //writeStatus = write(ttyDeviceFileDescriptor, packet, packetLength);
@@ -334,7 +334,7 @@ int SerialPortQt::rx(unsigned char *packet, int packetLength)
 
     if (isOpen() == true)
     {
-        if (packet != NULL && packetLength > 0)
+        if (packet != nullptr && packetLength > 0)
         {
             memset(packet, 0, packetLength);
             readStatus = serial->read((char *)packet, packetLength);
@@ -369,7 +369,7 @@ void SerialPortQt::flush()
 double SerialPortQt::getTime()
 {
     //struct timeval tv;
-    //gettimeofday(&tv, NULL);
+    //gettimeofday(&tv, nullptr);
 
     return 0;//(static_cast<double>(tv.tv_sec) * 1000.0 + static_cast<double>(tv.tv_usec) / 1000.0);
 }

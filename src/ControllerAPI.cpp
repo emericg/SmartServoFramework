@@ -24,7 +24,8 @@
 #include "minitraces.h"
 
 // C standard library
-#include <string.h>
+#include <cstring>
+#include <cstdio>
 
 // C++ standard libraries
 #include <chrono>
@@ -32,10 +33,7 @@
 
 /* ************************************************************************** */
 
-ControllerAPI::ControllerAPI(int ctrlFrequency):
-    controllerState(state_stopped),
-    errorCount(0),
-    syncloopCounter(0)
+ControllerAPI::ControllerAPI(int ctrlFrequency)
 {
     if (ctrlFrequency < 1 || ctrlFrequency > 120)
     {
@@ -357,7 +355,7 @@ Servo *ControllerAPI::getServo(const int id)
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 const std::vector <Servo *> ControllerAPI::getServos()

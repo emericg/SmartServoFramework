@@ -50,31 +50,31 @@ enum SpeedMode_e {
 class Servo
 {
 protected:
-    std::mutex access;          //!< Lock servo to avoid concurrent use by controller and user
+    std::mutex access;              //!< Lock servo to avoid concurrent use by controller and user
 
-    const int (*ct)[8];         //!< Pointer to the control table for a given servo class (selected by the constructor)
+    const int (*ct)[8] = nullptr;   //!< Pointer to the control table for a given servo class (selected by the constructor)
 
-    int registerTableSize;      //!< Number of register in the servo control table
-    int *registerTableValues;
-    int *registerTableCommits;
+    int registerTableSize = 0;      //!< Number of register in the servo control table
+    int *registerTableValues = nullptr;
+    int *registerTableCommits = nullptr;
 
-    int servoId;
-    int servoModel;
-    int servoSerie;
+    int servoId = 0;
+    int servoModel = 0;
+    int servoSerie = 0;
 
-    int steps;                  //!< Number of step the servo can handle (depends on the serie)
-    int runningDegrees;         //!< The amplitude of movement (a device with less than 360 'running degree' has a dead zone)
+    int steps = 0;                  //!< Number of step the servo can handle (depends on the serie)
+    int runningDegrees = 0;         //!< The amplitude of movement (a device with less than 360 'running degree' has a dead zone)
 
-    int commError;              //!< Error code from the serial link (when communicating with this particular device)
-    int statusError;            //!< Error bitfield from the device
-    int statusDetail;           //!< Additional status bitfield from the device (only available on HerkuleX devices)
-    int valueErrors;            //!< Register value boundaries error count
-    int errorCount;             //!< Global error count
+    int commError = 0;              //!< Error code from the serial link (when communicating with this particular device)
+    int statusError = 0;            //!< Error bitfield from the device
+    int statusDetail = 0;           //!< Additional status bitfield from the device (only available on HerkuleX devices)
+    int valueErrors = 0;            //!< Register value boundaries error count
+    int errorCount = 0;             //!< Global error count
 
-    int actionProgrammed;
-    int rebootProgrammed;
-    int refreshProgrammed;
-    int resetProgrammed;
+    int actionProgrammed = 0;
+    int rebootProgrammed = 0;
+    int refreshProgrammed = 0;
+    int resetProgrammed = 0;
 
 public:
     Servo();

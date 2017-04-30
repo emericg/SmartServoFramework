@@ -82,18 +82,9 @@ enum {
 
 /* ************************************************************************** */
 
-HerkuleX::HerkuleX():
-    serial(NULL),
-    rxPacketSize(0),
-    rxPacketSizeReceived(0),
-    commLock(0),
-    commStatus(COMM_RXSUCCESS),
-    serialDevice(SERIAL_UNKNOWN),
-    servoSerie(SERVO_HERKULEX),
-    protocolVersion(1)
+HerkuleX::HerkuleX()
 {
-    memset(txPacket, 0, sizeof(txPacket));
-    memset(rxPacket, 0, sizeof(rxPacket));
+    //
 }
 
 HerkuleX::~HerkuleX()
@@ -105,7 +96,7 @@ int HerkuleX::serialInitialize(std::string &devicePath, const int baud)
 {
     int status = 0;
 
-    if (serial != NULL)
+    if (serial != nullptr)
     {
         serialTerminate();
     }
@@ -126,7 +117,7 @@ int HerkuleX::serialInitialize(std::string &devicePath, const int baud)
 #endif
 
     // Initialize the serial link
-    if (serial != NULL)
+    if (serial != nullptr)
     {
         status = serial->openLink();
 
@@ -145,12 +136,12 @@ int HerkuleX::serialInitialize(std::string &devicePath, const int baud)
 
 void HerkuleX::serialTerminate()
 {
-    if (serial != NULL)
+    if (serial != nullptr)
     {
         // Close serial link
         serial->closeLink();
         delete serial;
-        serial = NULL;
+        serial = nullptr;
 
         // Clear incoming packet?
         rxPacketSize = 0;
@@ -162,7 +153,7 @@ std::string HerkuleX::serialGetCurrentDevice()
 {
     std::string serialName;
 
-    if (serial != NULL)
+    if (serial != nullptr)
     {
         serialName = serial->getDevicePath();
     }
@@ -178,7 +169,7 @@ std::vector <std::string> HerkuleX::serialGetAvailableDevices()
 {
     std::vector <std::string> devices;
 
-    if (serial == NULL)
+    if (serial == nullptr)
     {
         TRACE_ERROR(HKX, "Serial interface is not initialized!");
     }
@@ -209,7 +200,7 @@ void HerkuleX::setAckPolicy(int ack)
 
 void HerkuleX::hkx_tx_packet()
 {
-    if (serial == NULL)
+    if (serial == nullptr)
     {
         TRACE_ERROR(HKX, "Serial interface is not initialized!");
         return;
@@ -242,7 +233,7 @@ void HerkuleX::hkx_tx_packet()
     txPacket[PKT_CHECKSUM2] = get_highbyte(crc);
 
     // Send packet
-    if (serial != NULL)
+    if (serial != nullptr)
     {
         txPacketSizeSent = serial->tx(txPacket, txPacketSize);
     }
@@ -276,7 +267,7 @@ void HerkuleX::hkx_tx_packet()
 
 void HerkuleX::hkx_rx_packet()
 {
-    if (serial == NULL)
+    if (serial == nullptr)
     {
         TRACE_ERROR(HKX, "Serial interface is not initialized!");
         return;
@@ -306,7 +297,7 @@ void HerkuleX::hkx_rx_packet()
 
     // Receive packet
     int nRead = 0;
-    if (serial != NULL)
+    if (serial != nullptr)
     {
         nRead = serial->rx((unsigned char*)&rxPacket[rxPacketSizeReceived], rxPacketSize - rxPacketSizeReceived);
         rxPacketSizeReceived += nRead;
@@ -813,7 +804,7 @@ bool HerkuleX::hkx_ping(const int id, PingResponse *status, const int ack)
     {
         retcode = true;
 
-        if (status != NULL)
+        if (status != nullptr)
         {
             // Emulate ping response from Dynamixel protocol v2
             status->model_number = hkx_read_word(id, 0, REGISTER_ROM, ack);

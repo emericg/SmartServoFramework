@@ -210,7 +210,7 @@ void DynamixelController::autodetect_internal(int start, int stop)
 
             int serie, model;
             dxl_get_model_infos(pingstats.model_number, serie, model);
-            ServoDynamixel *servo = NULL;
+            ServoDynamixel *servo = nullptr;
 
             TRACE_INFO(DXL, "[#%i] %s servo found!", id, dxl_get_model_name(pingstats.model_number).c_str());
 
@@ -243,7 +243,7 @@ void DynamixelController::autodetect_internal(int start, int stop)
                 break;
             }
 
-            if (servo != NULL)
+            if (servo != nullptr)
             {
                 servoListLock.lock();
 
@@ -396,7 +396,7 @@ void DynamixelController::run()
                 dxl_reboot(id, ack);
                 TRACE_INFO(DXL, "Rebooting servo #%i...", id);
 
-                miniMessages m {ctrl_device_delayed_add, std::chrono::system_clock::now() + std::chrono::seconds(2), NULL, id, 0};
+                miniMessages m {ctrl_device_delayed_add, std::chrono::system_clock::now() + std::chrono::seconds(2), nullptr, id, 0};
                 sendMessage(&m);
             }
 
@@ -422,7 +422,7 @@ void DynamixelController::run()
                 dxl_reset(id, resetProgrammed, ack);
                 TRACE_INFO(DXL, "Resetting servo #%i (setting: %i)...", id, resetProgrammed);
 
-                miniMessages m {ctrl_device_delayed_add, std::chrono::system_clock::now() + std::chrono::seconds(2), NULL, id, 1};
+                miniMessages m {ctrl_device_delayed_add, std::chrono::system_clock::now() + std::chrono::seconds(2), nullptr, id, 1};
                 sendMessage(&m);
             }
         }

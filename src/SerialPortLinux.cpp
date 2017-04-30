@@ -254,7 +254,7 @@ bool SerialPortLinux::isLocked()
         if (lock)
         {
             char buf[16] = {0};
-            if (std::fgets(buf, sizeof buf, lock) != NULL)
+            if (std::fgets(buf, sizeof buf, lock) != nullptr)
             {
                 std::stringstream ss;
                 ss << std::this_thread::get_id();
@@ -568,7 +568,7 @@ int SerialPortLinux::tx(unsigned char *packet, int packetLength)
 
     if (isOpen() == true)
     {
-        if (packet != NULL && packetLength > 0)
+        if (packet != nullptr && packetLength > 0)
         {
             writeStatus = write(ttyDeviceFileDescriptor, packet, packetLength);
 
@@ -596,7 +596,7 @@ int SerialPortLinux::rx(unsigned char *packet, int packetLength)
 
     if (isOpen() == true)
     {
-        if (packet != NULL && packetLength > 0)
+        if (packet != nullptr && packetLength > 0)
         {
             memset(packet, 0, packetLength);
             readStatus = read(ttyDeviceFileDescriptor, packet, packetLength);
@@ -634,7 +634,7 @@ void SerialPortLinux::flush()
 double SerialPortLinux::getTime()
 {
     struct timeval tv;
-    gettimeofday(&tv, NULL);
+    gettimeofday(&tv, nullptr);
 
     return (static_cast<double>(tv.tv_sec) * 1000.0 + static_cast<double>(tv.tv_usec) / 1000.0);
 }

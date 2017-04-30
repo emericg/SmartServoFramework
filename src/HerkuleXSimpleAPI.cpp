@@ -718,7 +718,7 @@ int HerkuleXSimpleAPI::getSetting(const int id, const int reg_name, int reg_type
         // Device detection
         const int (*cctt)[8] = getRegisterTable(device);
 
-        if (cctt == NULL)
+        if (cctt == nullptr)
         {
             // Using default control table from this SimpleAPI isntance
             cctt = ct;
@@ -806,7 +806,7 @@ int HerkuleXSimpleAPI::setSetting(const int id, const int reg_name, const int re
         // Device detection
         const int (*cctt)[8] = getRegisterTable(device);
 
-        if (cctt == NULL)
+        if (cctt == nullptr)
         {
             // Using default control table from this SimpleAPI isntance
             cctt = ct;
