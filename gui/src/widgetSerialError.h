@@ -29,6 +29,9 @@ namespace Ui {
 class widgetSerialError;
 }
 
+class ControllerAPI;
+class Servo;
+
 class widgetSerialError : public QWidget
 {
     Q_OBJECT
@@ -36,6 +39,15 @@ class widgetSerialError : public QWidget
 public:
     explicit widgetSerialError(QWidget *parent = 0);
     ~widgetSerialError();
+
+    void updateVisibility(const int servoSerie);
+
+    void handleErrors(ControllerAPI *ctrl, Servo *servo,
+                      const int servoSerie, const int servoModel);
+
+signals:
+    void clearButton();
+    void updateButton();
 
 private:
     Ui::widgetSerialError *ui;

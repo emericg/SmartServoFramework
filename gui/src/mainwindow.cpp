@@ -56,10 +56,7 @@ MainWindow::MainWindow(QWidget *parent):
     ui->deviceTreeWidget->setSelectionMode(QAbstractItemView::SingleSelection);
 
     ui->serialPortErrors_label->hide();
-    ui->frame_err_dxl1->hide();
-    ui->frame_err_dxl2->hide();
-    ui->frame_err_hkx->hide();
-    ui->frameStatus->hide();
+    ui->widgetStatus->hide();
 
     // Force custom window size
     setGeometry(0, 0, 1200, 640);
@@ -84,8 +81,8 @@ MainWindow::MainWindow(QWidget *parent):
     QObject::connect(ui->actionAboutQt, SIGNAL(triggered()), this, SLOT(aboutQt()));
     QObject::connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
 
-    //QObject::connect(ui->pushButton_updateStatus, SIGNAL(clicked()), this, SLOT(clearErrors()));
-    QObject::connect(ui->pushButton_clearStatus, SIGNAL(clicked()), this, SLOT(clearErrors()));
+    QObject::connect(ui->widgetStatus, SIGNAL(updateButton()), this, SLOT(clearErrors()));
+    QObject::connect(ui->widgetStatus, SIGNAL(clearButton()), this, SLOT(clearErrors()));
 
     QObject::connect(ui->pushScanSerial, SIGNAL(clicked()), this, SLOT(scanSerialPorts()));
     QObject::connect(ui->pushScanServo, SIGNAL(clicked()), this, SLOT(scanServos()));
@@ -1060,37 +1057,21 @@ void MainWindow::servoSelection()
         if (servoSerie != tableServoSerie && servoModel != tableServoModel)
         {
             generateRegisterTable(servoSerie, servoModel);
+            ui->widgetStatus->updateVisibility(servoSerie);
 
             if (servoSerie >= SERVO_HERKULEX)
             {
-                ui->frame_err_dxl1->hide();
-                ui->frame_err_dxl2->hide();
-                ui->frame_err_hkx->show();
-
                 ui->servoManual_label->setText("<html><head/><body><p><a href=\"http://hovis.co.kr/guide/herkulex_eng.html\"><span style=\" text-decoration: underline; color:#ffffff;\">Download manuals on Dongbu Robot website</span></a></p></body></html>");
                 ui->copyrightNotice_label->setText("<html><head/><body><p>Technical specifications provided by <a href=\"www.dongburobot.com\"><span style=\" text-decoration: underline; color:#0000ff;\">dongburobot.com</span></a> website.</p></body></html>");
             }
             else
             {
-                ui->frame_err_hkx->hide();
-
-                if (servoSerie >= SERVO_XL)
-                {
-                    ui->frame_err_dxl1->hide();
-                    ui->frame_err_dxl2->show();
-                }
-                else
-                {
-                    ui->frame_err_dxl1->show();
-                    ui->frame_err_dxl2->hide();
-                }
-
                 ui->servoManual_label->setText("<html><head/><body><p><a href=\"http://support.robotis.com/en/\"><span style=\" text-decoration: underline; color:#ffffff;\">Consult the online manuals on Robotis website</span></a></p></body></html>");
                 ui->copyrightNotice_label->setText("<html><head/><body><p>Pictures and technical specifications courtesy of <a href=\"www.robotis.com\"><span style=\" text-decoration: underline; color:#0000ff;\">robotis.com</span></a></p></body></html>");
             }
         }
 /*
-        // Clean and generate a status box (if we swhitch brand)
+        // Clean and generate a status box (if we switch brand)
         if ((servoSerie < SERVO_HERKULEX && tableServoSerie >= SERVO_HERKULEX) ||
             (servoSerie >= SERVO_HERKULEX && tableServoSerie < SERVO_HERKULEX) ||
              ui->groupStatus->layout()->children().isEmpty())
@@ -1724,186 +1705,35 @@ void MainWindow::updateRegisterTableDynamixel(Servo *servo_dxl, const int servoS
     }
 }
 
-void MainWindow::errorHandling(Servo *servo, const int servoSerie, const int servoModel)
-{
-    QString css_comm_ok("color: white;\nborder: 1px solid rgb(85, 170, 0);\nbackground: rgba(85, 200, 0, 128);");
-    QString css_error("border: 1px solid rgb(255, 53, 3);\nbackground: rgba(255, 170, 0, 128);\ncolor: white;");
-    QString css_status("border-top: 1px solid rgb(10, 100, 255);\nborder-bottom: 1px solid rgb(10, 100, 255);\nbackground: rgba(255, 248, 191, 128);\ncolor: rgb(246, 130, 9);");
-    QString css_ok_middle("border-top: 1px solid rgb(10, 100, 255);\nborder-bottom: 1px solid rgb(10, 100, 255);\nbackground: rgba(12, 170, 255, 128);\ncolor: white;");
-    QString css_ok_left("border-left: 1px solid rgb(10, 100, 255);\nborder-top: 1px solid rgb(10, 100, 255);\nborder-bottom: 1px solid rgb(10, 100, 255);\nbackground: rgba(12, 170, 255, 128);\ncolor: white;");
-    QString css_ok_right("border-right: 1px solid rgb(10, 100, 255);\nborder-top: 1px solid rgb(10, 100, 255);\nborder-bottom: 1px solid rgb(10, 100, 255);\nbackground: rgba(12, 170, 255, 128);\ncolor: white;");
+/* ************************************************************************** */
 
+void MainWindow::clearErrors()
+{
     ControllerAPI *ctrl = nullptr;
     if (getCurrentController(ctrl) > 0)
     {
-        if (ctrl->getErrorCount() > 0)
-        {
-            ui->serialLinkErrors_label2->setStyleSheet(css_error);
-        }
-        else
-        {
-            ui->serialLinkErrors_label2->setStyleSheet(css_comm_ok);
-        }
+        ctrl->clearErrorCount();
     }
 
-    if (servo)
+    Servo *servo = nullptr;
+    if (getCurrentServo(servo) > 0)
     {
-        int srv_error = servo->getError();
-        if (servoSerie >= SERVO_HERKULEX)
-        {
-            int srv_status = servo->getStatus();
+        servo->clearErrors();
+    }
 
-            if (srv_error & ERRBIT_VOLTAGE)
-                { ui->label_err_vin_2->setStyleSheet(css_error); }
-            else
-                { ui->label_err_vin_2->setStyleSheet(css_ok_left); }
+    ui->widgetStatus->handleErrors(ctrl, servo, 0, 0);
+}
 
-            if (srv_error & ERRBIT_ALLOWED_POT)
-                { ui->label_err_angle_2->setStyleSheet(css_error); }
-            else
-                { ui->label_err_angle_2->setStyleSheet(css_ok_middle); }
-
-            if (srv_error & ERRBIT_OVERHEAT)
-                { ui->label_err_heat_2->setStyleSheet(css_error); }
-            else
-                { ui->label_err_heat_2->setStyleSheet(css_ok_middle); }
-
-            if (srv_status & STATBIT_MOVING)
-                { ui->label_stat_moving->setStyleSheet(css_status); }
-            else
-                { ui->label_stat_moving->setStyleSheet(css_ok_left); }
-
-            if (srv_status & STATBIT_INPOSITION)
-                { ui->label_stat_inpos->setStyleSheet(css_status); }
-            else
-                { ui->label_stat_inpos->setStyleSheet(css_ok_middle); }
-
-            if (srv_error & ERRBIT_INVALID_PKT)
-            {
-                ui->label_err_packet->setStyleSheet(css_status);
-
-                if (srv_status & STATBIT_CHECKSUM_FLAG)
-                    { ui->label_stat_crc->setStyleSheet(css_error); }
-                else
-                    { ui->label_stat_crc->setStyleSheet(css_ok_middle); }
-
-                if (srv_status & STATBIT_UNKWOWN_CMD)
-                    { ui->label_stat_cmd->setStyleSheet(css_error); }
-                else
-                    { ui->label_stat_cmd->setStyleSheet(css_ok_middle); }
-
-                if (srv_status & STATBIT_RANGE)
-                    { ui->label_stat_addr->setStyleSheet(css_error); }
-                else
-                    { ui->label_stat_addr->setStyleSheet(css_ok_middle); }
-
-                if (srv_status & STATBIT_GARBAGE)
-                    { ui->label_stat_gbg->setStyleSheet(css_error); }
-                else
-                    { ui->label_stat_gbg->setStyleSheet(css_ok_middle); }
-            }
-            else
-            { ui->label_err_packet->setStyleSheet(css_ok_middle); }
-
-            if (srv_status & STATBIT_TORQUE_ON)
-                { ui->label_stat_ton->setStyleSheet(css_status); }
-            else
-                { ui->label_stat_ton->setStyleSheet(css_ok_right); }
-
-            if (srv_error & ERRBIT_OVERLOAD)
-                { ui->label_err_overload_2->setStyleSheet(css_error); }
-            else
-                { ui->label_err_overload_2->setStyleSheet(css_ok_middle); }
-
-            if (srv_error & ERRBIT_DRIVER_FAULT)
-                { ui->label_err_driver->setStyleSheet(css_error); }
-            else
-                { ui->label_err_driver->setStyleSheet(css_ok_middle); }
-
-            if (srv_error & ERRBIT_EEP_REG_DIST)
-                { ui->label_err_eep->setStyleSheet(css_error); }
-            else
-                { ui->label_err_eep->setStyleSheet(css_ok_right); }
-        }
-        else
-        {
-            if (servoSerie >= SERVO_XL)
-            {
-                if (srv_error == ERRBIT2_RESULT)
-                    { ui->label_err_res->setStyleSheet(css_error); }
-                else
-                    { ui->label_err_res->setStyleSheet(css_ok_left); }
-
-                if (srv_error == ERRBIT2_INSTRUCTION)
-                    { ui->label_err_cmd_2->setStyleSheet(css_error); }
-                else
-                    { ui->label_err_cmd_2->setStyleSheet(css_ok_middle); }
-
-                if (srv_error == ERRBIT2_CHECKSUM)
-                    { ui->label_err_crc_2->setStyleSheet(css_error); }
-                else
-                    { ui->label_err_crc_2->setStyleSheet(css_ok_middle); }
-
-                if (srv_error == ERRBIT2_DATA_RANGE)
-                    { ui->label_err_range_2->setStyleSheet(css_error); }
-                else
-                    { ui->label_err_range_2->setStyleSheet(css_ok_middle); }
-
-                if (srv_error == ERRBIT2_DATA_LENGTH)
-                    { ui->label_err_length->setStyleSheet(css_error); }
-                else
-                    { ui->label_err_length->setStyleSheet(css_ok_middle); }
-
-                if (srv_error == ERRBIT2_DATA_LIMIT)
-                    { ui->label_err_limit->setStyleSheet(css_error); }
-                else
-                    { ui->label_err_limit->setStyleSheet(css_ok_middle); }
-
-                if (srv_error == ERRBIT2_ACCESS)
-                    { ui->label_err_access->setStyleSheet(css_error); }
-                else
-                    { ui->label_err_access->setStyleSheet(css_ok_right); }
-            }
-            else
-            {
-                if (srv_error & 0x01)
-                    { ui->label_err_vin->setStyleSheet(css_error); }
-                else
-                    { ui->label_err_vin->setStyleSheet(css_ok_right); }
-
-                if (srv_error & 0x02)
-                    { ui->label_err_angle->setStyleSheet(css_error); }
-                else
-                    { ui->label_err_angle->setStyleSheet(css_ok_middle); }
-
-                if (srv_error & 0x04)
-                    { ui->label_err_heat->setStyleSheet(css_error); }
-                else
-                    { ui->label_err_heat->setStyleSheet(css_ok_middle); }
-
-                if (srv_error & 0x08)
-                    { ui->label_err_range->setStyleSheet(css_error); }
-                else
-                    { ui->label_err_range->setStyleSheet(css_ok_middle); }
-
-                if (srv_error & 0x10)
-                    { ui->label_err_crc->setStyleSheet(css_error); }
-                else
-                    { ui->label_err_crc->setStyleSheet(css_ok_middle); }
-
-                if (srv_error & 0x20)
-                    { ui->label_err_overload->setStyleSheet(css_error); }
-                else
-                    { ui->label_err_overload->setStyleSheet(css_ok_middle); }
-
-                if (srv_error & 0x40)
-                    { ui->label_err_cmd->setStyleSheet(css_error); }
-                else
-                    { ui->label_err_cmd->setStyleSheet(css_ok_left); }
-            }
-        }
+void MainWindow::errorHandling(Servo *servo, const int servoSerie, const int servoModel)
+{
+    ControllerAPI *ctrl = nullptr;
+    if (getCurrentController(ctrl) > 0)
+    {
+        ui->widgetStatus->handleErrors(ctrl, servo, servoSerie, servoModel);
     }
 }
+
+/* ************************************************************************** */
 
 int MainWindow::getRegisterNameFromTableIndex(const int servo_serie, const int servo_model, int table_index)
 {
@@ -2517,7 +2347,7 @@ void MainWindow::toggleServoPanel(bool status)
     ui->gpos->setEnabled(status);
 
     // Status box
-    ui->frameStatus->setVisible(status);
+    ui->widgetStatus->setVisible(status);
 
     // Infos
     ui->servoManual_label->setVisible(status);
@@ -2684,25 +2514,6 @@ void MainWindow::refreshServo()
     if (getCurrentServo(s) > 0)
     {
         s->refresh();
-    }
-}
-
-/* ************************************************************************** */
-
-void MainWindow::clearErrors()
-{
-    ControllerAPI *c = nullptr;
-
-    if (getCurrentController(c) > 0)
-    {
-        c->clearErrorCount();
-    }
-
-    Servo *s = nullptr;
-
-    if (getCurrentServo(s) > 0)
-    {
-        s->clearErrors();
     }
 }
 

@@ -31,6 +31,8 @@
 #include <vector>
 #include <QMainWindow>
 
+class QAction;
+class QTimer;
 class QCheckBox;
 class QComboBox;
 class QPushButton;
