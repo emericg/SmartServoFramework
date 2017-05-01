@@ -80,9 +80,9 @@ class MainWindow : public QMainWindow
     //! List of all serial ports (gui elements, controller) handled by the application
     std::vector <SerialPortHelper *> serialPorts;
 
-    int tableServoSerie = 0;
-    int tableServoModel = 0;
-    bool tableAutoSelection = false;
+    int currentServoSerie = 0;
+    int currentServoModel = 0;
+    bool treewidgetAutoSelection = false;
 
     void helpScreen(bool loading);
     void serialScreen();
@@ -93,14 +93,6 @@ class MainWindow : public QMainWindow
     int getCurrentServo(Servo *&servo);
     int getCurrentSerialPort(SerialPortHelper **port);
 
-    int getRegisterNameFromTableIndex(const int servo_serie, const int servo_model, int table_index);
-    int getTableIndex(const int servo_serie, const int servo_model, const int reg_name);
-
-    void generateRegisterTable(const int servo_serie, const int servo_model);
-    void generateRegisterTableDynamixel(const int servo_serie, const int servo_model);
-    void generateRegisterTableHerkuleX(const int servo_serie, const int servo_model);
-
-    void cleanRegisterTable();
     void toggleServoPanel(bool status);
 
     void resizeEvent(QResizeEvent *event);
@@ -111,6 +103,7 @@ private slots:
     void about();
     void aboutQt();
 
+    void treewidgetSelection();
     void serialportSelection();
     void servoSelection();
 
@@ -118,7 +111,6 @@ private slots:
     void updateRegisterTableDynamixel(Servo *servo_dxl, const int servoSerie, const int servoModel);
     void updateRegisterTableHerkuleX(Servo *servo_hkx, const int servoSerie, const int servoModel);
 
-    void errorHandling(Servo *servo, const int servoSerie, const int servoModel);
     void clearErrors();
 
     void resetServo();

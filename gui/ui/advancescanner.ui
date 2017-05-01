@@ -264,12 +264,15 @@
             <property name="alternatingRowColors">
              <bool>true</bool>
             </property>
+            <attribute name="horizontalHeaderStretchLastSection">
+             <bool>true</bool>
+            </attribute>
             <attribute name="verticalHeaderVisible">
              <bool>false</bool>
             </attribute>
             <column>
              <property name="text">
-              <string>Baudrate (Dynamixel v1)</string>
+              <string>Dynamixel v1</string>
              </property>
             </column>
            </widget>
@@ -279,12 +282,15 @@
             <property name="alternatingRowColors">
              <bool>true</bool>
             </property>
+            <attribute name="horizontalHeaderStretchLastSection">
+             <bool>true</bool>
+            </attribute>
             <attribute name="verticalHeaderVisible">
              <bool>false</bool>
             </attribute>
             <column>
              <property name="text">
-              <string>Baudrate (HerkuleX)</string>
+              <string>HerkuleX</string>
              </property>
             </column>
            </widget>
@@ -294,12 +300,15 @@
             <property name="alternatingRowColors">
              <bool>true</bool>
             </property>
+            <attribute name="horizontalHeaderStretchLastSection">
+             <bool>true</bool>
+            </attribute>
             <attribute name="verticalHeaderVisible">
              <bool>false</bool>
             </attribute>
             <column>
              <property name="text">
-              <string>Baudrate (Dynamixel v2)</string>
+              <string>Dynamixel v2</string>
              </property>
             </column>
            </widget>

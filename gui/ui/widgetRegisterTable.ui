@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>widgetRegisterTable</class>
+ <widget class="QWidget" name="widgetRegisterTable">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>600</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <item row="0" column="0">
+    <widget class="QTableWidget" name="tableWidget">
+     <property name="minimumSize">
+      <size>
+       <width>400</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+     <property name="gridStyle">
+      <enum>Qt::DotLine</enum>
+     </property>
+     <row>
+      <property name="text">
+       <string notr="true"/>
+      </property>
+     </row>
+     <row>
+      <property name="text">
+       <string notr="true">0x01</string>
+      </property>
+     </row>
+     <row>
+      <property name="text">
+       <string notr="true">0x04</string>
+      </property>
+     </row>
+     <column>
+      <property name="text">
+       <string>Description</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>ROM Value</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>RAM Value</string>
+      </property>
+     </column>
+     <item row="0" column="0">
+      <property name="text">
+       <string>LEGEND</string>
+      </property>
+      <property name="font">
+       <font>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="textAlignment">
+       <set>AlignCenter</set>
+      </property>
+      <property name="background">
+       <brush brushstyle="SolidPattern">
+        <color alpha="128">
+         <red>85</red>
+         <green>85</green>
+         <blue>127</blue>
+        </color>
+       </brush>
+      </property>
+      <property name="foreground">
+       <brush brushstyle="NoBrush">
+        <color alpha="255">
+         <red>255</red>
+         <green>255</green>
+         <blue>255</blue>
+        </color>
+       </brush>
+      </property>
+      <property name="flags">
+       <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+      </property>
+     </item>
+     <item row="0" column="1">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="background">
+       <brush brushstyle="SolidPattern">
+        <color alpha="128">
+         <red>85</red>
+         <green>85</green>
+         <blue>127</blue>
+        </color>
+       </brush>
+      </property>
+      <property name="flags">
+       <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+      </property>
+     </item>
+     <item row="0" column="2">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="background">
+       <brush brushstyle="SolidPattern">
+        <color alpha="128">
+         <red>85</red>
+         <green>85</green>
+         <blue>127</blue>
+        </color>
+       </brush>
+      </property>
+      <property name="flags">
+       <set>ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+      </property>
+     </item>
+     <item row="1" column="0">
+      <property name="text">
+       <string>Read/Only register</string>
+      </property>
+      <property name="background">
+       <brush brushstyle="SolidPattern">
+        <color alpha="64">
+         <red>255</red>
+         <green>170</green>
+         <blue>0</blue>
+        </color>
+       </brush>
+      </property>
+      <property name="flags">
+       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
+      </property>
+     </item>
+     <item row="1" column="1">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="textAlignment">
+       <set>AlignCenter</set>
+      </property>
+      <property name="background">
+       <brush brushstyle="SolidPattern">
+        <color alpha="64">
+         <red>255</red>
+         <green>170</green>
+         <blue>0</blue>
+        </color>
+       </brush>
+      </property>
+      <property name="flags">
+       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
+      </property>
+     </item>
+     <item row="1" column="2">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="background">
+       <brush brushstyle="SolidPattern">
+        <color alpha="64">
+         <red>255</red>
+         <green>170</green>
+         <blue>0</blue>
+        </color>
+       </brush>
+      </property>
+      <property name="flags">
+       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
+      </property>
+     </item>
+     <item row="2" column="0">
+      <property name="text">
+       <string>Read/Write register</string>
+      </property>
+      <property name="background">
+       <brush brushstyle="SolidPattern">
+        <color alpha="64">
+         <red>85</red>
+         <green>170</green>
+         <blue>0</blue>
+        </color>
+       </brush>
+      </property>
+      <property name="flags">
+       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
+      </property>
+     </item>
+     <item row="2" column="1">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="textAlignment">
+       <set>AlignTrailing|AlignVCenter</set>
+      </property>
+      <property name="background">
+       <brush brushstyle="SolidPattern">
+        <color alpha="64">
+         <red>85</red>
+         <green>170</green>
+         <blue>0</blue>
+        </color>
+       </brush>
+      </property>
+      <property name="flags">
+       <set>ItemIsSelectable|ItemIsEditable|ItemIsUserCheckable|ItemIsEnabled</set>
+      </property>
+     </item>
+     <item row="2" column="2">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="background">
+       <brush brushstyle="SolidPattern">
+        <color alpha="64">
+         <red>85</red>
+         <green>170</green>
+         <blue>0</blue>
+        </color>
+       </brush>
+      </property>
+      <property name="flags">
+       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
+      </property>
+     </item>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

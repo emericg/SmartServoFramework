@@ -78,12 +78,14 @@ SOURCES    += src/main.cpp \
               src/tabSerial.cpp \
               src/advancescanner.cpp \
               src/widgetSerialError.cpp \
+              src/widgetRegisterTable.cpp \
               src/qabout.cpp \
               src/settings.cpp
 
 HEADERS    += src/mainwindow.h \
               src/tabSerial.h \
               src/widgetSerialError.h \
+              src/widgetRegisterTable.h \
               src/advancescanner.h \
               src/qabout.h \
               src/settings.h
@@ -93,7 +95,8 @@ FORMS      += ui/mainwindow.ui \
               ui/qabout.ui \
               ui/settings.ui \
               ui/tabSerial.ui \
-              ui/widgetSerialError.ui
+              ui/widgetSerialError.ui \
+              ui/widgetRegisterTable.ui
 
 RESOURCES  += resources/resources.qrc
 
