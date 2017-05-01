@@ -156,7 +156,10 @@ void MainWindow::helpScreen(bool loading)
     {
         if (ui->tabWidget->tabText(i) == "serial")
             ui->tabWidget->removeTab(i);
-        else if (ui->tabWidget->tabText(i) == "loading")
+    }
+    for (int i = 0; i < ui->tabWidget->count(); i++)
+    {
+        if (ui->tabWidget->tabText(i) == "loading")
             tabalreadythere = true;
     }
     if (tabalreadythere == false)
@@ -198,10 +201,13 @@ void MainWindow::serialScreen()
     bool tabalreadythere = false;
     for (int i = 0; i < ui->tabWidget->count(); i++)
     {
+        if (ui->tabWidget->tabText(i) == "loading")
+            ui->tabWidget->removeTab(i);
+    }
+    for (int i = 0; i < ui->tabWidget->count(); i++)
+    {
         if (ui->tabWidget->tabText(i) == "serial")
             tabalreadythere = true;
-        else if (ui->tabWidget->tabText(i) == "loading")
-            ui->tabWidget->removeTab(i);
     }
     if (tabalreadythere == false)
     {
@@ -219,7 +225,10 @@ void MainWindow::servoScreen()
     {
         if (ui->tabWidget->tabText(i) == "serial")
             ui->tabWidget->removeTab(i);
-        else if (ui->tabWidget->tabText(i) == "loading")
+    }
+    for (int i = 0; i < ui->tabWidget->count(); i++)
+    {
+        if (ui->tabWidget->tabText(i) == "loading")
             ui->tabWidget->removeTab(i);
     }
 

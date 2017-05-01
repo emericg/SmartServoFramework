@@ -2047,7 +2047,7 @@ background: rgba(255, 170, 0, 128);</string>
       </widget>
       <widget class="QWidget" name="tab_serial">
        <attribute name="title">
-        <string>Serial port</string>
+        <string>serial</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_8">
         <item row="0" column="0">
