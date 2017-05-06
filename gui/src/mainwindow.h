@@ -63,18 +63,16 @@ class MainWindow : public QMainWindow
 
     struct SerialPortHelper
     {
-        // GUI elements
-        QCheckBox *deviceName;
-        QComboBox *deviceSettings;
-        QPushButton *deviceScan;
+        QString deviceName_qstr;
+        std::string deviceName_str;
+
+        widgetSerialScan *deviceWidget = nullptr;
 
         // Controller settings
+        ControllerAPI *deviceController = nullptr;
         int deviceControllerProtocol;
         int deviceControllerSpeed;
         int deviceControllerDeviceClass;
-
-        // Controller
-        ControllerAPI *deviceController;
     };
 
     bool scan_running = false;

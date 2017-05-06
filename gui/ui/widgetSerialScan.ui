@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>widgetSerialScan</class>
+ <widget class="QWidget" name="widgetSerialScan">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>260</width>
+    <height>136</height>
+   </rect>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QFrame" name="frame">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <property name="spacing">
+       <number>4</number>
+      </property>
+      <property name="leftMargin">
+       <number>4</number>
+      </property>
+      <property name="topMargin">
+       <number>4</number>
+      </property>
+      <property name="rightMargin">
+       <number>4</number>
+      </property>
+      <property name="bottomMargin">
+       <number>4</number>
+      </property>
+      <item>
+       <layout class="QHBoxLayout" name="layout">
+        <property name="spacing">
+         <number>4</number>
+        </property>
+        <item>
+         <widget class="QCheckBox" name="portName">
+          <property name="text">
+           <string notr="true">/dev/tty0</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="portMode">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>80</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>128</width>
+            <height>24</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="toolTip">
+           <string notr="true"/>
+          </property>
+          <property name="accessibleName">
+           <string notr="true"/>
+          </property>
+          <item>
+           <property name="text">
+            <string>auto</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>manual</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>DXL v1 @ 1 Mb/s</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>DXL v1 @ 115.2 Kb/s</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>DXL v1 @ 57.6 Kb/s</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>DXL v2 @ 1 Mb/s</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>DXL v2 @ 115.2 Kb/s</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>DXL v2 @ 57.6 Kb/s</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>HKX @ 1 Mb/s</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>HKX @ 115.2 Kb/s</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>HKX @ 57.6 Kb/s</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="portScanButton">
+          <property name="minimumSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
+          </property>
+          <property name="accessibleName">
+           <string notr="true"/>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="../resources/resources.qrc">
+            <normaloff>:/icons/icons/emblem-ubuntuone-updating.svg</normaloff>:/icons/icons/emblem-ubuntuone-updating.svg</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
+          </property>
+          <property name="flat">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QWidget" name="wProtocol" native="true">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <property name="spacing">
+          <number>4</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>Protocol:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="comboBox_protocol">
+           <item>
+            <property name="text">
+             <string>Dynamixel v1</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Dynamixel v2</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>HerkuleX</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="wSpeed" native="true">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <property name="spacing">
+          <number>4</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>Speed (baud)</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="spinBox_speed">
+           <property name="minimum">
+            <number>9600</number>
+           </property>
+           <property name="maximum">
+            <number>4500000</number>
+           </property>
+           <property name="value">
+            <number>1000000</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="wRange" native="true">
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <property name="spacing">
+          <number>4</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Scan range:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="rangeStart_spinBox">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>28</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string notr="true"/>
+           </property>
+           <property name="maximum">
+            <number>252</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_id_separator">
+           <property name="maximumSize">
+            <size>
+             <width>32</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string notr="true"/>
+           </property>
+           <property name="accessibleName">
+            <string notr="true"/>
+           </property>
+           <property name="text">
+            <string> &gt; </string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="rangeStop_spinBox">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>28</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string notr="true"/>
+           </property>
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="maximum">
+            <number>253</number>
+           </property>
+           <property name="value">
+            <number>253</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../resources/resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>
