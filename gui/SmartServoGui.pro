@@ -103,6 +103,9 @@ FORMS      += ui/mainwindow.ui \
 
 RESOURCES  += resources/resources.qrc
 
+ICON        = resources/app/icon.icns
+RC_ICONS    = resources/app/icon.ico
+
 # Use "lupdate SmartServoGui.pro" to update translation files
 # Then "lrelease SmartServoGui.pro" to build translated files
 TRANSLATIONS = resources/lang/es.ts resources/lang/fr.ts resources/lang/it.ts

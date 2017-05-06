@@ -11,7 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>About this SmartServoGUI</string>
+   <string>About SmartServoGUI</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../resources/resources.qrc">
+    <normaloff>:/icons/icons/emblem-system.svg</normaloff>:/icons/icons/emblem-system.svg</iconset>
   </property>
   <property name="locale">
    <locale language="English" country="UnitedStates"/>
@@ -40,7 +44,7 @@
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap resource="../resources/resources.qrc">:/icons/icons/dialog-information.svg</pixmap>
+        <pixmap resource="../resources/resources.qrc">:/icons/icons/emblem-system.svg</pixmap>
        </property>
        <property name="scaledContents">
         <bool>true</bool>
