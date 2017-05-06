@@ -62,9 +62,11 @@
  */
 enum ServoProtocol
 {
-    PROTOCOL_DXLv1  = 0,    //!<
-    PROTOCOL_DXLv2  = 1,    //!<
-    PROTOCOL_HKX    = 2,    //!<
+    PROTOCOL_UNKNOWN= 0,    //!<
+
+    PROTOCOL_DXLv1  = 1,    //!<
+    PROTOCOL_DXLv2  = 2,    //!<
+    PROTOCOL_HKX    = 3,    //!<
 };
 
 /*!

@@ -51,7 +51,7 @@ void HerkuleXController::updateInternalSettings()
             ackPolicy = 1;
             maxId = 253;
 
-            protocolVersion = 1;
+            protocolVersion = PROTOCOL_HKX;
             TRACE_INFO(CAPI, "- Using HerkuleX communication protocol");
         }
         else if (servoSerie >= SENSOR_DYNAMIXEL)
@@ -65,11 +65,11 @@ void HerkuleXController::updateInternalSettings()
 
             if (servoSerie >= SERVO_XL)
             {
-                protocolVersion = 2;
+                protocolVersion = PROTOCOL_DXLv2;
             }
             else // SERVO AX to MX
             {
-                protocolVersion = 1;
+                protocolVersion = PROTOCOL_DXLv1;
 
                 if (serialDevice == SERIAL_USB2AX)
                 {
@@ -82,7 +82,7 @@ void HerkuleXController::updateInternalSettings()
                 }
             }
 
-            if (protocolVersion == 2)
+            if (protocolVersion == PROTOCOL_DXLv2)
             {
                 TRACE_INFO(CAPI, "- Using Dynamixel communication protocol version 2");
             }

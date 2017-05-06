@@ -77,12 +77,12 @@ protected:
     Dynamixel();
     virtual ~Dynamixel() = 0;
 
-    int serialDevice = SERIAL_UNKNOWN;//!< Serial device in use (if known) using '::SerialDevices_e' enum. Can affect link speed and latency.
-    int servoSerie = SERVO_MX;   //!< Servo serie using '::ServoDevices_e' enum. Used internally to setup some parameters like maxID, ackPolicy and protocolVersion.
+    int serialDevice = SERIAL_UNKNOWN;      //!< Serial device in use (if known) using '::SerialDevices_e' enum. Can affect link speed and latency.
+    int servoSerie = SERVO_MX;              //!< Servo serie using '::ServoDevices_e' enum. Used internally to setup some parameters like maxID, ackPolicy and protocolVersion.
 
-    int protocolVersion = 1;     //!< Version of the communication protocol in use.
-    int maxId = 252;             //!< Store in the maximum value for servo IDs.
-    int ackPolicy = ACK_REPLY_ALL;//!< Set the status/ack packet return policy using '::AckPolicy_e' (0: No return; 1: Return for READ commands; 2: Return for all commands).
+    int protocolVersion = PROTOCOL_DXLv1;   //!< Version of the communication protocol in use.
+    int maxId = 252;                        //!< Store in the maximum value for servo IDs.
+    int ackPolicy = ACK_REPLY_ALL;          //!< Set the status/ack packet return policy using '::AckPolicy_e' (0: No return; 1: Return for READ commands; 2: Return for all commands).
 
     // Handle serial link
     ////////////////////////////////////////////////////////////////////////////

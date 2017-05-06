@@ -78,12 +78,12 @@ protected:
     HerkuleX();
     virtual ~HerkuleX() = 0;
 
-    int serialDevice= SERIAL_UNKNOWN;//!< Serial device in use (if known) using '::SerialDevices_e' enum. Can affect link speed and latency.
-    int servoSerie = SERVO_DRS;//!< Servo serie using '::ServoDevices_e' enum. Used internally to setup some parameters like maxID, ackPolicy and protocolVersion.
+    int serialDevice= SERIAL_UNKNOWN;   //!< Serial device in use (if known) using '::SerialDevices_e' enum. Can affect link speed and latency.
+    int servoSerie = SERVO_DRS;         //!< Servo serie using '::ServoDevices_e' enum. Used internally to setup some parameters like maxID, ackPolicy and protocolVersion.
 
-    int protocolVersion = 1;        //!< Version of the communication protocol in use.
-    int maxId = 253;                //!< Store in the maximum value for servo IDs.
-    int ackPolicy = ACK_REPLY_READ; //!< Set the status/ack packet return policy using '::AckPolicy_e' (0: No return; 1: Return for READ commands; 2: Return for all commands).
+    int protocolVersion = PROTOCOL_HKX; //!< Version of the communication protocol in use.
+    int maxId = 253;                    //!< Store in the maximum value for servo IDs.
+    int ackPolicy = ACK_REPLY_READ;     //!< Set the status/ack packet return policy using '::AckPolicy_e' (0: No return; 1: Return for READ commands; 2: Return for all commands).
 
     // Handle serial link
     ////////////////////////////////////////////////////////////////////////////

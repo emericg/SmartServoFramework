@@ -591,15 +591,15 @@ void MainWindow::scanServos(QString port_qstring)
                             QString device_txt = "[#" + QString::number(s->getId()) + "]  " + QString::fromStdString(s->getModelString());
                             QTreeWidgetItem *device = new QTreeWidgetItem();
                             port->addChild(device);
-                            if (h->deviceControllerProtocol == 3)
+                            if (h->deviceControllerProtocol == PROTOCOL_HKX)
                             {
                                 device->setIcon(0, QIcon(":/devices/devices/HKX.svg"));
                             }
                             else
                             {
-                                if (h->deviceControllerProtocol == 2)
+                                if (h->deviceControllerProtocol == PROTOCOL_DXLv2)
                                     device->setIcon(0, QIcon(":/devices/devices/DXL.svg")); // DXLv2.svg
-                                else if (h->deviceControllerProtocol == 1)
+                                else if (h->deviceControllerProtocol == PROTOCOL_DXLv1)
                                     device->setIcon(0, QIcon(":/devices/devices/DXL.svg")); // DXLv1.svg
                             }
                             device->setText(0, device_txt);

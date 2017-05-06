@@ -39,7 +39,7 @@ HerkuleXSimpleAPI::HerkuleXSimpleAPI(int servoSerie)
             ackPolicy = 1;
             maxId = 253;
 
-            protocolVersion = 1;
+            protocolVersion = PROTOCOL_HKX;
             servoSerie = SERVO_DRS;
 
             if (servoSerie == SERVO_DRS_0402 || servoSerie == SERVO_DRS_0602)
@@ -64,26 +64,26 @@ HerkuleXSimpleAPI::HerkuleXSimpleAPI(int servoSerie)
 
             if (servoSerie >= SERVO_PRO)
             {
-                protocolVersion = 2;
+                protocolVersion = PROTOCOL_DXLv2;
                 servoSerie = SERVO_PRO;
                 ct = PRO_control_table;
             }
             else if (servoSerie >= SERVO_X)
             {
-                protocolVersion = 2;
+                protocolVersion = PROTOCOL_DXLv2;
                 servoSerie = SERVO_X;
                 ct = XMXH_control_table;
             }
             else if (servoSerie >= SERVO_XL)
             {
-                protocolVersion = 2;
+                protocolVersion = PROTOCOL_DXLv2;
                 servoSerie = SERVO_XL;
                 ct = XL320_control_table;
             }
             else // SERVO AX to MX
             {
                 // We set the servo serie to 'MX' which is the more capable of the Dynamixel v1 serie
-                protocolVersion = 1;
+                protocolVersion = PROTOCOL_DXLv1;
                 servoSerie = SERVO_MX;
                 ct = MX_control_table;
 
@@ -98,7 +98,7 @@ HerkuleXSimpleAPI::HerkuleXSimpleAPI(int servoSerie)
                 }
             }
 
-            if (protocolVersion == 2)
+            if (protocolVersion == PROTOCOL_DXLv2)
             {
                 TRACE_INFO(DAPI, "- Using Dynamixel communication protocol version 2");
             }

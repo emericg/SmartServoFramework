@@ -20,8 +20,9 @@
  * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
-#include "src/tabSerial.h"
+#include "tabSerial.h"
 #include "ui_tabSerial.h"
+#include "../src/Utils.h"
 
 tabSerial::tabSerial(QWidget *parent) :
     QWidget(parent),
@@ -48,11 +49,11 @@ void tabSerial::setInfos(std::string device_path, int baudrate, int protocol, in
         baudrate_qstr = QString::number(baudrate) + " bps";
     ui->label_speed_current->setText(baudrate_qstr);
 
-    if (protocol == 1)
+    if (protocol == PROTOCOL_DXLv1)
         ui->label_protocol_current->setText("Dynamixel v1");
-    else if (protocol == 2)
+    else if (protocol == PROTOCOL_DXLv2)
         ui->label_protocol_current->setText("Dynamixel v2");
-    else if (protocol == 3)
+    else if (protocol == PROTOCOL_HKX)
         ui->label_protocol_current->setText("HerkuleX");
 
     ui->label_device_count->setText(QString::number(device_connected));

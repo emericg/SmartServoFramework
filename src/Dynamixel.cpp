@@ -303,7 +303,7 @@ void Dynamixel::dxl_tx_packet()
     }
 
     // Set a timeout for the response packet
-    if (protocolVersion == 2)
+    if (protocolVersion == PROTOCOL_DXLv2)
     {
         // 11 is the min size of a v2 status packet
         if (txPacket[PKT1_INSTRUCTION] == INST_READ)
@@ -346,8 +346,8 @@ void Dynamixel::dxl_rx_packet()
     }
 
     // Packet sent to a broadcast address? No need to wait for a status packet.
-    if ((protocolVersion == 1 && txPacket[PKT1_ID] == BROADCAST_ID) ||
-        (protocolVersion == 2 && txPacket[PKT2_ID] == BROADCAST_ID))
+    if ((protocolVersion == PROTOCOL_DXLv1 && txPacket[PKT1_ID] == BROADCAST_ID) ||
+        (protocolVersion == PROTOCOL_DXLv2 && txPacket[PKT2_ID] == BROADCAST_ID))
     {
         commStatus = COMM_RXSUCCESS;
         commLock = 0;
@@ -358,7 +358,7 @@ void Dynamixel::dxl_rx_packet()
     if (commStatus == COMM_TXSUCCESS)
     {
         // Min size with protocol v2 is 11, for v1 is 6
-        (protocolVersion == 2) ? rxPacketSize = 11 : rxPacketSize = 6;
+        (protocolVersion == PROTOCOL_DXLv2) ? rxPacketSize = 11 : rxPacketSize = 6;
         rxPacketSizeReceived = 0;
     }
 
@@ -396,7 +396,7 @@ void Dynamixel::dxl_rx_packet()
 
     // Find packet header
     unsigned char i, j;
-    if (protocolVersion == 2)
+    if (protocolVersion == PROTOCOL_DXLv2)
     {
         for (i = 0; i < (rxPacketSizeReceived - 1); i++)
         {
@@ -459,8 +459,8 @@ void Dynamixel::dxl_rx_packet()
     }
 
     // Check ID pairing
-    if (((protocolVersion == 1) && (txPacket[PKT1_ID] != rxPacket[PKT1_ID])) ||
-        ((protocolVersion == 2) && (txPacket[PKT2_ID] != rxPacket[PKT2_ID])))
+    if (((protocolVersion == PROTOCOL_DXLv1) && (txPacket[PKT1_ID] != rxPacket[PKT1_ID])) ||
+        ((protocolVersion == PROTOCOL_DXLv2) && (txPacket[PKT2_ID] != rxPacket[PKT2_ID])))
     {
         commStatus = COMM_RXCORRUPT;
         commLock = 0;
@@ -483,7 +483,7 @@ void Dynamixel::dxl_rx_packet()
     }
 
     // Generate a checksum of the incoming packet
-    if (protocolVersion == 2)
+    if (protocolVersion == PROTOCOL_DXLv2)
     {
         unsigned short crc = dxl2_checksum_packet(rxPacket, rxPacketSize);
 
@@ -538,7 +538,7 @@ void Dynamixel::dxl_txrx_packet(int ack)
     if (ack != ACK_NO_REPLY)
     {
         int cmd = 0;
-        if (protocolVersion == 2)
+        if (protocolVersion == PROTOCOL_DXLv2)
         {
             cmd = txPacket[PKT2_INSTRUCTION];
         }
@@ -587,7 +587,7 @@ void Dynamixel::dxl_set_txpacket_header()
     txPacket[PKT1_HEADER0] = 0xFF;
     txPacket[PKT1_HEADER1] = 0xFF;
 
-    if (protocolVersion == 2)
+    if (protocolVersion == PROTOCOL_DXLv2)
     {
         txPacket[PKT2_HEADER2] = 0xFD;
         txPacket[PKT2_RESERVED] = 0x00;
@@ -596,7 +596,7 @@ void Dynamixel::dxl_set_txpacket_header()
 
 void Dynamixel::dxl_set_txpacket_id(int id)
 {
-    if (protocolVersion == 2)
+    if (protocolVersion == PROTOCOL_DXLv2)
     {
         txPacket[PKT2_ID] = get_lowbyte(id);
     }
@@ -608,7 +608,7 @@ void Dynamixel::dxl_set_txpacket_id(int id)
 
 void Dynamixel::dxl_set_txpacket_length_field(int length)
 {
-    if (protocolVersion == 2)
+    if (protocolVersion == PROTOCOL_DXLv2)
     {
         txPacket[PKT2_LENGTH_L] = get_lowbyte(length);
         txPacket[PKT2_LENGTH_H] = get_highbyte(length);
@@ -621,7 +621,7 @@ void Dynamixel::dxl_set_txpacket_length_field(int length)
 
 void Dynamixel::dxl_set_txpacket_instruction(int instruction)
 {
-    if (protocolVersion == 2)
+    if (protocolVersion == PROTOCOL_DXLv2)
     {
         txPacket[PKT2_INSTRUCTION] = get_lowbyte(instruction);
     }
@@ -633,7 +633,7 @@ void Dynamixel::dxl_set_txpacket_instruction(int instruction)
 
 void Dynamixel::dxl_set_txpacket_parameter(int index, int value)
 {
-    if (protocolVersion == 2)
+    if (protocolVersion == PROTOCOL_DXLv2)
     {
         txPacket[PKT2_PARAMETER+index] = get_lowbyte(value);
     }
@@ -645,7 +645,7 @@ void Dynamixel::dxl_set_txpacket_parameter(int index, int value)
 
 void Dynamixel::dxl_checksum_packet()
 {
-    if (protocolVersion == 2)
+    if (protocolVersion == PROTOCOL_DXLv2)
     {
         // Generate checksum
         int packetSize = dxl_get_txpacket_size();
@@ -696,7 +696,7 @@ int Dynamixel::dxl_get_txpacket_length_field()
 {
     int size = -1;
 
-    if (protocolVersion == 2)
+    if (protocolVersion == PROTOCOL_DXLv2)
     {
         size = make_short_word(txPacket[PKT2_LENGTH_L], txPacket[PKT2_LENGTH_H]);
     }
@@ -712,7 +712,7 @@ int Dynamixel::dxl_get_txpacket_size()
 {
     int size = -1;
 
-    if (protocolVersion == 2)
+    if (protocolVersion == PROTOCOL_DXLv2)
     {
         // There is 7 bytes before the length field
         size = dxl_get_txpacket_length_field() + 7;
@@ -730,7 +730,7 @@ int Dynamixel::dxl_validate_packet()
 {
     int retcode = -1;
 
-    if (protocolVersion == 2)
+    if (protocolVersion == PROTOCOL_DXLv2)
     {
         retcode = dxl2_validate_packet();
     }
@@ -814,7 +814,7 @@ int Dynamixel::dxl_get_rxpacket_error()
 {
     int status = 0;
 
-    if (protocolVersion == 2)
+    if (protocolVersion == PROTOCOL_DXLv2)
     {
         status = (rxPacket[PKT2_ERROR] & 0xFD);
     }
@@ -830,7 +830,7 @@ int Dynamixel::dxl_get_rxpacket_size()
 {
     int size = -1;
 
-    if (protocolVersion == 2)
+    if (protocolVersion == PROTOCOL_DXLv2)
     {
         // There is 7 bytes before the length field
         size = dxl_get_rxpacket_length_field() + 7;
@@ -848,7 +848,7 @@ int Dynamixel::dxl_get_rxpacket_length_field()
 {
     int size = -1;
 
-    if (protocolVersion == 2)
+    if (protocolVersion == PROTOCOL_DXLv2)
     {
         size = make_short_word(rxPacket[PKT2_LENGTH_L], rxPacket[PKT2_LENGTH_H]);
     }
@@ -864,7 +864,7 @@ int Dynamixel::dxl_get_rxpacket_parameter(int index)
 {
     int value = -1;
 
-    if (protocolVersion == 2)
+    if (protocolVersion == PROTOCOL_DXLv2)
     {
         // +1 represent the error field integrated
         value = static_cast<int>(rxPacket[PKT2_PARAMETER + 1 + index]);
@@ -882,7 +882,7 @@ int Dynamixel::dxl_get_last_packet_id()
     int id = 0;
 
     // We want to use the ID of the last status packet received through the serial link
-    if (protocolVersion == 2)
+    if (protocolVersion == PROTOCOL_DXLv2)
     {
         id = (rxPacket[PKT2_ID]);
     }
@@ -894,7 +894,7 @@ int Dynamixel::dxl_get_last_packet_id()
     // In case no status packet has been received (ex: RX timeout) we try to use the ID from the last packet sent
     if (id == 0)
     {
-        if (protocolVersion == 2)
+        if (protocolVersion == PROTOCOL_DXLv2)
         {
             id = (txPacket[PKT2_ID]);
         }
@@ -944,7 +944,7 @@ int Dynamixel::dxl_print_error()
         // Get error bitfield
         error = dxl_get_rxpacket_error();
 
-        if (protocolVersion == 2)
+        if (protocolVersion == PROTOCOL_DXLv2)
         {
             switch (error)
             {
@@ -1032,7 +1032,7 @@ int Dynamixel::dxl_print_error()
 void Dynamixel::printRxPacket()
 {
     printf("Packet recv [ ");
-    if (protocolVersion == 2)
+    if (protocolVersion == PROTOCOL_DXLv2)
     {
         printf("0x%.2X 0x%.2X 0x%.2X 0x%.2X ", rxPacket[0], rxPacket[1], rxPacket[2], rxPacket[3]);
         printf("0x%.2X ", rxPacket[4]);
@@ -1068,7 +1068,7 @@ void Dynamixel::printTxPacket()
     int packetSize = dxl_get_txpacket_size();
 
     printf("Packet sent [ ");
-    if (protocolVersion == 2)
+    if (protocolVersion == PROTOCOL_DXLv2)
     {
         printf("0x%.2X 0x%.2X 0x%.2X 0x%.2X ", txPacket[0], txPacket[1], txPacket[2], txPacket[3]);
         printf("0x%.2X ", txPacket[4]);
@@ -1101,7 +1101,7 @@ bool Dynamixel::dxl_ping(const int id, PingResponse *status, const int ack)
 
     while(commLock);
 
-    if (protocolVersion == 2)
+    if (protocolVersion == PROTOCOL_DXLv2)
     {
         txPacket[PKT2_ID] = get_lowbyte(id);
         txPacket[PKT2_INSTRUCTION] = INST_PING;
@@ -1123,7 +1123,7 @@ bool Dynamixel::dxl_ping(const int id, PingResponse *status, const int ack)
 
         if (status != nullptr)
         {
-            if (protocolVersion == 2)
+            if (protocolVersion == PROTOCOL_DXLv2)
             {
                 status->model_number = make_short_word(rxPacket[PKT2_PARAMETER+1], rxPacket[PKT2_PARAMETER+2]);
                 status->firmware_version = rxPacket[PKT2_PARAMETER+3];
@@ -1144,7 +1144,7 @@ void Dynamixel::dxl_reset(const int id, int setting, const int ack)
 {
     while(commLock);
 
-    if (protocolVersion == 2)
+    if (protocolVersion == PROTOCOL_DXLv2)
     {
         if (setting != RESET_ALL &&
             setting != RESET_ALL_EXCEPT_ID &&
@@ -1173,7 +1173,7 @@ void Dynamixel::dxl_reboot(const int id, const int ack)
 {
     while(commLock);
 
-    if (protocolVersion == 2)
+    if (protocolVersion == PROTOCOL_DXLv2)
     {
         txPacket[PKT2_ID] = get_lowbyte(id);
         txPacket[PKT2_INSTRUCTION] = INST_REBOOT;
@@ -1193,7 +1193,7 @@ void Dynamixel::dxl_action(const int id, const int ack)
 {
     while(commLock);
 
-    if (protocolVersion == 2)
+    if (protocolVersion == PROTOCOL_DXLv2)
     {
         txPacket[PKT2_ID] = get_lowbyte(id);
         txPacket[PKT2_INSTRUCTION] = INST_ACTION;
@@ -1226,7 +1226,7 @@ int Dynamixel::dxl_read_byte(const int id, const int address, const int ack)
     {
         while(commLock);
 
-        if (protocolVersion == 2)
+        if (protocolVersion == PROTOCOL_DXLv2)
         {
             txPacket[PKT2_ID] = get_lowbyte(id);
             txPacket[PKT2_INSTRUCTION] = INST_READ;
@@ -1253,7 +1253,7 @@ int Dynamixel::dxl_read_byte(const int id, const int address, const int ack)
         {
             if (commStatus == COMM_RXSUCCESS)
             {
-                if (protocolVersion == 2)
+                if (protocolVersion == PROTOCOL_DXLv2)
                 {
                     value = static_cast<int>(rxPacket[PKT2_PARAMETER+1]);
                 }
@@ -1276,7 +1276,7 @@ void Dynamixel::dxl_write_byte(const int id, const int address, const int value,
 {
     while(commLock);
 
-    if (protocolVersion == 2)
+    if (protocolVersion == PROTOCOL_DXLv2)
     {
         txPacket[PKT2_ID] = get_lowbyte(id);
         txPacket[PKT2_INSTRUCTION] = INST_WRITE;
@@ -1314,7 +1314,7 @@ int Dynamixel::dxl_read_word(const int id, const int address, const int ack)
     {
         while(commLock);
 
-        if (protocolVersion == 2)
+        if (protocolVersion == PROTOCOL_DXLv2)
         {
             txPacket[PKT2_ID] = get_lowbyte(id);
             txPacket[PKT2_INSTRUCTION] = INST_READ;
@@ -1341,7 +1341,7 @@ int Dynamixel::dxl_read_word(const int id, const int address, const int ack)
         {
             if (commStatus == COMM_RXSUCCESS)
             {
-                if (protocolVersion == 2)
+                if (protocolVersion == PROTOCOL_DXLv2)
                 {
                     value = make_short_word(rxPacket[PKT2_PARAMETER+1], rxPacket[PKT2_PARAMETER+2]);
                 }
@@ -1364,7 +1364,7 @@ void Dynamixel::dxl_write_word(const int id, const int address, const int value,
 {
     while(commLock);
 
-    if (protocolVersion == 2)
+    if (protocolVersion == PROTOCOL_DXLv2)
     {
         txPacket[PKT2_ID] = get_lowbyte(id);
         txPacket[PKT2_INSTRUCTION] = INST_WRITE;

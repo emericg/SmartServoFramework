@@ -52,7 +52,7 @@ void DynamixelController::updateInternalSettings()
             ackPolicy = 1;
             maxId = 253;
 
-            protocolVersion = 1;
+            protocolVersion = PROTOCOL_HKX;
             TRACE_INFO(CAPI, "- Using HerkuleX communication protocol");
         }
         else if (servoSerie >= SENSOR_DYNAMIXEL)
@@ -66,11 +66,11 @@ void DynamixelController::updateInternalSettings()
 
             if (servoSerie >= SERVO_XL)
             {
-                protocolVersion = 2;
+                protocolVersion = PROTOCOL_DXLv2;
             }
             else // SERVO AX to MX
             {
-                protocolVersion = 1;
+                protocolVersion = PROTOCOL_DXLv1;
 
                 if (serialDevice == SERIAL_USB2AX)
                 {
@@ -83,7 +83,7 @@ void DynamixelController::updateInternalSettings()
                 }
             }
 
-            if (protocolVersion == 2)
+            if (protocolVersion == PROTOCOL_DXLv2)
             {
                 TRACE_INFO(CAPI, "- Using Dynamixel communication protocol version 2");
             }
@@ -103,9 +103,9 @@ void DynamixelController::changeProtocolVersion(int protocol)
 {
     if (protocol != protocolVersion)
     {
-        if (protocol == 1)
+        if (protocol == PROTOCOL_DXLv1)
         {
-            protocolVersion = 1;
+            protocolVersion = PROTOCOL_DXLv1;
             if (serialDevice == SERIAL_USB2AX)
             {
                 // The USB2AX device uses the ID 253 for itself
@@ -117,9 +117,9 @@ void DynamixelController::changeProtocolVersion(int protocol)
             }
             TRACE_INFO(CAPI, "- Using Dynamixel communication protocol version 1");
         }
-        else if (protocol == 2)
+        else if (protocol == PROTOCOL_DXLv2)
         {
-            protocolVersion = 2;
+            protocolVersion = PROTOCOL_DXLv2;
             maxId = 252;
             TRACE_INFO(CAPI, "- Using Dynamixel communication protocol version 2");
         }
