@@ -33,14 +33,13 @@ class tabSerial : public QWidget
 {
     Q_OBJECT
 
+    Ui::tabSerial *ui;
+
 public:
     explicit tabSerial(QWidget *parent = 0);
     ~tabSerial();
 
     void setInfos(std::string device_path, int baudrate, int protocol, int device_connected);
-
-private:
-    Ui::tabSerial *ui;
 };
 
 #endif // TABSERIAL_H

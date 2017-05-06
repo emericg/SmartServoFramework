@@ -20,8 +20,8 @@
  * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
-#ifndef WIDGETSERIALERROR_H
-#define WIDGETSERIALERROR_H
+#ifndef WIDGET_SERIAL_ERROR_H
+#define WIDGET_SERIAL_ERROR_H
 
 #include <QWidget>
 
@@ -36,6 +36,8 @@ class widgetSerialError : public QWidget
 {
     Q_OBJECT
 
+    Ui::widgetSerialError *ui;
+
 public:
     explicit widgetSerialError(QWidget *parent = 0);
     ~widgetSerialError();
@@ -48,9 +50,6 @@ public:
 signals:
     void clearButton();
     void updateButton();
-
-private:
-    Ui::widgetSerialError *ui;
 };
 
-#endif // WIDGETSERIALERROR_H
+#endif // WIDGET_SERIAL_ERROR_H

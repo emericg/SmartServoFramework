@@ -20,8 +20,8 @@
  * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
-#ifndef WIDGET_REGISTERTABLE_H
-#define WIDGET_REGISTERTABLE_H
+#ifndef WIDGET_REGISTER_TABLE_H
+#define WIDGET_REGISTER_TABLE_H
 
 #include <QWidget>
 
@@ -34,6 +34,8 @@ class Servo;
 class widgetRegisterTable : public QWidget
 {
     Q_OBJECT
+
+    Ui::widgetRegisterTable *ui;
 
     int tableServoSerieSaved = 0;
     int tableServoModelSaved = 0;
@@ -60,9 +62,6 @@ public slots:
 
 signals:
     void cellChangedSignal(int,int);
-
-private:
-    Ui::widgetRegisterTable *ui;
 };
 
-#endif // WIDGET_REGISTERTABLE_H
+#endif // WIDGET_REGISTER_TABLE_H

@@ -23,19 +23,21 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "advancescanner.h"
-#include "settings.h"
-
-#include "../../src/ControllerAPI.h"
-
-#include <vector>
 #include <QMainWindow>
+#include <vector>
 
 class QAction;
 class QTimer;
 class QCheckBox;
 class QComboBox;
 class QPushButton;
+
+class Settings;
+class AdvanceScanner;
+class widgetSerialScan;
+
+class ControllerAPI;
+class Servo;
 
 namespace Ui {
 class MainWindow;

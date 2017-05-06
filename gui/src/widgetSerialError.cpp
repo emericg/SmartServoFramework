@@ -44,12 +44,7 @@ widgetSerialError::~widgetSerialError()
 {
     delete ui;
 }
-/*
-void widgetSerialError::hide()
-{
-    //
-}
-*/
+
 void widgetSerialError::updateVisibility(const int servoSerie)
 {
     if (servoSerie >= SERVO_HERKULEX)

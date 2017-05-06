@@ -25,6 +25,9 @@
 #include "ui_mainwindow.h"
 #include "qabout.h"
 
+#include "advancescanner.h"
+#include "settings.h"
+
 // SmartServoFramework
 #include "../../src/DynamixelController.h"
 #include "../../src/HerkuleXController.h"
@@ -221,6 +224,7 @@ void MainWindow::serialScreen()
 
 void MainWindow::servoScreen()
 {
+    // Set the QTabBar visible
     ui->tabWidget->findChild<QTabBar *>()->setVisible(true);
     ui->tabWidget->setDocumentMode(false);
 
@@ -369,8 +373,8 @@ void MainWindow::scanSerialPorts(bool autoscan)
     // Indicate that we are no longer scanning
     ui->frameDevices->setEnabled(true);
 
-    // Maybe this scan did not yield any results, to avoid showing a blank interface,
-    // we do not turn off loading screen, only the loading animation
+    // Maybe this scan did not yield any results, to avoid showing a blank
+    // interface, we do not turn off loading screen, only the loading animation
     ui->frame_loading->hide();
 
     // Update UI

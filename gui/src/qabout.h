@@ -33,12 +33,11 @@ class QAbout : public QDialog
 {
     Q_OBJECT
 
+    Ui::QAbout *ui;
+
 public:
     explicit QAbout(QWidget *parent = 0);
     ~QAbout();
-
-private:
-    Ui::QAbout *ui;
 
 private slots:
     void openWebsite();
