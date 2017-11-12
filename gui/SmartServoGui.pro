@@ -35,8 +35,7 @@ unix {
     }
     *clang* {
         message("Using LLVM compiler")
-        QMAKE_CXXFLAGS += -stdlib=libc++ -Wno-unused-parameter -Wno-unused-variable
-        LIBS += -stdlib=libc++
+        QMAKE_CXXFLAGS += -Wno-unused-parameter -Wno-unused-variable
     }
 
     unix:!macx {

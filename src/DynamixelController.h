@@ -40,15 +40,13 @@
  */
 
 /*!
- * \brief The DynamixelController class, part of the ManagedAPI
- *
- * A controller can only be attached to ONE serial link at a time.
+ * \brief The DynamixelController class, part of the ManagedAPI.
+ * \note A controller can only be attached to ONE serial link at a time.
 
  * A "controller" provide a high level API to handle several servos at the same time.
  * A client must instanciate servos objects and register them to a controller.
  * Each servo object is synchronized with its hardware counterpart by the run()
  * method, running in its own backgound thread.
- *
  */
 class DynamixelController: public Dynamixel, public ControllerAPI
 {

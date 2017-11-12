@@ -36,9 +36,8 @@
  */
 
 /*!
- * \brief The HerkuleXController class, part of the ManagedAPI
- *
- * An controller can only be attached to ONE serial link at a time.
+ * \brief The HerkuleXController class, part of the ManagedAPI.
+ * \note A controller can only be attached to ONE serial link at a time.
  */
 class HerkuleXController: public HerkuleX, public ControllerAPI
 {

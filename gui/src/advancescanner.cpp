@@ -398,7 +398,7 @@ void AdvanceScanner::startScan()
                     // For each speed selected
                     if (ui->tableWidget_speed_dxl_v1->item(j, 0)->checkState() == Qt::Checked)
                     {
-                        int baudnum = j+1;
+                        int baudnum = j + 1;
                         int selectionDXLv1[4] = {1, 2, 16, 34};
                         if (ui->tableWidget_speed_dxl_v1->rowCount() == 4)
                         {
@@ -442,12 +442,12 @@ void AdvanceScanner::startScan()
 
                     if (ui->tableWidget_speed_dxl_v2->item(j, 0)->checkState() == Qt::Checked)
                     {
-                        int baudnum = j;
+                        int baudnum = j + 1;
                         int baudrate = dxl_get_baudrate(baudnum, SERVO_X);
 
                         // Initialize a Dynamixel (v2) instance on current serial port
                         DynamixelSimpleAPI dxl(SERVO_X);
-                        if (dxl.connect(port, baudrate) != 0)
+                        if (dxl.connect(port, baudnum) != 0)
                         {
                             // Update progress string
                             ui->label_progress->setText("Dynamixel v2  on  " + QString::fromStdString(port) + "  @  " + QString::number(baudrate));

@@ -34,15 +34,10 @@
 SerialPort::SerialPort(const int serialDevice, const int servoDevices):
     ttyDeviceName("null"),
     ttyDevicePath("null"),
-    ttyDeviceBaudRate(1000000),
     ttyDeviceLatencyTime(LATENCY_TIME_DEFAULT),
-    ttyDeviceLockMode(1),
     ttyDeviceLockPath("null"),
     serialDevice(serialDevice),
-    servoDevices(servoDevices),
-    packetStartTime(0.0),
-    packetWaitTime(0.0),
-    byteTransfertTime(0.0)
+    servoDevices(servoDevices)
 {
     //
 }
@@ -200,8 +195,14 @@ std::vector <std::string> SerialPort::scanSerialPorts()
 #if defined(FEATURE_QTSERIAL)
     if (serialPortsScannerQt(availableSerialPorts) == 0)
 #else
-    // This function is OS specific
-    if (serialPortsScanner(availableSerialPorts) == 0)
+    // Fallback on OS specific functions
+    #if defined(__WIN32) || defined(__WIN64)
+        if (serialPortsScanner(availableSerialPorts) == 0)
+    #elif defined(__APPLE__) || defined(__MACH__)
+        if (serialPortsScanner(availableSerialPorts) == 0)
+    #else // defined(__linux__) || defined(__gnu_linux)
+        if (serialPortsScanner(availableSerialPorts) == 0)
+    #endif
 #endif
     {
         TRACE_WARNING(SERIAL, "No serial ports found during scan...");

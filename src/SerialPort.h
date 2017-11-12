@@ -104,20 +104,20 @@ enum SerialErrorCodes_e
 class SerialPort
 {
 protected:
-    std::string ttyDeviceName;     //!< The name of the serial device computed from ttyDevicePath (ex: "ttyUSB0" or "COM1").
-    std::string ttyDevicePath;     //!< The path to the serial device (ex: "/dev/ttyUSB0" or "\\.\COM1").
-    int ttyDeviceBaudRate;         //!< Speed of the serial link in baud. Default is 1M/s.
-    int ttyDeviceLatencyTime;      //!< The value of this timer (in millisecond) should be carefully choosed depending on your OS and the speed of your serial port implementation.
+    std::string ttyDeviceName;      //!< The name of the serial device computed from ttyDevicePath (ex: "ttyUSB0" or "COM1").
+    std::string ttyDevicePath;      //!< The path to the serial device (ex: "/dev/ttyUSB0" or "\\.\COM1").
+    int ttyDeviceBaudRate = 1000000;//!< Speed of the serial link in baud. Default is 1M/s.
+    int ttyDeviceLatencyTime;       //!< The value of this timer (in millisecond) should be carefully choosed depending on your OS and the speed of your serial port implementation.
 
-    int ttyDeviceLockMode;         //!< Method used to lock a serial device.
-    std::string ttyDeviceLockPath; //!< The path to a "lock file" to lock serial interface against concurrent use by multiple programs.
+    int ttyDeviceLockMode = 1;      //!< Method used to lock a serial device.
+    std::string ttyDeviceLockPath;  //!< The path to a "lock file" to lock serial interface against concurrent use by multiple programs.
 
-    int serialDevice;              //!< Specify (if known) what TTL converter is in use. This information will be used to compute correct baudrate.
-    int servoDevices;              //!< Specify if we use this serial port with Dynamixel or HerkuleX devices (using ::ServoDevices_e values). This information will be used to compute correct baudrate.
+    int serialDevice;               //!< Specify (if known) what TTL converter is in use. This information will be used to compute correct baudrate.
+    int servoDevices;               //!< Specify if we use this serial port with Dynamixel or HerkuleX devices (using ::ServoDevices_e values). This information will be used to compute correct baudrate.
 
-    double packetStartTime;        //!< Time (in millisecond) when the packet was sent.
-    double packetWaitTime;         //!< Time (in millisecond) to wait for an answer.
-    double byteTransfertTime;      //!< Estimation of the time (in millisecond) needed to read/write one byte on the serial link.
+    double packetStartTime = 0.0;   //!< Time (in millisecond) when the packet was sent.
+    double packetWaitTime = 0.0;    //!< Time (in millisecond) to wait for an answer.
+    double byteTransfertTime = 0.0; //!< Estimation of the time (in millisecond) needed to read/write one byte on the serial link.
 
     /*!
      * \brief Get the current time.
@@ -175,6 +175,12 @@ protected:
 
 public:
     /*!
+     * \brief Scan available serial port(s) to find available devices.
+     * \return A vector of available port names.
+     */
+    static std::vector <std::string> scanSerialPorts();
+
+    /*!
      * \brief SerialPort constructor will only init some variables to default values.
      * \param serialDevice: Specify (if known) what TTL converter is in use (using ::SerialDevices_e).
      * \param servoDevices: Specify if we use this serial port with Dynamixel or HerkuleX devices (using ::ServoDevices_e).
@@ -191,12 +197,6 @@ public:
      * \return The string corresponding to the port path autodetected, or "null" if none available.
      */
     std::string autoselectSerialPort();
-
-    /*!
-     * \brief Scan available serial port(s) to find available devices.
-     * \return A vector of available port names.
-     */
-    std::vector <std::string> scanSerialPorts();
 
     /*!
      * \brief Open a serial link at given speed.

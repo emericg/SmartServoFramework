@@ -229,6 +229,13 @@ void MainWindow::servoScreen()
     ui->tabWidget->findChild<QTabBar *>()->setVisible(true);
     ui->tabWidget->setDocumentMode(false);
 
+    // Set tab index, but only if we where on 'help' or 'serial' tabs
+    if (ui->tabWidget->currentIndex() > 3)
+    {
+        ui->tabWidget->setCurrentIndex(0);
+    }
+
+    // Remove help and serial tabs (if present)
     for (int i = 0; i < ui->tabWidget->count(); i++)
     {
         if (ui->tabWidget->tabText(i) == "serial")
@@ -239,9 +246,6 @@ void MainWindow::servoScreen()
         if (ui->tabWidget->tabText(i) == "loading")
             ui->tabWidget->removeTab(i);
     }
-
-    // Set tab index
-    ui->tabWidget->setCurrentIndex(0);
 }
 
 /* ************************************************************************** */

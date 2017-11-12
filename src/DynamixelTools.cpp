@@ -251,6 +251,8 @@ int dxl_get_baudrate(const int baudnum, const int servo_serie)
 {
     int baudRate = 1000000;
 
+    //TRACE_ERROR(TOOLS, "dxl_get_baudrate '%i' bps + %i servo", baudnum, servo_serie);
+
     if (servo_serie == 0)
     {
         TRACE_ERROR(TOOLS, "Unknown servo serie, using default baudrate of: '%i' bps", baudRate);
