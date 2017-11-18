@@ -24,10 +24,10 @@ addons:
       - ubuntu-toolchain-r-test
       - llvm-toolchain-trusty-5.0
     packages:
-      - liblockdev1-dev 
+      - liblockdev1-dev
 
 before_script:
-  - cd minivideo/build/
+  - cd build/
   - cmake --version
   - cmake ..
 
