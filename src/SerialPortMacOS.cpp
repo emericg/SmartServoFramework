@@ -292,7 +292,7 @@ int SerialPortMacOS::convertBaudRateFlag(int baudrate)
                 if ((baudrate > (static_cast<double>(speeds[i]) * 98.5 / 100.0)) && (baudrate < (static_cast<double>(speeds[i]) * 101.5 / 100.0)))
                 {
                     baudRateFlag = rate_to_constant(speeds[i]);
-                    TRACE_WARNING(SERIAL, "convertBaudRateFlag(%i) has been set to B%i (close enough match, ±1.5%)", baudrate, speeds[i]);
+                    TRACE_WARNING(SERIAL, "convertBaudRateFlag(%i) has been set to B%i (close enough match, ±1.5%%)", baudrate, speeds[i]);
                     break;
                 }
             }
@@ -579,7 +579,7 @@ int SerialPortMacOS::openLink()
         // Set serial_struct
         if (ioctl(ttyDeviceFileDescriptor, TIOCSSERIAL, &serinfo) < 0)
         {
-            TRACE_ERROR(SERIAL, "Cannot set serial infos structure with custom baud divisor (%s) to serial port: '%s'", ttyDeviceBaudRate, ttyDevicePath.c_str());
+            TRACE_ERROR(SERIAL, "Cannot set serial infos structure with custom baud divisor (%i) to serial port: '%s'", ttyDeviceBaudRate, ttyDevicePath.c_str());
             goto OPEN_LINK_ERROR;
         }
     }

@@ -758,10 +758,25 @@ void widgetRegisterTable::updateRegisterTableDynamixel(Servo *servo_dxl, const i
     }
     else
     {
-        // Only on MX and XL-320
-        ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_D_GAIN),1)->setText(QString::number(static_cast<ServoMX*>(servo)->getDGain()));
-        ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_I_GAIN),1)->setText(QString::number(static_cast<ServoMX*>(servo)->getIGain()));
-        ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_P_GAIN),1)->setText(QString::number(static_cast<ServoMX*>(servo)->getPGain()));
+        // Only on MX, X and XL-320
+        if (servoSerie == SERVO_MX)
+        {
+            ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_D_GAIN),1)->setText(QString::number(static_cast<ServoMX*>(servo)->getDGain()));
+            ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_I_GAIN),1)->setText(QString::number(static_cast<ServoMX*>(servo)->getIGain()));
+            ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_P_GAIN),1)->setText(QString::number(static_cast<ServoMX*>(servo)->getPGain()));
+        }
+        else if (servoSerie == SERVO_X)
+        {
+            ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_D_GAIN),1)->setText(QString::number(static_cast<ServoX*>(servo)->getDGain()));
+            ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_I_GAIN),1)->setText(QString::number(static_cast<ServoX*>(servo)->getIGain()));
+            ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_P_GAIN),1)->setText(QString::number(static_cast<ServoX*>(servo)->getPGain()));
+        }
+        else if (servoSerie == SERVO_XL)
+        {
+            ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_D_GAIN),1)->setText(QString::number(static_cast<ServoXL*>(servo)->getDGain()));
+            ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_I_GAIN),1)->setText(QString::number(static_cast<ServoXL*>(servo)->getIGain()));
+            ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_P_GAIN),1)->setText(QString::number(static_cast<ServoXL*>(servo)->getPGain()));
+        }
     }
     ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_GOAL_POSITION),1)->setText(QString::number(servo->getGoalPosition()));
     ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_GOAL_SPEED),1)->setText(QString::number(servo->getMovingSpeed()));

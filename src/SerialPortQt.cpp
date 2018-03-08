@@ -153,7 +153,7 @@ int SerialPortQt::convertBaudRateFlag(int baudrate)
                 if ((baudrate > (static_cast<double>(speeds[i]) * 98.5 / 100.0)) && (baudrate < (static_cast<double>(speeds[i]) * 101.5 / 100.0)))
                 {
                     //baudRateFlag = rate_to_constant(speeds[i]);
-                    TRACE_WARNING(SERIAL, "convertBaudRateFlag(%i) has been set to B%i (close enough match, ±1.5%)", baudrate, speeds[i]);
+                    TRACE_WARNING(SERIAL, "convertBaudRateFlag(%i) has been set to B%i (close enough match, ±1.5%%)", baudrate, speeds[i]);
                     break;
                 }
             }
@@ -223,11 +223,11 @@ bool SerialPortQt::removeLock()
         bool force = false;
         if (force == true)
         {
-            status == lock->removeStaleLockFile();
+            status = lock->removeStaleLockFile();
         }
     }
 
-    return true;
+    return status;
 }
 
 int SerialPortQt::openLink()
