@@ -33,6 +33,10 @@
 #include <sys/stat.h>
 #endif
 
+#if defined(_WIN32) || defined(_WIN64)
+#include <direct.h>
+#endif
+
 #include <cstdio>
 #include <iostream>
 #include <fstream>
