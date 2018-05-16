@@ -55,11 +55,14 @@
 #include <vector>
 #include <thread>
 
+#define SCAN_PORT_TYPES 4
+#define SCAN_PORT_COUNT 8
+
 int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
 {
     int retcode = 0;
     std::string portBase = "/dev/tty";
-    std::string portVariations[4] = {"USB", "ACM", "S", ""};
+    std::string portVariations[SCAN_PORT_TYPES] = {"USB", "ACM", "S", ""};
 
     TRACE_INFO(SERIAL, "serialPortsScanner() [Linux variant]");
 
@@ -68,9 +71,9 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
     // Regular Serial ports from motherboards (/dev/ttyS*)
     // Regular Serial ports from motherboards (/dev/tty*)
 
-    for (int i = 0; i < 2; i++)
+    for (int i = 0; i < SCAN_PORT_TYPES; i++)
     {
-        for (int j = 0; j < 8; j++)
+        for (int j = 0; j < SCAN_PORT_COUNT; j++)
         {
             std::string portPath = portBase + portVariations[i] + std::to_string(j);
             std::string portName = "tty" + portVariations[i] + std::to_string(j);
