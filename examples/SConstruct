@@ -91,7 +91,7 @@ env.VariantDir('build/', '../src/')
 src_framework = [env.Object("build/SerialPort.cpp"), env.Object("build/SerialPortLinux.cpp"), env.Object("build/SerialPortMacOS.cpp"), env.Object("build/SerialPortWindows.cpp"),
                  env.Object("build/minitraces.cpp"), env.Object("build/ControlTables.cpp"), env.Object("build/Utils.cpp"), env.Object("build/ControllerAPI.cpp"),env.Object("build/Servo.cpp"),
                  env.Object("build/Dynamixel.cpp"), env.Object("build/DynamixelTools.cpp"), env.Object("build/DynamixelSimpleAPI.cpp"), env.Object("build/DynamixelController.cpp"),
-                 env.Object("build/ServoDynamixel.cpp"), env.Object("build/ServoAX.cpp"), env.Object("build/ServoEX.cpp"), env.Object("build/ServoMX.cpp"), env.Object("build/ServoXL.cpp"), env.Object("build/ServoXL.cpp"),
+                 env.Object("build/ServoDynamixel.cpp"), env.Object("build/ServoAX.cpp"), env.Object("build/ServoEX.cpp"), env.Object("build/ServoMX.cpp"), env.Object("build/ServoXL.cpp"), env.Object("build/ServoX.cpp"),
                  env.Object("build/HerkuleX.cpp"), env.Object("build/HerkuleXTools.cpp"), env.Object("build/HerkuleXSimpleAPI.cpp"), env.Object("build/HerkuleXController.cpp"),
                  env.Object("build/ServoHerkuleX.cpp"), env.Object("build/ServoDRS.cpp")]
 
