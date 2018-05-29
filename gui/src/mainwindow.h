@@ -133,7 +133,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    void autoScan();
+    void autoScanPorts();
 
 public slots:
     void resizeTabWidgetContent();
@@ -144,7 +144,7 @@ public slots:
     void settingsStart();
     void settingsStop();
 
-    void scanSerialPorts(bool autoscan = true);
+    void scanSerialPorts(bool autoScanDevices = true);
     void scanServos();
 
     void refreshSerialPort(QString port_qstring);

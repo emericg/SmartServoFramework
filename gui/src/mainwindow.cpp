@@ -250,19 +250,19 @@ void MainWindow::servoScreen()
 
 /* ************************************************************************** */
 
-void MainWindow::autoScan()
+void MainWindow::autoScanPorts()
 {
-    bool autoscan = true;
+    bool autoScanDevices = true;
 
     if (stw)
     {
-        autoscan = stw->getAutoScan();
+        autoScanDevices = stw->getAutoScan();
     }
 
-    scanSerialPorts(autoscan);
+    scanSerialPorts(autoScanDevices);
 }
 
-void MainWindow::scanSerialPorts(bool autoscan)
+void MainWindow::scanSerialPorts(bool autoScanDevices)
 {
     // Disable scan buttons, indicate we are starting to scan
     ui->frameDevices->setDisabled(true);
@@ -345,7 +345,7 @@ void MainWindow::scanSerialPorts(bool autoscan)
         qApp->processEvents();
 
         // Launch servo scanning?
-        if (autoscan == true)
+        if (autoScanDevices == true)
             scanServos();
         else
             helpScreen(false);

@@ -30,6 +30,11 @@
 
 int main(int argc, char *argv[])
 {
+#ifdef Q_OS_WIN32
+    // High DPI monitor? Use automatic scaling
+    qputenv("QT_AUTO_SCREEN_SCALE_FACTOR", "1");
+#endif
+
     Q_INIT_RESOURCE(resources);
     QApplication app(argc, argv);
 
@@ -47,7 +52,7 @@ int main(int argc, char *argv[])
     }
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-    // High DPI monitor?
+    // High DPI monitor? Use high quality pixmaps
     if (app.devicePixelRatio() > 1)
     {
         app.setAttribute(Qt::AA_UseHighDpiPixmaps);
@@ -58,8 +63,8 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
-    // Start initial "automatic" scanning, if enabled
-    w.autoScan();
+    // Start initial port scanning
+    w.autoScanPorts();
 
     return app.exec();
 }
