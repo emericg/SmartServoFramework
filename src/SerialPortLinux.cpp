@@ -89,13 +89,17 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
 //                if (dev_testlock(portName.c_str()) == 0)
 //#endif
                 {
-                    // Used to validate existing serial port availability (currently disabled)
-                    //struct serial_struct serinfo;
-                    //if (ioctl(fd, TIOCGSERIAL, &serinfo) > -1)
+                    // Used to validate existing serial port availability
+                    struct serial_struct serinfo;
+                    if (ioctl(fd, TIOCGSERIAL, &serinfo) > -1)
                     {
                         TRACE_INFO(SERIAL, "- Scanning for serial port on '%s' > FOUND", portPath.c_str());
                         availableSerialPorts.push_back(portPath);
                         retcode++;
+                    }
+                    else
+                    {
+                        TRACE_INFO(SERIAL, "- Scanning for serial port on '%s' > FOUND, but not available?", portPath.c_str());
                     }
                 }
 //#ifdef LOCK_LOCKDEV
