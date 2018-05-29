@@ -149,30 +149,30 @@ int Dynamixel::serialInitialize(std::string &devicePath, const int baud)
 {
     int status = 0;
 
-    if (serial != nullptr)
+    if (m_serial != nullptr)
     {
         serialTerminate();
     }
 
     // Instanciate a different serial subclass, depending on the current OS
 #if defined(FEATURE_QTSERIAL)
-    //serial = new SerialPortQt(devicePath, baud, serialDevice, servoSerie);
+    serial = new SerialPortQt(devicePath, baud, m_serialDevice, m_servoSerie);
 #else
 #if defined(__linux__) || defined(__gnu_linux)
-    serial = new SerialPortLinux(devicePath, baud, serialDevice, servoSerie);
+    m_serial = new SerialPortLinux(devicePath, baud, m_serialDevice, m_servoSerie);
 #elif defined(_WIN32) || defined(_WIN64)
-    serial = new SerialPortWindows(devicePath, baud, serialDevice, servoSerie);
+    serial = new SerialPortWindows(devicePath, baud, m_serialDevice, m_servoSerie);
 #elif defined(__APPLE__) || defined(__MACH__)
-    serial = new SerialPortMacOS(devicePath, baud, serialDevice, servoSerie);
+    serial = new SerialPortMacOS(devicePath, baud, m_serialDevice, m_servoSerie);
 #else
     #error "No compatible operating system detected!"
 #endif
 #endif
 
     // Initialize the serial link
-    if (serial != nullptr)
+    if (m_serial != nullptr)
     {
-        status = serial->openLink();
+        status = m_serial->openLink();
 
         if (status > 0)
         {
@@ -189,12 +189,12 @@ int Dynamixel::serialInitialize(std::string &devicePath, const int baud)
 
 void Dynamixel::serialTerminate()
 {
-    if (serial != nullptr)
+    if (m_serial != nullptr)
     {
         // Close serial link
-        serial->closeLink();
-        delete serial;
-        serial = nullptr;
+        m_serial->closeLink();
+        delete m_serial;
+        m_serial = nullptr;
 
         // Clear incoming packet?
         rxPacketSize = 0;
@@ -206,9 +206,9 @@ std::string Dynamixel::serialGetCurrentDevice()
 {
     std::string serialName;
 
-    if (serial != nullptr)
+    if (m_serial != nullptr)
     {
-        serialName = serial->getDevicePath();
+        serialName = m_serial->getDevicePath();
     }
     else
     {
@@ -222,13 +222,13 @@ std::vector <std::string> Dynamixel::serialGetAvailableDevices()
 {
     std::vector <std::string> devices;
 
-    if (serial == nullptr)
+    if (m_serial == nullptr)
     {
         TRACE_ERROR(DXL, "Serial interface is not initialized!");
     }
     else
     {
-        devices = serial->scanSerialPorts();
+        devices = m_serial->scanSerialPorts();
     }
 
     return devices;
@@ -236,14 +236,14 @@ std::vector <std::string> Dynamixel::serialGetAvailableDevices()
 
 void Dynamixel::serialSetLatency(int latency)
 {
-    serial->setLatency(latency);
+    m_serial->setLatency(latency);
 }
 
 void Dynamixel::setAckPolicy(int ack)
 {
-    if (ackPolicy >= ACK_NO_REPLY && ack <= ACK_REPLY_ALL)
+    if (m_ackPolicy >= ACK_NO_REPLY && ack <= ACK_REPLY_ALL)
     {
-        ackPolicy = ack;
+        m_ackPolicy = ack;
     }
     else
     {
@@ -253,22 +253,22 @@ void Dynamixel::setAckPolicy(int ack)
 
 void Dynamixel::dxl_tx_packet()
 {
-    if (serial == nullptr)
+    if (m_serial == nullptr)
     {
         TRACE_ERROR(DXL, "Serial interface is not initialized!");
         return;
     }
 
-    if (commLock == 1)
+    if (m_commLock == 1)
     {
         return;
     }
-    commLock = 1;
+    m_commLock = 1;
 
     // Make sure serial link is "clean"
-    if (commStatus == COMM_RXTIMEOUT || commStatus == COMM_RXCORRUPT)
+    if (m_commStatus == COMM_RXTIMEOUT || m_commStatus == COMM_RXCORRUPT)
     {
-        serial->flush();
+        m_serial->flush();
     }
 
     // Make sure the packet is properly formed
@@ -284,9 +284,9 @@ void Dynamixel::dxl_tx_packet()
     unsigned char txPacketSize = dxl_get_txpacket_size();
     unsigned char txPacketSizeSent = 0;
 
-    if (serial != nullptr)
+    if (m_serial != nullptr)
     {
-        txPacketSizeSent = serial->tx(txPacket, txPacketSize);
+        txPacketSizeSent = m_serial->tx(txPacket, txPacketSize);
     }
     else
     {
@@ -297,22 +297,22 @@ void Dynamixel::dxl_tx_packet()
     // Check if we send the whole packet
     if (txPacketSize != txPacketSizeSent)
     {
-        commStatus = COMM_TXFAIL;
-        commLock = 0;
+        m_commStatus = COMM_TXFAIL;
+        m_commLock = 0;
         return;
     }
 
     // Set a timeout for the response packet
-    if (protocolVersion == PROTOCOL_DXLv2)
+    if (m_protocolVersion == PROTOCOL_DXLv2)
     {
         // 11 is the min size of a v2 status packet
         if (txPacket[PKT1_INSTRUCTION] == INST_READ)
         {
-            serial->setTimeOut(11 + make_short_word(txPacket[PKT2_PARAMETER+2], txPacket[PKT2_PARAMETER+3]));
+            m_serial->setTimeOut(11 + make_short_word(txPacket[PKT2_PARAMETER+2], txPacket[PKT2_PARAMETER+3]));
         }
         else
         {
-            serial->setTimeOut(11);
+            m_serial->setTimeOut(11);
         }
     }
     else
@@ -320,70 +320,70 @@ void Dynamixel::dxl_tx_packet()
         // 6 is the min size of a v1 status packet
         if (txPacket[PKT1_INSTRUCTION] == INST_READ)
         {
-            serial->setTimeOut(6 + txPacket[PKT1_PARAMETER+1]);
+            m_serial->setTimeOut(6 + txPacket[PKT1_PARAMETER+1]);
         }
         else
         {
-            serial->setTimeOut(6);
+            m_serial->setTimeOut(6);
         }
     }
 
-    commStatus = COMM_TXSUCCESS;
+    m_commStatus = COMM_TXSUCCESS;
 }
 
 void Dynamixel::dxl_rx_packet()
 {
-    if (serial == nullptr)
+    if (m_serial == nullptr)
     {
         TRACE_ERROR(DXL, "Serial interface is not initialized!");
         return;
     }
 
     // No lock mean no packet has just been sent, so why wait for an answer (?)
-    if (commLock == 0)
+    if (m_commLock == 0)
     {
         return;
     }
 
     // Packet sent to a broadcast address? No need to wait for a status packet.
-    if ((protocolVersion == PROTOCOL_DXLv1 && txPacket[PKT1_ID] == BROADCAST_ID) ||
-        (protocolVersion == PROTOCOL_DXLv2 && txPacket[PKT2_ID] == BROADCAST_ID))
+    if ((m_protocolVersion == PROTOCOL_DXLv1 && txPacket[PKT1_ID] == BROADCAST_ID) ||
+        (m_protocolVersion == PROTOCOL_DXLv2 && txPacket[PKT2_ID] == BROADCAST_ID))
     {
-        commStatus = COMM_RXSUCCESS;
-        commLock = 0;
+        m_commStatus = COMM_RXSUCCESS;
+        m_commLock = 0;
         return;
     }
 
     // Minimum status packet size estimation
-    if (commStatus == COMM_TXSUCCESS)
+    if (m_commStatus == COMM_TXSUCCESS)
     {
         // Min size with protocol v2 is 11, for v1 is 6
-        (protocolVersion == PROTOCOL_DXLv2) ? rxPacketSize = 11 : rxPacketSize = 6;
+        (m_protocolVersion == PROTOCOL_DXLv2) ? rxPacketSize = 11 : rxPacketSize = 6;
         rxPacketSizeReceived = 0;
     }
 
     int nRead = 0;
-    if (serial != nullptr)
+    if (m_serial != nullptr)
     {
         // Receive packet
-        nRead = serial->rx((unsigned char*)&rxPacket[rxPacketSizeReceived], rxPacketSize - rxPacketSizeReceived);
+        nRead = m_serial->rx((unsigned char*)&rxPacket[rxPacketSizeReceived], rxPacketSize - rxPacketSizeReceived);
         rxPacketSizeReceived += nRead;
 
         // Check if we received the whole packet
         if (rxPacketSizeReceived < rxPacketSize)
         {
-            if (serial->checkTimeOut() == 1)
+            if (m_serial->checkTimeOut() == 1)
             {
                 if (rxPacketSizeReceived == 0)
                 {
-                    commStatus = COMM_RXTIMEOUT;
+                    m_commStatus = COMM_RXTIMEOUT;
                 }
                 else
                 {
-                    commStatus = COMM_RXCORRUPT;
+                    m_commStatus = COMM_RXCORRUPT;
                 }
 
-                commLock = 0;
+                m_commLock = 0;
                 return;
             }
         }
@@ -396,7 +396,7 @@ void Dynamixel::dxl_rx_packet()
 
     // Find packet header
     unsigned char i, j;
-    if (protocolVersion == PROTOCOL_DXLv2)
+    if (m_protocolVersion == PROTOCOL_DXLv2)
     {
         for (i = 0; i < (rxPacketSizeReceived - 1); i++)
         {
@@ -454,16 +454,16 @@ void Dynamixel::dxl_rx_packet()
     // Incomplete packet?
     if (rxPacketSizeReceived < rxPacketSize)
     {
-        commStatus = COMM_RXWAITING;
+        m_commStatus = COMM_RXWAITING;
         return;
     }
 
     // Check ID pairing
-    if (((protocolVersion == PROTOCOL_DXLv1) && (txPacket[PKT1_ID] != rxPacket[PKT1_ID])) ||
-        ((protocolVersion == PROTOCOL_DXLv2) && (txPacket[PKT2_ID] != rxPacket[PKT2_ID])))
+    if (((m_protocolVersion == PROTOCOL_DXLv1) && (txPacket[PKT1_ID] != rxPacket[PKT1_ID])) ||
+        ((m_protocolVersion == PROTOCOL_DXLv2) && (txPacket[PKT2_ID] != rxPacket[PKT2_ID])))
     {
-        commStatus = COMM_RXCORRUPT;
-        commLock = 0;
+        m_commStatus = COMM_RXCORRUPT;
+        m_commLock = 0;
         return;
     }
 
@@ -472,18 +472,18 @@ void Dynamixel::dxl_rx_packet()
 
     if (rxPacketSizeReceived < rxPacketSize)
     {
-        nRead = serial->rx(&rxPacket[rxPacketSizeReceived], rxPacketSize - rxPacketSizeReceived);
+        nRead = m_serial->rx(&rxPacket[rxPacketSizeReceived], rxPacketSize - rxPacketSizeReceived);
         rxPacketSizeReceived += nRead;
 
         if (rxPacketSizeReceived < rxPacketSize)
         {
-            commStatus = COMM_RXWAITING;
+            m_commStatus = COMM_RXWAITING;
             return;
         }
     }
 
     // Generate a checksum of the incoming packet
-    if (protocolVersion == PROTOCOL_DXLv2)
+    if (m_protocolVersion == PROTOCOL_DXLv2)
     {
         unsigned short crc = dxl2_checksum_packet(rxPacket, rxPacketSize);
 
@@ -491,8 +491,8 @@ void Dynamixel::dxl_rx_packet()
         if (rxPacket[rxPacketSize - 2] != get_lowbyte(crc) &&
             rxPacket[rxPacketSize - 1] != get_highbyte(crc))
         {
-            commStatus = COMM_RXCORRUPT;
-            commLock = 0;
+            m_commStatus = COMM_RXCORRUPT;
+            m_commLock = 0;
             return;
         }
     }
@@ -503,14 +503,14 @@ void Dynamixel::dxl_rx_packet()
         // Compare it with the internal packet checksum
         if (rxPacket[rxPacketSize - 1] != checksum)
         {
-            commStatus = COMM_RXCORRUPT;
-            commLock = 0;
+            m_commStatus = COMM_RXCORRUPT;
+            m_commLock = 0;
             return;
         }
     }
 
-    commStatus = COMM_RXSUCCESS;
-    commLock = 0;
+    m_commStatus = COMM_RXSUCCESS;
+    m_commLock = 0;
 }
 
 void Dynamixel::dxl_txrx_packet(int ack)
@@ -523,7 +523,7 @@ void Dynamixel::dxl_txrx_packet(int ack)
 
     dxl_tx_packet();
 
-    if (commStatus != COMM_TXSUCCESS)
+    if (m_commStatus != COMM_TXSUCCESS)
     {
         TRACE_ERROR(DXL, "Unable to send TX packet on serial link: '%s'", serialGetCurrentDevice().c_str());
         return;
@@ -532,13 +532,13 @@ void Dynamixel::dxl_txrx_packet(int ack)
     // Depending on 'ackPolicy' value and current instruction, we wait for an answer to the packet we just sent
     if (ack == ACK_DEFAULT)
     {
-        ack = ackPolicy;
+        ack = m_ackPolicy;
     }
 
     if (ack != ACK_NO_REPLY)
     {
         int cmd = 0;
-        if (protocolVersion == PROTOCOL_DXLv2)
+        if (m_protocolVersion == PROTOCOL_DXLv2)
         {
             cmd = txPacket[PKT2_INSTRUCTION];
         }
@@ -553,18 +553,18 @@ void Dynamixel::dxl_txrx_packet(int ack)
             do {
                 dxl_rx_packet();
             }
-            while (commStatus == COMM_RXWAITING);
+            while (m_commStatus == COMM_RXWAITING);
         }
         else
         {
-            commStatus = COMM_RXSUCCESS;
-            commLock = 0;
+            m_commStatus = COMM_RXSUCCESS;
+            m_commLock = 0;
         }
     }
     else
     {
-        commStatus = COMM_RXSUCCESS;
-        commLock = 0;
+        m_commStatus = COMM_RXSUCCESS;
+        m_commLock = 0;
     }
 
 #ifdef PACKET_DEBUGGER
@@ -587,7 +587,7 @@ void Dynamixel::dxl_set_txpacket_header()
     txPacket[PKT1_HEADER0] = 0xFF;
     txPacket[PKT1_HEADER1] = 0xFF;
 
-    if (protocolVersion == PROTOCOL_DXLv2)
+    if (m_protocolVersion == PROTOCOL_DXLv2)
     {
         txPacket[PKT2_HEADER2] = 0xFD;
         txPacket[PKT2_RESERVED] = 0x00;
@@ -596,7 +596,7 @@ void Dynamixel::dxl_set_txpacket_header()
 
 void Dynamixel::dxl_set_txpacket_id(int id)
 {
-    if (protocolVersion == PROTOCOL_DXLv2)
+    if (m_protocolVersion == PROTOCOL_DXLv2)
     {
         txPacket[PKT2_ID] = get_lowbyte(id);
     }
@@ -608,7 +608,7 @@ void Dynamixel::dxl_set_txpacket_id(int id)
 
 void Dynamixel::dxl_set_txpacket_length_field(int length)
 {
-    if (protocolVersion == PROTOCOL_DXLv2)
+    if (m_protocolVersion == PROTOCOL_DXLv2)
     {
         txPacket[PKT2_LENGTH_L] = get_lowbyte(length);
         txPacket[PKT2_LENGTH_H] = get_highbyte(length);
@@ -621,7 +621,7 @@ void Dynamixel::dxl_set_txpacket_length_field(int length)
 
 void Dynamixel::dxl_set_txpacket_instruction(int instruction)
 {
-    if (protocolVersion == PROTOCOL_DXLv2)
+    if (m_protocolVersion == PROTOCOL_DXLv2)
     {
         txPacket[PKT2_INSTRUCTION] = get_lowbyte(instruction);
     }
@@ -633,7 +633,7 @@ void Dynamixel::dxl_set_txpacket_instruction(int instruction)
 
 void Dynamixel::dxl_set_txpacket_parameter(int index, int value)
 {
-    if (protocolVersion == PROTOCOL_DXLv2)
+    if (m_protocolVersion == PROTOCOL_DXLv2)
     {
         txPacket[PKT2_PARAMETER+index] = get_lowbyte(value);
     }
@@ -645,7 +645,7 @@ void Dynamixel::dxl_set_txpacket_parameter(int index, int value)
 
 void Dynamixel::dxl_checksum_packet()
 {
-    if (protocolVersion == PROTOCOL_DXLv2)
+    if (m_protocolVersion == PROTOCOL_DXLv2)
     {
         // Generate checksum
         int packetSize = dxl_get_txpacket_size();
@@ -696,7 +696,7 @@ int Dynamixel::dxl_get_txpacket_length_field()
 {
     int size = -1;
 
-    if (protocolVersion == PROTOCOL_DXLv2)
+    if (m_protocolVersion == PROTOCOL_DXLv2)
     {
         size = make_short_word(txPacket[PKT2_LENGTH_L], txPacket[PKT2_LENGTH_H]);
     }
@@ -712,7 +712,7 @@ int Dynamixel::dxl_get_txpacket_size()
 {
     int size = -1;
 
-    if (protocolVersion == PROTOCOL_DXLv2)
+    if (m_protocolVersion == PROTOCOL_DXLv2)
     {
         // There is 7 bytes before the length field
         size = dxl_get_txpacket_length_field() + 7;
@@ -730,7 +730,7 @@ int Dynamixel::dxl_validate_packet()
 {
     int retcode = -1;
 
-    if (protocolVersion == PROTOCOL_DXLv2)
+    if (m_protocolVersion == PROTOCOL_DXLv2)
     {
         retcode = dxl2_validate_packet();
     }
@@ -749,8 +749,8 @@ int Dynamixel::dxl1_validate_packet()
     // Check if packet size is valid
     if (dxl_get_txpacket_size() > MAX_PACKET_LENGTH_dxlv1)
     {
-        commStatus = COMM_TXERROR;
-        commLock = 0;
+        m_commStatus = COMM_TXERROR;
+        m_commLock = 0;
         retcode = 0;
     }
 
@@ -762,8 +762,8 @@ int Dynamixel::dxl1_validate_packet()
         txPacket[PKT1_INSTRUCTION] != INST_ACTION &&
         txPacket[PKT1_INSTRUCTION] != INST_SYNC_READ)
     {
-        commStatus = COMM_TXERROR;
-        commLock = 0;
+        m_commStatus = COMM_TXERROR;
+        m_commLock = 0;
         retcode = 0;
     }
 
@@ -780,8 +780,8 @@ int Dynamixel::dxl2_validate_packet()
     // Check if packet size is valid
     if (dxl_get_txpacket_size() > MAX_PACKET_LENGTH_dxlv2)
     {
-        commStatus = COMM_TXERROR;
-        commLock = 0;
+        m_commStatus = COMM_TXERROR;
+        m_commLock = 0;
         retcode = 0;
     }
 
@@ -799,8 +799,8 @@ int Dynamixel::dxl2_validate_packet()
         txPacket[PKT2_INSTRUCTION] != INST_BULK_READ &&
         txPacket[PKT2_INSTRUCTION] != INST_BULK_WRITE)
     {
-        commStatus = COMM_TXERROR;
-        commLock = 0;
+        m_commStatus = COMM_TXERROR;
+        m_commLock = 0;
         retcode = 0;
     }
 
@@ -814,7 +814,7 @@ int Dynamixel::dxl_get_rxpacket_error()
 {
     int status = 0;
 
-    if (protocolVersion == PROTOCOL_DXLv2)
+    if (m_protocolVersion == PROTOCOL_DXLv2)
     {
         status = (rxPacket[PKT2_ERROR] & 0xFD);
     }
@@ -830,7 +830,7 @@ int Dynamixel::dxl_get_rxpacket_size()
 {
     int size = -1;
 
-    if (protocolVersion == PROTOCOL_DXLv2)
+    if (m_protocolVersion == PROTOCOL_DXLv2)
     {
         // There is 7 bytes before the length field
         size = dxl_get_rxpacket_length_field() + 7;
@@ -848,7 +848,7 @@ int Dynamixel::dxl_get_rxpacket_length_field()
 {
     int size = -1;
 
-    if (protocolVersion == PROTOCOL_DXLv2)
+    if (m_protocolVersion == PROTOCOL_DXLv2)
     {
         size = make_short_word(rxPacket[PKT2_LENGTH_L], rxPacket[PKT2_LENGTH_H]);
     }
@@ -864,7 +864,7 @@ int Dynamixel::dxl_get_rxpacket_parameter(int index)
 {
     int value = -1;
 
-    if (protocolVersion == PROTOCOL_DXLv2)
+    if (m_protocolVersion == PROTOCOL_DXLv2)
     {
         // +1 represent the error field integrated
         value = static_cast<int>(rxPacket[PKT2_PARAMETER + 1 + index]);
@@ -882,7 +882,7 @@ int Dynamixel::dxl_get_last_packet_id()
     int id = 0;
 
     // We want to use the ID of the last status packet received through the serial link
-    if (protocolVersion == PROTOCOL_DXLv2)
+    if (m_protocolVersion == PROTOCOL_DXLv2)
     {
         id = (rxPacket[PKT2_ID]);
     }
@@ -894,7 +894,7 @@ int Dynamixel::dxl_get_last_packet_id()
     // In case no status packet has been received (ex: RX timeout) we try to use the ID from the last packet sent
     if (id == 0)
     {
-        if (protocolVersion == PROTOCOL_DXLv2)
+        if (m_protocolVersion == PROTOCOL_DXLv2)
         {
             id = (txPacket[PKT2_ID]);
         }
@@ -909,14 +909,14 @@ int Dynamixel::dxl_get_last_packet_id()
 
 int Dynamixel::dxl_get_com_status()
 {
-    return commStatus;
+    return m_commStatus;
 }
 
 int Dynamixel::dxl_get_com_error()
 {
-    if (commStatus < 0)
+    if (m_commStatus < 0)
     {
-        return commStatus;
+        return m_commStatus;
     }
 
     return 0;
@@ -924,7 +924,7 @@ int Dynamixel::dxl_get_com_error()
 
 int Dynamixel::dxl_get_com_error_count()
 {
-    if (commStatus < 0)
+    if (m_commStatus < 0)
     {
         return 1;
     }
@@ -937,14 +937,14 @@ int Dynamixel::dxl_print_error()
     int id = dxl_get_last_packet_id(); // Get device id which produce the error
     int error = 0;
 
-    switch (commStatus)
+    switch (m_commStatus)
     {
     case COMM_TXSUCCESS:
     case COMM_RXSUCCESS:
         // Get error bitfield
         error = dxl_get_rxpacket_error();
 
-        if (protocolVersion == PROTOCOL_DXLv2)
+        if (m_protocolVersion == PROTOCOL_DXLv2)
         {
             switch (error)
             {
@@ -1022,7 +1022,7 @@ int Dynamixel::dxl_print_error()
         break;
 
     default:
-        TRACE_ERROR(DXL, "[#%i] commStatus has an unknown error code: '%i'", id, commStatus);
+        TRACE_ERROR(DXL, "[#%i] commStatus has an unknown error code: '%i'", id, m_commStatus);
         break;
     }
 
@@ -1032,7 +1032,7 @@ int Dynamixel::dxl_print_error()
 void Dynamixel::printRxPacket()
 {
     printf("Packet recv [ ");
-    if (protocolVersion == PROTOCOL_DXLv2)
+    if (m_protocolVersion == PROTOCOL_DXLv2)
     {
         printf("0x%.2X 0x%.2X 0x%.2X 0x%.2X ", rxPacket[0], rxPacket[1], rxPacket[2], rxPacket[3]);
         printf("0x%.2X ", rxPacket[4]);
@@ -1068,7 +1068,7 @@ void Dynamixel::printTxPacket()
     int packetSize = dxl_get_txpacket_size();
 
     printf("Packet sent [ ");
-    if (protocolVersion == PROTOCOL_DXLv2)
+    if (m_protocolVersion == PROTOCOL_DXLv2)
     {
         printf("0x%.2X 0x%.2X 0x%.2X 0x%.2X ", txPacket[0], txPacket[1], txPacket[2], txPacket[3]);
         printf("0x%.2X ", txPacket[4]);
@@ -1099,9 +1099,9 @@ bool Dynamixel::dxl_ping(const int id, PingResponse *status, const int ack)
 {
     bool retcode = false;
 
-    while(commLock);
+    while(m_commLock);
 
-    if (protocolVersion == PROTOCOL_DXLv2)
+    if (m_protocolVersion == PROTOCOL_DXLv2)
     {
         txPacket[PKT2_ID] = get_lowbyte(id);
         txPacket[PKT2_INSTRUCTION] = INST_PING;
@@ -1117,13 +1117,13 @@ bool Dynamixel::dxl_ping(const int id, PingResponse *status, const int ack)
 
     dxl_txrx_packet(ack);
 
-    if (commStatus == COMM_RXSUCCESS)
+    if (m_commStatus == COMM_RXSUCCESS)
     {
         retcode = true;
 
         if (status != nullptr)
         {
-            if (protocolVersion == PROTOCOL_DXLv2)
+            if (m_protocolVersion == PROTOCOL_DXLv2)
             {
                 status->model_number = make_short_word(rxPacket[PKT2_PARAMETER+1], rxPacket[PKT2_PARAMETER+2]);
                 status->firmware_version = rxPacket[PKT2_PARAMETER+3];
@@ -1142,9 +1142,9 @@ bool Dynamixel::dxl_ping(const int id, PingResponse *status, const int ack)
 
 void Dynamixel::dxl_reset(const int id, int setting, const int ack)
 {
-    while(commLock);
+    while(m_commLock);
 
-    if (protocolVersion == PROTOCOL_DXLv2)
+    if (m_protocolVersion == PROTOCOL_DXLv2)
     {
         if (setting != RESET_ALL &&
             setting != RESET_ALL_EXCEPT_ID &&
@@ -1171,9 +1171,9 @@ void Dynamixel::dxl_reset(const int id, int setting, const int ack)
 
 void Dynamixel::dxl_reboot(const int id, const int ack)
 {
-    while(commLock);
+    while(m_commLock);
 
-    if (protocolVersion == PROTOCOL_DXLv2)
+    if (m_protocolVersion == PROTOCOL_DXLv2)
     {
         txPacket[PKT2_ID] = get_lowbyte(id);
         txPacket[PKT2_INSTRUCTION] = INST_REBOOT;
@@ -1184,16 +1184,16 @@ void Dynamixel::dxl_reboot(const int id, const int ack)
     }
     else
     {
-        commStatus = COMM_TXFAIL;
+        m_commStatus = COMM_TXFAIL;
         TRACE_ERROR(DXL, "'Reboot' instruction not available with protocol v1!");
     }
 }
 
 void Dynamixel::dxl_action(const int id, const int ack)
 {
-    while(commLock);
+    while(m_commLock);
 
-    if (protocolVersion == PROTOCOL_DXLv2)
+    if (m_protocolVersion == PROTOCOL_DXLv2)
     {
         txPacket[PKT2_ID] = get_lowbyte(id);
         txPacket[PKT2_INSTRUCTION] = INST_ACTION;
@@ -1224,9 +1224,9 @@ int Dynamixel::dxl_read_byte(const int id, const int address, const int ack)
     }
     else
     {
-        while(commLock);
+        while(m_commLock);
 
-        if (protocolVersion == PROTOCOL_DXLv2)
+        if (m_protocolVersion == PROTOCOL_DXLv2)
         {
             txPacket[PKT2_ID] = get_lowbyte(id);
             txPacket[PKT2_INSTRUCTION] = INST_READ;
@@ -1248,12 +1248,12 @@ int Dynamixel::dxl_read_byte(const int id, const int address, const int ack)
 
         dxl_txrx_packet(ack);
 
-        if ((ack == ACK_DEFAULT && ackPolicy > ACK_NO_REPLY) ||
+        if ((ack == ACK_DEFAULT && m_ackPolicy > ACK_NO_REPLY) ||
             (ack > ACK_NO_REPLY))
         {
-            if (commStatus == COMM_RXSUCCESS)
+            if (m_commStatus == COMM_RXSUCCESS)
             {
-                if (protocolVersion == PROTOCOL_DXLv2)
+                if (m_protocolVersion == PROTOCOL_DXLv2)
                 {
                     value = static_cast<int>(rxPacket[PKT2_PARAMETER+1]);
                 }
@@ -1264,7 +1264,7 @@ int Dynamixel::dxl_read_byte(const int id, const int address, const int ack)
             }
             else
             {
-                value = commStatus;
+                value = m_commStatus;
             }
         }
     }
@@ -1274,9 +1274,9 @@ int Dynamixel::dxl_read_byte(const int id, const int address, const int ack)
 
 void Dynamixel::dxl_write_byte(const int id, const int address, const int value, const int ack)
 {
-    while(commLock);
+    while(m_commLock);
 
-    if (protocolVersion == PROTOCOL_DXLv2)
+    if (m_protocolVersion == PROTOCOL_DXLv2)
     {
         txPacket[PKT2_ID] = get_lowbyte(id);
         txPacket[PKT2_INSTRUCTION] = INST_WRITE;
@@ -1312,9 +1312,9 @@ int Dynamixel::dxl_read_word(const int id, const int address, const int ack)
     }
     else
     {
-        while(commLock);
+        while(m_commLock);
 
-        if (protocolVersion == PROTOCOL_DXLv2)
+        if (m_protocolVersion == PROTOCOL_DXLv2)
         {
             txPacket[PKT2_ID] = get_lowbyte(id);
             txPacket[PKT2_INSTRUCTION] = INST_READ;
@@ -1336,12 +1336,12 @@ int Dynamixel::dxl_read_word(const int id, const int address, const int ack)
 
         dxl_txrx_packet(ack);
 
-        if ((ack == ACK_DEFAULT && ackPolicy > ACK_NO_REPLY) ||
+        if ((ack == ACK_DEFAULT && m_ackPolicy > ACK_NO_REPLY) ||
             (ack > ACK_NO_REPLY))
         {
-            if (commStatus == COMM_RXSUCCESS)
+            if (m_commStatus == COMM_RXSUCCESS)
             {
-                if (protocolVersion == PROTOCOL_DXLv2)
+                if (m_protocolVersion == PROTOCOL_DXLv2)
                 {
                     value = make_short_word(rxPacket[PKT2_PARAMETER+1], rxPacket[PKT2_PARAMETER+2]);
                 }
@@ -1352,7 +1352,7 @@ int Dynamixel::dxl_read_word(const int id, const int address, const int ack)
             }
             else
             {
-                value = commStatus;
+                value = m_commStatus;
             }
         }
     }
@@ -1362,9 +1362,9 @@ int Dynamixel::dxl_read_word(const int id, const int address, const int ack)
 
 void Dynamixel::dxl_write_word(const int id, const int address, const int value, const int ack)
 {
-    while(commLock);
+    while(m_commLock);
 
-    if (protocolVersion == PROTOCOL_DXLv2)
+    if (m_protocolVersion == PROTOCOL_DXLv2)
     {
         txPacket[PKT2_ID] = get_lowbyte(id);
         txPacket[PKT2_INSTRUCTION] = INST_WRITE;

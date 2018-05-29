@@ -94,7 +94,7 @@ void widgetRegisterTable::generateRegisterTable(const int servo_serie, const int
 void widgetRegisterTable::generateRegisterTableHerkuleX(const int servo_serie, const int servo_model)
 {
     int row = 0;
-    const int (*ct)[8] = getRegisterTable(servo_serie, servo_model);
+    const int (*ct)[8] = getRegisterTable(servo_model, servo_serie);
     QFont font("Helvetica", 12, QFont::Bold);
     QColor legend(85, 85, 127, 128);
     QColor grey(200, 200, 200, 100);
@@ -374,7 +374,7 @@ void widgetRegisterTable::generateRegisterTableHerkuleX(const int servo_serie, c
 void widgetRegisterTable::generateRegisterTableDynamixel(const int servo_serie, const int servo_model)
 {
     int row = 0;
-    const int (*ct)[8] = getRegisterTable(servo_serie, servo_model);
+    const int (*ct)[8] = getRegisterTable(servo_model, servo_serie);
     QFont font("Helvetica", 12, QFont::Bold);
     QColor legend(85, 85, 127, 128);
     QColor white(255, 255, 255, 255);

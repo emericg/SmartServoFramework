@@ -96,30 +96,30 @@ int HerkuleX::serialInitialize(std::string &devicePath, const int baud)
 {
     int status = 0;
 
-    if (serial != nullptr)
+    if (m_serial != nullptr)
     {
         serialTerminate();
     }
 
     // Instanciate a different serial subclass, depending on the current OS
 #if defined(FEATURE_QTSERIAL)
-    serial = new SerialPortQt(devicePath, baud, serialDevice, servoSerie);
+    serial = new SerialPortQt(devicePath, baud, m_serialDevice, servoSerie);
 #else
 #if defined(__linux__) || defined(__gnu_linux)
-    serial = new SerialPortLinux(devicePath, baud, serialDevice, servoSerie);
+    m_serial = new SerialPortLinux(devicePath, baud, m_serialDevice, m_servoSerie);
 #elif defined(_WIN32) || defined(_WIN64)
-    serial = new SerialPortWindows(devicePath, baud, serialDevice, servoSerie);
+    serial = new SerialPortWindows(devicePath, baud, m_serialDevice, servoSerie);
 #elif defined(__APPLE__) || defined(__MACH__)
-    serial = new SerialPortMacOS(devicePath, baud, serialDevice, servoSerie);
+    serial = new SerialPortMacOS(devicePath, baud, m_serialDevice, servoSerie);
 #else
     #error "No compatible operating system detected!"
 #endif
 #endif
 
     // Initialize the serial link
-    if (serial != nullptr)
+    if (m_serial != nullptr)
     {
-        status = serial->openLink();
+        status = m_serial->openLink();
 
         if (status > 0)
         {
@@ -136,12 +136,12 @@ int HerkuleX::serialInitialize(std::string &devicePath, const int baud)
 
 void HerkuleX::serialTerminate()
 {
-    if (serial != nullptr)
+    if (m_serial != nullptr)
     {
         // Close serial link
-        serial->closeLink();
-        delete serial;
-        serial = nullptr;
+        m_serial->closeLink();
+        delete m_serial;
+        m_serial = nullptr;
 
         // Clear incoming packet?
         rxPacketSize = 0;
@@ -153,9 +153,9 @@ std::string HerkuleX::serialGetCurrentDevice()
 {
     std::string serialName;
 
-    if (serial != nullptr)
+    if (m_serial != nullptr)
     {
-        serialName = serial->getDevicePath();
+        serialName = m_serial->getDevicePath();
     }
     else
     {
@@ -169,13 +169,13 @@ std::vector <std::string> HerkuleX::serialGetAvailableDevices()
 {
     std::vector <std::string> devices;
 
-    if (serial == nullptr)
+    if (m_serial == nullptr)
     {
         TRACE_ERROR(HKX, "Serial interface is not initialized!");
     }
     else
     {
-        devices = serial->scanSerialPorts();
+        devices = m_serial->scanSerialPorts();
     }
 
     return devices;
@@ -183,14 +183,14 @@ std::vector <std::string> HerkuleX::serialGetAvailableDevices()
 
 void HerkuleX::serialSetLatency(int latency)
 {
-    serial->setLatency(latency);
+    m_serial->setLatency(latency);
 }
 
 void HerkuleX::setAckPolicy(int ack)
 {
-    if (ackPolicy >= ACK_NO_REPLY && ack <= ACK_REPLY_ALL)
+    if (m_ackPolicy >= ACK_NO_REPLY && ack <= ACK_REPLY_ALL)
     {
-        ackPolicy = ack;
+        m_ackPolicy = ack;
     }
     else
     {
@@ -200,22 +200,22 @@ void HerkuleX::setAckPolicy(int ack)
 
 void HerkuleX::hkx_tx_packet()
 {
-    if (serial == nullptr)
+    if (m_serial == nullptr)
     {
         TRACE_ERROR(HKX, "Serial interface is not initialized!");
         return;
     }
 
-    if (commLock == 1)
+    if (m_commLock == 1)
     {
         return;
     }
-    commLock = 1;
+    m_commLock = 1;
 
     // Make sure serial link is "clean"
-    if (commStatus == COMM_RXTIMEOUT || commStatus == COMM_RXCORRUPT)
+    if (m_commStatus == COMM_RXTIMEOUT || m_commStatus == COMM_RXCORRUPT)
     {
-        serial->flush();
+        m_serial->flush();
     }
 
     // Make sure the packet is properly formed
@@ -233,9 +233,9 @@ void HerkuleX::hkx_tx_packet()
     txPacket[PKT_CHECKSUM2] = get_highbyte(crc);
 
     // Send packet
-    if (serial != nullptr)
+    if (m_serial != nullptr)
     {
-        txPacketSizeSent = serial->tx(txPacket, txPacketSize);
+        txPacketSizeSent = m_serial->tx(txPacket, txPacketSize);
     }
     else
     {
@@ -246,8 +246,8 @@ void HerkuleX::hkx_tx_packet()
     // Check if we send the whole packet
     if (txPacketSize != txPacketSizeSent)
     {
-        commStatus = COMM_TXFAIL;
-        commLock = 0;
+        m_commStatus = COMM_TXFAIL;
+        m_commLock = 0;
         return;
     }
 
@@ -255,26 +255,26 @@ void HerkuleX::hkx_tx_packet()
     // Min size of an RX packet is 9
     if (txPacket[PKT_CMD] == CMD_EEP_READ || txPacket[PKT_CMD] == CMD_RAM_READ)
     {
-        serial->setTimeOut(9 + txPacket[PKT_DATA+1]);
+        m_serial->setTimeOut(9 + txPacket[PKT_DATA+1]);
     }
     else
     {
-        serial->setTimeOut(9);
+        m_serial->setTimeOut(9);
     }
 
-    commStatus = COMM_TXSUCCESS;
+    m_commStatus = COMM_TXSUCCESS;
 }
 
 void HerkuleX::hkx_rx_packet()
 {
-    if (serial == nullptr)
+    if (m_serial == nullptr)
     {
         TRACE_ERROR(HKX, "Serial interface is not initialized!");
         return;
     }
 
     // No lock mean no packet has just been sent, so why wait for an answer (?)
-    if (commLock == 0)
+    if (m_commLock == 0)
     {
         return;
     }
@@ -282,13 +282,13 @@ void HerkuleX::hkx_rx_packet()
     // Packet sent to a broadcast address? No need to wait for a status packet.
     if (txPacket[PKT_ID] == BROADCAST_ID)
     {
-        commStatus = COMM_RXSUCCESS;
-        commLock = 0;
+        m_commStatus = COMM_RXSUCCESS;
+        m_commLock = 0;
         return;
     }
 
     // Minimum status packet size estimation
-    if (commStatus == COMM_TXSUCCESS)
+    if (m_commStatus == COMM_TXSUCCESS)
     {
         // Min size of an RX packet is 9
         rxPacketSize = 9;
@@ -297,26 +297,26 @@ void HerkuleX::hkx_rx_packet()
 
     // Receive packet
     int nRead = 0;
-    if (serial != nullptr)
+    if (m_serial != nullptr)
     {
-        nRead = serial->rx((unsigned char*)&rxPacket[rxPacketSizeReceived], rxPacketSize - rxPacketSizeReceived);
+        nRead = m_serial->rx((unsigned char*)&rxPacket[rxPacketSizeReceived], rxPacketSize - rxPacketSizeReceived);
         rxPacketSizeReceived += nRead;
 
         // Check if we received the whole packet
         if (rxPacketSizeReceived < rxPacketSize)
         {
-            if (serial->checkTimeOut() == 1)
+            if (m_serial->checkTimeOut() == 1)
             {
                 if (rxPacketSizeReceived == 0)
                 {
-                    commStatus = COMM_RXTIMEOUT;
+                    m_commStatus = COMM_RXTIMEOUT;
                 }
                 else
                 {
-                    commStatus = COMM_RXCORRUPT;
+                    m_commStatus = COMM_RXCORRUPT;
                 }
 
-                commLock = 0;
+                m_commLock = 0;
                 return;
             }
         }
@@ -356,15 +356,15 @@ void HerkuleX::hkx_rx_packet()
     // Incomplete packet?
     if (rxPacketSizeReceived < rxPacketSize)
     {
-        commStatus = COMM_RXWAITING;
+        m_commStatus = COMM_RXWAITING;
         return;
     }
 
     // Check ID pairing
     if (txPacket[PKT_ID] != rxPacket[PKT_ID])
     {
-        commStatus = COMM_RXCORRUPT;
-        commLock = 0;
+        m_commStatus = COMM_RXCORRUPT;
+        m_commLock = 0;
         return;
     }
 
@@ -373,12 +373,12 @@ void HerkuleX::hkx_rx_packet()
 
     if (rxPacketSizeReceived < rxPacketSize)
     {
-        nRead = serial->rx(&rxPacket[rxPacketSizeReceived], rxPacketSize - rxPacketSizeReceived);
+        nRead = m_serial->rx(&rxPacket[rxPacketSizeReceived], rxPacketSize - rxPacketSizeReceived);
         rxPacketSizeReceived += nRead;
 
         if (rxPacketSizeReceived < rxPacketSize)
         {
-            commStatus = COMM_RXWAITING;
+            m_commStatus = COMM_RXWAITING;
             return;
         }
     }
@@ -391,14 +391,14 @@ void HerkuleX::hkx_rx_packet()
         if (rxPacket[PKT_CHECKSUM1] != get_lowbyte(checksum) &&
             rxPacket[PKT_CHECKSUM2] != get_highbyte(checksum))
         {
-            commStatus = COMM_RXCORRUPT;
-            commLock = 0;
+            m_commStatus = COMM_RXCORRUPT;
+            m_commLock = 0;
             return;
         }
     }
 
-    commStatus = COMM_RXSUCCESS;
-    commLock = 0;
+    m_commStatus = COMM_RXSUCCESS;
+    m_commLock = 0;
 }
 
 void HerkuleX::hkx_txrx_packet(int ack)
@@ -411,7 +411,7 @@ void HerkuleX::hkx_txrx_packet(int ack)
 
     hkx_tx_packet();
 
-    if (commStatus != COMM_TXSUCCESS)
+    if (m_commStatus != COMM_TXSUCCESS)
     {
         TRACE_ERROR(HKX, "Unable to send TX packet on serial link: '%s'", serialGetCurrentDevice().c_str());
         return;
@@ -420,7 +420,7 @@ void HerkuleX::hkx_txrx_packet(int ack)
     // Depending on 'ackPolicy' value and current instruction, we wait for an answer to the packet we just sent
     if (ack == ACK_DEFAULT)
     {
-        ack = ackPolicy;
+        ack = m_ackPolicy;
     }
 
     if (ack != ACK_NO_REPLY)
@@ -433,18 +433,18 @@ void HerkuleX::hkx_txrx_packet(int ack)
             do {
                 hkx_rx_packet();
             }
-            while (commStatus == COMM_RXWAITING);
+            while (m_commStatus == COMM_RXWAITING);
         }
         else
         {
-            commStatus = COMM_RXSUCCESS;
-            commLock = 0;
+            m_commStatus = COMM_RXSUCCESS;
+            m_commLock = 0;
         }
     }
     else
     {
-        commStatus = COMM_RXSUCCESS;
-        commLock = 0;
+        m_commStatus = COMM_RXSUCCESS;
+        m_commLock = 0;
     }
 
 #ifdef PACKET_DEBUGGER
@@ -532,8 +532,8 @@ int HerkuleX::hkx_validate_packet()
     // Check if packet size is valid
     if (hkx_get_txpacket_size() > MAX_PACKET_LENGTH_hkx)
     {
-        commStatus = COMM_TXERROR;
-        commLock = 0;
+        m_commStatus = COMM_TXERROR;
+        m_commLock = 0;
         retcode = 0;
     }
 
@@ -548,8 +548,8 @@ int HerkuleX::hkx_validate_packet()
         txPacket[PKT_CMD] != CMD_ROLLBACK &&
         txPacket[PKT_CMD] != CMD_REBOOT)
     {
-        commStatus = COMM_TXERROR;
-        commLock = 0;
+        m_commStatus = COMM_TXERROR;
+        m_commLock = 0;
         retcode = 0;
     }
 
@@ -604,14 +604,14 @@ int HerkuleX::hkx_get_last_packet_id()
 
 int HerkuleX::hkx_get_com_status()
 {
-    return commStatus;
+    return m_commStatus;
 }
 
 int HerkuleX::hkx_get_com_error()
 {
-    if (commStatus < 0)
+    if (m_commStatus < 0)
     {
-        return commStatus;
+        return m_commStatus;
     }
 
     return 0;
@@ -619,7 +619,7 @@ int HerkuleX::hkx_get_com_error()
 
 int HerkuleX::hkx_get_com_error_count()
 {
-    if (commStatus < 0)
+    if (m_commStatus < 0)
     {
         return 1;
     }
@@ -633,7 +633,7 @@ int HerkuleX::hkx_print_error()
     int error = 0;
     int status = 0;
 
-    switch (commStatus)
+    switch (m_commStatus)
     {
     case COMM_RXSUCCESS:
     case COMM_TXSUCCESS:
@@ -699,7 +699,7 @@ int HerkuleX::hkx_print_error()
         break;
 
     default:
-        TRACE_ERROR(HKX, "[#%i] commStatus has an unknown error code: '%i'", id, commStatus);
+        TRACE_ERROR(HKX, "[#%i] commStatus has an unknown error code: '%i'", id, m_commStatus);
         break;
     }
 
@@ -712,7 +712,7 @@ int HerkuleX::hkx_print_status()
     int error = 0;
     int status = 0;
 
-    switch (commStatus)
+    switch (m_commStatus)
     {
     case COMM_RXSUCCESS:
     case COMM_TXSUCCESS:
@@ -789,7 +789,7 @@ bool HerkuleX::hkx_ping(const int id, PingResponse *status, const int ack)
 {
     bool retcode = false;
 
-    while(commLock);
+    while(m_commLock);
 
     // We do not use a READ instruction directly instead of STAT, because it may
     // not receive an answer depending on ack policy value.
@@ -800,7 +800,7 @@ bool HerkuleX::hkx_ping(const int id, PingResponse *status, const int ack)
 
     hkx_txrx_packet(ack);
 
-    if (commStatus == COMM_RXSUCCESS)
+    if (m_commStatus == COMM_RXSUCCESS)
     {
         retcode = true;
 
@@ -817,7 +817,7 @@ bool HerkuleX::hkx_ping(const int id, PingResponse *status, const int ack)
 
 void HerkuleX::hkx_reset(const int id, int setting, const int ack)
 {
-    while(commLock);
+    while(m_commLock);
 
     txPacket[PKT_LENGTH] = 9;
     txPacket[PKT_ID] = get_lowbyte(id);
@@ -843,7 +843,7 @@ void HerkuleX::hkx_reset(const int id, int setting, const int ack)
 
 void HerkuleX::hkx_reboot(const int id, const int ack)
 {
-    while(commLock);
+    while(m_commLock);
 
     txPacket[PKT_LENGTH] = 7;
     txPacket[PKT_ID] = get_lowbyte(id);
@@ -866,7 +866,7 @@ int HerkuleX::hkx_read_byte(const int id, const int address, const int register_
     }
     else
     {
-        while(commLock);
+        while(m_commLock);
 
         txPacket[PKT_LENGTH] = 7 + 2;
         txPacket[PKT_ID] = get_lowbyte(id);
@@ -881,16 +881,16 @@ int HerkuleX::hkx_read_byte(const int id, const int address, const int register_
 
     hkx_txrx_packet(ack);
 
-    if ((ack == ACK_DEFAULT && ackPolicy > ACK_NO_REPLY) ||
+    if ((ack == ACK_DEFAULT && m_ackPolicy > ACK_NO_REPLY) ||
         (ack > ACK_NO_REPLY))
     {
-        if (commStatus == COMM_RXSUCCESS)
+        if (m_commStatus == COMM_RXSUCCESS)
         {
             value = static_cast<int>(rxPacket[PKT_DATA+2]);
         }
         else
         {
-            value = commStatus;
+            value = m_commStatus;
         }
     }
 
@@ -899,7 +899,7 @@ int HerkuleX::hkx_read_byte(const int id, const int address, const int register_
 
 void HerkuleX::hkx_write_byte(const int id, const int address, const int value, const int register_type, const int ack)
 {
-    while(commLock);
+    while(m_commLock);
 
     txPacket[PKT_LENGTH] = 7 + 3;
     txPacket[PKT_ID] = get_lowbyte(id);
@@ -929,7 +929,7 @@ int HerkuleX::hkx_read_word(const int id, const int address, const int register_
     }
     else
     {
-        while(commLock);
+        while(m_commLock);
 
         txPacket[PKT_LENGTH] = 7 + 2;
         txPacket[PKT_ID] = get_lowbyte(id);
@@ -943,16 +943,16 @@ int HerkuleX::hkx_read_word(const int id, const int address, const int register_
 
         hkx_txrx_packet(ack);
 
-        if ((ack == ACK_DEFAULT && ackPolicy > ACK_NO_REPLY) ||
+        if ((ack == ACK_DEFAULT && m_ackPolicy > ACK_NO_REPLY) ||
             (ack > ACK_NO_REPLY))
         {
-            if (commStatus == COMM_RXSUCCESS)
+            if (m_commStatus == COMM_RXSUCCESS)
             {
                 value = make_short_word(rxPacket[PKT_DATA+2], rxPacket[PKT_DATA+3]);
             }
             else
             {
-                value = commStatus;
+                value = m_commStatus;
             }
         }
     }
@@ -962,7 +962,7 @@ int HerkuleX::hkx_read_word(const int id, const int address, const int register_
 
 void HerkuleX::hkx_write_word(const int id, const int address, const int value, const int register_type, const int ack)
 {
-    while(commLock);
+    while(m_commLock);
 
     txPacket[PKT_LENGTH] = 7 + 4;
     txPacket[PKT_ID] = get_lowbyte(id);
@@ -983,7 +983,7 @@ void HerkuleX::hkx_i_jog(const int id, const int mode, const int value, const in
 {
     int JOG = 0;
     int SET = 0;
-    while(commLock);
+    while(m_commLock);
 
     txPacket[PKT_LENGTH] = 7 + 5;
     txPacket[PKT_ID] = get_lowbyte(id);
@@ -1022,7 +1022,7 @@ void HerkuleX::hkx_s_jog(const int id, const int mode, const int value, const in
 {
     int JOG = 0;
     int SET = 0;
-    while(commLock);
+    while(m_commLock);
 
     txPacket[PKT_LENGTH] = 7 + 5;
     txPacket[PKT_ID] = get_lowbyte(id);

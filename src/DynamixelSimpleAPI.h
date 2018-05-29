@@ -188,8 +188,8 @@ public:
     int setLock(const int id, const int lock);
 
     // General purpose getters/setters
-    int getSetting(const int id, const int reg_name, int reg_type = REGISTER_AUTO, const int device = SERVO_UNKNOWN);
-    int setSetting(const int id, const int reg_name, const int reg_value, int reg_type = REGISTER_AUTO, const int device = SERVO_UNKNOWN);
+    int getSetting(const int id, const int reg_name, int reg_type = REGISTER_AUTO, int device = SERVO_UNKNOWN);
+    int setSetting(const int id, const int reg_name, const int reg_value, int reg_type = REGISTER_AUTO, int device = SERVO_UNKNOWN);
 };
 
 /** @}*/

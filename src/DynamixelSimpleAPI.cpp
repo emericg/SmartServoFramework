@@ -36,11 +36,11 @@ DynamixelSimpleAPI::DynamixelSimpleAPI(int servoSerie)
     {
         if (servoSerie >= SERVO_HERKULEX)
         {
-            ackPolicy = 1;
-            maxId = 253;
+            m_ackPolicy = 1;
+            m_maxId = 253;
 
-            protocolVersion = PROTOCOL_HKX;
-            servoSerie = SERVO_DRS;
+            m_protocolVersion = PROTOCOL_HKX;
+            m_servoSerie = SERVO_DRS;
 
             if (servoSerie == SERVO_DRS_0402 || servoSerie == SERVO_DRS_0602)
             {
@@ -59,46 +59,46 @@ DynamixelSimpleAPI::DynamixelSimpleAPI(int servoSerie)
         }
         else //if (servos >= SERVO_DYNAMIXEL)
         {
-            ackPolicy = 2;
-            maxId = 252;
+            m_ackPolicy = 2;
+            m_maxId = 252;
 
             if (servoSerie >= SERVO_PRO)
             {
-                protocolVersion = PROTOCOL_DXLv2;
-                servoSerie = SERVO_PRO;
+                m_protocolVersion = PROTOCOL_DXLv2;
+                m_servoSerie = SERVO_PRO;
                 ct = PRO_control_table;
             }
             else if (servoSerie >= SERVO_X)
             {
-                protocolVersion = PROTOCOL_DXLv2;
-                servoSerie = SERVO_X;
+                m_protocolVersion = PROTOCOL_DXLv2;
+                m_servoSerie = SERVO_X;
                 ct = XMXH_control_table;
             }
             else if (servoSerie >= SERVO_XL)
             {
-                protocolVersion = PROTOCOL_DXLv2;
-                servoSerie = SERVO_XL;
+                m_protocolVersion = PROTOCOL_DXLv2;
+                m_servoSerie = SERVO_XL;
                 ct = XL320_control_table;
             }
             else // SERVO AX to MX
             {
                 // We set the servo serie to 'MX' which is the more capable of the Dynamixel v1 serie
-                protocolVersion = PROTOCOL_DXLv1;
-                servoSerie = SERVO_MX;
+                m_protocolVersion = PROTOCOL_DXLv1;
+                m_servoSerie = SERVO_MX;
                 ct = MX_control_table;
 
-                if (serialDevice == SERIAL_USB2AX)
+                if (m_serialDevice == SERIAL_USB2AX)
                 {
                     // The USB2AX device uses the ID 253 for itself
-                    maxId = 252;
+                    m_maxId = 252;
                 }
                 else
                 {
-                    maxId = 253;
+                    m_maxId = 253;
                 }
             }
 
-            if (protocolVersion == PROTOCOL_DXLv2)
+            if (m_protocolVersion == PROTOCOL_DXLv2)
             {
                 TRACE_INFO(DAPI, "- Using Dynamixel communication protocol version 2");
             }
@@ -121,7 +121,7 @@ DynamixelSimpleAPI::~DynamixelSimpleAPI()
 
 int DynamixelSimpleAPI::connect(std::string &devicePath, const int baud, const int serialDevice)
 {
-    this->serialDevice = serialDevice;
+    m_serialDevice = serialDevice;
     return serialInitialize(devicePath, baud);
 }
 
@@ -134,7 +134,7 @@ bool DynamixelSimpleAPI::checkId(const int id, const bool broadcast)
 {
     bool status = false;
 
-    if ((id >= 0 && id <= maxId) ||
+    if ((id >= 0 && id <= m_maxId) ||
         (id == BROADCAST_ID && broadcast == true))
     {
         status = true;
@@ -147,7 +147,7 @@ bool DynamixelSimpleAPI::checkId(const int id, const bool broadcast)
         }
         else
         {
-            TRACE_ERROR(DAPI, "Error: ID '%i' is out of [0;%i] boundaries.", id, maxId);
+            TRACE_ERROR(DAPI, "Error: ID '%i' is out of [0;%i] boundaries.", id, m_maxId);
         }
     }
 
@@ -157,11 +157,11 @@ bool DynamixelSimpleAPI::checkId(const int id, const bool broadcast)
 std::vector <int> DynamixelSimpleAPI::servoScan(int start, int stop)
 {
     // Check start/stop boundaries
-    if (start < 0 || start > (maxId - 1))
+    if (start < 0 || start > (m_maxId - 1))
         start = 0;
 
-    if (stop < 1 || stop > maxId || stop < start)
-        stop = maxId;
+    if (stop < 1 || stop > m_maxId || stop < start)
+        stop = m_maxId;
 
     TRACE_INFO(DAPI, "> Scanning for Dynamixel devices on '%s'... Range is [%i,%i]",
                serialGetCurrentDevice().c_str(), start, stop);
@@ -277,7 +277,7 @@ int DynamixelSimpleAPI::changeId(const int id, const int new_id)
     if (checkId(id, false) == true)
     {
         // Check 'new' ID // Valid IDs are in range [0:maxId]
-        if ((new_id >= 0) && (new_id <= maxId))
+        if ((new_id >= 0) && (new_id <= m_maxId))
         {
             // If the ping get a response, then we already have a servo on the new id
             dxl_ping(new_id);
@@ -521,7 +521,7 @@ int DynamixelSimpleAPI::setLed(const int id, int value, const int color)
         // Normalize value
         if (value >= 1)
         {
-            (servoSerie == SERVO_XL) ? value = color : value = 1;
+            (m_servoSerie == SERVO_XL) ? value = color : value = 1;
         }
         else
         {
@@ -858,13 +858,15 @@ bool DynamixelSimpleAPI::isMoving(const int id)
     return moving;
 }
 
-int DynamixelSimpleAPI::getSetting(const int id, const int reg_name, int reg_type, const int device)
+int DynamixelSimpleAPI::getSetting(const int id, const int reg_name, int reg_type, int device)
 {
     int value = -1;
 
     if (checkId(id) == true)
     {
         // Device detection
+        if (device == SERVO_UNKNOWN)
+            device = m_servoSerie;
         const int (*cctt)[8] = getRegisterTable(device);
 
         if (cctt == nullptr)
@@ -913,13 +915,15 @@ int DynamixelSimpleAPI::getSetting(const int id, const int reg_name, int reg_typ
     return value;
 }
 
-int DynamixelSimpleAPI::setSetting(const int id, const int reg_name, const int reg_value, int reg_type, const int device)
+int DynamixelSimpleAPI::setSetting(const int id, const int reg_name, const int reg_value, int reg_type, int device)
 {
     int status = 0;
 
     if (checkId(id) == true)
     {
         // Device detection
+        if (device == SERVO_UNKNOWN)
+            device = m_servoSerie;
         const int (*cctt)[8] = getRegisterTable(device);
 
         if (cctt == nullptr)

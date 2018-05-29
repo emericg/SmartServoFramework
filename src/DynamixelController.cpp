@@ -35,7 +35,7 @@
 DynamixelController::DynamixelController(int ctrlFrequency, int servoSerie):
     ControllerAPI(ctrlFrequency)
 {
-    this->servoSerie = servoSerie;
+    m_servoSerie = servoSerie;
 }
 
 DynamixelController::~DynamixelController()
@@ -45,45 +45,45 @@ DynamixelController::~DynamixelController()
 
 void DynamixelController::updateInternalSettings()
 {
-    if (servoSerie != SERVO_UNKNOWN)
+    if (m_servoSerie != SERVO_UNKNOWN)
     {
-        if (servoSerie >= SERVO_HERKULEX)
+        if (m_servoSerie >= SERVO_HERKULEX)
         {
-            ackPolicy = 1;
-            maxId = 253;
+            m_ackPolicy = 1;
+            m_maxId = 253;
 
-            protocolVersion = PROTOCOL_HKX;
+            m_protocolVersion = PROTOCOL_HKX;
             TRACE_INFO(CAPI, "- Using HerkuleX communication protocol");
         }
-        else if (servoSerie >= SENSOR_DYNAMIXEL)
+        else if (m_servoSerie >= SENSOR_DYNAMIXEL)
         {
             // TODO
         }
-        else if (servoSerie >= SERVO_DYNAMIXEL)
+        else if (m_servoSerie >= SERVO_DYNAMIXEL)
         {
-            ackPolicy = 2;
-            maxId = 252;
+            m_ackPolicy = 2;
+            m_maxId = 252;
 
-            if (servoSerie >= SERVO_XL)
+            if (m_servoSerie >= SERVO_XL)
             {
-                protocolVersion = PROTOCOL_DXLv2;
+                m_protocolVersion = PROTOCOL_DXLv2;
             }
             else // SERVO AX to MX
             {
-                protocolVersion = PROTOCOL_DXLv1;
+                m_protocolVersion = PROTOCOL_DXLv1;
 
-                if (serialDevice == SERIAL_USB2AX)
+                if (m_serialDevice == SERIAL_USB2AX)
                 {
                     // The USB2AX adapter reserves the ID 253 for itself
-                    maxId = 252;
+                    m_maxId = 252;
                 }
                 else
                 {
-                    maxId = 253;
+                    m_maxId = 253;
                 }
             }
 
-            if (protocolVersion == PROTOCOL_DXLv2)
+            if (m_protocolVersion == PROTOCOL_DXLv2)
             {
                 TRACE_INFO(CAPI, "- Using Dynamixel communication protocol version 2");
             }
@@ -99,33 +99,33 @@ void DynamixelController::updateInternalSettings()
     }
 }
 
-void DynamixelController::changeProtocolVersion(int protocol)
+void DynamixelController::changeProtocolVersion(int protocolVersion)
 {
-    if (protocol != protocolVersion)
+    if (m_protocolVersion != protocolVersion)
     {
-        if (protocol == PROTOCOL_DXLv1)
+        if (protocolVersion == PROTOCOL_DXLv1)
         {
-            protocolVersion = PROTOCOL_DXLv1;
-            if (serialDevice == SERIAL_USB2AX)
+            m_protocolVersion = PROTOCOL_DXLv1;
+            if (m_serialDevice == SERIAL_USB2AX)
             {
                 // The USB2AX device uses the ID 253 for itself
-                maxId = 252;
+                m_maxId = 252;
             }
             else
             {
-                maxId = 253;
+                m_maxId = 253;
             }
             TRACE_INFO(CAPI, "- Using Dynamixel communication protocol version 1");
         }
-        else if (protocol == PROTOCOL_DXLv2)
+        else if (protocolVersion == PROTOCOL_DXLv2)
         {
-            protocolVersion = PROTOCOL_DXLv2;
-            maxId = 252;
+            m_protocolVersion = PROTOCOL_DXLv2;
+            m_maxId = 252;
             TRACE_INFO(CAPI, "- Using Dynamixel communication protocol version 2");
         }
         else
         {
-            TRACE_ERROR(CAPI, "- Unknown Dynamixel communication protocol (version %i), unable to use it!", protocol);
+            TRACE_ERROR(CAPI, "- Unknown Dynamixel communication protocol (version %i), unable to use it!", protocolVersion);
         }
     }
 }
@@ -136,7 +136,7 @@ int DynamixelController::connect(std::string &devicePath, const int baud, const 
     disconnect();
 
     // Update device infos
-    this->serialDevice = serialDevice;
+    m_serialDevice = serialDevice;
     updateInternalSettings();
 
     // Connection
@@ -179,11 +179,11 @@ void DynamixelController::autodetect_internal(int start, int stop)
     unregisterServos_internal();
 
     // Check start/stop boundaries
-    if (start < 0 || start > (maxId - 1))
+    if (start < 0 || start > (m_maxId - 1))
         start = 0;
 
-    if (stop < 1 || stop > maxId || stop < start)
-        stop = maxId;
+    if (stop < 1 || stop > m_maxId || stop < start)
+        stop = m_maxId;
 
 #if defined(_WIN32) || defined(_WIN64)
     // Bring RX packet timeout down to scan faster
@@ -197,7 +197,7 @@ void DynamixelController::autodetect_internal(int start, int stop)
                serialGetCurrentDevice().c_str(), std::this_thread::get_id());
 
     TRACE_INFO(CAPI, "> THREADED Scanning for DXL devices on '%s', protocol v%i, range is [%i,%i[",
-               serialGetCurrentDevice().c_str(), protocolVersion, start, stop);
+               serialGetCurrentDevice().c_str(), m_protocolVersion, start, stop);
 
     for (int id = start; id <= stop; id++)
     {

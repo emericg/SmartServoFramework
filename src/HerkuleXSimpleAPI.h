@@ -173,8 +173,8 @@ public:
     double readCurrentTemperature(const int id);
 
     // General purpose getters/setters // FIXME reg_addr different if RAM or ROM register
-    int getSetting(const int id, const int reg_name, int reg_type = REGISTER_BOTH, const int device = SERVO_HERKULEX);
-    int setSetting(const int id, const int reg_name, const int reg_value, int reg_type = REGISTER_BOTH, const int device = SERVO_HERKULEX);
+    int getSetting(const int id, const int reg_name, int reg_type = REGISTER_BOTH, int device = SERVO_UNKNOWN);
+    int setSetting(const int id, const int reg_name, const int reg_value, int reg_type = REGISTER_BOTH, int device = SERVO_UNKNOWN);
 };
 
 /** @}*/

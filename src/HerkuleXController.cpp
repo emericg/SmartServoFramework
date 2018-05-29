@@ -34,7 +34,7 @@
 HerkuleXController::HerkuleXController(int ctrlFrequency, int servoSerie):
     ControllerAPI(ctrlFrequency)
 {
-    this->servoSerie = servoSerie;
+    m_servoSerie = servoSerie;
 }
 
 HerkuleXController::~HerkuleXController()
@@ -44,45 +44,45 @@ HerkuleXController::~HerkuleXController()
 
 void HerkuleXController::updateInternalSettings()
 {
-    if (servoSerie != SERVO_UNKNOWN)
+    if (m_servoSerie != SERVO_UNKNOWN)
     {
-        if (servoSerie >= SERVO_HERKULEX)
+        if (m_servoSerie >= SERVO_HERKULEX)
         {
-            ackPolicy = 1;
-            maxId = 253;
+            m_ackPolicy = 1;
+            m_maxId = 253;
 
-            protocolVersion = PROTOCOL_HKX;
+            m_protocolVersion = PROTOCOL_HKX;
             TRACE_INFO(CAPI, "- Using HerkuleX communication protocol");
         }
-        else if (servoSerie >= SENSOR_DYNAMIXEL)
+        else if (m_servoSerie >= SENSOR_DYNAMIXEL)
         {
             // TODO
         }
-        else if (servoSerie >= SERVO_DYNAMIXEL)
+        else if (m_servoSerie >= SERVO_DYNAMIXEL)
         {
-            ackPolicy = 2;
-            maxId = 252;
+            m_ackPolicy = 2;
+            m_maxId = 252;
 
-            if (servoSerie >= SERVO_XL)
+            if (m_servoSerie >= SERVO_XL)
             {
-                protocolVersion = PROTOCOL_DXLv2;
+                m_protocolVersion = PROTOCOL_DXLv2;
             }
             else // SERVO AX to MX
             {
-                protocolVersion = PROTOCOL_DXLv1;
+                m_protocolVersion = PROTOCOL_DXLv1;
 
-                if (serialDevice == SERIAL_USB2AX)
+                if (m_serialDevice == SERIAL_USB2AX)
                 {
                     // The USB2AX adapter reserves the ID 253 for itself
-                    maxId = 252;
+                    m_maxId = 252;
                 }
                 else
                 {
-                    maxId = 253;
+                    m_maxId = 253;
                 }
             }
 
-            if (protocolVersion == PROTOCOL_DXLv2)
+            if (m_protocolVersion == PROTOCOL_DXLv2)
             {
                 TRACE_INFO(CAPI, "- Using Dynamixel communication protocol version 2");
             }
@@ -104,7 +104,7 @@ int HerkuleXController::connect(std::string &devicePath, const int baud, const i
     disconnect();
 
     // Update device infos
-    this->serialDevice = serialDevice;
+    m_serialDevice = serialDevice;
     updateInternalSettings();
 
     // Connection
@@ -147,11 +147,11 @@ void HerkuleXController::autodetect_internal(int start, int stop)
     unregisterServos_internal();
 
     // Check start/stop boundaries
-    if (start < 0 || start > (maxId - 1))
+    if (start < 0 || start > (m_maxId - 1))
         start = 0;
 
-    if (stop < 1 || stop > maxId || stop < start)
-        stop = maxId;
+    if (stop < 1 || stop > m_maxId || stop < start)
+        stop = m_maxId;
 
 #if defined(_WIN32) || defined(_WIN64)
     // Bring RX packet timeout down to scan faster

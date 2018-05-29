@@ -76,18 +76,18 @@ typedef struct RegisterInfos
 
 /*!
  * \brief Get a control table for a given servo device.
- * \param servo_model: A servo model from ServoDevices_e enum, NOT a model number extracted from a device!
+ * \param servo_model: A servo model from ServoDevices_e enum.
  * \return A control table corresponding to the given device.
  */
 const int (*getRegisterTable(const int servo_model))[8];
 
 /*!
  * \brief Get a control table for a given servo device.
+ * \param servo_model: A servo model from ServoDevices_e enum.
  * \param servo_serie: A servo serie from ServoDevices_e enum.
- * \param servo_model: A servo model from ServoDevices_e enum, NOT a model number extracted from a device!
  * \return A control table corresponding to the given device.
  */
-const int (*getRegisterTable(const int servo_serie, const int servo_model))[8];
+const int (*getRegisterTable(const int servo_model, const int servo_serie))[8];
 
 /*!
  * \brief Get a control table for a given servo device.

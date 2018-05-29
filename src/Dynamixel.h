@@ -51,12 +51,12 @@
 class Dynamixel
 {
 private:
-    SerialPort *serial = nullptr;   //!< The serial port instance we are going to use.
+    SerialPort *m_serial = nullptr;     //!< The serial port instance we are going to use.
 
     unsigned char txPacket[MAX_PACKET_LENGTH_dxlv1] = {0};  //!< TX "instruction" packet buffer
     unsigned char rxPacket[MAX_PACKET_LENGTH_dxlv1] = {0};  //!< RX "status" packet buffer
-    int rxPacketSize = 0;           //!< Size of the incoming packet
-    int rxPacketSizeReceived = 0;   //!< Byte(s) of the incoming packet received from the serial link
+    int rxPacketSize = 0;               //!< Size of the incoming packet
+    int rxPacketSizeReceived = 0;       //!< Byte(s) of the incoming packet received from the serial link
 
     /*!
      * The software lock used to lock the serial interface, to avoid concurent
@@ -65,8 +65,8 @@ private:
      * we want to keep the ability to use multiple serial interface simultaneously
      * (ex: /dev/tty0 and /dev/ttyUSB0).
      */
-    int commLock = 0;
-    int commStatus = COMM_RXSUCCESS;//!< Last communication status
+    int m_commLock = 0;
+    int m_commStatus = COMM_RXSUCCESS;  //!< Last communication status
 
     // Serial communication methods, using one of the SerialPort[Linux/Mac/Windows] implementations.
     void dxl_tx_packet();
@@ -77,12 +77,12 @@ protected:
     Dynamixel();
     virtual ~Dynamixel() = 0;
 
-    int serialDevice = SERIAL_UNKNOWN;      //!< Serial device in use (if known) using '::SerialDevices_e' enum. Can affect link speed and latency.
-    int servoSerie = SERVO_MX;              //!< Servo serie using '::ServoDevices_e' enum. Used internally to setup some parameters like maxID, ackPolicy and protocolVersion.
+    int m_serialDevice = SERIAL_UNKNOWN;    //!< Serial device in use (if known) using '::SerialDevices_e' enum. Can affect link speed and latency.
+    int m_servoSerie = SERVO_MX;            //!< Servo serie using '::ServoDevices_e' enum. Used internally to setup some parameters like maxID, ackPolicy and protocolVersion.
 
-    int protocolVersion = PROTOCOL_DXLv1;   //!< Version of the communication protocol in use.
-    int maxId = 252;                        //!< Store in the maximum value for servo IDs.
-    int ackPolicy = ACK_REPLY_ALL;          //!< Set the status/ack packet return policy using '::AckPolicy_e' (0: No return; 1: Return for READ commands; 2: Return for all commands).
+    int m_protocolVersion = PROTOCOL_DXLv1; //!< Version of the communication protocol in use.
+    int m_maxId = 252;                      //!< Store in the maximum value for servo IDs.
+    int m_ackPolicy = ACK_REPLY_ALL;        //!< Set the status/ack packet return policy using '::AckPolicy_e' (0: No return; 1: Return for READ commands; 2: Return for all commands).
 
     // Handle serial link
     ////////////////////////////////////////////////////////////////////////////

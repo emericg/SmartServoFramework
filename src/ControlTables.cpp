@@ -100,7 +100,7 @@ const int (*getRegisterTable(const int servo_model))[8]
     return ct;
 }
 
-const int (*getRegisterTable(const int servo_serie, const int servo_model))[8]
+const int (*getRegisterTable(const int servo_model, const int servo_serie))[8]
 {
     const int (*ct)[8] = nullptr;
 
