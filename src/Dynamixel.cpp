@@ -156,14 +156,14 @@ int Dynamixel::serialInitialize(std::string &devicePath, const int baud)
 
     // Instanciate a different serial subclass, depending on the current OS
 #if defined(FEATURE_QTSERIAL)
-    serial = new SerialPortQt(devicePath, baud, m_serialDevice, m_servoSerie);
+    m_serial = new SerialPortQt(devicePath, baud, m_serialDevice, m_servoSerie);
 #else
 #if defined(__linux__) || defined(__gnu_linux)
     m_serial = new SerialPortLinux(devicePath, baud, m_serialDevice, m_servoSerie);
 #elif defined(_WIN32) || defined(_WIN64)
-    serial = new SerialPortWindows(devicePath, baud, m_serialDevice, m_servoSerie);
+    m_serial = new SerialPortWindows(devicePath, baud, m_serialDevice, m_servoSerie);
 #elif defined(__APPLE__) || defined(__MACH__)
-    serial = new SerialPortMacOS(devicePath, baud, m_serialDevice, m_servoSerie);
+    m_serial = new SerialPortMacOS(devicePath, baud, m_serialDevice, m_servoSerie);
 #else
     #error "No compatible operating system detected!"
 #endif
