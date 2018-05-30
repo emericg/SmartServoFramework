@@ -826,7 +826,7 @@ void widgetRegisterTable::updateRegisterTableDynamixel(Servo *servo_dxl, const i
 
 int widgetRegisterTable::getTableIndex(const int servo_serie, const int servo_model, const int reg_name)
 {
-    const int (*ct)[8] = getRegisterTable(servo_serie, servo_model);
+    const int (*ct)[8] = getRegisterTable(servo_model, servo_serie);
     int index = getRegisterTableIndex(ct, reg_name);
     int addr_rom = getRegisterAddr(ct, reg_name, REGISTER_ROM);
     int addr_ram = getRegisterAddr(ct, reg_name, REGISTER_RAM);
@@ -878,7 +878,7 @@ int widgetRegisterTable::getRegisterNameFromTableIndex(const int servo_serie, co
     int reg_name = -1;
 
     // Perform reverse lookup
-    const int (*ct)[8] = getRegisterTable(servo_serie, servo_model);
+    const int (*ct)[8] = getRegisterTable(servo_model, servo_serie);
 
     for (int i = 0; i < static_cast<int>(getRegisterCount(ct)); i++)
     {
