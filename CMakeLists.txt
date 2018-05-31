@@ -7,11 +7,11 @@ cmake_minimum_required(VERSION 2.8)
 project(SmartServoFramework)
 
 set(SmartServoFramework_VERSION_MAJOR 0)
-set(SmartServoFramework_VERSION_MINOR 96)
+set(SmartServoFramework_VERSION_MINOR 97)
 set(SmartServoFramework_VERSION_PATCH 0)
 
 # Build settings
-###############################################################################
+################################################################################
 
 set(ENABLE_DEBUG   1) # "Toggle debug traces"
 set(ENABLE_COLORS  1) # "Toggle colored terminal output"
@@ -120,7 +120,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 endif()
 
 # Source files
-###############################################################################
+################################################################################
 
 # Generate "SmartServoFramework_settings.h" file from a template
 configure_file(
@@ -187,13 +187,13 @@ set(SmartServoFramework_SRC
 )
 
 # Build
-###############################################################################
+################################################################################
 
 # Build library
 message(STATUS "** Building shared library")
 add_library(SmartServoFramework_shared SHARED ${SmartServoFramework_SRC})
 target_link_libraries(SmartServoFramework_shared ${EXTRA_LIBS})
-set_target_properties(SmartServoFramework_shared PROPERTIES OUTPUT_NAME SmartServoFramework)
+set_target_properties(SmartServoFramework_shared PROPERTIES OUTPUT_NAME smartservoframework)
 
 if(WIN32)
 if (CMAKE_VERSION VERSION_GREATER "3.3")
@@ -210,16 +210,27 @@ if(CMAKE_BUILD_MODE STREQUAL "Static")
     message(STATUS "** Building static library")
     add_library(SmartServoFramework_static STATIC ${SmartServoFramework_SRC})
     target_link_libraries(SmartServoFramework_static ${EXTRA_LIBS})
-    set_target_properties(SmartServoFramework_static PROPERTIES OUTPUT_NAME SmartServoFramework)
+    set_target_properties(SmartServoFramework_static PROPERTIES OUTPUT_NAME smartservoframework)
 endif(CMAKE_BUILD_MODE STREQUAL "Static")
+
+# Deployment
+################################################################################
+
+# pkg-config integration
+set(PROJECT_VERSION "${SmartServoFramework_VERSION_MAJOR}.${SmartServoFramework_VERSION_MINOR}")
+set(LIB_SUFFIX "" CACHE STRING "Define suffix of directory name")
+set(EXEC_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX} CACHE PATH "Installation prefix for executables and object code libraries" FORCE)
+set(BIN_INSTALL_DIR ${EXEC_INSTALL_PREFIX}/bin CACHE PATH "Installation prefix for user executables" FORCE)
+set(LIB_INSTALL_DIR ${EXEC_INSTALL_PREFIX}/lib${LIB_SUFFIX} CACHE PATH "Installation prefix for object code libraries" FORCE)
+set(INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/include/smartservoframework CACHE PATH "Installation prefix for header files" FORCE)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libsmartservoframework.pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/libsmartservoframework.pc)
 
 # Install the shared library and its header into the system (optional step, requires root credentials)
 # Relative to $<INSTALL_PREFIX>
-###############################################################################
-
 if(UNIX)
     install(TARGETS SmartServoFramework_shared DESTINATION lib/)
-    install(DIRECTORY src/ DESTINATION include/SmartServoFramework/ FILES_MATCHING PATTERN "*.h")
+    install(DIRECTORY src/ DESTINATION include/smartservoframework/ FILES_MATCHING PATTERN "*.h")
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libsmartservoframework.pc DESTINATION lib/pkgconfig/)
 elseif(WIN32)
     # TODO
 endif()
