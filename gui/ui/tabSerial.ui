@@ -67,7 +67,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Model</string>
+        <string>Adapter model</string>
        </property>
       </widget>
      </item>
