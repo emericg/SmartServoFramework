@@ -41,10 +41,10 @@ Yes, it works better if you have a serial port adapter and a servo.
 
 ### Building SmartServoGui
 
-> $ cd SmartServoFramework/gui/
-> $ qmake-qt${4-5}
-> $ make
-> $ ./build/SmartServoGui
+> $ cd SmartServoFramework/gui/  
+> $ qmake-qt${4-5}  
+> $ make  
+> $ ./build/SmartServoGui  
 
 ## Get involved!
 
