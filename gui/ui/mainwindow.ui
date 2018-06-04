@@ -16,7 +16,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../resources/resources.qrc">
-    <normaloff>:/icons/icons/emblem-system.svg</normaloff>:/icons/icons/emblem-system.svg</iconset>
+    <normaloff>:/icons/icons/hardinfo.svg</normaloff>:/icons/icons/hardinfo.svg</iconset>
   </property>
   <property name="locale">
    <locale language="English" country="UnitedStates"/>

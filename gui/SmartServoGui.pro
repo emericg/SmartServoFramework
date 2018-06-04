@@ -29,6 +29,10 @@ OBJECTS_DIR = build/
 unix {
     QMAKE_CXXFLAGS += -fPIE
 
+    # Enables AddressSanitizer
+    #QMAKE_CXXFLAGS += -fsanitize=address,undefined
+    #QMAKE_LFLAGS += -fsanitize=address,undefined
+
     *-g++* {
         message("Using GCC compiler")
         QMAKE_CXXFLAGS += -pthread
@@ -102,8 +106,8 @@ FORMS      += ui/mainwindow.ui \
 
 RESOURCES  += resources/resources.qrc
 
-ICON        = resources/app/icon.icns
-RC_ICONS    = resources/app/icon.ico
+ICON        = resources/app/smartservogui.icns
+RC_ICONS    = resources/app/smartservogui.ico
 
 # Use "lupdate SmartServoGui.pro" to update translation files
 # Then "lrelease SmartServoGui.pro" to build translated files
@@ -148,17 +152,20 @@ macx {
 linux {
     TARGET = $$lower($${TARGET})
 
-#    # Installation
-#    isEmpty(PREFIX) { PREFIX = /usr/local }
-#    target_app.files   += $${OUT_PWD}/$${DESTDIR}/$$lower($${TARGET})
-#    target_app.path     = $${PREFIX}/bin/
-#    target_icon.files  += $${OUT_PWD}/resources/app/$$lower($${TARGET}).svg
-#    target_icon.path    = $${PREFIX}/share/pixmaps/
-#    target_appentry.files  += $$OUT_PWD/resources/app/$$lower($${TARGET}).desktop
-#    target_appentry.path    = $${PREFIX}/share/applications
-#    target_appdata.files   += $${OUT_PWD}/resources/app/$$lower($${TARGET}).appdata.xml
-#    target_appdata.path     = $${PREFIX}/share/appdata
-#    INSTALLS += target_app target_icon target_appentry target_appdata
+    # Application packaging
+    #system(linuxdeployqt $${OUT_PWD}/$${DESTDIR}/) # needs linuxdeployqt installed
+
+    # Installation
+    isEmpty(PREFIX) { PREFIX = /usr/local }
+    target_app.files   += $${OUT_PWD}/$${DESTDIR}/$$lower($${TARGET})
+    target_app.path     = $${PREFIX}/bin/
+    target_icon.files  += $${OUT_PWD}/resources/app/$$lower($${TARGET}).svg
+    target_icon.path    = $${PREFIX}/share/pixmaps/
+    target_appentry.files  += $$OUT_PWD/resources/app/$$lower($${TARGET}).desktop
+    target_appentry.path    = $${PREFIX}/share/applications
+    target_appdata.files   += $${OUT_PWD}/resources/app/$$lower($${TARGET}).appdata.xml
+    target_appdata.path     = $${PREFIX}/share/appdata
+    INSTALLS += target_app target_icon target_appentry target_appdata
 
     # Clean bin/ directory
     #QMAKE_CLEAN += $${OUT_PWD}/$${DESTDIR}/$$lower($${TARGET})

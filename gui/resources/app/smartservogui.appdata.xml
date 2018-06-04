@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2018 Emeric Grange <emeric.grange@gmail.com> -->
+<component type="desktop">
+ <id>smartservoframework.desktop</id>
+ <metadata_license>CC0-1.0</metadata_license>
+ <project_license>GPL-3.0+</project_license>
+ <name>SmartServoFramework</name>
+ <summary>SmartServoGui helps you scan for servo devices easily view and tweak their settings!</summary>
+ <description>
+   <p>
+   SmartServoGui is a fully featured Qt GUI application that helps you discover
+   devices on available serial links, get an overview of all of their registers,
+   and easily tweak their settings!
+   </p>
+ </description>
+ <screenshots>
+  <screenshot type="default">
+   <image>https://i.imgur.com/9mkQFUx.png</image>
+   <caption>Main screen DXL</caption>
+  </screenshot>
+  <screenshot>
+   <image>https://i.imgur.com/x3sXE31.png</image>
+   <caption>Main screen HKX</caption>
+  </screenshot>
+  <screenshot>
+  <image>https://i.imgur.com/bE2qYIk.png</image>
+   <caption>Help screen DXL</caption>
+  </screenshot>
+  <screenshot>
+  <image>https://i.imgur.com/XZt7WsF.png</image>
+   <caption>Help screen HKX</caption>
+  </screenshot>
+  <screenshot>
+   <image>https://i.imgur.com/8iBKiKN.png</image>
+   <caption>Advanced scanner</caption>
+  </screenshot>
+ </screenshots>
+ <url type="homepage">https://github.com/emericg/SmartServoFramework</url>
+ <updatecontact>emeric.grange@gmail.com</updatecontact>
+ <keywords>
+  <keyword>dynamixel</keyword>
+  <keyword>herkulex</keyword>
+  <keyword>actuator</keyword>
+  <keyword>servo</keyword>
+ </keywords>
+</component>

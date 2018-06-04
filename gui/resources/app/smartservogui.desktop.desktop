@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=SmartServoGui
+Comment=SmartServoGui helps you scan for servo devices easily view and tweak their settings!
+Exec=smartservogui
+Icon=smartservogui
+Categories=Qt;Utility;
