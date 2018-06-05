@@ -37,6 +37,8 @@ int main(int argc, char *argv[])
 
     Q_INIT_RESOURCE(resources);
     QApplication app(argc, argv);
+    app.setApplicationDisplayName("SmartServoGui");
+    QCoreApplication::setApplicationName("SmartServoGui");
 
     // Handle Qt translation
     QTranslator qtTranslator;
