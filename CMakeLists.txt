@@ -44,6 +44,9 @@ endif(DOXYGEN_FOUND)
 # Build configuration
 ################################################################################
 
+option(BUILD_STATIC_LIBS "Build static library" ON)
+option(BUILD_SHARED_LIBS "Build shared library" ON)
+
 # Require C++11 standard by default
 set(CMAKE_CXX_FLAGS "-std=c++11")
 set(CMAKE_CXX_STANDARD 11)
@@ -186,32 +189,34 @@ set(SmartServoFramework_SRC
     src/Utils.h
 )
 
-# Build
+# Build library (static and shared rules)
 ################################################################################
 
 # Build library
-message(STATUS "** Building shared library")
-add_library(SmartServoFramework_shared SHARED ${SmartServoFramework_SRC})
-target_link_libraries(SmartServoFramework_shared ${EXTRA_LIBS})
-set_target_properties(SmartServoFramework_shared PROPERTIES OUTPUT_NAME smartservoframework)
+if (BUILD_SHARED_LIBS)
+    message(STATUS "** Building shared library")
+    add_library(SmartServoFramework_shared SHARED ${SmartServoFramework_SRC})
+    target_link_libraries(SmartServoFramework_shared ${EXTRA_LIBS})
+    set_target_properties(SmartServoFramework_shared PROPERTIES OUTPUT_NAME smartservoframework)
 
-if(WIN32)
-if (CMAKE_VERSION VERSION_GREATER "3.3")
-    message("* Generating symbols export header")
-    GENERATE_EXPORT_HEADER(SmartServoFramework_shared
-                           BASE_NAME SmartServoFramework_shared
-                           EXPORT_MACRO_NAME SmartServoFramework_EXPORT
-                           EXPORT_FILE_NAME "${CMAKE_SOURCE_DIR}/src/SmartServoFramework_export.h"
-                           STATIC_DEFINE SmartServoFramework_BUILT_AS_STATIC)
-endif()
-endif()
+    if (WIN32)
+    if (CMAKE_VERSION VERSION_GREATER "3.3")
+        message("* Generating symbols export header")
+        GENERATE_EXPORT_HEADER(SmartServoFramework_shared
+                               BASE_NAME SmartServoFramework_shared
+                               EXPORT_MACRO_NAME SmartServoFramework_EXPORT
+                               EXPORT_FILE_NAME "${CMAKE_SOURCE_DIR}/src/SmartServoFramework_export.h"
+                               STATIC_DEFINE SmartServoFramework_BUILT_AS_STATIC)
+    endif()
+    endif()
+endif (BUILD_SHARED_LIBS)
 
-if(CMAKE_BUILD_MODE STREQUAL "Static")
+if (BUILD_STATIC_LIBS)
     message(STATUS "** Building static library")
     add_library(SmartServoFramework_static STATIC ${SmartServoFramework_SRC})
     target_link_libraries(SmartServoFramework_static ${EXTRA_LIBS})
     set_target_properties(SmartServoFramework_static PROPERTIES OUTPUT_NAME smartservoframework)
-endif(CMAKE_BUILD_MODE STREQUAL "Static")
+endif (BUILD_STATIC_LIBS)
 
 # Deployment
 ################################################################################
@@ -225,12 +230,17 @@ set(LIB_INSTALL_DIR ${EXEC_INSTALL_PREFIX}/lib${LIB_SUFFIX} CACHE PATH "Installa
 set(INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/include/smartservoframework CACHE PATH "Installation prefix for header files" FORCE)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libsmartservoframework.pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/libsmartservoframework.pc)
 
-# Install the shared library and its header into the system (optional step, requires root credentials)
+# Install the libraries and its header into the system
+# (optional step, requires root credentials)
 # Relative to $<INSTALL_PREFIX>
 if(UNIX)
-    install(TARGETS SmartServoFramework_shared DESTINATION lib/)
+    if (BUILD_STATIC_LIBS)
+        install(TARGETS SmartServoFramework_static DESTINATION lib/)
+    endif (BUILD_STATIC_LIBS)
+    if (BUILD_SHARED_LIBS)
+        install(TARGETS SmartServoFramework_shared DESTINATION lib/)
+    endif (BUILD_SHARED_LIBS)
+
     install(DIRECTORY src/ DESTINATION include/smartservoframework/ FILES_MATCHING PATTERN "*.h")
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libsmartservoframework.pc DESTINATION lib/pkgconfig/)
-elseif(WIN32)
-    # TODO
 endif()
