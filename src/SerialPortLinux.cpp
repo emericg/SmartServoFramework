@@ -55,21 +55,23 @@
 #include <vector>
 #include <thread>
 
-#define SCAN_PORT_TYPES 4
+#define SCAN_PORT_TYPES 2
 #define SCAN_PORT_COUNT 8
 
 int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
 {
     int retcode = 0;
     std::string portBase = "/dev/tty";
-    std::string portVariations[SCAN_PORT_TYPES] = {"USB", "ACM", "S", ""};
+    std::string portVariations[SCAN_PORT_TYPES] = {"USB", "ACM"};
 
     TRACE_INFO(SERIAL, "serialPortsScanner() [Linux variant]");
 
     // Serial ports from USB adapters (/dev/ttyUSB*) (ftdi or other chips)
     // Serial ports from USB adapters (/dev/ttyACM*) ("abstract control model")
-    // Regular Serial ports from motherboards (/dev/ttyS*)
-    // Regular Serial ports from motherboards (/dev/tty*)
+
+    // Regular serial ports from motherboards (/dev/ttyS*)
+    // Regular serial ports from motherboards (/dev/tty*)
+    // /dev/ttyS* and /dev/tty* devices are not auto-detected by this function
 
     for (int i = 0; i < SCAN_PORT_TYPES; i++)
     {
