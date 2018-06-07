@@ -87,6 +87,7 @@ protected:
         void *p;
         int p1;
         int p2;
+        int p3;
     };
 
     int syncloopFrequency;              //!< Frequency of the synchronization loop, in Hz. May not be respected if there is too much traffic on the serial port.
@@ -120,7 +121,7 @@ protected:
     void unregisterServo_internal(Servo *servo);
     void unregisterServos_internal();
     int delayedAddServos_internal(std::chrono::time_point<std::chrono::system_clock> delay, int id, int update);
-    virtual void autodetect_internal(int start = 0, int stop = 253) = 0;
+    virtual void autodetect_internal(int start = 0, int stop = 253, int bail = 253) = 0;
 
     /*!
      * \brief Start synchronization loop thread.
@@ -184,6 +185,7 @@ public:
      * \brief Scan a serial link for servo or sensor devices.
      * \param start: First ID to be scanned.
      * \param stop: Last ID to be scanned.
+     * \param bail: Last ID to be scanned, when no results have been found up to this point.
      *
      * This scanning function will ping every device ID (from 'start' to 'stop',
      * default [0;253]) on a serial link, and use the status response to detect
@@ -192,7 +194,7 @@ public:
      *
      * Every servo found will be automatically registered to this controller.
      */
-    void autodetect(int start = 0, int stop = 253);
+    void autodetect(int start = 0, int stop = 253, int bail = 253);
 
     /*!
      * \brief Wait until the controller is ready.

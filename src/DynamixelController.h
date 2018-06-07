@@ -93,6 +93,7 @@ public:
      * \brief Scan a serial link for Dynamixel devices.
      * \param start: First ID to be scanned.
      * \param stop: Last ID to be scanned.
+     * \param bail: Last ID to be scanned, when no results have been found up to this point.
      *
      * Note: Be aware that calling this function will reset the current servoList.
      *
@@ -105,7 +106,7 @@ public:
      * The current value 'protocolVersion' will be used. You can change it with
      * the setProtocolVersion() function before calling autodetect().
      */
-    void autodetect_internal(int start = 0, int stop = 253);
+    void autodetect_internal(int start = 0, int stop = 253, int bail = 253);
 
     // Wrappers
     std::string serialGetCurrentDevice_wrapper();

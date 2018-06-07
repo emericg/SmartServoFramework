@@ -394,7 +394,7 @@ void ControllerAPI::clearMessageQueue()
 
 /* ************************************************************************** */
 
-void ControllerAPI::autodetect(int start, int stop)
+void ControllerAPI::autodetect(int start, int stop, int bail)
 {
     miniMessages m;
     memset(&m, 0, sizeof(m));
@@ -402,6 +402,7 @@ void ControllerAPI::autodetect(int start, int stop)
     m.msg = ctrl_device_autodetect;
     m.p1 = start;
     m.p2 = stop;
+    m.p3 = bail;
 
     sendMessage(&m);
 }

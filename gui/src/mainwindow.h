@@ -145,7 +145,7 @@ public slots:
     void settingsStop();
 
     void scanSerialPorts(bool autoScanDevices = true);
-    void scanServos();
+    void scanServos(bool isAutoScan = false);
 
     void refreshSerialPort(QString port_qstring);
 
@@ -160,7 +160,7 @@ public slots:
      * If successfull, add the newly created controller to the corresponding entry
      * into the SerialPortHelper vector.
      */
-    void scanServos(QString port_qstring);
+    void scanServos(QString port_qstring, bool isAutoScan = false);
 };
 
 #endif // MAINWINDOW_H

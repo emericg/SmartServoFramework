@@ -244,12 +244,6 @@ background: rgba(255, 170, 0, 128);</string>
        </item>
        <item>
         <widget class="QTreeWidget" name="deviceTreeWidget">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="toolTip">
           <string/>
          </property>
@@ -1657,6 +1651,12 @@ background: rgba(83, 129, 255,200);</string>
          <spacer name="verticalSpacer">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
           </property>
          </spacer>
         </item>

@@ -346,7 +346,7 @@ void MainWindow::scanSerialPorts(bool autoScanDevices)
 
         // Launch servo scanning?
         if (autoScanDevices == true)
-            scanServos();
+            scanServos(autoScanDevices);
         else
             helpScreen(false);
     }
@@ -362,7 +362,7 @@ void MainWindow::scanSerialPorts(bool autoScanDevices)
     ui->deviceTreeWidget->update();
 }
 
-void MainWindow::scanServos()
+void MainWindow::scanServos(bool isAutoScan)
 {
     ui->frameDevices->setDisabled(true);
     scan_running = true;
@@ -376,7 +376,7 @@ void MainWindow::scanServos()
             if (h->deviceWidget->isSelected() == true)
             {
                 // Launch a scan
-                scanServos(h->deviceName_qstr);
+                scanServos(h->deviceName_qstr, isAutoScan);
             }
         }
     }
@@ -398,7 +398,7 @@ void MainWindow::refreshSerialPort(QString port_qstring)
     ui->frameDevices->setEnabled(true);
 }
 
-void MainWindow::scanServos(QString port_qstring)
+void MainWindow::scanServos(QString port_qstring, bool isAutoScan)
 {
     // Disable scan buttons
     ui->frameDevices->setDisabled(true);
@@ -547,8 +547,13 @@ void MainWindow::scanServos(QString port_qstring)
                     }
 */
                     // Scan for servo(s)
-                    h->deviceController->autodetect(h->deviceWidget->getMinRange(),
-                                                    h->deviceWidget->getMaxRange());
+                    if (isAutoScan)
+                        h->deviceController->autodetect(h->deviceWidget->getMinRange(),
+                                                        h->deviceWidget->getMaxRange(),
+                                                        64);
+                    else
+                        h->deviceController->autodetect(h->deviceWidget->getMinRange(),
+                                                        h->deviceWidget->getMaxRange());
 
                     // Controller already in ready state? Wait for the new scan to begin then
                     if (h->deviceController->getState() >= state_scanned)

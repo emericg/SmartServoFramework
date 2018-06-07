@@ -171,9 +171,11 @@ void DynamixelController::serialSetLatency_wrapper(int latency)
     serialSetLatency(latency);
 }
 
-void DynamixelController::autodetect_internal(int start, int stop)
+void DynamixelController::autodetect_internal(int start, int stop, int bail)
 {
     setState(state_scanning);
+
+    int results = 0;
 
     // Prepare to scan, clean servoLists
     unregisterServos_internal();
@@ -255,6 +257,8 @@ void DynamixelController::autodetect_internal(int start, int stop)
                 syncList.push_back(servo->getId());
 
                 servoListLock.unlock();
+
+                results++;
             }
 
             //setLed(id, 0);
@@ -263,6 +267,9 @@ void DynamixelController::autodetect_internal(int start, int stop)
         {
             printf(".");
         }
+
+        if (id >= bail && results == 0)
+            break;
     }
 
     printf("\n");
@@ -302,7 +309,7 @@ void DynamixelController::run()
             switch (m.msg)
             {
             case ctrl_device_autodetect:
-                autodetect_internal(m.p1, m.p2);
+                autodetect_internal(m.p1, m.p2, m.p3);
                 break;
 
             case ctrl_device_register:

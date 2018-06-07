@@ -78,6 +78,7 @@ public:
      * \brief Scan a serial link for HerkuleX devices.
      * \param start: First ID to be scanned.
      * \param stop: Last ID to be scanned.
+     * \param bail: Last ID to be scanned, when no results have been found up to this point.
      *
      * Note: Be aware that calling this function will reset the current servoList.
      *
@@ -87,7 +88,7 @@ public:
      * When a device is being scanned, its LED is briefly switched on.
      * Every servo found will be automatically registered to this controller.
      */
-    void autodetect_internal(int start = 0, int stop = 253);
+    void autodetect_internal(int start = 0, int stop = 253, int bail = 253);
 
     // Wrappers
     std::string serialGetCurrentDevice_wrapper();
