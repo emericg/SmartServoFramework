@@ -71,11 +71,23 @@ win32 {
     }
 }
 
-# SmartServoFramework sources
-SOURCES    += ../src/*.cpp
-HEADERS    += ../src/*.h
+# SmartServoFramework
+contains(CONFIG, EXTERNAL_FRAMEWORK) {
+    unix {
+        INCLUDEPATH += `pkg-config --cflags smartservoframework`
+        LIBS += `pkg-config --libs smartservoframework`
+    }
+    win32 {
+        INCLUDEPATH += ../src/
+        LIBS += ../build/smartservoframework.lib
+    }
+} else {
+    # Use SmartServoFramework sources directly
+    SOURCES  += ../src/*.cpp
+    HEADERS  += ../src/*.h
+}
 
-# GUI application sources
+# SmartServoGui sources
 SOURCES    += src/main.cpp \
               src/mainwindow.cpp \
               src/tabSerial.cpp \
