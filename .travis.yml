@@ -56,6 +56,6 @@ after_success:
       curl --upload-file SmartServoGui*.AppImage https://transfer.sh/SmartServoGui-git.$(git rev-parse --short HEAD)-linux64.AppImage;
     fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      zip -r -X build/SmartServoGui.zip build/SmartServoGui.app;
-      curl --upload-file build/SmartServoGui*.zip https://transfer.sh/SmartServoGui-git.$(git rev-parse --short HEAD).zip;
+      zip -r -X bin/SmartServoGui.zip bin/SmartServoGui.app;
+      curl --upload-file bin/SmartServoGui*.zip https://transfer.sh/SmartServoGui-git.$(git rev-parse --short HEAD).zip;
     fi
