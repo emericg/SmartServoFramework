@@ -270,15 +270,39 @@ void MainWindow::scanSerialPorts(bool autoScanDevices)
     ui->deviceTreeWidget->clear();
 
     // Clean the "scan group box" widgets
-    while (QLayoutItem *item = ui->groupPorts->layout()->takeAt(0))
+    if (ui->groupPorts)
     {
-        if (QWidget *widget = item->widget())
+        while (QLayoutItem *item = ui->groupPorts->layout()->takeAt(0))
         {
-            delete widget;
+            if (item)
+            {
+                if (QWidget *widget = item->widget())
+                {
+                    delete widget;
+                }
+                delete item;
+            }
         }
-        delete item;
+        ui->groupPorts = nullptr;
     }
-    ui->groupPorts->update();
+
+    // Clean the "scan group box" widgets
+    if (ui->verticalLayout_2)
+    {
+        while (QLayoutItem *item = ui->verticalLayout_2->layout()->takeAt(0))
+        {
+            if (item)
+            {
+                if (QWidget *widget = item->widget())
+                {
+                    delete widget;
+                }
+                delete item;
+            }
+        }
+    }
+
+    ui->verticalLayout_2->update();
 
     // Clean existing serial ports list and associated controllers
     for (auto p: serialPorts)
@@ -331,8 +355,17 @@ void MainWindow::scanSerialPorts(bool autoScanDevices)
 
             QObject::connect(helper->deviceWidget, SIGNAL(scanButton(QString)), this, SLOT(refreshSerialPort(QString)));
 
-            ui->groupPorts->layout()->addWidget(helper->deviceWidget);
-            ui->groupPorts->update();
+            ui->verticalLayout_2->layout()->addWidget(helper->deviceWidget);
+            ui->verticalLayout_2->update();
+
+            QTreeWidgetItem *port = new QTreeWidgetItem();
+            ui->deviceTreeWidget->addTopLevelItem(port);
+            port->setText(0, helper->deviceName_qstr);
+            QString scan_entry_txt = tr("(Not scanned)");
+            QTreeWidgetItem *scan_entry = new QTreeWidgetItem();
+            scan_entry->setText(0, scan_entry_txt);
+            port->setExpanded(true);
+            port->addChild(scan_entry);
         }
 
         // Update the GUI before each servo scan
@@ -653,16 +686,17 @@ void MainWindow::scanServos(QString port_qstring, bool isAutoScan)
             delete scan_entry;
 
             // Do that only once, not every time we try a new serial port configuration
-            if (scan_results <= 0)
+            if (scan_results == 1)
             {
-                if (scan_results == 0)
-                {
-                    // Indicate we did not found any device
-                    QTreeWidgetItem *nodevice = new QTreeWidgetItem();
-                    nodevice->setText(0, tr("No device available!"));
-                    port->addChild(nodevice);
-                }
-                else if (scan_results == -1)
+                // Indicate we did not found any device
+                // 1 means only that the connection to a port succeeded
+                QTreeWidgetItem *nodevice = new QTreeWidgetItem();
+                nodevice->setText(0, tr("No device available!"));
+                port->addChild(nodevice);
+            }
+            else if (scan_results <= 0)
+            {
+                if (scan_results == -1)
                 {
                     // Put a 'locked' icon
                     QString achtung_txt = "Interface is locked!";
@@ -670,8 +704,10 @@ void MainWindow::scanServos(QString port_qstring, bool isAutoScan)
                     port->addChild(achtung);
                     achtung->setText(0, achtung_txt);
                     achtung->setIcon(0, QIcon(":/icons/icons/emblem-readonly.svg"));
+
+                    // Add an "unlock" contextual item?
                 }
-                else if (scan_results == -2)
+                else // if (scan_results == -2)
                 {
                     // Put an 'error' icon
                     QString achtung_txt = "Unable to connect!";
