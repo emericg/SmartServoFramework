@@ -12,7 +12,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string notr="true">SmartServoGUI</string>
+   <string notr="true">SmartServoGui</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../resources/resources.qrc">
@@ -98,6 +98,20 @@
           <property name="bottomMargin">
            <number>4</number>
           </property>
+          <item>
+           <widget class="QPushButton" name="pushScanSerial">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Prerequisit:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Make sure you got the right serial adapter for the job!&lt;/p&gt;&lt;p&gt;If you are running Windows, you will also need to install the right driver for your adapter.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="text">
+             <string>Scan for new serial port(s)</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../resources/resources.qrc">
+              <normaloff>:/icons/icons/emblem-ubuntuone-unsynchronized.svg</normaloff>:/icons/icons/emblem-ubuntuone-unsynchronized.svg</iconset>
+            </property>
+           </widget>
+          </item>
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_2">
             <item>
@@ -215,23 +229,9 @@ background: rgba(255, 170, 0, 128);</string>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushScanSerial">
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Prerequisit:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Make sure you got the right serial adapter for the job!&lt;/p&gt;&lt;p&gt;If you are running Windows, you will also need to install the right driver for your adapter.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="text">
-          <string>Scan for new serial port(s)</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../resources/resources.qrc">
-           <normaloff>:/icons/icons/emblem-ubuntuone-unsynchronized.svg</normaloff>:/icons/icons/emblem-ubuntuone-unsynchronized.svg</iconset>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QPushButton" name="pushScanServo">
          <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Doesn't work? Use the &amp;quot;advance scanner&amp;quot; to find out where your devices are hiding!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Will search new for new devices on all serial ports &amp;quot;ticked&amp;quot;.&lt;/p&gt;&lt;p&gt;Doesn't work? Use the &amp;quot;advance scanner&amp;quot; to find out where your devices are hiding!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="text">
           <string>Scan for device(s)</string>

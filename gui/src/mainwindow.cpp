@@ -183,17 +183,11 @@ void MainWindow::helpScreen(bool loading)
     if ((rand() % 1024) >= 512)
     {
         QPixmap load(":/help/help/Dynamixel_help.png");
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-        load.setDevicePixelRatio(qApp->devicePixelRatio());
-#endif
         ui->label_loading_img->setPixmap(load);
     }
     else
     {
         QPixmap load(":/help/help/HerkuleX_help.png");
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-        load.setDevicePixelRatio(qApp->devicePixelRatio());
-#endif
         ui->label_loading_img->setPixmap(load);
     }
 }
@@ -1193,9 +1187,6 @@ void MainWindow::treewidgetSelection()
         ui->servoPicture_label->setMaximumWidth(pictureSize);
         ui->servoPicture_label->setMaximumHeight(pictureSize);
         ui->servoPicture_label->setScaledContents(true);
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-        servoIcon.setDevicePixelRatio(qApp->devicePixelRatio());
-#endif
         ui->servoPicture_label->setPixmap(servoIcon);
 
         // Set specification text
@@ -1528,9 +1519,6 @@ void MainWindow::toggleServoPanel(bool status)
 
         // Infos
         QPixmap servoDefaultIcon(":/icons/icons/emblem-unreadable.svg");
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-        servoDefaultIcon.setDevicePixelRatio(qApp->devicePixelRatio());
-#endif
         ui->servoPicture_label->setPixmap(servoDefaultIcon);
         ui->textBrowser_spec->setText(tr("No documentation available..."));
         ui->servoManual_label->hide();

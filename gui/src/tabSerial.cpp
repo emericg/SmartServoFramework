@@ -60,16 +60,9 @@ void tabSerial::setInfos(std::string device_path, int baudrate, int protocol, in
 
     QPixmap serialPortIcon;
     if (device_connected > 0)
-    {
         serialPortIcon.load(":/icons/icons/network-transmit-receive.svg");
-    }
     else
-    {
         serialPortIcon.load(":/icons/icons/network-error.svg");
-    }
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-    serialPortIcon.setDevicePixelRatio(qApp->devicePixelRatio());
-#endif
     ui->label_icon->setPixmap(serialPortIcon);
 
     //ui->label_speed_saved->setText("None");
