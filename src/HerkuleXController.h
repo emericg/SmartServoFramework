@@ -53,7 +53,7 @@ public:
      * \param servoSerie: The servo serie to use with this controller. Only used to choose the right communication protocol.
      * \param ctrlFrequency: This is the synchronization frequency between the controller and the servos devices. Range is [1;120], default is 30.
      */
-    HerkuleXController(int ctrlFrequency = 30, int servoSerie = SERVO_DRS);
+    HerkuleXController(int servoSerie = SERVO_DRS, int ctrlFrequency = 30);
 
     /*!
      * \brief HerkuleXController destructor. Stop the controller's thread and close the serial connection.

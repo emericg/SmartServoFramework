@@ -31,7 +31,7 @@
 // Enable latency timer
 //#define LATENCY_TIMER
 
-HerkuleXController::HerkuleXController(int ctrlFrequency, int servoSerie):
+HerkuleXController::HerkuleXController(int servoSerie, int ctrlFrequency):
     ControllerAPI(ctrlFrequency)
 {
     m_servoSerie = servoSerie;

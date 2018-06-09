@@ -506,11 +506,11 @@ void MainWindow::scanServos(QString port_qstring, bool isAutoScan)
                     if (h->deviceControllerProtocol == PROTOCOL_DXLv1 ||
                         h->deviceControllerProtocol == PROTOCOL_DXLv2)
                     {
-                        h->deviceController = new DynamixelController(ctrl_freq, h->deviceControllerDeviceClass);
+                        h->deviceController = new DynamixelController(h->deviceControllerDeviceClass, ctrl_freq);
                     }
                     else if (h->deviceControllerProtocol == PROTOCOL_HKX)
                     {
-                        h->deviceController = new HerkuleXController(ctrl_freq, h->deviceControllerDeviceClass);
+                        h->deviceController = new HerkuleXController(h->deviceControllerDeviceClass, ctrl_freq);
                     }
 
                     // Connect the controller to its serial port
