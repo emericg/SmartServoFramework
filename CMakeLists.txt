@@ -232,7 +232,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libsmartservoframework.pc.cmake ${CMA
 
 # Install the libraries and its header into the system
 # (optional step, requires root credentials)
-# Relative to $<INSTALL_PREFIX>
+# Relative to $<CMAKE_INSTALL_PREFIX>
 if(UNIX)
     if (BUILD_STATIC_LIBS)
         install(TARGETS SmartServoFramework_static DESTINATION lib/)
