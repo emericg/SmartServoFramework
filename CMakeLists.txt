@@ -2,12 +2,12 @@
 # This file allows you to build a shared library of SmartServoFramework
 ################################################################################
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 
 project(SmartServoFramework)
 
 set(SmartServoFramework_VERSION_MAJOR 0)
-set(SmartServoFramework_VERSION_MINOR 97)
+set(SmartServoFramework_VERSION_MINOR 98)
 set(SmartServoFramework_VERSION_PATCH 0)
 
 # Build settings
