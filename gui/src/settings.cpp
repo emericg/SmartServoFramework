@@ -356,6 +356,21 @@ const std::vector<portConfig> & Settings::getSerialPortsConfig()
     return serial_ports;
 }
 
+struct portConfig * Settings::getSerialPortConfig(std::string &portPath)
+{
+    portConfig *portconf = nullptr;
+
+    for (auto pc: serial_ports)
+    {
+        if (pc.on == true && pc.path == portPath)
+        {
+            portconf = &pc;
+        }
+    }
+
+    return portconf;
+}
+
 int Settings::readSettings()
 {
     int retcode = 0;

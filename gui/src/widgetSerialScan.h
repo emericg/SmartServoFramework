@@ -38,9 +38,14 @@ class widgetSerialScan : public QWidget
 
     Ui::widgetSerialScan *ui;
 
+    int saved_protocol = -1;
+    int saved_speed = -1;
+
 public:
     explicit widgetSerialScan(QString &port, QWidget *parent = 0);
     ~widgetSerialScan();
+
+    void setSavedParameters(int protocol, int speed);
 
     std::string getDeviceName();
     bool isSelected();

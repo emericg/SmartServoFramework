@@ -47,6 +47,18 @@ widgetSerialScan::~widgetSerialScan()
     delete ui;
 }
 
+void widgetSerialScan::setSavedParameters(int protocol, int speed)
+{
+    saved_protocol = protocol;
+    saved_speed = speed;
+    ui->comboBox_protocol->setCurrentIndex(saved_protocol-1);
+    ui->spinBox_speed->setValue(saved_speed);
+
+    if (ui->portMode->itemText(ui->portMode->count()-1) != tr("saved"))
+        ui->portMode->addItem(tr("saved"));
+    ui->portMode->setCurrentIndex(ui->portMode->count()-1);
+}
+
 std::string widgetSerialScan::getDeviceName()
 {
     return ui->portName->text().toStdString();
@@ -64,9 +76,9 @@ int widgetSerialScan::getCurrentIndex()
 
 int widgetSerialScan::getCurrentSpeed(int index)
 {
+    int speed = 0;
     if (index == -1)
         index = ui->portMode->currentIndex();
-    int speed = 0;
 
     switch (index)
     {
@@ -92,6 +104,10 @@ int widgetSerialScan::getCurrentSpeed(int index)
         speed = 57600;
         break;
 
+    case 11:
+        speed = saved_speed;
+        break;
+
     default:
         break;
     }
@@ -101,9 +117,9 @@ int widgetSerialScan::getCurrentSpeed(int index)
 
 int widgetSerialScan::getCurrentProtocol(int index)
 {
+    int protocol = 0;
     if (index == -1)
         index = ui->portMode->currentIndex();
-    int protocol = 0;
 
     switch (index)
     {
@@ -116,15 +132,21 @@ int widgetSerialScan::getCurrentProtocol(int index)
     case 4:
         protocol = PROTOCOL_DXLv1;
         break;
+
     case 5:
     case 6:
     case 7:
         protocol = PROTOCOL_DXLv2;
         break;
+
     case 8:
     case 9:
     case 10:
         protocol = PROTOCOL_HKX;
+        break;
+
+    case 11:
+        protocol = saved_protocol;
         break;
 
     default:
@@ -136,13 +158,14 @@ int widgetSerialScan::getCurrentProtocol(int index)
 
 int widgetSerialScan::getCurrentDeviceClass(int index)
 {
+    int deviceClass = 0;
     if (index == -1)
         index = ui->portMode->currentIndex();
-    int deviceClass = 0;
 
     switch (index)
     {
     case 1:
+    case 11:
         if (ui->comboBox_protocol->currentIndex() == 0)
             deviceClass = SERVO_MX;
         else if (ui->comboBox_protocol->currentIndex() == 1)
@@ -156,11 +179,13 @@ int widgetSerialScan::getCurrentDeviceClass(int index)
     case 4:
         deviceClass = SERVO_MX;
         break;
+
     case 5:
     case 6:
     case 7:
         deviceClass = SERVO_XL;
         break;
+
     case 8:
     case 9:
     case 10:
@@ -201,6 +226,14 @@ void widgetSerialScan::on_portMode_currentIndexChanged(int index)
     }
     else
     {
+        if (index == 11)
+        {
+            // saved settings
+            ui->portMode->setCurrentIndex(ui->portMode->count()-1);
+            ui->comboBox_protocol->setCurrentIndex(saved_protocol-1);
+            ui->spinBox_speed->setValue(saved_speed);
+        }
+
         ui->wProtocol->hide();
         ui->wSpeed->hide();
         ui->wRange->hide();

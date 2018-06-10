@@ -76,6 +76,7 @@ public:
     bool getPause();
     int getFreq();
     const std::vector <struct portConfig> & getSerialPortsConfig();
+    struct portConfig * getSerialPortConfig(std::string &portPath);
 
     int readSettings();
     int writeSettings();

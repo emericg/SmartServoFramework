@@ -353,6 +353,16 @@ void MainWindow::scanSerialPorts(bool autoScanDevices)
             helper->deviceName_qstr = QString::fromStdString(p);
             helper->deviceWidget = new widgetSerialScan(helper->deviceName_qstr);
 
+            // search for saved settings
+            if (stw)
+            {
+                portConfig *pc = stw->getSerialPortConfig(p);
+                if (pc)
+                {
+                    helper->deviceWidget->setSavedParameters(pc->protocol, pc->speed);
+                }
+            }
+
             QObject::connect(helper->deviceWidget, SIGNAL(scanButton(QString)), this, SLOT(refreshSerialPort(QString)));
 
             ui->verticalLayout_2->layout()->addWidget(helper->deviceWidget);
