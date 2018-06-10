@@ -32,6 +32,8 @@
 
 DynamixelSimpleAPI::DynamixelSimpleAPI(int servoSerie)
 {
+    ct = nullptr;
+
     if (servoSerie != SERVO_UNKNOWN)
     {
         if (servoSerie >= SERVO_HERKULEX)

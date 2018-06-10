@@ -1265,7 +1265,7 @@ void MainWindow::treewidgetSelection()
         {
             int deviceCount = 0;
             if (serial->deviceController)
-                deviceCount = serial->deviceController->getServos().size();
+                deviceCount = static_cast<int>(serial->deviceController->getServos().size());
 
             ui->widget_serial->setInfos(serial->deviceName_str,
                                         serial->deviceControllerSpeed,

@@ -403,7 +403,7 @@ void DynamixelController::run()
                 dxl_reboot(id, ack);
                 TRACE_INFO(DXL, "Rebooting servo #%i...", id);
 
-                miniMessages m {ctrl_device_delayed_add, std::chrono::system_clock::now() + std::chrono::seconds(2), nullptr, id, 0};
+                miniMessages m {ctrl_device_delayed_add, std::chrono::system_clock::now() + std::chrono::seconds(2), nullptr, id, 0, 0};
                 sendMessage(&m);
             }
 
@@ -429,7 +429,7 @@ void DynamixelController::run()
                 dxl_reset(id, resetProgrammed, ack);
                 TRACE_INFO(DXL, "Resetting servo #%i (setting: %i)...", id, resetProgrammed);
 
-                miniMessages m {ctrl_device_delayed_add, std::chrono::system_clock::now() + std::chrono::seconds(2), nullptr, id, 1};
+                miniMessages m {ctrl_device_delayed_add, std::chrono::system_clock::now() + std::chrono::seconds(2), nullptr, id, 1, 0};
                 sendMessage(&m);
             }
         }

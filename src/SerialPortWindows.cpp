@@ -396,12 +396,11 @@ int SerialPortWindows::checkTimeOut()
 {
     LARGE_INTEGER end, freq;
     int status = 0;
-    double time_elapsed = 0.0;
 
     QueryPerformanceCounter(&end);
     QueryPerformanceFrequency(&freq);
 
-    time_elapsed = static_cast<double>(end.QuadPart - packetStartTime) / static_cast<double>(freq.QuadPart);
+    double time_elapsed = static_cast<double>(end.QuadPart - packetStartTime) / static_cast<double>(freq.QuadPart);
     time_elapsed *= 1000.0;
 
     if (time_elapsed > packetWaitTime)

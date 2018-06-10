@@ -344,7 +344,7 @@ void HerkuleXController::run()
                 hkx_reboot(id, ack);
                 TRACE_INFO(HKX, "Rebooting servo #%i...", id);
 
-                miniMessages m {ctrl_device_delayed_add, std::chrono::system_clock::now() + std::chrono::seconds(2), nullptr, id, 1};
+                miniMessages m {ctrl_device_delayed_add, std::chrono::system_clock::now() + std::chrono::seconds(2), nullptr, id, 1, 0};
                 sendMessage(&m);
             }
 
@@ -370,7 +370,7 @@ void HerkuleXController::run()
                 hkx_reset(id, resetProgrammed, ack);
                 TRACE_INFO(HKX, "Resetting servo #%i (setting: %i)...", id, resetProgrammed);
 
-                miniMessages m {ctrl_device_delayed_add, std::chrono::system_clock::now() + std::chrono::seconds(2), nullptr, id, 1};
+                miniMessages m {ctrl_device_delayed_add, std::chrono::system_clock::now() + std::chrono::seconds(2), nullptr, id, 1, 0};
                 sendMessage(&m);
             }
         }

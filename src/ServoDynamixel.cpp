@@ -420,7 +420,7 @@ void ServoDynamixel::setGoalPosition(int pos, int time_budget_ms)
             registerTableValues[gid(REG_GOAL_POSITION)] = pos;
             registerTableCommits[gid(REG_GOAL_POSITION)] = 1;
 
-            registerTableValues[gid(REG_GOAL_SPEED)] = speed;
+            registerTableValues[gid(REG_GOAL_SPEED)] = static_cast<int>(speed);
             registerTableCommits[gid(REG_GOAL_SPEED)] = 1;
         }
         else
@@ -500,7 +500,8 @@ void ServoDynamixel::setLed(int led)
     // Normalize value
     if (led >= 1)
     {
-        (servoSerie == SERVO_XL) ? led = led : led = 1;
+        if (servoSerie != SERVO_XL)
+            led = 1;
     }
     else
     {
