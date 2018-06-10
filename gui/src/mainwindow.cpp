@@ -545,18 +545,18 @@ void MainWindow::scanServos(QString port_qstring, bool isAutoScan)
                     {
                         h->deviceController = new HerkuleXController(h->deviceControllerDeviceClass, ctrl_freq);
                     }
+                }
 
-                    // Connect the controller to its serial port
-                    if (h->deviceController != nullptr)
+                // Connect the controller to its serial port
+                if (h->deviceController != nullptr)
+                {
+                    scan_results = h->deviceController->connect(h->deviceName_str, h->deviceControllerSpeed);
+
+                    if (scan_results != 1)
                     {
-                        scan_results = h->deviceController->connect(h->deviceName_str, h->deviceControllerSpeed);
-
-                        if (scan_results != 1)
-                        {
-                            h->deviceController->disconnect();
-                            delete h->deviceController;
-                            h->deviceController = nullptr;
-                        }
+                        h->deviceController->disconnect();
+                        delete h->deviceController;
+                        h->deviceController = nullptr;
                     }
                 }
 
