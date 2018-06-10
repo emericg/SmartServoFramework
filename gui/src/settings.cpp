@@ -65,7 +65,7 @@ Settings::Settings(QWidget *parent):
     if (env)
     {
         filepath  = env;
-        filepath += "/.config/SmartServoGUI";
+        filepath += "/.config/SmartServoGui";
         mkdir(filepath.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
         filepath += "/settings.json";
     }
@@ -74,16 +74,16 @@ Settings::Settings(QWidget *parent):
     if (env)
     {
         filepath  = env;
-        filepath += "/SmartServoGUI";
+        filepath += "/SmartServoGui";
         _mkdir(filepath.c_str());
-        filepath = "/SmartServoGUI.json";
+        filepath = "/SmartServoGui.json";
     }
 #elif defined(__APPLE__) || defined(__MACH__)
     char *env = getenv("HOME");
     if (env)
     {
         filepath  = env;
-        filepath += "/Library/Preferences/SmartServoGUI.json";
+        filepath += "/Library/Preferences/SmartServoGui.json";
     }
 #else
     #error "No compatible operating system detected!"

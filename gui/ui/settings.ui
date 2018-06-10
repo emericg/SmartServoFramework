@@ -39,7 +39,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Pause controllers when SmartServoGUI window is out of focus.</string>
+         <string>Pause controllers when SmartServoGui window is out of focus.</string>
         </property>
        </widget>
       </item>

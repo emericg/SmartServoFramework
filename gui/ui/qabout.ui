@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>About SmartServoGUI</string>
+   <string>About SmartServoGui</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../resources/resources.qrc">
