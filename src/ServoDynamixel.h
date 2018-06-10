@@ -38,7 +38,7 @@
  * \ref ServoAX
  * \ref ServoEX
  * \ref ServoMX
- * \ref ServoXMXH
+ * \ref ServoX
  * \ref ServoXL
  */
 class ServoDynamixel: public Servo

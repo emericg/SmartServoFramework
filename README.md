@@ -42,8 +42,8 @@ If you have problems with the command line, it's just as easy to generate the do
 ### Dependencies
 
 You will need a modern C++11 capable compiler:
-* GCC >= 4.8  
-* LLVM >= 3.6  
+* GCC >= 5.1  
+* LLVM >= 4.0  
 * MSVC >= 2015  
 
 Build system:
@@ -80,7 +80,7 @@ This framework can be used with any combination of RS-232 ports, USB to TTL adap
 One more important thing: you need to power your servos with **proper power supply**. Shaky power sources have been known to cause interferences on serial bus, resulting in numerous packet corruptions. Be careful when using batteries and power converters!
 
 First you will need to make sure your software can access your serial port:
-* If you are running Linux, you may need special permissions from the `uucp` and/or `dialout` groups in order to access serial ports. You can add your user account to these groups with this command: `# useradd -G uucp,dialout $USER` (you'll need root credentials for this operation).
+* If you are running Linux, you may need special permissions from the `uucp` and/or `dialout` groups in order to access serial ports. You can add your user account to these groups with this command: `# usermod -a -G uucp,dialout $USER` (you'll need root credentials for this operation).
 * If you are running macOS, depending on your adapter, you may need to install the [FTDI driver](http://www.robotis.com/xe/download_en/646927), or the [CP210x driver](http://www.silabs.com/products/mcu/pages/usbtouartbridgevcpdrivers.aspx).
 * If you are running Windows, you may need to install the [FTDI driver for the USB2Dynamixel device](http://www.robotis.com/xe/download_en/646927). You may also need other drivers depending on your adapter (like the [USB2AX driver](https://raw.githubusercontent.com/Xevel/usb2ax/master/firmware/lufa_usb2ax/USB2AX.inf), the [CP210x driver](http://www.silabs.com/products/mcu/pages/usbtouartbridgevcpdrivers.aspx), or the official [FTDI driver](http://www.ftdichip.com/Drivers/D2XX.htm)).
 

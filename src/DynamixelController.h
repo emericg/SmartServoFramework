@@ -71,7 +71,7 @@ public:
 
     /*!
      * \brief Change communication protocol version for this controller instance.
-     * \param protocol: The Dynamixel communication protocol to use. Can be v1 or v2.
+     * \param protocolVersion: The Dynamixel communication protocol to use. Can be v1 or v2.
      */
     void changeProtocolVersion(int protocolVersion);
 

@@ -242,7 +242,7 @@ const int XL320_control_table[32][8] =
 
 /*!
  * \brief XM / XH control table.
- * \ref ServoXMXH
+ * \ref ServoX
  *
  * More details:
  * - http://www.robotis.us/x-series/

@@ -24,25 +24,22 @@ SmartServoGui is a fully featured Qt GUI application that helps you discover dev
 ### Dependencies
 
 You will need a modern C++11 capable compiler:
-* GCC >= 4.8
-* LLVM >= 3.6
-* MSVC >= 2015
+* GCC >= 5.1  
+* LLVM >= 4.0  
+* MSVC >= 2015  
 
 Libraries:
-* Qt (version 4 or 5)
-* SmartServoFramework (we got this one covered)
-
-Using Linux?
-* liblockdev (used to lock the serial port to a single software instance, which will save you from a lot of potential head scratching errors...)
+* Qt 5  
+* SmartServoFramework (we got this one covered)  
 
 ### Hardware
 
-Yes, it works better if you have a serial port adapter and a servo.
+Yes, it works better if you have a serial port adapter and a servo :-)
 
 ### Building SmartServoGui
 
 > $ cd SmartServoFramework/gui/  
-> $ qmake-qt${4-5}  
+> $ qmake  
 > $ make  
 > $ ./build/SmartServoGui  
 
