@@ -75,7 +75,7 @@ win32 {
 contains(CONFIG, EXTERNAL_FRAMEWORK) {
     unix {
         INCLUDEPATH += `pkg-config --cflags smartservoframework`
-        LIBS += `pkg-config --libs smartservoframework`
+        LIBS        += `pkg-config --libs smartservoframework`
     }
     win32 {
         SSF_DIR = ..
@@ -84,10 +84,10 @@ contains(CONFIG, EXTERNAL_FRAMEWORK) {
     }
 } else {
     # Use SmartServoFramework sources directly
-    SSF_DIR     = ..
-    INCLUDEPATH+= $${SSF_DIR}
-    SOURCES    += $${SSF_DIR}/SmartServoFramework/*.cpp
-    HEADERS    += $${SSF_DIR}/SmartServoFramework/*.h
+    SSF_DIR = ..
+    INCLUDEPATH += $${SSF_DIR}
+    SOURCES += $${SSF_DIR}/SmartServoFramework/*.cpp
+    HEADERS += $${SSF_DIR}/SmartServoFramework/*.h
 }
 
 # SmartServoGui sources
@@ -103,10 +103,10 @@ SOURCES    += src/main.cpp \
 
 HEADERS    += src/mainwindow.h \
               src/tabSerial.h \
+              src/advancescanner.h \
               src/widgetSerialScan.h \
               src/widgetSerialError.h \
               src/widgetRegisterTable.h \
-              src/advancescanner.h \
               src/qabout.h \
               src/settings.h
 

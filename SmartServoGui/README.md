@@ -17,7 +17,11 @@ SmartServoGui is a fully featured Qt GUI application that helps you discover dev
 
 ![GUI2](http://i.imgur.com/x3sXE31.png)
 
+![GUI2](http://i.imgur.com/8iBKiKN.png)
+
 ![GUI3](http://i.imgur.com/bE2qYIk.png)
+
+![GUI3](http://i.imgur.com/XZt7WsF.png)
 
 ## Instructions
 

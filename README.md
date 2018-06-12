@@ -5,7 +5,7 @@ SmartServoFramework 0.98
 [![Build status](https://ci.appveyor.com/api/projects/status/doqnmp6jrlqjyt22?svg=true)](https://ci.appveyor.com/project/emericg/smartservoframework)
 [![License: LGPL v3](https://img.shields.io/badge/license-LGPL%20v3-green.svg)](http://www.gnu.org/licenses/lgpl-3.0)
 
-![SERVO](https://raw.githubusercontent.com/emericg/SmartServoFramework/master/gui/resources/img/dynamixel_ax12_diagram.png)
+![SERVO](https://raw.githubusercontent.com/emericg/SmartServoFramework/master/SmartServoGui/resources/img/dynamixel_ax12_diagram.png)
 
 ## Introduction
 

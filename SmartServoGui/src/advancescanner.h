@@ -26,8 +26,8 @@
 #include <QMainWindow>
 #include <QTreeWidgetItem>
 
-#include "../../src/DynamixelSimpleAPI.h"
-#include "../../src/HerkuleXSimpleAPI.h"
+// SmartServoFramework
+#include <SmartServoFramework/SimpleAPI.h>
 
 namespace Ui {
 class AdvanceScanner;

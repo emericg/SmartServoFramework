@@ -186,8 +186,8 @@ set(SmartServoFramework_SRC
     SmartServoFramework/ServoXL.h
     SmartServoFramework/ServoX.cpp
     SmartServoFramework/ServoX.h
-    SmartServoFramework/Utils.cpp
-    SmartServoFramework/Utils.h
+    SmartServoFramework/ServoTools.cpp
+    SmartServoFramework/ServoTools.h
 )
 
 # Build library (static and shared rules)
