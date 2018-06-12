@@ -15,13 +15,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software. If not, see <http://www.gnu.org/licenses/lgpl-3.0.txt>.
  *
- * \file Utils.h
+ * \file ServoTools.h
  * \date 08/07/2014
  * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef SERVO_TOOLS_H
+#define SERVO_TOOLS_H
 /* ************************************************************************** */
 
 // Doxygen documentation groups:
@@ -475,4 +475,4 @@ std::string getRegisterNameTxt(const int reg_name);
 /** @}*/
 
 /* ************************************************************************** */
-#endif // UTILS_H
+#endif // SERVO_TOOLS_H

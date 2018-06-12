@@ -23,7 +23,7 @@
 #ifndef DYNAMIXEL_TOOLS_H
 #define DYNAMIXEL_TOOLS_H
 
-#include "Utils.h"
+#include "ServoTools.h"
 #include <string>
 
 /*!

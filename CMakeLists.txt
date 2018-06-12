@@ -2,13 +2,13 @@
 # This file allows you to build a shared library of SmartServoFramework
 ################################################################################
 
-cmake_minimum_required(VERSION 3.0)
-
 project(SmartServoFramework)
 
 set(SmartServoFramework_VERSION_MAJOR 0)
 set(SmartServoFramework_VERSION_MINOR 98)
 set(SmartServoFramework_VERSION_PATCH 0)
+
+cmake_minimum_required(VERSION 3.0)
 
 # Build settings
 ################################################################################
@@ -26,7 +26,7 @@ if(WIN32)
     # when unquoted to NEW to avoid warnings.
     cmake_policy(SET CMP0054 NEW)
 
-    if (CMAKE_VERSION VERSION_GREATER "3.3")
+    if(CMAKE_VERSION VERSION_GREATER "3.3")
         include(GenerateExportHeader)
     endif()
 endif()
@@ -51,6 +51,7 @@ option(BUILD_SHARED_LIBS "Build shared library" ON)
 set(CMAKE_CXX_FLAGS "-std=c++11")
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # Add per-compiler custom rules
 if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
@@ -127,66 +128,66 @@ endif()
 
 # Generate "SmartServoFramework_settings.h" file from a template
 configure_file(
-    "${CMAKE_SOURCE_DIR}/src/SmartServoFramework_settings.h.in"
-    "${CMAKE_SOURCE_DIR}/src/SmartServoFramework_settings.h"
+    "${CMAKE_SOURCE_DIR}/SmartServoFramework/SmartServoFramework_settings.h.in"
+    "${CMAKE_SOURCE_DIR}/SmartServoFramework/SmartServoFramework_settings.h"
 )
 
 set(SmartServoFramework_SRC
-    src/minitraces.cpp
-    src/minitraces_conf.h
-    src/minitraces.h
-    src/ControllerAPI.cpp
-    src/ControllerAPI.h
-    src/ControlTables.cpp
-    src/ControlTablesDynamixel.h
-    src/ControlTables.h
-    src/ControlTablesHerkuleX.h
-    src/DynamixelController.cpp
-    src/DynamixelController.h
-    src/Dynamixel.cpp
-    src/Dynamixel.h
-    src/DynamixelSimpleAPI.cpp
-    src/DynamixelSimpleAPI.h
-    src/DynamixelTools.cpp
-    src/DynamixelTools.h
-    src/HerkuleXController.cpp
-    src/HerkuleXController.h
-    src/HerkuleX.cpp
-    src/HerkuleX.h
-    src/HerkuleXSimpleAPI.cpp
-    src/HerkuleXSimpleAPI.h
-    src/HerkuleXTools.cpp
-    src/HerkuleXTools.h
-    src/SerialPort.cpp
-    src/SerialPort.h
-    src/SerialPortQt.cpp
-    src/SerialPortQt.h
-    src/SerialPortLinux.cpp
-    src/SerialPortLinux.h
-    src/SerialPortMacOS.cpp
-    src/SerialPortMacOS.h
-    src/SerialPortWindows.cpp
-    src/SerialPortWindows.h
-    src/ServoAX.cpp
-    src/ServoAX.h
-    src/Servo.cpp
-    src/ServoDRS.cpp
-    src/ServoDRS.h
-    src/ServoDynamixel.cpp
-    src/ServoDynamixel.h
-    src/ServoEX.cpp
-    src/ServoEX.h
-    src/Servo.h
-    src/ServoHerkuleX.cpp
-    src/ServoHerkuleX.h
-    src/ServoMX.cpp
-    src/ServoMX.h
-    src/ServoXL.cpp
-    src/ServoXL.h
-    src/ServoX.cpp
-    src/ServoX.h
-    src/Utils.cpp
-    src/Utils.h
+    SmartServoFramework/minitraces.cpp
+    SmartServoFramework/minitraces_conf.h
+    SmartServoFramework/minitraces.h
+    SmartServoFramework/ControllerAPI.cpp
+    SmartServoFramework/ControllerAPI.h
+    SmartServoFramework/ControlTables.cpp
+    SmartServoFramework/ControlTablesDynamixel.h
+    SmartServoFramework/ControlTables.h
+    SmartServoFramework/ControlTablesHerkuleX.h
+    SmartServoFramework/DynamixelController.cpp
+    SmartServoFramework/DynamixelController.h
+    SmartServoFramework/Dynamixel.cpp
+    SmartServoFramework/Dynamixel.h
+    SmartServoFramework/DynamixelSimpleAPI.cpp
+    SmartServoFramework/DynamixelSimpleAPI.h
+    SmartServoFramework/DynamixelTools.cpp
+    SmartServoFramework/DynamixelTools.h
+    SmartServoFramework/HerkuleXController.cpp
+    SmartServoFramework/HerkuleXController.h
+    SmartServoFramework/HerkuleX.cpp
+    SmartServoFramework/HerkuleX.h
+    SmartServoFramework/HerkuleXSimpleAPI.cpp
+    SmartServoFramework/HerkuleXSimpleAPI.h
+    SmartServoFramework/HerkuleXTools.cpp
+    SmartServoFramework/HerkuleXTools.h
+    SmartServoFramework/SerialPort.cpp
+    SmartServoFramework/SerialPort.h
+    SmartServoFramework/SerialPortQt.cpp
+    SmartServoFramework/SerialPortQt.h
+    SmartServoFramework/SerialPortLinux.cpp
+    SmartServoFramework/SerialPortLinux.h
+    SmartServoFramework/SerialPortMacOS.cpp
+    SmartServoFramework/SerialPortMacOS.h
+    SmartServoFramework/SerialPortWindows.cpp
+    SmartServoFramework/SerialPortWindows.h
+    SmartServoFramework/ServoAX.cpp
+    SmartServoFramework/ServoAX.h
+    SmartServoFramework/Servo.cpp
+    SmartServoFramework/ServoDRS.cpp
+    SmartServoFramework/ServoDRS.h
+    SmartServoFramework/ServoDynamixel.cpp
+    SmartServoFramework/ServoDynamixel.h
+    SmartServoFramework/ServoEX.cpp
+    SmartServoFramework/ServoEX.h
+    SmartServoFramework/Servo.h
+    SmartServoFramework/ServoHerkuleX.cpp
+    SmartServoFramework/ServoHerkuleX.h
+    SmartServoFramework/ServoMX.cpp
+    SmartServoFramework/ServoMX.h
+    SmartServoFramework/ServoXL.cpp
+    SmartServoFramework/ServoXL.h
+    SmartServoFramework/ServoX.cpp
+    SmartServoFramework/ServoX.h
+    SmartServoFramework/Utils.cpp
+    SmartServoFramework/Utils.h
 )
 
 # Build library (static and shared rules)
@@ -205,7 +206,7 @@ if (BUILD_SHARED_LIBS)
         GENERATE_EXPORT_HEADER(SmartServoFramework_shared
                                BASE_NAME SmartServoFramework_shared
                                EXPORT_MACRO_NAME SmartServoFramework_EXPORT
-                               EXPORT_FILE_NAME "${CMAKE_SOURCE_DIR}/src/SmartServoFramework_export.h"
+                               EXPORT_FILE_NAME "${CMAKE_SOURCE_DIR}/SmartServoFramework/SmartServoFramework_export.h"
                                STATIC_DEFINE SmartServoFramework_BUILT_AS_STATIC)
     endif()
     endif()
@@ -227,20 +228,20 @@ set(LIB_SUFFIX "" CACHE STRING "Define suffix of directory name")
 set(EXEC_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX} CACHE PATH "Installation prefix for executables and object code libraries" FORCE)
 set(BIN_INSTALL_DIR ${EXEC_INSTALL_PREFIX}/bin CACHE PATH "Installation prefix for user executables" FORCE)
 set(LIB_INSTALL_DIR ${EXEC_INSTALL_PREFIX}/lib${LIB_SUFFIX} CACHE PATH "Installation prefix for object code libraries" FORCE)
-set(INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/include/smartservoframework CACHE PATH "Installation prefix for header files" FORCE)
+set(INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/include/SmartServoFramework CACHE PATH "Installation prefix for header files" FORCE)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libsmartservoframework.pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/libsmartservoframework.pc)
 
 # Install the libraries and its header into the system
 # (optional step, requires root credentials)
 # Relative to $<CMAKE_INSTALL_PREFIX>
-if(UNIX)
-    if (BUILD_STATIC_LIBS)
-        install(TARGETS SmartServoFramework_static DESTINATION lib/)
-    endif (BUILD_STATIC_LIBS)
+if (UNIX)
     if (BUILD_SHARED_LIBS)
         install(TARGETS SmartServoFramework_shared DESTINATION lib/)
     endif (BUILD_SHARED_LIBS)
+    if (BUILD_STATIC_LIBS)
+        install(TARGETS SmartServoFramework_static DESTINATION lib/)
+    endif (BUILD_STATIC_LIBS)
 
-    install(DIRECTORY src/ DESTINATION include/smartservoframework/ FILES_MATCHING PATTERN "*.h")
+    install(DIRECTORY SmartServoFramework/ DESTINATION include/SmartServoFramework/ FILES_MATCHING PATTERN "*.h")
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libsmartservoframework.pc DESTINATION lib/pkgconfig/)
-endif()
+endif(UNIX)

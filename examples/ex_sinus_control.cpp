@@ -34,8 +34,7 @@
 #define SOFTWARE_FREQUENCY     30
 
 // SmartServoFramework
-#include "../src/DynamixelController.h"
-#include "../src/HerkuleXController.h"
+#include "../SmartServoFramework/ManagedAPI.h"
 
 // C++ standard libraries
 #include <iostream>

@@ -33,8 +33,8 @@
  * for a more exaustive search software.
  */
 
-// Smart Servo Framework
-#include "../src/DynamixelSimpleAPI.h"
+// SmartServoFramework
+#include "../SmartServoFramework/SimpleAPI.h"
 
 // C++ standard library
 #include <iostream>

@@ -16,7 +16,7 @@ SmartServoFramework is a C++ multi-platform framework used to drive "smart servo
 > Dynamixel devices from [Robotis](http://www.robotis.com/) and HerkuleX devices from [Dongbu Robot](http://www.dongburobot.com/) are high-performance networked actuators for robots available in wide range of sizes and strengths.  
 > They have adjustable torque, speed, angle limits, and provide various feedback like position, load, voltage and temperature...
 
-This framework **can be used with any Dynamixel or HerkuleX devices**. We support all models of HerkuleX from the DRS-0101 up to the DRS-0602. For Dynamixel that means AX, EX, MX-T series, XL-320 models, X series, as well as the older RX and DX series. We even have support for the AX-S1 and IR sensor array! Please note that the Dynamixel PRO devices *should* work (the version 2 of the communication protocol is implemented, and works great with XL-320 devices), but they are considered as experimental since we couldn't test with any real device.  
+This framework **can be used with any Dynamixel or HerkuleX devices**. We support all models of HerkuleX from the DRS-0101 up to the DRS-0602. For Dynamixel that means AX, EX, MX-T serie, X serie, as well as the older RX and DX series. We even have support for the AX-S1 and IR sensor array! Please note that the Dynamixel PRO devices *should* work (the version 2 of the communication protocol is implemented, and works great with X serie), but they are considered as experimental since we couldn't test with any real device.  
 Support for other devices, brands or protocols may be added in the futur...
 
 We provide two different APIs:
@@ -25,9 +25,9 @@ We provide two different APIs:
 
 ## Documentation
 
-> More informations on how to use the framework and your devices are available inside the `doc/` directory, and mirrored on the wiki. Please check these docs ;-)
+> More informations on how to use the framework and your devices are available inside the `documentation/` directory, and mirrored on the wiki. Please check these docs ;-)
 
-You can dynamically generate a **full API documentation** from the source code using Doxygen. This will prove very important in order to work efficiently with the framework. The documentation will be accessible through `doc/API_documentation.html`.
+You can dynamically generate a **full API documentation** from the source code using Doxygen. This will prove very important in order to work efficiently with the framework. The documentation will be accessible through `documentation/APIs_documentation.html`.
 
 If you are running a macOS/Linux system you can easily generate the documentation from a terminal:
 > $ cd SmartServoFramework/  
@@ -37,7 +37,7 @@ If you have problems with the command line, it's just as easy to generate the do
 
 ## Building the framework
 
-> A full documentation is available in the `doc/BuildInstructions.md`
+> A full documentation is available in the `documentation/BuildInstructions.md`
 
 ### Dependencies
 
@@ -73,7 +73,7 @@ You can build them all at once:
 
 ### Serial communication
 
-> A full documentation is available in the `doc/SerialCommunication.md`
+> A full documentation is available in the `documentation/SerialCommunication.md`
 
 This framework can be used with any combination of RS-232 ports, USB to TTL adapters, USB to RS-485 adapters, half or full duplex... But you'll need the right link for the right device.
 
@@ -86,9 +86,9 @@ First you will need to make sure your software can access your serial port:
 
 #### Communication with Dynamixel devices
 
-> Note: Regular "full-duplex" TTL converters will NOT work with "half-duplex TTL" Dynamixel servos (AX serie, MX "T" serie, XL-320, ...).
+> Note: Regular "full-duplex" TTL converters will NOT work with "half-duplex TTL" Dynamixel servos (AX serie, MX "T" serie, X serie, ...).
 
-* [USB2AX](http://www.xevelabs.com/doku.php?id=product:usb2ax:usb2ax): Unofficial but awesome device designed to manage TTL communication with your Dynamixels (AX serie, MX-T serie, XL-320, ...).  
+* [USB2AX](http://www.xevelabs.com/doku.php?id=product:usb2ax:usb2ax): Unofficial but awesome device designed to manage TTL communication with your Dynamixels (AX serie, MX-T serie, X serie, ...).  
 * [USB2Dynamixel](http://support.robotis.com/en/product/auxdevice/interface/usb2dxl_manual.htm): Official device that can manage all Dynamixel devices through RS232 / RS485 / TTL communications.  
 * Home made TTL half-duplex device: [like this setup](http://savageelectronics.blogspot.fr/2011/01/arduino-y-dynamixel-ax-12.html) from Savage Electronics (in spanish), or [this one](http://www.memememememememe.me/the-dynamixel/) from memememe (in english).  
 
@@ -98,16 +98,15 @@ You need a serial port with a regular "full-duplex" TTL converter to use Herkule
 
 ## SmartServoGui
 
-> SmartServoGui has its own README in the `gui/` directory, where you can learn more about its features!
+> SmartServoGui has its own README in the `SmartServoGui/` directory, where you can learn more about its features!
 
 SmartServoGui is a fully featured Qt GUI application that helps you discover devices on available serial links, get an overview of all of their registers, and easily tweak their settings! Like the framework, it is fully multi-platform.
 
 ### Quick installation
 
-> $ cd SmartServoFramework/gui/  
-> $ qmake-qt${4-5}  
+> $ cd SmartServoFramework/SmartServoGui/  
+> $ qmake-qt  
 > $ make  
-> $ ./build/SmartServoGui  
 
 ### Screenshots!
 

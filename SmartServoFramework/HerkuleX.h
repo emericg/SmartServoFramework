@@ -28,9 +28,9 @@
 #include "SerialPortWindows.h"
 #include "SerialPortMacOS.h"
 
-#include "Utils.h"
-#include "ControlTables.h"
+#include "ServoTools.h"
 #include "HerkuleXTools.h"
+#include "ControlTables.h"
 
 #include <string>
 #include <vector>

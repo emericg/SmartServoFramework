@@ -78,13 +78,16 @@ contains(CONFIG, EXTERNAL_FRAMEWORK) {
         LIBS += `pkg-config --libs smartservoframework`
     }
     win32 {
-        INCLUDEPATH += ../src/
-        LIBS += ../build/smartservoframework.lib
+        SSF_DIR = ..
+        INCLUDEPATH += $${SSF_DIR}
+        LIBS += $${SSF_DIR}/build/smartservoframework.lib
     }
 } else {
     # Use SmartServoFramework sources directly
-    SOURCES  += ../src/*.cpp
-    HEADERS  += ../src/*.h
+    SSF_DIR     = ..
+    INCLUDEPATH+= $${SSF_DIR}
+    SOURCES    += $${SSF_DIR}/SmartServoFramework/*.cpp
+    HEADERS    += $${SSF_DIR}/SmartServoFramework/*.h
 }
 
 # SmartServoGui sources

@@ -39,8 +39,7 @@
  */
 
 // SmartServoFramework
-#include "../src/DynamixelController.h"
-#include "../src/HerkuleXController.h"
+#include "../SmartServoFramework/SimpleAPI.h"
 
 // C++ standard libraries
 #include <iostream>

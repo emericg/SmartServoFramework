@@ -30,10 +30,7 @@
 #include "settings.h"
 
 // SmartServoFramework
-#include "../../src/DynamixelController.h"
-#include "../../src/HerkuleXController.h"
-#include "../../src/DynamixelTools.h"
-#include "../../src/HerkuleXTools.h"
+#include <SmartServoFramework/ManagedAPI.h>
 
 // Qt
 #include <QApplication>

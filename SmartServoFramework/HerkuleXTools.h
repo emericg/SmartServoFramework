@@ -23,7 +23,7 @@
 #ifndef HERKULEX_TOOLS_H
 #define HERKULEX_TOOLS_H
 
-#include "Utils.h"
+#include "ServoTools.h"
 #include <string>
 
 /*!

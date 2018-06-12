@@ -15,12 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software. If not, see <http://www.gnu.org/licenses/lgpl-3.0.txt>.
  *
- * \file Utils.cpp
+ * \file ServoTools.cpp
  * \date 08/07/2014
  * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
-#include "Utils.h"
+#include "ServoTools.h"
 
 std::string getRegisterNameTxt(const int reg_name)
 {

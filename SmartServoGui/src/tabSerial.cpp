@@ -22,7 +22,9 @@
 
 #include "tabSerial.h"
 #include "ui_tabSerial.h"
-#include "../src/Utils.h"
+
+// SmartServoFramework
+#include <SmartServoFramework/ManagedAPI.h>
 
 tabSerial::tabSerial(QWidget *parent) :
     QWidget(parent),

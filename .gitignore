@@ -1,17 +1,16 @@
 # Binaries and build artifacts
-build/*
-gui/build/*
 *.o
+build/*
+SmartServoGui/build/*
+SmartServoGui/bin/*
 
 # Doxygen
-doc/html
+documentation/html
 
-# CMake temporary project files
+# CMake generated & temporary project files
 CMakeLists.txt.*
-
-# CMake generated files
-src/SmartServoFramework_export.h
-src/SmartServoFramework_settings.h
+SmartServoFramework/SmartServoFramework_export.h
+SmartServoFramework/SmartServoFramework_settings.h
 
 # QtCreator temporary project files
 SmartServoFramework.config
@@ -20,10 +19,9 @@ SmartServoFramework.files
 SmartServoFramework.includes
 
 # QMake temporary project files (gui)
-gui/SmartServoGui.pro.*
-gui/.qmake.stash
-gui/Makefile
-gui/build/*
+SmartServoGui/SmartServoGui.pro.*
+SmartServoGui/.qmake.stash
+SmartServoGui/Makefile
 
 # Scons temporary project files (examples)
 examples/.scon*

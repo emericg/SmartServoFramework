@@ -86,7 +86,7 @@ else:
 # Framework sources will be copied into the 'build' directory and build artifacts will be stored there
 ################################################################################
 
-env.VariantDir('build/', '../src/')
+env.VariantDir('build/', '../SmartServoFramework/')
 
 src_framework = [env.Object("build/SerialPort.cpp"), env.Object("build/SerialPortLinux.cpp"), env.Object("build/SerialPortMacOS.cpp"), env.Object("build/SerialPortWindows.cpp"),
                  env.Object("build/minitraces.cpp"), env.Object("build/ControlTables.cpp"), env.Object("build/Utils.cpp"), env.Object("build/ControllerAPI.cpp"),env.Object("build/Servo.cpp"),

@@ -13,9 +13,6 @@ Build system:
 * Scons (**ONLY** needed to build the examples)  
 * Doxygen (**ONLY** needed to generate the documentation)  
 
-Using Linux?
-* liblockdev (**OPTIONAL**) (used to lock the serial port to a single software instance, which will save you from a lot of potential head scratching errors...)
-
 ### Building SmartServoFramework library (Linux and macOS)
 
 > $ cd SmartServoFramework/build/  
@@ -23,6 +20,12 @@ Using Linux?
 > $ make  
 
 The shared library will be located inside the `build/` directory.
+
+### Building SmartServoGui (Linux and macOS)
+
+> $ cd SmartServoFramework/SmartServoGui/  
+> $ qmake  
+> $ make  
 
 ### Building test softwares (Linux and macOS)
 

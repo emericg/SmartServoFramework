@@ -2,7 +2,8 @@ API breakage
 ------------
 
 version 0.98
-- You only need to include SimpleAPI.h and ManagedAPI.h directly in your project now
+- Some directories have been shifted around
+- You only need to include <SmartServoFramework/SimpleAPI.h> or <SmartServoFramework/ManagedAPI.h> directly in your project now
 
 version 0.97
 - DynamixelController() and HerkuleXController() params order have changed (now in line with the SimpleAPI)
