@@ -100,7 +100,7 @@ enum AckPolicy_e
     ACK_DEFAULT    = -1,   //!< Use default policy for the device (ACK_REPLY_ALL for Dynamixel, ACK_REPLY_READ for HerkuleX)
 
     ACK_NO_REPLY   = 0,    //!< Status packets are disabled (except to Dynamixel "PING" or HerkuleX "STAT" commands)
-    ACK_REPLY_READ = 1,    //!< Status packets are sent only to "READ" commands
+    ACK_REPLY_READ = 1,    //!< Status packets are sent only to "READ" commands (and to Dynamixel "PING" or HerkuleX "STAT" commands)
     ACK_REPLY_ALL  = 2     //!< Status packets are sent to every commands
 };
 

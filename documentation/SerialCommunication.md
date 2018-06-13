@@ -12,15 +12,15 @@ One more important thing: you need to power your servos with **proper power supp
 Dynamixel and HerkuleX devices communicates through serial communication links.
 
 Depending on the devices:
-- Dynamixel series AX, MX-T, X, uses half duplex (3 pins) TTL RS-232 links
-- Dynamixel series RX, EX, MX-R, uses full duplex (4 pins) RS-485 links
+- Dynamixel series AX, MX-T, XL and X*-T, use half duplex (3 pins) TTL RS-232 links
+- Dynamixel series RX, EX, MX-R, X*-R use full duplex (4 pins) RS-485 links
 - HerkuleX devices uses full duplex (4 pins) TTL RS-232 links
 
 ### Supported adapters
 
 #### Dynamixel devices
 
-> Note: Regular "full-duplex" TTL converters will NOT work with "half-duplex TTL" Dynamixel servos (AX serie, MX-T serie, X serie, ...).
+> Note: Regular "full-duplex" TTL converters will NOT work with "half-duplex TTL" Dynamixel servos (AX serie, MX-T serie, XL and X*-T serie, ...).
 
 * [USB2AX](http://www.xevelabs.com/doku.php?id=product:usb2ax:usb2ax): Unofficial but awesome device designed to manage TTL communication with your Dynamixels (AX serie, MX-T serie, X serie, ...).
 * [USB2Dynamixel](http://support.robotis.com/en/product/auxdevice/interface/usb2dxl_manual.htm): Official device that can manage all Dynamixel devices through RS232 / RS485 / TTL communications.

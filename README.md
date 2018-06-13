@@ -16,7 +16,7 @@ SmartServoFramework is a C++ multi-platform framework used to drive "smart servo
 > Dynamixel devices from [Robotis](http://www.robotis.com/) and HerkuleX devices from [Dongbu Robot](http://www.dongburobot.com/) are high-performance networked actuators for robots available in wide range of sizes and strengths.  
 > They have adjustable torque, speed, angle limits, and provide various feedback like position, load, voltage and temperature...
 
-This framework **can be used with any Dynamixel or HerkuleX devices**. We support all models of HerkuleX from the DRS-0101 up to the DRS-0602. For Dynamixel that means AX, EX, MX-T serie, X serie, as well as the older RX and DX series. We even have support for the AX-S1 and IR sensor array! Please note that the Dynamixel PRO devices *should* work (the version 2 of the communication protocol is implemented, and works great with X serie), but they are considered as experimental since we couldn't test with any real device.  
+This framework **can be used with any Dynamixel or HerkuleX devices**. We support all models of HerkuleX from the DRS-0101 up to the DRS-0602. For Dynamixel that means AX, EX, MX serie, X serie, as well as the older RX and DX series. We even have support for the AX-S1 and IR sensor array! Please note that the Dynamixel PRO devices *should* work (the version 2 of the communication protocol is implemented, and works great with X serie), but they are considered as experimental since we couldn't test with any real device.  
 Support for other devices, brands or protocols may be added in the futur...
 
 We provide two different APIs:
@@ -86,7 +86,7 @@ First you will need to make sure your software can access your serial port:
 
 #### Communication with Dynamixel devices
 
-> Note: Regular "full-duplex" TTL converters will NOT work with "half-duplex TTL" Dynamixel servos (AX serie, MX "T" serie, X serie, ...).
+> Note: Regular "full-duplex" TTL converters will NOT work with "half-duplex TTL" Dynamixel servos (AX serie, MX-T serie, XL and X*-T serie, ...).
 
 * [USB2AX](http://www.xevelabs.com/doku.php?id=product:usb2ax:usb2ax): Unofficial but awesome device designed to manage TTL communication with your Dynamixels (AX serie, MX-T serie, X serie, ...).  
 * [USB2Dynamixel](http://support.robotis.com/en/product/auxdevice/interface/usb2dxl_manual.htm): Official device that can manage all Dynamixel devices through RS232 / RS485 / TTL communications.  
