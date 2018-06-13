@@ -56,14 +56,15 @@ int main(int argc, char *argv[])
 {
     std::cout << std::endl << "======== Smart Servo Framework Tester ========" << std::endl;
 
-    // Initialize a DynamixelController instance
+    // Initialize a Dynamixel "controller" instance
     DynamixelController ctrl(SYNC_FREQUENCY);
 
-    // Initialize a serial link for the controller
+    // Connect your controller instance to a serial port
     // You can specify the serial port path directly if you know it. Ex: "/dev/ttyUSB0" for a Linux system; "//./COM1" for a Windows system.
     // Note: serial port "auto-detection" will only work if a single serial port adapter is connected to your computer, or if the fisrt one detected is the one connected to your devices.
-    std::string deviceName = "auto";
-    if (ctrl.connect(deviceName, 1000000) == 0)
+    std::string serialDevicePath = "auto";
+    int serialDeviceBaudrate = 1000000;
+    if (ctrl.connect(serialDevicePath, serialDeviceBaudrate) == 0)
     {
         std::cerr << "> Failed to open a serial link for our ControllerAPI! Exiting..." << std::endl;
         exit(EXIT_FAILURE);

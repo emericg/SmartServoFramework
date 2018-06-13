@@ -62,13 +62,14 @@ int main(int argc, char *argv[])
     // Initialize a Dynamixel "Simple API" instance
     DynamixelSimpleAPI dxl;
 
-    // Initialize a serial link for the SimpleAPI
+    // Connect your SimpleAPI instance to a serial port
     // You can specify the serial port path directly if you know it. Ex: "/dev/ttyUSB0" for a Linux system; "//./COM1" for a Windows system.
     // Note: serial port "auto-detection" will only work if a single serial port adapter is connected to your computer, or if the fisrt one detected is the one connected to your devices.
-    std::string deviceName = "auto";
-    if (dxl.connect(deviceName, 1) == 0)
+    std::string serialDevicePath = "auto";
+    int serialDeviceBaudrate = 1000000;
+    if (dxl.connect(serialDevicePath, serialDeviceBaudrate) == 0)
     {
-        std::cerr << "> Failed to open a serial link for our SimpleAPI! Exiting..." << std::endl;
+        std::cerr << "> Failed to open a serial link for your SimpleAPI instance! Exiting..." << std::endl;
         exit(EXIT_FAILURE);
     }
 
