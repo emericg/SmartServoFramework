@@ -228,13 +228,13 @@ bool SerialPort::removeLock()
 
 void SerialPort::setLatency(int latency)
 {
-    if (latency > 0 && latency < 128)
+    if (latency >= 1 && latency <= 128)
     {
         ttyDeviceLatencyTime = latency;
     }
     else
     {
-        TRACE_WARNING(SERIAL, "Invalid latency value: '%i', not in ]0;128[ range.", latency);
+        TRACE_WARNING(SERIAL, "Invalid latency value: '%i', not in [1;128] range.", latency);
     }
 }
 

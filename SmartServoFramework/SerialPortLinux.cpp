@@ -695,8 +695,18 @@ bool SerialPortLinux::switchHighSpeed()
 {
     bool status = false;
 
-    // TODO // enables "ASYNC_LOW_LATENCY" flag
+    // Set "ASYNC_LOW_LATENCY" flag
     // reduce the "/sys/bus/usb-serial/devices/ttyXXX/latency_timer" value
+
+    struct serial_struct serinfo;
+    if (ioctl(ttyDeviceFileDescriptor, TIOCGSERIAL, &serinfo) >= 0)
+    {
+        serinfo.flags |= ASYNC_LOW_LATENCY;
+        if (ioctl(ttyDeviceFileDescriptor, TIOCSSERIAL, &serinfo) >= 0)
+        {
+            status = true;;
+        }
+    }
 
     return status;
 }
