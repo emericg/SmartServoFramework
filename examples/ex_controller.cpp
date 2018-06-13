@@ -39,7 +39,7 @@
  */
 
 // SmartServoFramework
-#include "../SmartServoFramework/SimpleAPI.h"
+#include "../SmartServoFramework/ManagedAPI.h"
 
 // C++ standard libraries
 #include <iostream>

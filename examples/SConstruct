@@ -89,7 +89,7 @@ else:
 env.VariantDir('build/', '../SmartServoFramework/')
 
 src_framework = [env.Object("build/SerialPort.cpp"), env.Object("build/SerialPortLinux.cpp"), env.Object("build/SerialPortMacOS.cpp"), env.Object("build/SerialPortWindows.cpp"),
-                 env.Object("build/minitraces.cpp"), env.Object("build/ControlTables.cpp"), env.Object("build/Utils.cpp"), env.Object("build/ControllerAPI.cpp"),env.Object("build/Servo.cpp"),
+                 env.Object("build/minitraces.cpp"), env.Object("build/ControlTables.cpp"), env.Object("build/ServoTools.cpp"), env.Object("build/ServoController.cpp"),env.Object("build/Servo.cpp"),
                  env.Object("build/Dynamixel.cpp"), env.Object("build/DynamixelTools.cpp"), env.Object("build/DynamixelSimpleAPI.cpp"), env.Object("build/DynamixelController.cpp"),
                  env.Object("build/ServoDynamixel.cpp"), env.Object("build/ServoAX.cpp"), env.Object("build/ServoEX.cpp"), env.Object("build/ServoMX.cpp"), env.Object("build/ServoXL.cpp"), env.Object("build/ServoX.cpp"),
                  env.Object("build/HerkuleX.cpp"), env.Object("build/HerkuleXTools.cpp"), env.Object("build/HerkuleXSimpleAPI.cpp"), env.Object("build/HerkuleXController.cpp"),
@@ -103,5 +103,7 @@ env.Program(target = 'ex_basic_test', source = ["ex_basic_test.cpp", src_framewo
 env.Program(target = 'ex_simple', source = ["ex_simple.cpp"] + src_framework, LIBS = libraries, LIBPATH = libraries_paths)
 env.Program(target = 'ex_simple_threaded', source = ["ex_simple_threaded.cpp"] + src_framework, LIBS = libraries, LIBPATH = libraries_paths)
 env.Program(target = 'ex_controller', source = ["ex_controller.cpp"] + src_framework, LIBS = libraries, LIBPATH = libraries_paths)
-env.Program(target = 'ex_sinus_control', source = ["ex_sinus_control.cpp"] + src_framework, LIBS = libraries + ["opencv_core", "opencv_highgui"], LIBPATH = libraries_paths)
 env.Program(target = 'ex_advance_scanner', source = ["ex_advance_scanner.cpp"] + src_framework, LIBS = libraries, LIBPATH = libraries_paths)
+
+# Uncomment if you have OpenCV 2 installed
+#env.Program(target = 'ex_sinus_control', source = ["ex_sinus_control.cpp"] + src_framework, LIBS = libraries + ["opencv_core", "opencv_highgui"], LIBPATH = libraries_paths)
