@@ -53,8 +53,8 @@ class Dynamixel
 private:
     SerialPort *m_serial = nullptr;     //!< The serial port instance we are going to use.
 
-    unsigned char txPacket[MAX_PACKET_LENGTH_dxlv1] = {0};  //!< TX "instruction" packet buffer
-    unsigned char rxPacket[MAX_PACKET_LENGTH_dxlv1] = {0};  //!< RX "status" packet buffer
+    unsigned char txPacket[MAX_PACKET_LENGTH_dxlv2] = {0};  //!< TX "instruction" packet buffer
+    unsigned char rxPacket[MAX_PACKET_LENGTH_dxlv2] = {0};  //!< RX "status" packet buffer
     int rxPacketSize = 0;               //!< Size of the incoming packet
     int rxPacketSizeReceived = 0;       //!< Byte(s) of the incoming packet received from the serial link
 
