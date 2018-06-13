@@ -29,7 +29,7 @@ namespace Ui {
 class widgetSerialError;
 }
 
-class ControllerAPI;
+class ServoController;
 class Servo;
 
 class widgetSerialError : public QWidget
@@ -44,7 +44,7 @@ public:
 
     void updateVisibility(const int servoSerie);
 
-    void handleErrors(ControllerAPI *ctrl, Servo *servo,
+    void handleErrors(ServoController *ctrl, Servo *servo,
                       const int servoSerie, const int servoModel);
 
 signals:

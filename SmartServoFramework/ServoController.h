@@ -15,13 +15,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software. If not, see <http://www.gnu.org/licenses/lgpl-3.0.txt>.
  *
- * \file ControllerAPI.h
+ * \file ServoController.h
  * \date 25/08/2014
  * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
-#ifndef CONTROLLER_API_H
-#define CONTROLLER_API_H
+#ifndef SERVO_CONTROLLER_H
+#define SERVO_CONTROLLER_H
 
 #include "Servo.h"
 #include "ServoTools.h"
@@ -37,7 +37,7 @@
 
 /*!
  * \brief The controllerState enum.
- * \todo move that into the ControllerAPI
+ * \todo move that into the ServoController
  */
 enum controllerState_e
 {
@@ -51,14 +51,14 @@ enum controllerState_e
 };
 
 /*!
- * \brief The ControllerAPI abstract class, root of the ManagedAPI.
+ * \brief The ServoController abstract class, root of the ManagedAPI.
  *
  * A "controller" provide a high level API to handle several servos object at the
  * same time. A program must instanciate servos instances and register them to
  * a controller. Each servo object is synchronized with its hardware counterpart
  * by the run() method, running in its own backgound thread.
  */
-class ControllerAPI
+class ServoController
 {
     int controllerState = 0;            //!< The current state of the controller, used by client apps to know.
     std::mutex controllerStateLock;     //!< Lock for the controllerState.
@@ -146,15 +146,15 @@ protected:
 
 public:
     /*!
-     * \brief ControllerAPI constructor.
+     * \brief ServoController constructor.
      * \param ctrlFrequency: This is the synchronization frequency between the controller and the servos devices. Range is [1;120].
      */
-    ControllerAPI(int ctrlFrequency);
+    ServoController(int ctrlFrequency);
 
     /*!
-     * \brief ControllerAPI destructor. Stop the controller's thread and close the serial connection.
+     * \brief ServoController destructor. Stop the controller's thread and close the serial connection.
      */
-    virtual ~ControllerAPI();
+    virtual ~ServoController();
 
     /*!
      * \brief Connect the controller to a serial port, if the connection is successfull start a synchronization thread.
@@ -273,4 +273,4 @@ public:
 
 /** @}*/
 
-#endif // CONTROLLER_API_H
+#endif // SERVO_CONTROLLER_H

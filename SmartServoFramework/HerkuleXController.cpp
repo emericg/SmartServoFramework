@@ -32,7 +32,7 @@
 //#define LATENCY_TIMER
 
 HerkuleXController::HerkuleXController(int servoSerie, int ctrlFrequency):
-    ControllerAPI(ctrlFrequency)
+    ServoController(ctrlFrequency)
 {
     m_servoSerie = servoSerie;
 }

@@ -23,9 +23,8 @@
 #ifndef HERKULEX_CONTROLLER_H
 #define HERKULEX_CONTROLLER_H
 
-#include "ControllerAPI.h"
 #include "HerkuleX.h"
-
+#include "ServoController.h"
 #include "ServoHerkuleX.h"
 #include "ServoDRS.h"
 
@@ -39,7 +38,7 @@
  * \brief The HerkuleXController class, part of the ManagedAPI.
  * \note A controller can only be attached to ONE serial link at a time.
  */
-class HerkuleXController: public HerkuleX, public ControllerAPI
+class HerkuleXController: public HerkuleX, public ServoController
 {
     //! Compute some internal settings (ackPolicy, maxId, protocolVersion) depending on current servo serie and serial device.
     void updateInternalSettings();

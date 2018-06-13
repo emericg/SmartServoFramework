@@ -138,8 +138,6 @@ set(SmartServoFramework_SRC
     SmartServoFramework/minitraces.h
     SmartServoFramework/SimpleAPI.h
     SmartServoFramework/ManagedAPI.h
-    SmartServoFramework/ControllerAPI.cpp
-    SmartServoFramework/ControllerAPI.h
     SmartServoFramework/ControlTables.cpp
     SmartServoFramework/ControlTables.h
     SmartServoFramework/ControlTablesDynamixel.h
@@ -172,6 +170,8 @@ set(SmartServoFramework_SRC
     SmartServoFramework/SerialPortWindows.h
     SmartServoFramework/ServoTools.cpp
     SmartServoFramework/ServoTools.h
+    SmartServoFramework/ServoController.cpp
+    SmartServoFramework/ServoController.h
     SmartServoFramework/Servo.cpp
     SmartServoFramework/Servo.h
     SmartServoFramework/ServoDynamixel.cpp
@@ -195,7 +195,6 @@ set(SmartServoFramework_SRC
 set(SmartServoFramework_PUBLIC_HEADERS
     SmartServoFramework/SimpleAPI.h
     SmartServoFramework/ManagedAPI.h
-    SmartServoFramework/ControllerAPI.h
     SmartServoFramework/ControlTablesDynamixel.h
     SmartServoFramework/ControlTables.h
     SmartServoFramework/ControlTablesHerkuleX.h
@@ -212,6 +211,7 @@ set(SmartServoFramework_PUBLIC_HEADERS
     SmartServoFramework/SerialPortMacOS.h
     SmartServoFramework/SerialPortWindows.h
     SmartServoFramework/ServoTools.h
+    SmartServoFramework/ServoController.h
     SmartServoFramework/Servo.h
     SmartServoFramework/ServoDynamixel.h
     SmartServoFramework/ServoAX.h

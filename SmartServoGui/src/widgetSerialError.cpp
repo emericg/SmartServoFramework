@@ -66,7 +66,7 @@ void widgetSerialError::updateVisibility(const int servoSerie)
     }
 }
 
-void widgetSerialError::handleErrors(ControllerAPI *ctrl, Servo *servo,
+void widgetSerialError::handleErrors(ServoController *ctrl, Servo *servo,
                                      const int servoSerie, const int servoModel)
 {
     QString css_comm_ok("color: white;\nborder: 1px solid rgb(85, 170, 0);\nbackground: rgba(85, 200, 0, 128);");

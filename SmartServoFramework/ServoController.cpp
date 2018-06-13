@@ -15,12 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this software. If not, see <http://www.gnu.org/licenses/lgpl-3.0.txt>.
  *
- * \file ControllerAPI.cpp
+ * \file ServoController.cpp
  * \date 25/08/2014
  * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
-#include "ControllerAPI.h"
+#include "ServoController.h"
 #include "minitraces.h"
 
 // C standard library
@@ -33,7 +33,7 @@
 
 /* ************************************************************************** */
 
-ControllerAPI::ControllerAPI(int ctrlFrequency)
+ServoController::ServoController(int ctrlFrequency)
 {
     if (ctrlFrequency < 1 || ctrlFrequency > 120)
     {
@@ -47,24 +47,24 @@ ControllerAPI::ControllerAPI(int ctrlFrequency)
     }
 }
 
-ControllerAPI::~ControllerAPI()
+ServoController::~ServoController()
 {
     //
 }
 
 /* ************************************************************************** */
 
-void ControllerAPI::startThread()
+void ServoController::startThread()
 {
     if (getState() < state_started && syncloopThread.joinable() == 0)
     {
         clearErrorCount();
         setState(state_started);
-        syncloopThread = std::thread(&ControllerAPI::run, this);
+        syncloopThread = std::thread(&ServoController::run, this);
     }
 }
 
-void ControllerAPI::pauseThread()
+void ServoController::pauseThread()
 {
     int ctrlState = getState();
 
@@ -85,7 +85,7 @@ void ControllerAPI::pauseThread()
         TRACE_INFO(CAPI, ">> Unpausing thread (id: %i)...", syncloopThread.get_id());
 
         setState(state_ready);
-        syncloopThread = std::thread(&ControllerAPI::run, this);
+        syncloopThread = std::thread(&ServoController::run, this);
     }
     else
     {
@@ -93,7 +93,7 @@ void ControllerAPI::pauseThread()
     }
 }
 
-void ControllerAPI::stopThread()
+void ServoController::stopThread()
 {
     if (getState() != state_stopped && syncloopThread.joinable() == 1)
     {
@@ -118,7 +118,7 @@ void ControllerAPI::stopThread()
 
 /* ************************************************************************** */
 
-void ControllerAPI::setState(const int state)
+void ServoController::setState(const int state)
 {
     if (state >= state_stopped && state <= state_ready)
     {
@@ -131,18 +131,18 @@ void ControllerAPI::setState(const int state)
     }
 }
 
-int ControllerAPI::getState()
+int ServoController::getState()
 {
     std::lock_guard <std::mutex> lock(controllerStateLock);
     return controllerState;
 }
 
-bool ControllerAPI::waitUntilReady()
+bool ServoController::waitUntilReady()
 {
     return waitUntil(state_started, 6);
 }
 
-bool ControllerAPI::waitUntil(int state, int timeout)
+bool ServoController::waitUntil(int state, int timeout)
 {
     // First, check if the controller is running, otherwise there is not point waiting for it to be ready...
     if (getState() < state)
@@ -189,13 +189,13 @@ bool ControllerAPI::waitUntil(int state, int timeout)
 
 /* ************************************************************************** */
 
-void ControllerAPI::updateErrorCount(int error)
+void ServoController::updateErrorCount(int error)
 {
     std::lock_guard <std::mutex> lock(errorCountLock);
     errorCount += error;
 }
 
-int ControllerAPI::getErrorCount()
+int ServoController::getErrorCount()
 {
     std::lock_guard <std::mutex> lock(errorCountLock);
     return errorCount;
@@ -204,7 +204,7 @@ int ControllerAPI::getErrorCount()
 /*!
  * \brief Reset error count for this controller.
  */
-void ControllerAPI::clearErrorCount()
+void ServoController::clearErrorCount()
 {
     std::lock_guard <std::mutex> lock(errorCountLock);
     errorCount = 0;
@@ -212,7 +212,7 @@ void ControllerAPI::clearErrorCount()
 
 /* ************************************************************************** */
 
-void ControllerAPI::registerServo_internal(Servo *servo)
+void ServoController::registerServo_internal(Servo *servo)
 {
     if (getState() >= state_started)
     {
@@ -252,7 +252,7 @@ void ControllerAPI::registerServo_internal(Servo *servo)
     }
 }
 
-void ControllerAPI::unregisterServo_internal(Servo *servo)
+void ServoController::unregisterServo_internal(Servo *servo)
 {
     // Lock servoList
     std::lock_guard <std::mutex> lock(servoListLock);
@@ -300,7 +300,7 @@ void ControllerAPI::unregisterServo_internal(Servo *servo)
     }
 }
 
-void ControllerAPI::unregisterServos_internal()
+void ServoController::unregisterServos_internal()
 {
     // Lock servoList
     std::lock_guard <std::mutex> lock(servoListLock);
@@ -320,7 +320,7 @@ void ControllerAPI::unregisterServos_internal()
     setState(state_started);
 }
 
-int ControllerAPI::delayedAddServos_internal(std::chrono::time_point <std::chrono::system_clock> delay, int id, int update)
+int ServoController::delayedAddServos_internal(std::chrono::time_point <std::chrono::system_clock> delay, int id, int update)
 {
     if (delay < std::chrono::system_clock::now())
     {
@@ -342,7 +342,7 @@ int ControllerAPI::delayedAddServos_internal(std::chrono::time_point <std::chron
 
 /* ************************************************************************** */
 
-Servo *ControllerAPI::getServo(const int id)
+Servo *ServoController::getServo(const int id)
 {
     // Lock servoList
     std::lock_guard <std::mutex> lock(servoListLock);
@@ -358,7 +358,7 @@ Servo *ControllerAPI::getServo(const int id)
     return nullptr;
 }
 
-const std::vector <Servo *> ControllerAPI::getServos()
+const std::vector <Servo *> ServoController::getServos()
 {
     // Lock servoList
     std::lock_guard <std::mutex> lock(servoListLock);
@@ -370,7 +370,7 @@ const std::vector <Servo *> ControllerAPI::getServos()
 
 /* ************************************************************************** */
 
-void ControllerAPI::sendMessage(miniMessages *m)
+void ServoController::sendMessage(miniMessages *m)
 {
     if (getState() >= state_started)
     {
@@ -385,7 +385,7 @@ void ControllerAPI::sendMessage(miniMessages *m)
     }
 }
 
-void ControllerAPI::clearMessageQueue()
+void ServoController::clearMessageQueue()
 {
     m_mutex.lock();
     m_queue.clear();
@@ -394,7 +394,7 @@ void ControllerAPI::clearMessageQueue()
 
 /* ************************************************************************** */
 
-void ControllerAPI::autodetect(int start, int stop, int bail)
+void ServoController::autodetect(int start, int stop, int bail)
 {
     miniMessages m;
     memset(&m, 0, sizeof(m));
@@ -407,7 +407,7 @@ void ControllerAPI::autodetect(int start, int stop, int bail)
     sendMessage(&m);
 }
 
-void ControllerAPI::registerServo(Servo *servo)
+void ServoController::registerServo(Servo *servo)
 {
     miniMessages m;
     memset(&m, 0, sizeof(m));
@@ -418,7 +418,7 @@ void ControllerAPI::registerServo(Servo *servo)
     sendMessage(&m);
 }
 
-void ControllerAPI::registerServo(int id)
+void ServoController::registerServo(int id)
 {
 /*
     miniMessages m;
@@ -431,7 +431,7 @@ void ControllerAPI::registerServo(int id)
 */
 }
 
-void ControllerAPI::unregisterServo(Servo *servo)
+void ServoController::unregisterServo(Servo *servo)
 {
     miniMessages m;
     memset(&m, 0, sizeof(m));
@@ -442,7 +442,7 @@ void ControllerAPI::unregisterServo(Servo *servo)
     sendMessage(&m);
 }
 
-void ControllerAPI::unregisterServo(int id)
+void ServoController::unregisterServo(int id)
 {
 /*
     miniMessages m;

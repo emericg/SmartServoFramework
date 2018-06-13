@@ -33,7 +33,7 @@
 //#define LATENCY_TIMER
 
 DynamixelController::DynamixelController(int servoSerie, int ctrlFrequency):
-    ControllerAPI(ctrlFrequency)
+    ServoController(ctrlFrequency)
 {
     m_servoSerie = servoSerie;
 }

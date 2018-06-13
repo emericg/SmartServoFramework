@@ -36,7 +36,7 @@ class Settings;
 class AdvanceScanner;
 class widgetSerialScan;
 
-class ControllerAPI;
+class ServoController;
 class Servo;
 
 namespace Ui {
@@ -69,7 +69,7 @@ class MainWindow : public QMainWindow
         widgetSerialScan *deviceWidget = nullptr;
 
         // Controller settings
-        ControllerAPI *deviceController = nullptr;
+        ServoController *deviceController = nullptr;
         int deviceControllerProtocol;
         int deviceControllerSpeed;
         int deviceControllerDeviceClass;
@@ -88,8 +88,8 @@ class MainWindow : public QMainWindow
     void serialScreen();
     void servoScreen();
 
-    int getCurrentController(ControllerAPI *&ctrl);
-    int getCurrentServo(ControllerAPI *&ctrl, int &id);
+    int getCurrentController(ServoController *&ctrl);
+    int getCurrentServo(ServoController *&ctrl, int &id);
     int getCurrentServo(Servo *&servo);
     int getCurrentSerialPort(SerialPortHelper **port);
 

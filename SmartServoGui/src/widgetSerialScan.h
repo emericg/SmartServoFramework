@@ -29,9 +29,6 @@ namespace Ui {
 class widgetSerialScan;
 }
 
-class ControllerAPI;
-class Servo;
-
 class widgetSerialScan : public QWidget
 {
     Q_OBJECT

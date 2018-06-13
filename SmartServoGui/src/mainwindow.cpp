@@ -572,7 +572,7 @@ void MainWindow::scanServos(QString port_qstring, bool isAutoScan)
                 {
 /*
                     // Are we scanning the currently selected port? Then go to the loading screen
-                    ControllerAPI *ctrl = nullptr;
+                    ServoController *ctrl = nullptr;
                     getCurrentController(ctrl);
                     if (h->deviceController == ctrl)
                     {
@@ -745,7 +745,7 @@ void MainWindow::scanServos(QString port_qstring, bool isAutoScan)
 
 /* ************************************************************************** */
 
-int MainWindow::getCurrentController(ControllerAPI *&ctrl)
+int MainWindow::getCurrentController(ServoController *&ctrl)
 {
     int retcode = 0;
 
@@ -781,7 +781,7 @@ int MainWindow::getCurrentController(ControllerAPI *&ctrl)
     return retcode;
 }
 
-int MainWindow::getCurrentServo(ControllerAPI *&ctrl, int &id)
+int MainWindow::getCurrentServo(ServoController *&ctrl, int &id)
 {
     int retcode = 0;
 
@@ -1335,7 +1335,7 @@ void MainWindow::servoUpdate()
         // Error handling
         ////////////////////////////////////////////////////////////////////////
 
-        ControllerAPI *ctrl = nullptr;
+        ServoController *ctrl = nullptr;
         if (getCurrentController(ctrl) > 0)
         {
             ui->widgetStatus->handleErrors(ctrl, servo, servoSerie, servoModel);
@@ -1518,7 +1518,7 @@ void MainWindow::updateRegisterTableDynamixel(Servo *servo_dxl, const int servoS
 
 void MainWindow::clearErrors()
 {
-    ControllerAPI *ctrl = nullptr;
+    ServoController *ctrl = nullptr;
     if (getCurrentController(ctrl) > 0)
     {
         ctrl->clearErrorCount();

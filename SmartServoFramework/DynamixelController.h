@@ -23,9 +23,8 @@
 #ifndef DYNAMIXEL_CONTROLLER_H
 #define DYNAMIXEL_CONTROLLER_H
 
-#include "ControllerAPI.h"
 #include "Dynamixel.h"
-
+#include "ServoController.h"
 #include "ServoDynamixel.h"
 #include "ServoAX.h"
 #include "ServoEX.h"
@@ -48,7 +47,7 @@
  * Each servo object is synchronized with its hardware counterpart by the run()
  * method, running in its own backgound thread.
  */
-class DynamixelController: public Dynamixel, public ControllerAPI
+class DynamixelController: public Dynamixel, public ServoController
 {
     //! Compute some internal settings (ackPolicy, maxId, protocolVersion) depending on current servo serie and serial device.
     void updateInternalSettings();
