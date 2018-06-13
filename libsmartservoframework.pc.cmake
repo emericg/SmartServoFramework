@@ -7,5 +7,5 @@ Name: ${PROJECT_NAME}
 Description: SmartServoFramework is a multi-platform C++ framework used to drive "smart servo" devices
 URL: https://github.com/emericg/SmartServoFramework
 Version: ${PROJECT_VERSION}
-Libs: -L${LIB_INSTALL_DIR} -lsmartservoframework
+Libs: -L${LIB_INSTALL_DIR} -lsmartservoframework ${EXTRA_LIBS}
 Cflags: -I${INCLUDE_INSTALL_DIR}

@@ -136,28 +136,30 @@ set(SmartServoFramework_SRC
     SmartServoFramework/minitraces.cpp
     SmartServoFramework/minitraces_conf.h
     SmartServoFramework/minitraces.h
+    SmartServoFramework/SimpleAPI.h
+    SmartServoFramework/ManagedAPI.h
     SmartServoFramework/ControllerAPI.cpp
     SmartServoFramework/ControllerAPI.h
     SmartServoFramework/ControlTables.cpp
-    SmartServoFramework/ControlTablesDynamixel.h
     SmartServoFramework/ControlTables.h
+    SmartServoFramework/ControlTablesDynamixel.h
     SmartServoFramework/ControlTablesHerkuleX.h
-    SmartServoFramework/DynamixelController.cpp
-    SmartServoFramework/DynamixelController.h
     SmartServoFramework/Dynamixel.cpp
     SmartServoFramework/Dynamixel.h
-    SmartServoFramework/DynamixelSimpleAPI.cpp
-    SmartServoFramework/DynamixelSimpleAPI.h
     SmartServoFramework/DynamixelTools.cpp
     SmartServoFramework/DynamixelTools.h
-    SmartServoFramework/HerkuleXController.cpp
-    SmartServoFramework/HerkuleXController.h
+    SmartServoFramework/DynamixelSimpleAPI.cpp
+    SmartServoFramework/DynamixelSimpleAPI.h
+    SmartServoFramework/DynamixelController.cpp
+    SmartServoFramework/DynamixelController.h
     SmartServoFramework/HerkuleX.cpp
     SmartServoFramework/HerkuleX.h
-    SmartServoFramework/HerkuleXSimpleAPI.cpp
-    SmartServoFramework/HerkuleXSimpleAPI.h
     SmartServoFramework/HerkuleXTools.cpp
     SmartServoFramework/HerkuleXTools.h
+    SmartServoFramework/HerkuleXSimpleAPI.cpp
+    SmartServoFramework/HerkuleXSimpleAPI.h
+    SmartServoFramework/HerkuleXController.cpp
+    SmartServoFramework/HerkuleXController.h
     SmartServoFramework/SerialPort.cpp
     SmartServoFramework/SerialPort.h
     SmartServoFramework/SerialPortQt.cpp
@@ -168,26 +170,57 @@ set(SmartServoFramework_SRC
     SmartServoFramework/SerialPortMacOS.h
     SmartServoFramework/SerialPortWindows.cpp
     SmartServoFramework/SerialPortWindows.h
-    SmartServoFramework/ServoAX.cpp
-    SmartServoFramework/ServoAX.h
+    SmartServoFramework/ServoTools.cpp
+    SmartServoFramework/ServoTools.h
     SmartServoFramework/Servo.cpp
-    SmartServoFramework/ServoDRS.cpp
-    SmartServoFramework/ServoDRS.h
+    SmartServoFramework/Servo.h
     SmartServoFramework/ServoDynamixel.cpp
     SmartServoFramework/ServoDynamixel.h
+    SmartServoFramework/ServoAX.cpp
+    SmartServoFramework/ServoAX.h
     SmartServoFramework/ServoEX.cpp
     SmartServoFramework/ServoEX.h
-    SmartServoFramework/Servo.h
-    SmartServoFramework/ServoHerkuleX.cpp
-    SmartServoFramework/ServoHerkuleX.h
     SmartServoFramework/ServoMX.cpp
     SmartServoFramework/ServoMX.h
     SmartServoFramework/ServoXL.cpp
     SmartServoFramework/ServoXL.h
     SmartServoFramework/ServoX.cpp
     SmartServoFramework/ServoX.h
-    SmartServoFramework/ServoTools.cpp
+    SmartServoFramework/ServoHerkuleX.cpp
+    SmartServoFramework/ServoHerkuleX.h
+    SmartServoFramework/ServoDRS.cpp
+    SmartServoFramework/ServoDRS.h
+)
+
+set(SmartServoFramework_PUBLIC_HEADERS
+    SmartServoFramework/SimpleAPI.h
+    SmartServoFramework/ManagedAPI.h
+    SmartServoFramework/ControllerAPI.h
+    SmartServoFramework/ControlTablesDynamixel.h
+    SmartServoFramework/ControlTables.h
+    SmartServoFramework/ControlTablesHerkuleX.h
+    SmartServoFramework/Dynamixel.h
+    SmartServoFramework/DynamixelTools.h
+    SmartServoFramework/DynamixelSimpleAPI.h
+    SmartServoFramework/DynamixelController.h
+    SmartServoFramework/HerkuleX.h
+    SmartServoFramework/HerkuleXSimpleAPI.h
+    SmartServoFramework/HerkuleXController.h
+    SmartServoFramework/HerkuleXTools.h
+    SmartServoFramework/SerialPort.h
+    SmartServoFramework/SerialPortLinux.h
+    SmartServoFramework/SerialPortMacOS.h
+    SmartServoFramework/SerialPortWindows.h
     SmartServoFramework/ServoTools.h
+    SmartServoFramework/Servo.h
+    SmartServoFramework/ServoDynamixel.h
+    SmartServoFramework/ServoAX.h
+    SmartServoFramework/ServoEX.h
+    SmartServoFramework/ServoMX.h
+    SmartServoFramework/ServoXL.h
+    SmartServoFramework/ServoX.h
+    SmartServoFramework/ServoHerkuleX.h
+    SmartServoFramework/ServoDRS.h
 )
 
 # Build library (static and shared rules)
@@ -242,6 +275,6 @@ if (UNIX)
         install(TARGETS SmartServoFramework_static DESTINATION lib/)
     endif (BUILD_STATIC_LIBS)
 
-    install(DIRECTORY SmartServoFramework/ DESTINATION include/SmartServoFramework/ FILES_MATCHING PATTERN "*.h")
+    install(FILES SmartServoFramework_PUBLIC_HEADERS DESTINATION include/SmartServoFramework/)
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libsmartservoframework.pc DESTINATION lib/pkgconfig/)
 endif(UNIX)
