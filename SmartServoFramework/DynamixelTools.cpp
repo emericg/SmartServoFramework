@@ -82,26 +82,36 @@ std::string dxl_get_model_name(const int model_number)
         name = "MX-106";
         break;
 
-    case 0x015E:
+    case 350:
         name = "XL-320";
         break;
+    case 1060:
+        name = "XL-430-W250";
+        break;
 
-    case 0x01020:
+    case 1020:
         name = "XM430-W350";
         break;
-    case 0x01030:
+    case 1030:
         name = "XM430-W210";
         break;
-    case 0x01040:
+    case 1130:
+        name = "XM540-W150";
+        break;
+    case 1120:
+        name = "XM540-W270";
+        break;
+
+    case 1040:
         name = "XH430-V350";
         break;
-    case 0x01050:
+    case 1050:
         name = "XH430-V210";
         break;
-    case 0x01000:
+    case 1000:
         name = "XH430-W350";
         break;
-    case 0x01010:
+    case 1010:
         name = "XH430-W210";
         break;
 
@@ -193,32 +203,44 @@ void dxl_get_model_infos(const int model_number, int &servo_serie, int &servo_mo
         servo_model = SERVO_MX106;
         break;
 
-    case 0x015E:
+    case 350:
         servo_serie = SERVO_XL;
         servo_model = SERVO_XL320;
         break;
+    case 1060:
+        servo_serie = SERVO_X;
+        servo_model = SERVO_XL430_W250;
+        break;
 
-    case 0x01020:
+    case 1020:
         servo_serie = SERVO_X;
         servo_model = SERVO_XM430_W350;
         break;
-    case 0x01030:
+    case 1030:
         servo_serie = SERVO_X;
         servo_model = SERVO_XM430_W210;
         break;
-    case 0x01040:
+    case 1130:
+        servo_serie = SERVO_X;
+        servo_model = SERVO_XM540_W150;
+        break;
+    case 1120:
+        servo_serie = SERVO_X;
+        servo_model = SERVO_XM540_W270;
+        break;
+    case 1040:
         servo_serie = SERVO_X;
         servo_model = SERVO_XH430_V350;
         break;
-    case 0x01050:
+    case 1050:
         servo_serie = SERVO_X;
         servo_model = SERVO_XH430_V210;
         break;
-    case 0x01000:
+    case 1000:
         servo_serie = SERVO_X;
         servo_model = SERVO_XH430_W350;
         break;
-    case 0x01010:
+    case 1010:
         servo_serie = SERVO_X;
         servo_model = SERVO_XH430_W210;
         break;
@@ -326,7 +348,7 @@ int dxl_get_baudrate(const int baudnum, const int servo_serie)
             break;
         }
     }
-    else if (servo_serie >= SERVO_XL) // Dynamixel XL serie
+    else if (servo_serie >= SERVO_XL) // Dynamixel XL320
     {
         switch (baudnum)
         {

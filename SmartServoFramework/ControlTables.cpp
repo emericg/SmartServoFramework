@@ -71,7 +71,14 @@ const int (*getRegisterTable(const int servo_model))[8]
             }
             else if (servo_model >= SERVO_X)
             {
-                ct = XMXH_control_table;
+                if (servo_model == SERVO_XL430_W250)
+                {
+                    ct = XL430_control_table;
+                }
+                else
+                {
+                    ct = XMXH_control_table;
+                }
             }
             else if (servo_model >= SERVO_XL)
             {
@@ -140,7 +147,29 @@ const int (*getRegisterTable(const int servo_model, const int servo_serie))[8]
         }
         else if (servo_serie == SERVO_XL)
         {
-            ct = XL320_control_table;
+            if (servo_model == SERVO_XL430_W250)
+            {
+                ct = XL430_control_table;
+            }
+            else // if (servo_model == SERVO_XL320)
+            {
+                ct = XL320_control_table;
+            }
+        }
+        else if (servo_serie == SERVO_X)
+        {
+            if (servo_model == SERVO_XL320)
+            {
+                ct = XL320_control_table;
+            }
+            else if (servo_model == SERVO_XL430_W250)
+            {
+                ct = XL430_control_table;
+            }
+            else
+            {
+                ct = XMXH_control_table;
+            }
         }
         else if (servo_serie == SERVO_X)
         {

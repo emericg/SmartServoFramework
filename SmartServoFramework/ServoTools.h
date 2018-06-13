@@ -173,17 +173,21 @@ enum ServoDevices_e
             SERVO_MX64   = 53,
             SERVO_MX106  = 54,
 
-        SERVO_XL         = 60,
-            SERVO_XL320  = 61,
+        SERVO_XL          = 60,
+            SERVO_XL320   = 61, // NOT part of the X serie
 
-        SERVO_X          = 70,
-            SERVO_XM430_W210 = 71,
-            SERVO_XM430_W350 = 72,
+        SERVO_X             = 70,
+            SERVO_XL430_W250 = 71, // NOT part of the XL serie
 
-            SERVO_XH430_W210 = 81,
-            SERVO_XH430_W350 = 82,
-            SERVO_XH430_V210 = 83,
-            SERVO_XH430_V350 = 84,
+            SERVO_XM430_W210 = 81,
+            SERVO_XM430_W350 = 82,
+            SERVO_XM540_W150 = 83,
+            SERVO_XM540_W270 = 84,
+
+            SERVO_XH430_W210 = 91,
+            SERVO_XH430_W350 = 92,
+            SERVO_XH430_V210 = 93,
+            SERVO_XH430_V350 = 94,
 
         // Dynamixel PRO servo devices:
         SERVO_PRO        = 170,

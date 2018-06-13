@@ -38,7 +38,8 @@
  * \ref ServoDynamixel
  * \ref XL320_control_table
  * \note The X series use the new "protocol v2", also used by the Dynamixel PRO serie.
-
+ * \note The XL430 is NOT part of this XL serie, its in the X serie.
+ *
  * More informations about them on Robotis website:
  * - http://www.robotis.us/dynamixel-xl-320/
  * - http://support.robotis.com/en/product/actuator/dynamixel_x/xl-series_main.htm

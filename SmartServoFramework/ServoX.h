@@ -36,9 +36,12 @@
 /*!
  * \brief XM/XH servo series.
  * \ref ServoDynamixel
+ * \ref XL430_control_table
+ * \ref XMXH_control_table
  * \ref XMXH_control_table
  * \note The X series use the new "protocol v2", also used by the Dynamixel PRO serie.
-
+ * \note The XL320 is NOT part of this X serie, its his own thing.
+ *
  * More informations about them on Robotis website:
  * - http://www.robotis.us/x-series/
  * - http://en.robotis.com/index/product.php?cate_code=101210

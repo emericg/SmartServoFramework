@@ -75,6 +75,19 @@ DynamixelSimpleAPI::DynamixelSimpleAPI(int servoSerie)
                 m_protocolVersion = PROTOCOL_DXLv2;
                 m_servoSerie = SERVO_X;
                 ct = XMXH_control_table;
+
+                if (servoSerie == SERVO_XL430_W250)
+                    ct = XL430_control_table;
+                else if (servoSerie == SERVO_XM430_W210 ||
+                         servoSerie == SERVO_XM430_W350 ||
+                         servoSerie == SERVO_XM540_W150 ||
+                         servoSerie == SERVO_XM540_W270)
+                    ct = XMXH_control_table;
+                else if (servoSerie == SERVO_XH430_W210 ||
+                         servoSerie == SERVO_XH430_W350 ||
+                         servoSerie == SERVO_XH430_V210 ||
+                         servoSerie == SERVO_XH430_V350)
+                    ct = XMXH_control_table;
             }
             else if (servoSerie >= SERVO_XL)
             {
@@ -84,8 +97,8 @@ DynamixelSimpleAPI::DynamixelSimpleAPI(int servoSerie)
             }
             else // SERVO AX to MX
             {
-                // We set the servo serie to 'MX' which is the more capable of the Dynamixel v1 serie
                 m_protocolVersion = PROTOCOL_DXLv1;
+                // We set the servo serie to 'MX' which is the more capable of the Dynamixel v1 serie
                 m_servoSerie = SERVO_MX;
                 ct = MX_control_table;
 
