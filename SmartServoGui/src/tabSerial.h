@@ -39,7 +39,8 @@ public:
     explicit tabSerial(QWidget *parent = 0);
     ~tabSerial();
 
-    void setInfos(std::string device_path, int baudrate, int protocol, int device_connected);
+    void setInfos(int serial_state, std::string serial_path, int serial_baudrate,
+                  int device_protocol, int device_connected);
 };
 
 #endif // TABSERIAL_H

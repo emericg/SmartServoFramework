@@ -68,8 +68,11 @@ class MainWindow : public QMainWindow
 
         widgetSerialScan *deviceWidget = nullptr;
 
-        // Controller settings
+        // Controller status
         ServoController *deviceController = nullptr;
+        int linkStatus = 0; // -1: locked, 0: disconnected, 1: connected
+
+        // Controller settings
         int deviceControllerProtocol;
         int deviceControllerSpeed;
         int deviceControllerDeviceClass;

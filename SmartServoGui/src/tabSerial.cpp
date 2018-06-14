@@ -38,35 +38,43 @@ tabSerial::~tabSerial()
     delete ui;
 }
 
-void tabSerial::setInfos(std::string device_path, int baudrate, int protocol, int device_connected)
+void tabSerial::setInfos(int serial_state, std::string serial_path, int serial_baudrate,
+                         int device_protocol, int device_connected)
 {
-    ui->label_title->setText(QString::fromStdString(device_path));
+    ui->label_title->setText(QString::fromStdString(serial_path));
 
     QString baudrate_qstr;
-    if (baudrate  >= 1000000)
-        baudrate_qstr = QString::number(baudrate / 1000000) + " Mbps";
-    else if (baudrate  > 1000)
-        baudrate_qstr = QString::number(baudrate / 1000.0, 'f', 1) + " Kbps";
+    if (serial_baudrate  >= 1000000)
+        baudrate_qstr = QString::number(serial_baudrate / 1000000) + " Mbps";
+    else if (serial_baudrate  > 1000)
+        baudrate_qstr = QString::number(serial_baudrate / 1000.0, 'f', 1) + " Kbps";
     else
-        baudrate_qstr = QString::number(baudrate) + " bps";
+        baudrate_qstr = QString::number(serial_baudrate) + " bps";
     ui->label_speed_current->setText(baudrate_qstr);
 
-    if (protocol == PROTOCOL_DXLv1)
+    if (device_protocol == PROTOCOL_DXLv1)
         ui->label_protocol_current->setText("Dynamixel v1");
-    else if (protocol == PROTOCOL_DXLv2)
+    else if (device_protocol == PROTOCOL_DXLv2)
         ui->label_protocol_current->setText("Dynamixel v2");
-    else if (protocol == PROTOCOL_HKX)
+    else if (device_protocol == PROTOCOL_HKX)
         ui->label_protocol_current->setText("HerkuleX");
 
     ui->label_device_count->setText(QString::number(device_connected));
 
     QPixmap serialPortIcon;
-    if (device_connected > 0)
+    if (serial_state == -1)
+        serialPortIcon.load(":/icons/icons/emblem-readonly.svg");
+    else if (serial_state == 1)
         serialPortIcon.load(":/icons/icons/network-transmit-receive.svg");
     else
         serialPortIcon.load(":/icons/icons/network-error.svg");
     ui->label_icon->setPixmap(serialPortIcon);
 
-    //ui->label_speed_saved->setText("None");
-    //ui->label_protocol_saved->setText("None");
+    // TODO
+    ui->label_7->hide();
+    ui->label_speed_saved->hide();
+    ui->label_speed_saved->setText("None");
+    ui->label_8->hide();
+    ui->label_protocol_saved->hide();
+    ui->label_protocol_saved->setText("None");
 }

@@ -538,6 +538,7 @@ void MainWindow::scanServos(QString port_qstring, bool isAutoScan)
                     if (h->deviceController != nullptr)
                     {
                         h->deviceController->disconnect();
+                        h->linkStatus = 0;
                         delete h->deviceController;
                         h->deviceController = nullptr;
                     }
@@ -557,9 +558,9 @@ void MainWindow::scanServos(QString port_qstring, bool isAutoScan)
                 // Connect the controller to its serial port
                 if (h->deviceController != nullptr)
                 {
-                    scan_results = h->deviceController->connect(h->deviceName_str, h->deviceControllerSpeed);
+                    h->linkStatus = h->deviceController->connect(h->deviceName_str, h->deviceControllerSpeed);
 
-                    if (scan_results != 1)
+                    if (h->linkStatus != 1)
                     {
                         h->deviceController->disconnect();
                         delete h->deviceController;
@@ -682,9 +683,10 @@ void MainWindow::scanServos(QString port_qstring, bool isAutoScan)
                 }
             }
 
-            if (scan_running == false)
+            if (h->linkStatus <= 0 || scan_running == false)
             {
-                h->deviceController->disconnect();
+                delete h->deviceController;
+                h->deviceController = nullptr;
             }
 
             // Indicate that we are no longer scanning
@@ -693,40 +695,44 @@ void MainWindow::scanServos(QString port_qstring, bool isAutoScan)
             delete scan_entry;
 
             // Do that only once, not every time we try a new serial port configuration
-            if (scan_results == 1)
+            if (h->linkStatus < 0)
             {
-                // Indicate we did not found any device
-                // 1 means only that the connection to a port succeeded
-                QTreeWidgetItem *nodevice = new QTreeWidgetItem();
-                nodevice->setText(0, tr("No device available!"));
-                port->addChild(nodevice);
+                // Put a 'locked' icon
+                QString achtung_txt = "Interface is locked!";
+                QTreeWidgetItem *achtung = new QTreeWidgetItem();
+                port->addChild(achtung);
+                achtung->setText(0, achtung_txt);
+                achtung->setIcon(0, QIcon(":/icons/icons/emblem-readonly.svg"));
+
+                // Add an "unlock" contextual item?
             }
-            else if (scan_results <= 0)
+            else if (h->linkStatus == 0)
             {
-                if (scan_results == -1)
+                // Put an 'error' icon
+                QString achtung_txt = "Unable to connect!";
+                QTreeWidgetItem *achtung = new QTreeWidgetItem();
+                port->addChild(achtung);
+                achtung->setText(0, achtung_txt);
+                achtung->setIcon(0, QIcon(":/icons/icons/emblem-unreadable.svg"));
+            }
+            else if (h->linkStatus > 0)
+            {
+                if (scan_results == 0)
                 {
-                    // Put a 'locked' icon
-                    QString achtung_txt = "Interface is locked!";
-                    QTreeWidgetItem *achtung = new QTreeWidgetItem();
-                    port->addChild(achtung);
-                    achtung->setText(0, achtung_txt);
-                    achtung->setIcon(0, QIcon(":/icons/icons/emblem-readonly.svg"));
+                    // Indicate we did not found any device
+                    // 1 means only that the connection to a port succeeded
+                    QTreeWidgetItem *nodevice = new QTreeWidgetItem();
+                    nodevice->setText(0, tr("No device available!"));
+                    port->addChild(nodevice);
 
-                    // Add an "unlock" contextual item?
+                    // No need to keep this "empty" controller working
+                    delete h->deviceController;
+                    h->deviceController = nullptr;
                 }
-                else // if (scan_results == -2)
+                else if (scan_results <= 0)
                 {
-                    // Put an 'error' icon
-                    QString achtung_txt = "Unable to connect!";
-                    QTreeWidgetItem *achtung = new QTreeWidgetItem();
-                    port->addChild(achtung);
-                    achtung->setText(0, achtung_txt);
-                    achtung->setIcon(0, QIcon(":/icons/icons/emblem-unreadable.svg"));
+                    //
                 }
-
-                // No need to keep this "empty" controller working
-                delete h->deviceController;
-                h->deviceController = nullptr;
             }
 
             // Unlock windows size
@@ -1282,7 +1288,8 @@ void MainWindow::treewidgetSelection()
             if (serial->deviceController)
                 deviceCount = static_cast<int>(serial->deviceController->getServos().size());
 
-            ui->widget_serial->setInfos(serial->deviceName_str,
+            ui->widget_serial->setInfos(serial->linkStatus,
+                                        serial->deviceName_str,
                                         serial->deviceControllerSpeed,
                                         serial->deviceControllerProtocol,
                                         deviceCount);
