@@ -93,10 +93,15 @@ protected:
      * \param baud: The baudrate or Dynamixel 'baudnum'.
      * \return 1 if success, 0 if locked, -1 otherwise.
      */
-    int serialInitialize(std::string &devicePath, const int baud);
+    int serialOpen(std::string &devicePath, const int baud);
 
     /*!
      * \brief Make sure the serial link is properly closed.
+     */
+    void serialClose();
+
+    /*!
+     * \brief Make sure the serial link is properly closed and destroyed.
      */
     void serialTerminate();
 
@@ -187,7 +192,7 @@ public:
     std::vector <std::string> serialGetAvailableDevices();
 
     /*!
-     * \brief serialSetLatency
+     * \brief Change serial port timeout latency.
      * \param latency: Latency value in milliseconds.
      */
     void serialSetLatency(int latency);

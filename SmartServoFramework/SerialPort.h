@@ -216,6 +216,11 @@ public:
     virtual void closeLink() = 0;
 
     /*!
+     * \brief Same as removeLock, except it doesn't need an opened serial port instance.
+     */
+    static bool unlockLink(std::string &devicePath);
+
+    /*!
      * \brief Send a packet over a serial link.
      * \param[in] packet: Data packet to send.
      * \param packetLength: Size in byte(s) of data packet to transmit.

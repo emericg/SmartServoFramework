@@ -140,7 +140,7 @@ int DynamixelController::connect(std::string &devicePath, const int baud, const 
     updateInternalSettings();
 
     // Connection
-    int retcode = serialInitialize(devicePath, baud);
+    int retcode = serialOpen(devicePath, baud);
 
     if (retcode == 1)
     {

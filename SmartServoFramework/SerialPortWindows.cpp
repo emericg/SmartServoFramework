@@ -269,6 +269,11 @@ void SerialPortWindows::closeLink()
     }
 }
 
+bool SerialPortWindows::unlockLink(std::string &devicePath)
+{
+    return false;
+}
+
 int SerialPortWindows::tx(unsigned char *packet, int packetLength)
 {
     int status = -1;

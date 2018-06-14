@@ -614,6 +614,11 @@ void SerialPortLinux::closeLink()
     }
 }
 
+bool SerialPortLinux::unlockLink(std::string &devicePath)
+{
+    return false;
+}
+
 int SerialPortLinux::tx(unsigned char *packet, int packetLength)
 {
     int writeStatus = -1;

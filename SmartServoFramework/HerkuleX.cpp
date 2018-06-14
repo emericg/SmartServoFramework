@@ -92,7 +92,7 @@ HerkuleX::~HerkuleX()
     serialTerminate();
 }
 
-int HerkuleX::serialInitialize(std::string &devicePath, const int baud)
+int HerkuleX::serialOpen(std::string &devicePath, const int baud)
 {
     int status = 0;
 
@@ -134,19 +134,25 @@ int HerkuleX::serialInitialize(std::string &devicePath, const int baud)
     return status;
 }
 
-void HerkuleX::serialTerminate()
+void HerkuleX::serialClose()
 {
     if (m_serial != nullptr)
     {
         // Close serial link
         m_serial->closeLink();
-        delete m_serial;
-        m_serial = nullptr;
 
         // Clear incoming packet?
         rxPacketSize = 0;
         memset(rxPacket, 0, sizeof(rxPacket));
     }
+}
+
+void HerkuleX::serialTerminate()
+{
+    serialClose();
+
+    delete m_serial;
+    m_serial = nullptr;
 }
 
 std::string HerkuleX::serialGetCurrentDevice()
@@ -183,7 +189,8 @@ std::vector <std::string> HerkuleX::serialGetAvailableDevices()
 
 void HerkuleX::serialSetLatency(int latency)
 {
-    m_serial->setLatency(latency);
+    if (m_serial)
+        m_serial->setLatency(latency);
 }
 
 void HerkuleX::setAckPolicy(int ack)

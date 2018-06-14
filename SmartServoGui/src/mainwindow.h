@@ -48,6 +48,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
     Ui::MainWindow *ui;
+    QAction *unlockAction;
     QAction *refreshAction;
     QAction *rebootAction;
     QAction *resetAction;
@@ -94,7 +95,7 @@ class MainWindow : public QMainWindow
     int getCurrentController(ServoController *&ctrl);
     int getCurrentServo(ServoController *&ctrl, int &id);
     int getCurrentServo(Servo *&servo);
-    int getCurrentSerialPort(SerialPortHelper **port);
+    int getCurrentSerialPort(SerialPortHelper *&port);
 
     void toggleServoPanel(bool status);
 
@@ -116,6 +117,7 @@ private slots:
 
     void clearErrors();
 
+    void unlockSerialLink();
     void resetServo();
     void rebootServo();
     void refreshServo();

@@ -211,6 +211,28 @@ std::vector <std::string> SerialPort::scanSerialPorts()
     return availableSerialPorts;
 }
 
+bool SerialPort::unlockLink(std::string &devicePath)
+{
+    bool status = false;
+
+    TRACE_WARNING(SERIAL, "SerialPort::unlockLink(%s)", devicePath.c_str());
+
+#if defined(FEATURE_QTSERIAL)
+    status = SerialPortQt::unlockLink(devicePath);
+#else
+    // Fallback on OS specific functions
+    #if defined(__WIN32) || defined(__WIN64)
+        status = SerialPortWindows::unlockLink(devicePath);
+    #elif defined(__APPLE__) || defined(__MACH__)
+        status = SerialPortMacOS::unlockLink(devicePath);
+    #else // defined(__linux__) || defined(__gnu_linux)
+        status = SerialPortLinux::unlockLink(devicePath);
+    #endif
+#endif
+
+    return status;
+}
+
 bool SerialPort::isLocked()
 {
     return false;

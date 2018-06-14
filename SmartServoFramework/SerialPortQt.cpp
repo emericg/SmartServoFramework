@@ -299,6 +299,11 @@ void SerialPortQt::closeLink()
     }
 }
 
+bool SerialPortQt::unlockLink(std::string &devicePath)
+{
+    return false;
+}
+
 int SerialPortQt::tx(unsigned char *packet, int packetLength)
 {
     int writeStatus = -1;

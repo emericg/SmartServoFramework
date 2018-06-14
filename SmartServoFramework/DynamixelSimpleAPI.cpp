@@ -137,7 +137,7 @@ DynamixelSimpleAPI::~DynamixelSimpleAPI()
 int DynamixelSimpleAPI::connect(std::string &devicePath, const int baud, const int serialDevice)
 {
     m_serialDevice = serialDevice;
-    return serialInitialize(devicePath, baud);
+    return serialOpen(devicePath, baud);
 }
 
 void DynamixelSimpleAPI::disconnect()

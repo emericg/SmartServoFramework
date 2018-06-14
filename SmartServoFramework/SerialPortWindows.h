@@ -87,6 +87,7 @@ public:
     int openLink();
     bool isOpen();
     void closeLink();
+    static bool unlockLink(std::string &devicePath);
 
     int tx(unsigned char *packet, int packetLength);
     int rx(unsigned char *packet, int packetLength);

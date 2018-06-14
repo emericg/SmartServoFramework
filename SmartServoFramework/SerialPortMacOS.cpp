@@ -622,6 +622,11 @@ void SerialPortMacOS::closeLink()
     }
 }
 
+bool SerialPortMacOS::unlockLink()
+{
+    return false;
+}
+
 int SerialPortMacOS::tx(unsigned char *packet, int packetLength)
 {
     int writeStatus = -1;

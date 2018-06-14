@@ -70,9 +70,11 @@ MainWindow::MainWindow(QWidget *parent):
 
     // QTreeWidget contextual actions
     ui->deviceTreeWidget->setContextMenuPolicy(Qt::ActionsContextMenu);
+    unlockAction = new QAction(tr("Force &Unlock"), this);
     refreshAction = new QAction(tr("&Refresh"), this);
     rebootAction = new QAction(tr("Reb&oot"), this);
     resetAction = new QAction(tr("Re&set"), this);
+    connect(unlockAction, SIGNAL(triggered()), this, SLOT(unlockSerialLink()));
     connect(refreshAction, SIGNAL(triggered()), this, SLOT(refreshServo()));
     connect(rebootAction, SIGNAL(triggered()), this, SLOT(rebootServo()));
     connect(resetAction, SIGNAL(triggered()), this, SLOT(resetServo()));
@@ -601,7 +603,9 @@ void MainWindow::scanServos(QString port_qstring, bool isAutoScan)
 
                         while (h->deviceController->getState() > state_scanned)
                         {
-                            std::chrono::milliseconds waittime(static_cast<int>(3));
+                            // TODO timeout
+
+                            std::chrono::milliseconds waittime(static_cast<int>(4));
                             std::this_thread::sleep_for(waittime);
                         }
                     }
@@ -616,7 +620,9 @@ void MainWindow::scanServos(QString port_qstring, bool isAutoScan)
                             break;
                         }
 
-                        std::chrono::milliseconds waittime(static_cast<int>(3));
+                        // TODO timeout
+
+                        std::chrono::milliseconds waittime(static_cast<int>(4));
                         std::this_thread::sleep_for(waittime);
                         qApp->processEvents();
                     }
@@ -664,6 +670,8 @@ void MainWindow::scanServos(QString port_qstring, bool isAutoScan)
                         while (h->deviceController->getState() >= state_started &&
                                h->deviceController->getState() < state_ready)
                         {
+                            // TODO timeout
+
                             std::chrono::milliseconds waittime(static_cast<int>(4));
                             std::this_thread::sleep_for(waittime);
                             qApp->processEvents();
@@ -844,7 +852,7 @@ int MainWindow::getCurrentServo(ServoController *&ctrl, int &id)
     return retcode;
 }
 
-int MainWindow::getCurrentSerialPort(SerialPortHelper **port)
+int MainWindow::getCurrentSerialPort(SerialPortHelper *&port)
 {
     int retcode = 0;
 
@@ -865,7 +873,7 @@ int MainWindow::getCurrentSerialPort(SerialPortHelper **port)
                 if (p != nullptr && p->deviceName_str == port_name)
                 {
                     //std::cout << "> Serial port: " << port_name << std::endl;
-                    *port = p;
+                    port = p;
                     retcode = 1;
                 }
             }
@@ -1023,6 +1031,7 @@ void MainWindow::treewidgetSelection()
         toggleServoPanel(true);
 
         // Contextual menu actions
+        ui->deviceTreeWidget->removeAction(unlockAction);
         ui->deviceTreeWidget->addAction(refreshAction);
         ui->deviceTreeWidget->addAction(rebootAction);
         ui->deviceTreeWidget->addAction(resetAction);
@@ -1271,9 +1280,10 @@ void MainWindow::treewidgetSelection()
         // Read register values and stuff
         servoUpdate();
     }
-    else if (getCurrentSerialPort(&serial) > 0)
+    else if (getCurrentSerialPort(serial) > 0)
     {
-        // Clean contextual menu
+        // Contextual menu actions
+        if (serial->linkStatus == -1) ui->deviceTreeWidget->addAction(unlockAction);
         ui->deviceTreeWidget->removeAction(refreshAction);
         ui->deviceTreeWidget->removeAction(rebootAction);
         ui->deviceTreeWidget->removeAction(resetAction);
@@ -1300,6 +1310,7 @@ void MainWindow::treewidgetSelection()
     else
     {
         // Clean contextual menu
+        ui->deviceTreeWidget->removeAction(unlockAction);
         ui->deviceTreeWidget->removeAction(refreshAction);
         ui->deviceTreeWidget->removeAction(rebootAction);
         ui->deviceTreeWidget->removeAction(resetAction);
@@ -1711,6 +1722,21 @@ void MainWindow::aboutQt()
 }
 
 /* ************************************************************************** */
+
+void MainWindow::unlockSerialLink()
+{
+    SerialPortHelper *p = nullptr;
+
+    // Get selected serial link
+    if (getCurrentSerialPort(p) > 0)
+    {
+        // do not try to remove a lock that noone is using yet
+        if (p->linkStatus == -1)
+        {
+            SerialPort::unlockLink(p->deviceName_str);
+        }
+    }
+}
 
 void MainWindow::resetServo()
 {
