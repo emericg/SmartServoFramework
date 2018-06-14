@@ -1057,7 +1057,7 @@ void MainWindow::treewidgetSelection()
             }
             else
             {
-                ui->servoManual_label->setText("<html><head/><body><p><a href=\"http://support.robotis.com/en/\"><span style=\" text-decoration: underline; color:#ffffff;\">Consult the online manuals on Robotis website</span></a></p></body></html>");
+                ui->servoManual_label->setText("<html><head/><body><p><a href=\"http://emanual.robotis.com/docs/en/dxl/\"><span style=\" text-decoration: underline; color:#ffffff;\">Consult the online manuals on Robotis website</span></a></p></body></html>");
                 ui->copyrightNotice_label->setText("<html><head/><body><p>Pictures and technical specifications courtesy of <a href=\"www.robotis.com\"><span style=\" text-decoration: underline; color:#0000ff;\">robotis.com</span></a></p></body></html>");
             }
         }
@@ -1131,22 +1131,40 @@ void MainWindow::treewidgetSelection()
             break;
 
         case SERVO_X:
-            servoIcon.load(":/devices/devices/X-Series.jpg");
-            if (servoModel == SERVO_XH430_V210 || servoModel == SERVO_XH430_W210)
+            if (servoModel == SERVO_XL430_W250)
             {
-                servoSpec.setFileName(":/specs/specs/XH-430-VW210.html");
-            }
-            if (servoModel == SERVO_XH430_V350 || servoModel == SERVO_XH430_W350)
-            {
-                servoSpec.setFileName(":/specs/specs/XH-430-VW350.html");
+                servoIcon.load(":/devices/devices/XL-430.jpg");
+                servoSpec.setFileName(":/specs/specs/XL-430-W250.html");
             }
             if (servoModel == SERVO_XM430_W210)
             {
+                servoIcon.load(":/devices/devices/X-Series.jpg");
                 servoSpec.setFileName(":/specs/specs/XM-430-W210.html");
             }
             if (servoModel == SERVO_XM430_W350)
             {
+                servoIcon.load(":/devices/devices/X-Series.jpg");
                 servoSpec.setFileName(":/specs/specs/XM-430-W350.html");
+            }
+            if (servoModel == SERVO_XM540_W150)
+            {
+                servoIcon.load(":/devices/devices/X-Series.jpg");
+                servoSpec.setFileName(":/specs/specs/XM-540-W150.html");
+            }
+            if (servoModel == SERVO_XM540_W270)
+            {
+                servoIcon.load(":/devices/devices/XM-540.jpg");
+                servoSpec.setFileName(":/specs/specs/XM-540-W270.html");
+            }
+            if (servoModel == SERVO_XH430_V210 || servoModel == SERVO_XH430_W210)
+            {
+                servoIcon.load(":/devices/devices/X-Series.jpg");
+                servoSpec.setFileName(":/specs/specs/XH-430-VW210.html");
+            }
+            if (servoModel == SERVO_XH430_V350 || servoModel == SERVO_XH430_W350)
+            {
+                servoIcon.load(":/devices/devices/X-Series.jpg");
+                servoSpec.setFileName(":/specs/specs/XH-430-VW350.html");
             }
             break;
 

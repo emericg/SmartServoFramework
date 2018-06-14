@@ -40,6 +40,8 @@
         <file>devices/RX-28.jpg</file>
         <file>devices/RX-64.jpg</file>
         <file>devices/XL-320.jpg</file>
+        <file>devices/XL-430.jpg</file>
+        <file>devices/XM-540.jpg</file>
         <file>devices/X-Series.jpg</file>
         <file>devices/AX-S1.jpg</file>
         <file>devices/IR-SENSORS.jpg</file>
@@ -65,11 +67,18 @@
         <file>specs/MX-64.html</file>
         <file>specs/MX-106.html</file>
         <file>specs/XL-320.html</file>
-        <file>specs/XH-430-VW210.html</file>
-        <file>specs/XH-430-VW350.html</file>
+        <file>specs/XL-430-W250.html</file>
         <file>specs/XM-430-W210.html</file>
         <file>specs/XM-430-W350.html</file>
+        <file>specs/XM-540-W150.html</file>
+        <file>specs/XM-540-W270.html</file>
+        <file>specs/XH-430-VW210.html</file>
+        <file>specs/XH-430-VW350.html</file>
         <file>specs/DRS-0101.html</file>
         <file>specs/DRS-0201.html</file>
+        <file>specs/DRS-0401.html</file>
+        <file>specs/DRS-0402.html</file>
+        <file>specs/DRS-0601.html</file>
+        <file>specs/DRS-0602.html</file>
     </qresource>
 </RCC>
