@@ -264,8 +264,7 @@ set(LIB_INSTALL_DIR ${EXEC_INSTALL_PREFIX}/lib${LIB_SUFFIX} CACHE PATH "Installa
 set(INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/include/SmartServoFramework CACHE PATH "Installation prefix for header files" FORCE)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libsmartservoframework.pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/libsmartservoframework.pc)
 
-# Install the libraries and its header into the system
-# (optional step, requires root credentials)
+# Install the libraries and its header into the system (optional step, requires root credentials)
 # Relative to $<CMAKE_INSTALL_PREFIX>
 if (UNIX)
     if (BUILD_SHARED_LIBS)
@@ -275,6 +274,6 @@ if (UNIX)
         install(TARGETS SmartServoFramework_static DESTINATION lib/)
     endif (BUILD_STATIC_LIBS)
 
-    install(FILES SmartServoFramework_PUBLIC_HEADERS DESTINATION include/SmartServoFramework/)
+    install(FILES ${SmartServoFramework_PUBLIC_HEADERS} DESTINATION include/SmartServoFramework/)
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libsmartservoframework.pc DESTINATION lib/pkgconfig/)
 endif(UNIX)
