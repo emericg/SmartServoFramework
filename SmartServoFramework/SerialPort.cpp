@@ -196,7 +196,7 @@ std::vector <std::string> SerialPort::scanSerialPorts()
     if (serialPortsScannerQt(availableSerialPorts) == 0)
 #else
     // Fallback on OS specific functions
-    #if defined(__WIN32) || defined(__WIN64)
+    #if defined(_WIN32) || defined(_WIN64)
         if (serialPortsScanner(availableSerialPorts) == 0)
     #elif defined(__APPLE__) || defined(__MACH__)
         if (serialPortsScanner(availableSerialPorts) == 0)
@@ -221,7 +221,7 @@ bool SerialPort::unlockLink(std::string &devicePath)
     status = SerialPortQt::unlockLink(devicePath);
 #else
     // Fallback on OS specific functions
-    #if defined(__WIN32) || defined(__WIN64)
+    #if defined(_WIN32) || defined(_WIN64)
         status = SerialPortWindows::unlockLink(devicePath);
     #elif defined(__APPLE__) || defined(__MACH__)
         status = SerialPortMacOS::unlockLink(devicePath);
