@@ -37,7 +37,7 @@
  * \brief The SpeedMode enum
  *
  * Used to indicate if we want "automatic" or manual speed control. Automatic
- * speed control regulate the speed relative to the movment amplitude.
+ * speed control regulate the speed relative to the movement amplitude.
  */
 enum SpeedMode_e {
     SPEED_MANUAL = 0,

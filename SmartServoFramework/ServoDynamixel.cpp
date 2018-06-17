@@ -403,7 +403,7 @@ void ServoDynamixel::setGoalPosition(int pos, int time_budget_ms)
                 pos = registerTableValues[gid(REG_MAX_POSITION)];
             }
 
-            // Compute movment amplitude and necessary speed to meet time budget
+            // Compute movement amplitude and necessary speed to meet time budget
             int amp = 0;
             int pos_curr = registerTableValues[gid(REG_CURRENT_POSITION)];
 

@@ -87,15 +87,14 @@ extern "C" {
  */
 enum TraceModule_e
 {
-    MAIN,
+    SERIAL,
+    SERVO,
+    TABLES,
+    TOOLS,
     DAPI,
     CAPI,
     DXL,
     HKX,
-    TOOLS,
-    SERIAL,
-    SERVO,
-    TABLES,
 };
 
 /*!
@@ -108,15 +107,14 @@ enum TraceModule_e
  */
 static TraceModule_t trace_modules_table[] =
 {
-    { "MAIN"   , "Main"                             , TRACE_LEVEL_DEBUG },
+    { "SERIAL" , "Serial ports implementations"     , TRACE_LEVEL_DEBUG },
+    { "SERVO"  , "Servo devices"                    , TRACE_LEVEL_DEBUG },
+    { "TABLES" , "Control tables for servo device"  , TRACE_LEVEL_DEBUG },
+    { "TOOLS"  , "Various tools"                    , TRACE_LEVEL_DEBUG },
     { "D-API"  , "Direct API"                       , TRACE_LEVEL_DEBUG },
     { "C-API"  , "Controller API"                   , TRACE_LEVEL_DEBUG },
     { "DXL"    , "Dynamixel protocol"               , TRACE_LEVEL_DEBUG },
     { "HKX"    , "HerkuleX protocol"                , TRACE_LEVEL_DEBUG },
-    { "TOOLS"  , "Various tools"                    , TRACE_LEVEL_DEBUG },
-    { "SERIAL" , "Serial ports implementations"     , TRACE_LEVEL_DEBUG },
-    { "SERVO"  , "Servo devices"                    , TRACE_LEVEL_DEBUG },
-    { "TABLES" , "Control tables for servo device"  , TRACE_LEVEL_DEBUG },
 };
 
 /* ************************************************************************** */

@@ -406,7 +406,7 @@
            </font>
           </property>
           <property name="text">
-           <string>\\COM1</string>
+           <string>\\.\COM1</string>
           </property>
          </widget>
         </item>
