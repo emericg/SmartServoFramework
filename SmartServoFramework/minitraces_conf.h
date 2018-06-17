@@ -1,5 +1,5 @@
 /*!
- * COPYRIGHT (C) 2017 Emeric Grange - All Rights Reserved
+ * COPYRIGHT (C) 2018 Emeric Grange - All Rights Reserved
  *
  * This file is part of MiniTraces.
  *
@@ -18,8 +18,8 @@
  *
  * \file      minitraces_conf.h
  * \author    Emeric Grange <emeric.grange@gmail.com>
- * \date      2017
- * \version   0.51
+ * \date      2018
+ * \version   0.52
  */
 
 #ifndef MINITRACES_CONF_H
@@ -30,7 +30,7 @@ extern "C" {
 #endif // __cplusplus
 /* ************************************************************************** */
 
-// Import setting macros from SmartServoFramework
+// Import setting macros from SmartServoFramework, and map them to the ones from MiniTraces.
 #include "SmartServoFramework_settings.h"
 
 // =============================================================================
@@ -66,7 +66,7 @@ extern "C" {
 /*!
  * This string will be used to easily identify from which program a trace comes
  * from if multiple program are outputting traces with MiniTraces at the same time.
- * You can use bracket, spaces, colors...
+ * You can use brackets, spaces, colors...
  * Example: #define PID OUT_BLUE "[MINITRACE]" CLR_RESET " "
  *
  * Leave it blank if you don't need this feature!
@@ -87,6 +87,8 @@ extern "C" {
  */
 enum TraceModule_e
 {
+    MAIN,
+
     SERIAL,
     SERVO,
     TABLES,
@@ -107,6 +109,8 @@ enum TraceModule_e
  */
 static TraceModule_t trace_modules_table[] =
 {
+    { "MAIN"   , "MiniTrace main module"            , TRACE_LEVEL_DEBUG },
+
     { "SERIAL" , "Serial ports implementations"     , TRACE_LEVEL_DEBUG },
     { "SERVO"  , "Servo devices"                    , TRACE_LEVEL_DEBUG },
     { "TABLES" , "Control tables for servo device"  , TRACE_LEVEL_DEBUG },

@@ -1,5 +1,5 @@
 /*!
- * COPYRIGHT (C) 2017 Emeric Grange - All Rights Reserved
+ * COPYRIGHT (C) 2018 Emeric Grange - All Rights Reserved
  *
  * This file is part of MiniTraces.
  *
@@ -18,8 +18,8 @@
  *
  * \file      minitraces.h
  * \author    Emeric Grange <emeric.grange@gmail.com>
- * \date      2017
- * \version   0.51
+ * \date      2018
+ * \version   0.52
  */
 
 #ifndef MINITRACES_H
@@ -50,6 +50,11 @@ void MiniTraces_info(void);
  */
 void MiniTraces_print(const char *file, const int line, const char *func,
                       const unsigned level, const unsigned module, const char *payload, ...);
+
+/*!
+ * \brief MiniTraces_flush() force terminal synchronisazion.
+ */
+void MiniTraces_flush();
 
 /* ************************************************************************** */
 

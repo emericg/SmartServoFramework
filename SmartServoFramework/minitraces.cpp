@@ -1,5 +1,5 @@
 /*!
- * COPYRIGHT (C) 2017 Emeric Grange - All Rights Reserved
+ * COPYRIGHT (C) 2018 Emeric Grange - All Rights Reserved
  *
  * This file is part of MiniTraces.
  *
@@ -18,8 +18,8 @@
  *
  * \file      minitraces.cpp
  * \author    Emeric Grange <emeric.grange@gmail.com>
- * \date      2017
- * \version   0.51
+ * \date      2018
+ * \version   0.52
  */
 
 // MiniTraces header
@@ -243,6 +243,14 @@ void MiniTraces_print(const char *file, const int line, const char *func,
         fflush(stdout);
 #endif
     }
+}
+
+/* ************************************************************************** */
+
+void MiniTraces_flush()
+{
+    // Force terminal synchronisazion (very slow!)
+    fflush(stdout);
 }
 
 /* ************************************************************************** */
