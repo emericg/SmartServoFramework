@@ -72,10 +72,11 @@ win32 {
 }
 
 # SmartServoFramework
-contains(CONFIG, EXTERNAL_FRAMEWORK) {
+contains(CONFIG, SSF_SYSTEM) {
+    # Use SmartServoFramework library from the system
     unix {
         INCLUDEPATH += `pkg-config --cflags smartservoframework`
-        LIBS        += `pkg-config --libs smartservoframework`
+        LIBS += `pkg-config --libs smartservoframework`
     }
     win32 {
         SSF_DIR = ..
