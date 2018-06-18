@@ -53,7 +53,7 @@ void DynamixelController::updateInternalSettings()
             m_maxId = 253;
 
             m_protocolVersion = PROTOCOL_HKX;
-            TRACE_INFO(CAPI, "- Using HerkuleX communication protocol");
+            TRACE_INFO(MAPI, "- Using HerkuleX communication protocol");
         }
         else if (m_servoSerie >= SENSOR_DYNAMIXEL)
         {
@@ -85,17 +85,17 @@ void DynamixelController::updateInternalSettings()
 
             if (m_protocolVersion == PROTOCOL_DXLv2)
             {
-                TRACE_INFO(CAPI, "- Using Dynamixel communication protocol version 2");
+                TRACE_INFO(MAPI, "- Using Dynamixel communication protocol version 2");
             }
             else
             {
-                TRACE_INFO(CAPI, "- Using Dynamixel communication protocol version 1");
+                TRACE_INFO(MAPI, "- Using Dynamixel communication protocol version 1");
             }
         }
     }
     else
     {
-        TRACE_WARNING(CAPI, "Warning: Unknown servo serie!");
+        TRACE_WARNING(MAPI, "Warning: Unknown servo serie!");
     }
 }
 
@@ -115,17 +115,17 @@ void DynamixelController::changeProtocolVersion(int protocolVersion)
             {
                 m_maxId = 253;
             }
-            TRACE_INFO(CAPI, "- Using Dynamixel communication protocol version 1");
+            TRACE_INFO(MAPI, "- Using Dynamixel communication protocol version 1");
         }
         else if (protocolVersion == PROTOCOL_DXLv2)
         {
             m_protocolVersion = PROTOCOL_DXLv2;
             m_maxId = 252;
-            TRACE_INFO(CAPI, "- Using Dynamixel communication protocol version 2");
+            TRACE_INFO(MAPI, "- Using Dynamixel communication protocol version 2");
         }
         else
         {
-            TRACE_ERROR(CAPI, "- Unknown Dynamixel communication protocol (version %i), unable to use it!", protocolVersion);
+            TRACE_ERROR(MAPI, "- Unknown Dynamixel communication protocol (version %i), unable to use it!", protocolVersion);
         }
     }
 }
@@ -195,10 +195,10 @@ void DynamixelController::autodetect_internal(int start, int stop, int bail)
     serialSetLatency(8);
 #endif
 
-    TRACE_INFO(CAPI, "DXL ctrl_device_autodetect(port: '%s' / tid: '%i')",
+    TRACE_INFO(MAPI, "DXL ctrl_device_autodetect(port: '%s' / tid: '%i')",
                serialGetCurrentDevice().c_str(), std::this_thread::get_id());
 
-    TRACE_INFO(CAPI, "> THREADED Scanning for DXL devices on '%s', protocol v%i, range is [%i,%i[",
+    TRACE_INFO(MAPI, "> THREADED Scanning for DXL devices on '%s', protocol v%i, range is [%i,%i[",
                serialGetCurrentDevice().c_str(), m_protocolVersion, start, stop);
 
     for (int id = start; id <= stop; id++)
@@ -285,7 +285,7 @@ void DynamixelController::autodetect_internal(int start, int stop, int bail)
 
 void DynamixelController::run()
 {
-    TRACE_INFO(CAPI, "DynamixelController::run(port: '%s' / tid: '%i')",
+    TRACE_INFO(MAPI, "DynamixelController::run(port: '%s' / tid: '%i')",
                serialGetCurrentDevice().c_str(), std::this_thread::get_id());
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
@@ -332,14 +332,14 @@ void DynamixelController::run()
                 break;
 
             case ctrl_state_pause:
-                TRACE_INFO(CAPI, ">> THREAD (tid: '%i') paused by message", std::this_thread::get_id());
+                TRACE_INFO(MAPI, ">> THREAD (tid: '%i') paused by message", std::this_thread::get_id());
                 m_mutex.lock();
                 m_queue.pop_front();
                 m_mutex.unlock();
                 return;
                 break;
             case ctrl_state_stop:
-                TRACE_INFO(CAPI, ">> THREAD (tid: '%i') termination by 'stop message'", std::this_thread::get_id());
+                TRACE_INFO(MAPI, ">> THREAD (tid: '%i') termination by 'stop message'", std::this_thread::get_id());
                 m_mutex.lock();
                 m_queue.pop_front();
                 m_mutex.unlock();
