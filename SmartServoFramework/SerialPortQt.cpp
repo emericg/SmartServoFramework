@@ -235,10 +235,15 @@ int SerialPortQt::openLink()
     // Make sure no tty connection is already running (in that case, openLink() will do a reconnection)
     closeLink();
 
+    // Check if the autodetection didn't fail
+    if (ttyDevicePath == "null" || ttyDevicePath == "auto")
+    {
+        goto OPEN_LINK_ERROR;
+    }
+
     // Check if another instance is using this port
     if (isLocked() == true)
     {
-        TRACE_ERROR(SERIAL, "Cannot connect to serial port: '%s': interface is locked!", ttyDevicePath.c_str());
         goto OPEN_LINK_LOCKED;
     }
 

@@ -200,8 +200,10 @@ std::vector <std::string> SerialPort::scanSerialPorts()
         if (serialPortsScanner(availableSerialPorts) == 0)
     #elif defined(__APPLE__) || defined(__MACH__)
         if (serialPortsScanner(availableSerialPorts) == 0)
-    #else // defined(__linux__) || defined(__gnu_linux)
+    #elif defined(__linux__) || defined(__unix__)
         if (serialPortsScanner(availableSerialPorts) == 0)
+    #else
+        TRACE_ERROR(SERIAL, "No serial port implementation available...");
     #endif
 #endif
     {
@@ -225,8 +227,10 @@ bool SerialPort::unlockLink(std::string &devicePath)
         status = SerialPortWindows::unlockLink(devicePath);
     #elif defined(__APPLE__) || defined(__MACH__)
         status = SerialPortMacOS::unlockLink(devicePath);
-    #else // defined(__linux__) || defined(__gnu_linux)
+    #elif defined(__linux__) || defined(__unix__)
         status = SerialPortLinux::unlockLink(devicePath);
+    #else
+        TRACE_ERROR(SERIAL, "No serial port implementation available...");
     #endif
 #endif
 

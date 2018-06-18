@@ -23,7 +23,7 @@
 #ifndef SERIALPORT_LINUX_H
 #define SERIALPORT_LINUX_H
 
-#if defined(__linux__) || defined(__gnu_linux)
+#if defined(__linux__) || defined(__unix__)
 
 #include "SerialPort.h"
 
@@ -137,6 +137,6 @@ public:
     int checkTimeOut();
 };
 
-#endif // __linux__ || __gnu_linux
+#endif // defined(__linux__) || defined(__unix__)
 
 #endif // SERIALPORT_LINUX_H

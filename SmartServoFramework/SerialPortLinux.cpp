@@ -20,7 +20,7 @@
  * \author Emeric Grange <emeric.grange@gmail.com>
  */
 
-#if defined(__linux__) || defined(__gnu_linux)
+#if defined(__linux__) || defined(__unix__)
 
 #include "SerialPortLinux.h"
 #include "minitraces.h"
@@ -493,10 +493,15 @@ int SerialPortLinux::openLink()
     // Make sure no tty connection is already running (in that case, openLink() will do a reconnection)
     closeLink();
 
+    // Check if the autodetection didn't fail
+    if (ttyDevicePath == "null" || ttyDevicePath == "auto")
+    {
+        goto OPEN_LINK_ERROR;
+    }
+
     // Check if another instance is using this port
     if (isLocked() == true)
     {
-        TRACE_ERROR(SERIAL, "Cannot connect to serial port: '%s': interface is locked!", ttyDevicePath.c_str());
         goto OPEN_LINK_LOCKED;
     }
 
@@ -709,7 +714,7 @@ bool SerialPortLinux::switchHighSpeed()
         serinfo.flags |= ASYNC_LOW_LATENCY;
         if (ioctl(ttyDeviceFileDescriptor, TIOCSSERIAL, &serinfo) >= 0)
         {
-            status = true;;
+            status = true;
         }
     }
 
@@ -782,4 +787,4 @@ int SerialPortLinux::checkTimeOut()
     return status;
 }
 
-#endif // __linux__ || __gnu_linux
+#endif // defined(__linux__) || defined(__unix__)

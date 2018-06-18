@@ -48,7 +48,7 @@ The framework will handle locking/unlocking the serial port if a locking method 
 * Linux: "liblockdev" support
 * macOS: "lockfile" support
 * macOS: "TIOCEXCL ioctl" support (default)
-* Windows: TODO!
+* Windows: Not needed, COM ports in use are hidden by the OS
 
 ### About latency
 

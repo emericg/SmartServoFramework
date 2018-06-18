@@ -29,9 +29,6 @@
 #include <string>
 #include <vector>
 
-// Device lock support
-#define LOCK_LOCKFILE
-
 LPCWSTR stringToLPCWSTR(const std::string &s)
 {
     int slength = static_cast<int>(s.length()) + 1;
@@ -134,10 +131,15 @@ int SerialPortWindows::openLink()
     // Make sure no tty connection is already running
     closeLink();
 
+    // Check if the autodetection didn't fail
+    if (ttyDevicePath == "null" || ttyDevicePath == "auto")
+    {
+        goto OPEN_LINK_ERROR;
+    }
+
     // Check if another instance is using this port
     if (isLocked() == true)
     {
-        TRACE_ERROR(SERIAL, "Cannot connect to serial port: '%s': interface is locked!", ttyDevicePath.c_str());
         goto OPEN_LINK_LOCKED;
     }
 
@@ -420,4 +422,4 @@ int SerialPortWindows::checkTimeOut()
     return status;
 }
 
-#endif // _WIN32 || _WIN64
+#endif //defined(_WIN32) || defined(_WIN64)
