@@ -584,7 +584,7 @@ int SerialPortLinux::openLink()
 
 OPEN_LINK_ERROR:
     closeLink();
-    return 0;
+    return -2;
 
 OPEN_LINK_LOCKED:
     closeLink();

@@ -87,7 +87,7 @@ public:
      * \param devicePath: The serial port device node.
      * \param baud: The serial port speed, can be a baud rate or a 'baudnum'.
      * \param serialDevice: If known, the serial adapter model used by this link.
-     * \return 1 if the connection is successfull, 0 otherwise.
+     * \return 1 if the connection is successfull, -1 if locked, -2 if errored.
      */
     int connect(std::string &devicePath, const int baud, const int serialDevice = SERIAL_UNKNOWN);
 

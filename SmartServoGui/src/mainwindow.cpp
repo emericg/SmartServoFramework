@@ -424,8 +424,8 @@ void MainWindow::scanServos(bool isAutoScan)
 void MainWindow::refreshSerialPort(QString port_qstring)
 {
     ui->frameDevices->setDisabled(true);
-    scan_running = true;
     treewidgetAutoSelection = false;
+    scan_running = true;
 
     // Launch a scan
     scanServos(port_qstring);
@@ -445,6 +445,8 @@ void MainWindow::scanServos(QString port_qstring, bool isAutoScan)
     // First locate the port to scan
     for (auto h: serialPorts)
     {
+        bool scan_running_currentport = true;
+
         if (h->deviceName_qstr == port_qstring)
         {
             std::cout << ">> scanServos(" << h->deviceName_str << ")" << std::endl;
@@ -503,15 +505,18 @@ void MainWindow::scanServos(QString port_qstring, bool isAutoScan)
             int deviceControllerProtocolSAVED = 0;
             int deviceControllerSpeedSAVED = 0;
 
-            for (int i = 0; i < scan_rounds; i++)
+            for (int current_scan_round = 0; current_scan_round < scan_rounds; current_scan_round++)
             {
+                if (scan_running == false || scan_running_currentport == false)
+                    break;
+
                 if (h->deviceWidget->getCurrentIndex() == 0)
                 {
                     // Rewrite 'scan_setting' if scan preset is set to 'auto'
                     int scanrounds_item[4] = {2, 4, 5, 8};
                     scan_rounds = 4;
                     scan_results = 0;
-                    scan_setting = scanrounds_item[i];
+                    scan_setting = scanrounds_item[current_scan_round];
                 }
                 else
                 {
@@ -528,19 +533,24 @@ void MainWindow::scanServos(QString port_qstring, bool isAutoScan)
                 h->deviceControllerProtocol = h->deviceWidget->getCurrentProtocol(scan_setting);
                 h->deviceControllerSpeed = h->deviceWidget->getCurrentSpeed(scan_setting);
                 h->deviceControllerDeviceClass = h->deviceWidget->getCurrentDeviceClass(scan_setting);
-
+/*
+                // Recap
+                std::cout << "  - round " << current_scan_round << "/" << scan_rounds << std::endl;
+                std::cout << "   * protocol: " << h->deviceControllerProtocol << std::endl;
+                std::cout << "   * speed: " << h->deviceControllerSpeed << std::endl;
+*/
                 // Do we need a new controller for this serial port?
                 // - no controller instanciated
                 // - controller with new protocol or speed
                 if (h->deviceController == nullptr ||
-                    deviceControllerProtocolSAVED != h->deviceControllerProtocol ||
-                    deviceControllerSpeedSAVED != h->deviceControllerSpeed)
+                    (h->deviceController != nullptr && (deviceControllerProtocolSAVED != h->deviceControllerProtocol || deviceControllerSpeedSAVED != h->deviceControllerSpeed)))
                 {
                     // Delete old controller (if needed)
                     if (h->deviceController != nullptr)
                     {
                         h->deviceController->disconnect();
                         h->linkStatus = 0;
+
                         delete h->deviceController;
                         h->deviceController = nullptr;
                     }
@@ -558,20 +568,15 @@ void MainWindow::scanServos(QString port_qstring, bool isAutoScan)
                 }
 
                 // Connect the controller to its serial port
-                if (h->deviceController != nullptr)
+                if (h->deviceController)
                 {
                     h->linkStatus = h->deviceController->connect(h->deviceName_str, h->deviceControllerSpeed);
-
-                    if (h->linkStatus != 1)
-                    {
-                        h->deviceController->disconnect();
-                        delete h->deviceController;
-                        h->deviceController = nullptr;
-                    }
                 }
 
                 // Scan
-                if (scan_running == true && h->deviceController != nullptr)
+                if (scan_running == true && scan_running_currentport == true &&
+                    h->deviceController &&
+                    h->linkStatus == 1)
                 {
 /*
                     // Are we scanning the currently selected port? Then go to the loading screen
@@ -595,36 +600,43 @@ void MainWindow::scanServos(QString port_qstring, bool isAutoScan)
                     // Controller already in ready state? Wait for the new scan to begin then
                     if (h->deviceController->getState() >= state_scanned)
                     {
-                        if (scan_running == false)
+                        int timeout = 1000; // 1000*4ms = 4s
+                        while (h->deviceController->getState() > state_scanned &&
+                               scan_running == true &&
+                               timeout > 0)
                         {
-                            h->deviceController->disconnect();
-                            break;
-                        }
-
-                        while (h->deviceController->getState() > state_scanned)
-                        {
-                            // TODO timeout
-
                             std::chrono::milliseconds waittime(static_cast<int>(4));
                             std::this_thread::sleep_for(waittime);
+                            qApp->processEvents();
+                            timeout--;
+                        }
+                        if (timeout <= 0)
+                        {
+                            std::cerr << "SCANNING START TIMEOUT" << std::endl;
+                            h->linkStatus = -2;
+                            scan_running_currentport = false;
                         }
                     }
 
                     // Wait until the controller is 'scanned' (not 'ready', cause if there is no results it will never be ready)
-                    while (h->deviceController->getState() >= state_started &&
-                           h->deviceController->getState() < state_scanned)
                     {
-                        if (scan_running == false)
+                        int timeout = 5000; // 5000*4ms = 20s
+                        while ((h->deviceController->getState() >= state_started &&
+                               h->deviceController->getState() < state_scanned) &&
+                               scan_running == true &&
+                               timeout > 0)
                         {
-                            h->deviceController->disconnect();
-                            break;
+                            std::chrono::milliseconds waittime(static_cast<int>(4));
+                            std::this_thread::sleep_for(waittime);
+                            qApp->processEvents();
+                            timeout--;
                         }
-
-                        // TODO timeout
-
-                        std::chrono::milliseconds waittime(static_cast<int>(4));
-                        std::this_thread::sleep_for(waittime);
-                        qApp->processEvents();
+                        if (timeout <= 0)
+                        {
+                            std::cerr << "SCANNING END TIMEOUT" << std::endl;
+                            h->linkStatus = -2;
+                            scan_running_currentport = false;
+                        }
                     }
 
                     // Get the scanned list
@@ -667,22 +679,24 @@ void MainWindow::scanServos(QString port_qstring, bool isAutoScan)
                         }
 
                         // Wait until the controller is ready
-                        while (h->deviceController->getState() >= state_started &&
-                               h->deviceController->getState() < state_ready)
+                        int timeout = 1000; // 1000*4ms = 4s
+                        while ((h->deviceController->getState() >= state_started &&
+                               h->deviceController->getState() < state_ready))
                         {
-                            // TODO timeout
-
                             std::chrono::milliseconds waittime(static_cast<int>(4));
                             std::this_thread::sleep_for(waittime);
                             qApp->processEvents();
+                            timeout--;
+                        }
+                        if (timeout <= 0)
+                        {
+                            std::cerr << "CONTROLLER READY TIMEOUT" << std::endl;
+                            h->linkStatus = -2;
+                            scan_running_currentport = false;
                         }
 
                         // Exit 'scan_rounds'
                         break;
-                    }
-                    else
-                    {
-                        h->deviceController->disconnect();
                     }
                 }
                 else
@@ -691,39 +705,17 @@ void MainWindow::scanServos(QString port_qstring, bool isAutoScan)
                 }
             }
 
-            if (h->linkStatus <= 0 || scan_running == false)
-            {
-                delete h->deviceController;
-                h->deviceController = nullptr;
-            }
+            // scanning rounds finished!
 
             // Indicate that we are no longer scanning
             ui->frame_loading->hide();
             port->removeChild(scan_entry);
             delete scan_entry;
+            scan_running = false;
+            scan_running_currentport = false;
 
-            // Do that only once, not every time we try a new serial port configuration
-            if (h->linkStatus < 0)
-            {
-                // Put a 'locked' icon
-                QString achtung_txt = "Interface is locked!";
-                QTreeWidgetItem *achtung = new QTreeWidgetItem();
-                port->addChild(achtung);
-                achtung->setText(0, achtung_txt);
-                achtung->setIcon(0, QIcon(":/icons/icons/emblem-readonly.svg"));
-
-                // Add an "unlock" contextual item?
-            }
-            else if (h->linkStatus == 0)
-            {
-                // Put an 'error' icon
-                QString achtung_txt = "Unable to connect!";
-                QTreeWidgetItem *achtung = new QTreeWidgetItem();
-                port->addChild(achtung);
-                achtung->setText(0, achtung_txt);
-                achtung->setIcon(0, QIcon(":/icons/icons/emblem-unreadable.svg"));
-            }
-            else if (h->linkStatus > 0)
+            // Do that only once, after all scanning rounds, not every time we try a new serial port configuration
+            if (h->linkStatus >= 0)
             {
                 if (scan_results == 0)
                 {
@@ -736,11 +728,42 @@ void MainWindow::scanServos(QString port_qstring, bool isAutoScan)
                     // No need to keep this "empty" controller working
                     delete h->deviceController;
                     h->deviceController = nullptr;
+                    h->linkStatus = 0;
                 }
-                else if (scan_results <= 0)
+            }
+            else if (h->linkStatus == -1)
+            {
+                // Put a 'locked' icon
+                QString achtung_txt = "Interface is locked!";
+                QTreeWidgetItem *achtung = new QTreeWidgetItem();
+                port->addChild(achtung);
+                achtung->setText(0, achtung_txt);
+                achtung->setIcon(0, QIcon(":/icons/icons/emblem-readonly.svg"));
+            }
+            else
+            {
+                QString achtung_txt;
+
+                if (h->linkStatus == -1)
                 {
-                    //
+                    achtung_txt = "Unable to connect!";
+
+                    delete h->deviceController;
+                    h->deviceController = nullptr;
                 }
+                else
+                {
+                    achtung_txt = "Unknown error!";
+
+                    // don't even try to delete the controller now, it may be unstoppable already
+                    // it will be destroyed (maybe) upon application exit
+                }
+
+                // Put an 'error' icon
+                QTreeWidgetItem *achtung = new QTreeWidgetItem();
+                port->addChild(achtung);
+                achtung->setText(0, achtung_txt);
+                achtung->setIcon(0, QIcon(":/icons/icons/emblem-unreadable.svg"));
             }
 
             // Unlock windows size

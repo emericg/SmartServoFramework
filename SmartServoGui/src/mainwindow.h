@@ -71,7 +71,7 @@ class MainWindow : public QMainWindow
 
         // Controller status
         ServoController *deviceController = nullptr;
-        int linkStatus = 0; // -1: locked, 0: disconnected, 1: connected
+        int linkStatus = 0; // -3: unknown error, -2: connection error, -1: locked, 0: disconnected, 1: connected
 
         // Controller settings
         int deviceControllerProtocol;

@@ -92,7 +92,7 @@ protected:
      * \brief Open a serial link with the given parameters.
      * \param devicePath: The path to the serial device node.
      * \param baud: The baudrate or HerkuleX 'baudnum'.
-     * \return 1 if success, 0 if locked, -1 otherwise.
+     * \return 1 if the connection is successfull, -1 if locked, -2 if errored.
      */
     int serialOpen(std::string &devicePath, const int baud);
 

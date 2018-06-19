@@ -36,17 +36,19 @@
  */
 
 /*!
- * \todo move that into the SerialPort class
+ * \todo move that into the SerialPort class?
  */
 enum linkState_e
 {
+    state_error_unknown = -3,
+    state_error_connection = -2,
     state_locked = -1,
     state_disconnected = 0,
     state_connected = 1,
 };
 
 /*!
- * \todo move that into the ServoController class
+ * \todo move that into the ServoController class?
  */
 enum controllerState_e
 {
@@ -170,7 +172,7 @@ public:
      * \param devicePath: The serial port device path.
      * \param baud: The serial port speed, can be a baud rate or a 'baudnum'.
      * \param serialDevice: If known, the serial adapter model used by this link.
-     * \return 1 if the connection is successfull, 0 otherwise, -1 if the connection is locked.
+     * \return 1 if the connection is successfull, -1 if locked, -2 if errored.
      */
     virtual int connect(std::string &devicePath, const int baud, const int serialDevice = 0) = 0;
 

@@ -2,10 +2,11 @@ API breakage
 ------------
 
 version 0.98
+- Actual support for X servo serie
+- Serial connection error code changed again
 - You only need to include <SmartServoFramework/SimpleAPI.h> or <SmartServoFramework/ManagedAPI.h> directly in your project now
 - ControllerAPI class (and file) is now ServoController to avoid confusion with the new ManagedAPI.h file
 - Some directories and files have been shifted around
-- Actual support for X servo serie
 
 version 0.97
 - DynamixelController() and HerkuleXController() params order have changed (now in line with the SimpleAPI)
