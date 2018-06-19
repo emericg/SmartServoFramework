@@ -62,10 +62,17 @@ void tabSerial::setInfos(int serial_state, std::string serial_path, int serial_b
     ui->label_device_count->setText(QString::number(device_connected));
 
     QPixmap serialPortIcon;
-    if (serial_state == -1)
+    if (serial_state == 1)
+    {
+        if (device_connected > 0)
+            serialPortIcon.load(":/icons/icons/network-transmit-receive.svg");
+        else
+            serialPortIcon.load(":/icons/icons/network-idle.svg");
+    }
+    else if (serial_state == 0)
+        serialPortIcon.load(":/icons/icons/network-offline.svg");
+    else if (serial_state == -1)
         serialPortIcon.load(":/icons/icons/emblem-readonly.svg");
-    else if (serial_state == 1)
-        serialPortIcon.load(":/icons/icons/network-transmit-receive.svg");
     else
         serialPortIcon.load(":/icons/icons/network-error.svg");
     ui->label_icon->setPixmap(serialPortIcon);
