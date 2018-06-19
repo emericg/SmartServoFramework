@@ -627,7 +627,7 @@ void SerialPortMacOS::closeLink()
     }
 }
 
-bool SerialPortMacOS::unlockLink()
+bool SerialPortMacOS::unlockLink(std::string &devicePath)
 {
     return false;
 }
