@@ -37,6 +37,7 @@
 #include <QLabel>
 #include <QCheckBox>
 #include <QComboBox>
+#include <QProgressBar>
 #include <QTextStream>
 #include <QTextBrowser>
 #include <QMessageBox>
@@ -734,7 +735,7 @@ void MainWindow::scanServos(QString port_qstring, bool isAutoScan)
             else if (h->linkStatus == -1)
             {
                 // Put a 'locked' icon
-                QString achtung_txt = "Interface is locked!";
+                QString achtung_txt = tr("Interface is locked!");
                 QTreeWidgetItem *achtung = new QTreeWidgetItem();
                 port->addChild(achtung);
                 achtung->setText(0, achtung_txt);
@@ -746,14 +747,14 @@ void MainWindow::scanServos(QString port_qstring, bool isAutoScan)
 
                 if (h->linkStatus == -1)
                 {
-                    achtung_txt = "Unable to connect!";
+                    achtung_txt = tr("Unable to connect!");
 
                     delete h->deviceController;
                     h->deviceController = nullptr;
                 }
                 else
                 {
-                    achtung_txt = "Unknown error!";
+                    achtung_txt = tr("Unknown error!");
 
                     // don't even try to delete the controller now, it may be unstoppable already
                     // it will be destroyed (maybe) upon application exit
@@ -1455,7 +1456,6 @@ void MainWindow::updateRegisterTableHerkuleX(Servo *servo_hkx, const int servoSe
         ui->radioButton_1->setChecked(true);
     }
 
-
     int torque_enable = servo->getValue(REG_TORQUE_ENABLE);
     ui->torque_checkBox->setChecked(torque_enable);
 
@@ -1486,11 +1486,11 @@ void MainWindow::updateRegisterTableHerkuleX(Servo *servo_hkx, const int servoSe
 
     int cpos = servo->getValue(REG_ABSOLUTE_POSITION);
     ui->cpos->setValue(cpos);
-    ui->cpos_label->setText(tr("Current (") + QString::number(cpos) + ")");
+    ui->cpos_label->setText(tr("Current") + " (" + QString::number(cpos) + ")");
 
     int gpos = servo->getValue(REG_ABSOLUTE_GOAL_POSITION);
     ui->gpos->setValue(gpos);
-    ui->gpos_label->setText(tr("Goal (") + QString::number(gpos) + ")");
+    ui->gpos_label->setText(tr("Goal") + " (" + QString::number(gpos) + ")");
 }
 
 void MainWindow::updateRegisterTableDynamixel(Servo *servo_dxl, const int servoSerie, const int servoModel)
@@ -1506,8 +1506,8 @@ void MainWindow::updateRegisterTableDynamixel(Servo *servo_dxl, const int servoS
     int ccwlimit = servo->getCcwAngleLimit();
     ui->cwlimit->setValue(cwlimit);
     ui->ccwlimit->setValue(ccwlimit);
-    ui->cwlimit_label->setText(tr("MIN position (") + QString::number(cwlimit) + ")");
-    ui->ccwlimit_label->setText(tr("MAX position (") + QString::number(ccwlimit) + ")");
+    ui->cwlimit_label->setText(tr("MIN position") + " (" + QString::number(cwlimit) + ")");
+    ui->ccwlimit_label->setText(tr("MAX position") + " (" + QString::number(ccwlimit) + ")");
     if (cwlimit == 0 && ccwlimit == 0)
     {
         // wheel mode
@@ -1523,10 +1523,19 @@ void MainWindow::updateRegisterTableDynamixel(Servo *servo_dxl, const int servoS
         ui->radioButton_1->setChecked(true);
     }
 
-    double dlow_volt_limit = servo->getLowestLimitVolt();
-    double dhigh_volt_limit = servo->getHighestLimitVolt();
-    int max_torque = servo->getMaxTorque();
-    ui->maxTorqueSlider->setValue(max_torque);
+    if (servoModel < SERVO_XM430_W210)
+    {
+        ui->maxTorque_label->show();
+        ui->maxTorqueSlider->show();
+
+        int max_torque = servo->getMaxTorque();
+        ui->maxTorqueSlider->setValue(max_torque);
+    }
+    else
+    {
+        ui->maxTorque_label->hide();
+        ui->maxTorqueSlider->hide();
+    }
 
     // RAM
     int torque_enable = servo->getTorqueEnabled();
@@ -1536,21 +1545,31 @@ void MainWindow::updateRegisterTableDynamixel(Servo *servo_dxl, const int servoS
 
     int gpos = servo->getGoalPosition();
     ui->gpos->setValue(gpos);
-    ui->gpos_label->setText(tr("Goal (") + QString::number(gpos) + ")");
+    ui->gpos_label->setText(tr("Goal") + " (" + QString::number(gpos) + ")");
     int mspeed = servo->getMovingSpeed();
     ui->movingSpeedSlider->setValue(mspeed);
-    if (servoModel != SERVO_XL320)
+    if (servoSerie <= SERVO_XL || servoSerie >= SERVO_PRO)
     {
+        ui->torqueLimit_label->show();
+        ui->torqueLimitSlider->show();
+
         int tlimit = servo->getTorqueLimit();
         ui->torqueLimitSlider->setValue(tlimit);
     }
+    else
+    {
+        ui->torqueLimit_label->hide();
+        ui->torqueLimitSlider->hide();
+    }
+
     int cpos = servo->getCurrentPosition();
     ui->cpos->setValue(cpos);
-    ui->cpos_label->setText(tr("Current (") + QString::number(cpos) + ")");
+    ui->cpos_label->setText(tr("Current") + " (" + QString::number(cpos) + ")");
 
-    double dcvolt = servo->getCurrentVoltage();
-    ui->cvolt->display(dcvolt);
-    if (dcvolt < dlow_volt_limit || dcvolt > dhigh_volt_limit)
+    double volt_min = servo->getLowestLimitVolt();
+    double volt_max = servo->getHighestLimitVolt();
+    double volt = servo->getCurrentVoltage();
+    if (volt < volt_min || volt > volt_max)
     {
         // Warn if servo voltage is out of boundaries
         ui->cvolt->setPalette(QPalette(QColor(255,0,0)));
@@ -1559,9 +1578,14 @@ void MainWindow::updateRegisterTableDynamixel(Servo *servo_dxl, const int servoS
     {
         ui->cvolt->setPalette(QPalette(QColor(85,85,127)));
     }
+    ui->cvolt->display(volt);
+    ui->progressBar_volt->setMinimum(static_cast<int>(volt_min*100));
+    ui->progressBar_volt->setMaximum(static_cast<int>(volt_max*100));
+    ui->progressBar_volt->setValue(static_cast<int>(volt*100));
 
-    double ctemp = servo->getCurrentTemperature();
-    if (ctemp > servo->getHighestLimitTemp())
+    double temp_limit = servo->getHighestLimitTemp();
+    double temp = servo->getCurrentTemperature();
+    if (temp > temp_limit)
     {
         // Warn if servo temperature is too high
         ui->ctemp->setPalette(QPalette(QColor(255,0,0)));
@@ -1570,7 +1594,27 @@ void MainWindow::updateRegisterTableDynamixel(Servo *servo_dxl, const int servoS
     {
         ui->ctemp->setPalette(QPalette(QColor(85,85,127)));
     }
-    ui->ctemp->display(ctemp);
+    ui->ctemp->display(temp);
+    ui->progressBar_temp->setMinimum(0);
+    ui->progressBar_temp->setMaximum(static_cast<int>(temp_limit*100));
+    ui->progressBar_temp->setValue(static_cast<int>(temp*100));
+
+    if (servoModel <= SERVO_XL430_W250)
+    {
+        ui->cload_label->show();
+        ui->progressBar_load->show();
+
+        int load = servo->getCurrentLoad() % 1024;
+        int load_max = 1023;
+        ui->progressBar_load->setMinimum(0);
+        ui->progressBar_load->setMaximum(load_max);
+        ui->progressBar_load->setValue(load);
+    }
+    else
+    {
+        ui->cload_label->hide();
+        ui->progressBar_load->hide();
+    }
 }
 
 /* ************************************************************************** */
