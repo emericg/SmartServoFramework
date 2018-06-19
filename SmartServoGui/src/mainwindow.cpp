@@ -513,8 +513,8 @@ void MainWindow::scanServos(QString port_qstring, bool isAutoScan)
                 if (h->deviceWidget->getCurrentIndex() == 0)
                 {
                     // Rewrite 'scan_setting' if scan preset is set to 'auto'
-                    int scanrounds_item[4] = {2, 4, 5, 8};
-                    scan_rounds = 4;
+                    int scanrounds_item[5] = {5, 2, 8, 6, 3};
+                    scan_rounds = 5;
                     scan_results = 0;
                     scan_setting = scanrounds_item[current_scan_round];
                 }
