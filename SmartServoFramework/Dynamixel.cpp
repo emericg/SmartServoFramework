@@ -312,10 +312,10 @@ void Dynamixel::dxl_tx_packet()
     // Set a timeout for the response packet
     if (m_protocolVersion == PROTOCOL_DXLv2)
     {
-        // 11 is the min size of a v2 status packet
-        if (txPacket[PKT1_INSTRUCTION] == INST_READ)
+        if (txPacket[PKT2_INSTRUCTION] == INST_READ)
         {
-            m_serial->setTimeOut(11 + make_short_word(txPacket[PKT2_PARAMETER+2], txPacket[PKT2_PARAMETER+3]));
+            // 11 (7+x) is the min size of a v2 status packet
+            m_serial->setTimeOut(7 + make_short_word(txPacket[PKT2_LENGTH_L], txPacket[PKT2_LENGTH_H]));
         }
         else
         {
@@ -1078,10 +1078,10 @@ void Dynamixel::printTxPacket()
     if (m_protocolVersion == PROTOCOL_DXLv2)
     {
         printf("0x%.2X 0x%.2X 0x%.2X 0x%.2X ", txPacket[0], txPacket[1], txPacket[2], txPacket[3]);
-        printf("0x%.2X ", txPacket[4]);
+        printf("[#%02i] ", txPacket[4]); // ID
         printf("{0x%.2X 0x%.2X} ", txPacket[5], txPacket[6]);
         printf("(0x%.2X) ", txPacket[7]);
-        for (int i = 0; i < (packetSize - 2); i++)
+        for (int i = 8; i < (packetSize - 2); i++)
         {
             printf("0x%.2X ", txPacket[i]);
         }
