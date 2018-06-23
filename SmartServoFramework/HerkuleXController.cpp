@@ -166,7 +166,7 @@ void HerkuleXController::autodetect_internal(int start, int stop, int bail)
     TRACE_INFO(MAPI, "HKX ctrl_device_autodetect(port: '%s' / tid: '%i')",
                serialGetCurrentDevice().c_str(), std::this_thread::get_id());
 
-    TRACE_INFO(MAPI, "> THREADED Scanning for HKX devices on '%s', range is [%i,%i[",
+    TRACE_INFO(MAPI, "> THREADED Scanning for HKX devices on '%s', range is [%i,%i]",
                serialGetCurrentDevice().c_str(), start, stop);
 
     for (int id = start; id <= stop; id++)
