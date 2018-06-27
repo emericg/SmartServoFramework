@@ -32,19 +32,19 @@ std::string hkx_get_model_name(const int model_number)
     case 0x0101:
         name = "DRS-0101";
         break;
-    case 0x0201:
+    case 0x0102:
         name = "DRS-0201";
         break;
-    case 0x0401:
+    case 0x0104:
         name = "DRS-0401";
         break;
-    case 0x0402:
+    case 0x0204:
         name = "DRS-0402";
         break;
-    case 0x0601:
+    case 0x0106:
         name = "DRS-0601";
         break;
-    case 0x0602:
+    case 0x0206:
         name = "DRS-0602";
         break;
 
@@ -52,7 +52,6 @@ std::string hkx_get_model_name(const int model_number)
         name = "Unknown";
         break;
     }
-
     return name;
 }
 
@@ -64,23 +63,23 @@ void hkx_get_model_infos(const int model_number, int &servo_serie, int &servo_mo
         servo_serie = SERVO_DRS;
         servo_model = SERVO_DRS_0101;
         break;
-    case 0x0201:
+    case 0x0102:
         servo_serie = SERVO_DRS;
         servo_model = SERVO_DRS_0201;
         break;
-    case 0x0401:
+    case 0x0104:
         servo_serie = SERVO_DRS;
         servo_model = SERVO_DRS_0401;
         break;
-    case 0x0402:
+    case 0x0204:
         servo_serie = SERVO_DRS;
         servo_model = SERVO_DRS_0402;
         break;
-    case 0x0601:
+    case 0x0106:
         servo_serie = SERVO_DRS;
         servo_model = SERVO_DRS_0601;
         break;
-    case 0x0602:
+    case 0x0206:
         servo_serie = SERVO_DRS;
         servo_model = SERVO_DRS_0602;
         break;
