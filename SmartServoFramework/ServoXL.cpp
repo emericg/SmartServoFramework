@@ -93,7 +93,7 @@ int ServoXL::getPGain()
 int ServoXL::getGoalTorque()
 {
     std::lock_guard <std::mutex> lock(access);
-    return registerTableValues[gid(REG_GOAL_TORQUE)];
+    return registerTableValues[gid(REG_TORQUE_LIMIT)];
 }
 
 int ServoXL::getHardwareErrorStatus()
