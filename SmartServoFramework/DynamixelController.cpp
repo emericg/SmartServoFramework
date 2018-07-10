@@ -198,7 +198,7 @@ void DynamixelController::autodetect_internal(int start, int stop, int bail)
     TRACE_INFO(MAPI, "DXL ctrl_device_autodetect(port: '%s' / tid: '%i')",
                serialGetCurrentDevice().c_str(), std::this_thread::get_id());
 
-    TRACE_INFO(MAPI, "> THREADED Scanning for DXL devices on '%s', protocol v%i, range is [%i,%i[",
+    TRACE_INFO(MAPI, "> THREADED Scanning for DXL devices on '%s', protocol v%i, range is [%i,%i]",
                serialGetCurrentDevice().c_str(), m_protocolVersion, start, stop);
 
     for (int id = start; id <= stop; id++)
