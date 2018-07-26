@@ -58,5 +58,5 @@ after_success:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
       cd bin/;
       zip -r -X SmartServoGui.zip SmartServoGui.app;
-      curl --upload-file SmartServoGui*.zip https://transfer.sh/SmartServoGui-git.$(git rev-parse --short HEAD).zip;
+      curl --upload-file SmartServoGui*.zip https://transfer.sh/SmartServoGui-git.$(git rev-parse --short HEAD)-macOS.zip;
     fi
