@@ -123,6 +123,7 @@ std::string dxl_get_model_name(const int model_number)
         break;
 
     default:
+        TRACE_WARNING(TOOLS, "Unknown servo model number: '%#04X'", model_number);
         name = "Unknown";
         break;
     }
@@ -255,6 +256,7 @@ void dxl_get_model_infos(const int model_number, int &servo_serie, int &servo_mo
         break;
 
     default:
+        TRACE_WARNING(TOOLS, "Unknown servo model number: '%#04X'", model_number);
         servo_serie = SERVO_UNKNOWN;
         servo_model = SERVO_UNKNOWN;
         break;
