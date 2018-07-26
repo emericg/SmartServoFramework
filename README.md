@@ -1,4 +1,4 @@
-SmartServoFramework 0.98
+SmartServoFramework 0.99
 ========================
 
 [![Build Status](https://travis-ci.org/emericg/SmartServoFramework.svg?branch=master)](https://travis-ci.org/emericg/SmartServoFramework)
