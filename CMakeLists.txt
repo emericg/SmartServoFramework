@@ -16,21 +16,6 @@ cmake_minimum_required(VERSION 3.0)
 set(ENABLE_DEBUG   1) # "Toggle debug traces"
 set(ENABLE_COLORS  1) # "Toggle colored terminal output"
 
-if(WIN32)
-    # Turn on the ability to create folders to organize projects (.vcproj)
-    # It creates "CMakePredefinedTargets" folder by default and adds CMake
-    # defined projects like INSTALL.vcproj and ZERO_CHECK.vcproj
-    set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
-    # Set policy for interpretation of if() arguments as variables or keywords
-    # when unquoted to NEW to avoid warnings.
-    cmake_policy(SET CMP0054 NEW)
-
-    if(CMAKE_VERSION VERSION_GREATER "3.3")
-        include(GenerateExportHeader)
-    endif()
-endif()
-
 # Build dependencies
 ################################################################################
 
@@ -117,9 +102,9 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     # when unquoted to NEW to avoid warnings.
     cmake_policy(SET CMP0054 NEW)
 
-    if(CMAKE_VERSION VERSION_GREATER "3.3")
-        include(GenerateExportHeader)
-    endif()
+    if(CMAKE_VERSION VERSION_GREATER "3.4")
+       set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS 1)
+   endif()
 
 endif()
 
@@ -232,17 +217,6 @@ if (BUILD_SHARED_LIBS)
     add_library(SmartServoFramework_shared SHARED ${SmartServoFramework_SRC})
     target_link_libraries(SmartServoFramework_shared ${EXTRA_LIBS})
     set_target_properties(SmartServoFramework_shared PROPERTIES OUTPUT_NAME smartservoframework)
-
-    if (WIN32)
-    if (CMAKE_VERSION VERSION_GREATER "3.3")
-        message("* Generating symbols export header")
-        GENERATE_EXPORT_HEADER(SmartServoFramework_shared
-                               BASE_NAME SmartServoFramework_shared
-                               EXPORT_MACRO_NAME SmartServoFramework_EXPORT
-                               EXPORT_FILE_NAME "${CMAKE_SOURCE_DIR}/SmartServoFramework/SmartServoFramework_export.h"
-                               STATIC_DEFINE SmartServoFramework_BUILT_AS_STATIC)
-    endif()
-    endif()
 endif (BUILD_SHARED_LIBS)
 
 if (BUILD_STATIC_LIBS)
