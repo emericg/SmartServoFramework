@@ -135,7 +135,7 @@ private slots:
     void modifier(int row, int column);
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
     void autoScanPorts();
