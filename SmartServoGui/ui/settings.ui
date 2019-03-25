@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>651</width>
-    <height>521</height>
+    <width>475</width>
+    <height>359</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,14 +17,17 @@
    <iconset resource="../resources/resources.qrc">
     <normaloff>:/icons/icons/emblem-system.svg</normaloff>:/icons/icons/emblem-system.svg</iconset>
   </property>
+  <property name="styleSheet">
+   <string notr="true">QGroupBox
+{
+    font-weight: bold;
+}</string>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
     <widget class="QGroupBox" name="groupBox_ui">
-     <property name="font">
-      <font>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
+     <property name="styleSheet">
+      <string notr="true"/>
      </property>
      <property name="title">
       <string>UI</string>
@@ -32,12 +35,6 @@
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
        <widget class="QCheckBox" name="checkBox_pause">
-        <property name="font">
-         <font>
-          <weight>50</weight>
-          <bold>false</bold>
-         </font>
-        </property>
         <property name="text">
          <string>Pause controllers when SmartServoGui window is out of focus.</string>
         </property>
@@ -48,11 +45,8 @@
    </item>
    <item>
     <widget class="QGroupBox" name="groupBox_controllers">
-     <property name="font">
-      <font>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
+     <property name="styleSheet">
+      <string notr="true"/>
      </property>
      <property name="title">
       <string>Device Controllers</string>
@@ -60,12 +54,6 @@
      <layout class="QGridLayout" name="gridLayout">
       <item row="3" column="1">
        <widget class="QLabel" name="label">
-        <property name="font">
-         <font>
-          <weight>50</weight>
-          <bold>false</bold>
-         </font>
-        </property>
         <property name="text">
          <string>Synchronization frequency between controllers and devices.</string>
         </property>
@@ -73,17 +61,17 @@
       </item>
       <item row="3" column="0">
        <widget class="QSpinBox" name="spinBox_freq">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="maximumSize">
          <size>
           <width>128</width>
           <height>16777215</height>
          </size>
-        </property>
-        <property name="font">
-         <font>
-          <weight>50</weight>
-          <bold>false</bold>
-         </font>
         </property>
         <property name="minimum">
          <number>1</number>
@@ -98,12 +86,6 @@
       </item>
       <item row="2" column="0" colspan="2">
        <widget class="QCheckBox" name="checkBox_locks">
-        <property name="font">
-         <font>
-          <weight>50</weight>
-          <bold>false</bold>
-         </font>
-        </property>
         <property name="text">
          <string>Use &quot;file locks&quot; to avoid concurent use of the serial ports.</string>
         </property>
@@ -111,12 +93,6 @@
       </item>
       <item row="1" column="0" colspan="2">
        <widget class="QCheckBox" name="checkBox_autoscan">
-        <property name="font">
-         <font>
-          <weight>50</weight>
-          <bold>false</bold>
-         </font>
-        </property>
         <property name="text">
          <string>Auto-scan serial ports at launch</string>
         </property>
@@ -127,336 +103,88 @@
    </item>
    <item>
     <widget class="QGroupBox" name="groupBox_ports">
-     <property name="font">
-      <font>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
+     <property name="styleSheet">
+      <string notr="true"/>
      </property>
      <property name="title">
       <string>Serial port(s)</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QLabel" name="label_2">
-        <property name="font">
-         <font>
-          <weight>50</weight>
-          <bold>false</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>You can use these fields to pre-configure up to four serial ports.</string>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QLabel" name="label_3">
-        <property name="font">
-         <font>
-          <weight>50</weight>
-          <bold>false</bold>
-         </font>
-        </property>
         <property name="text">
          <string>Just tick the &quot;enable&quot; checkbox to the left in order to use these settings.</string>
         </property>
        </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="port_0">
-        <item>
-         <widget class="QCheckBox" name="checkBox_0">
+       <layout class="QGridLayout" name="gridLayoutPortsPort">
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item row="0" column="1">
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>Port</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>Protocol</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="3">
+         <widget class="QLabel" name="label_6">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Baudrate</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="4">
+         <widget class="QLabel" name="label_8">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>First addr.</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="labelEnabledSpacer">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="text">
            <string/>
           </property>
          </widget>
         </item>
-        <item>
-         <widget class="QLineEdit" name="lineEdit_0">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
+        <item row="0" column="5">
+         <widget class="QLabel" name="label_9">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
           </property>
           <property name="text">
-           <string>/dev/ttyUSB0</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="comboBox_0">
-          <property name="minimumSize">
-           <size>
-            <width>128</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <item>
-           <property name="text">
-            <string>Dynamixel v1</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Dynamixel v2</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>HerkuleX</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item>
-         <widget class="QSpinBox" name="spinBox_0">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="minimum">
-           <number>2400</number>
-          </property>
-          <property name="maximum">
-           <number>4000000</number>
-          </property>
-          <property name="value">
-           <number>1000000</number>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="port_1">
-        <item>
-         <widget class="QCheckBox" name="checkBox_1">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="lineEdit_1">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>/dev/ttyACM0</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="comboBox_1">
-          <property name="minimumSize">
-           <size>
-            <width>128</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <item>
-           <property name="text">
-            <string>Dynamixel v1</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Dynamixel v2</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>HerkuleX</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item>
-         <widget class="QSpinBox" name="spinBox_1">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="minimum">
-           <number>2400</number>
-          </property>
-          <property name="maximum">
-           <number>4000000</number>
-          </property>
-          <property name="value">
-           <number>1000000</number>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="port_2">
-        <item>
-         <widget class="QCheckBox" name="checkBox_2">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="lineEdit_2">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>/dev/cu.usbserial</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="comboBox_2">
-          <property name="minimumSize">
-           <size>
-            <width>128</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <item>
-           <property name="text">
-            <string>Dynamixel v1</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Dynamixel v2</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>HerkuleX</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item>
-         <widget class="QSpinBox" name="spinBox_2">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="minimum">
-           <number>2400</number>
-          </property>
-          <property name="maximum">
-           <number>4000000</number>
-          </property>
-          <property name="value">
-           <number>1000000</number>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="port_3">
-        <item>
-         <widget class="QCheckBox" name="checkBox_3">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="lineEdit_3">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>\\.\COM1</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="comboBox_3">
-          <property name="minimumSize">
-           <size>
-            <width>128</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <item>
-           <property name="text">
-            <string>Dynamixel v1</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Dynamixel v2</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>HerkuleX</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item>
-         <widget class="QSpinBox" name="spinBox_3">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="minimum">
-           <number>2400</number>
-          </property>
-          <property name="maximum">
-           <number>4000000</number>
-          </property>
-          <property name="value">
-           <number>1000000</number>
+           <string>Last addr.</string>
           </property>
          </widget>
         </item>
@@ -470,7 +198,7 @@
         <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
-          <height>244</height>
+          <height>0</height>
          </size>
         </property>
        </spacer>
@@ -518,12 +246,6 @@
          <height>0</height>
         </size>
        </property>
-       <property name="font">
-        <font>
-         <weight>50</weight>
-         <bold>false</bold>
-        </font>
-       </property>
        <property name="text">
         <string>Save and exit</string>
        </property>
@@ -540,5 +262,22 @@
  <resources>
   <include location="../resources/resources.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pushButton_exit</sender>
+   <signal>clicked()</signal>
+   <receiver>Settings</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>464</x>
+     <y>509</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>632</x>
+     <y>-5</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

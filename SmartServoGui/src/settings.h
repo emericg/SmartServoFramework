@@ -23,10 +23,11 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include "thirdparty/rapidjson/document.h"
+#include "SmartServoFramework/ServoTools.h"
 
-#include <string>
 #include <vector>
+
+#include <QSettings>
 #include <QWidget>
 
 namespace Ui {
@@ -35,51 +36,61 @@ class Settings;
 
 struct portConfig
 {
-    bool on = false;
-    std::string path = "/dev/ttyUSB0";
-    int protocol = 0;
+    bool enabled = false;
+    QString path;
+    ServoProtocol protocol = ServoProtocol::PROTOCOL_DXLv1;
     int speed = 1000000;
+    int firstAddress = 0;
+    int lastAddress = 253;
 };
 
 class Settings : public QWidget
 {
     Q_OBJECT
 
+    enum PortWidgetColumns {
+        Col_Enabled,
+        Col_PortName,
+        Col_Protocol,
+        Col_Baud,
+        Col_FirstAddress,
+        Col_LastAddress
+    };
+
     Ui::Settings *ui;
-
-    //! Path of the config file (OS dependant)
-    std::string filepath;
-
-    //! Config file parser
-    rapidjson::Document *parser = nullptr;
 
     // Settings
     bool ui_pause = false;
     bool ctrl_autoscan = true;
     bool ctrl_locks = true;
     int ctrl_freq = 10;
-    std::vector <struct portConfig> serial_ports;
-
-private slots:
-    void exitSettings();
-    void saveSettings();
-
-public slots:
+    QVector<struct portConfig> serial_ports;
+    QSettings m_settings;
+    void addPortWidgets(const struct portConfig config, int row);
     void loadSettings();
 
+    void loadSerialPorts();
+
+private slots:
+    void on_pushButton_save_clicked();
+
 public:
-    explicit Settings(QWidget *parent = 0);
+    explicit Settings(QWidget *parent = nullptr);
     ~Settings();
 
     bool getAutoScan();
     bool getLock();
     bool getPause();
     int getFreq();
-    const std::vector <struct portConfig> & getSerialPortsConfig();
-    struct portConfig * getSerialPortConfig(std::string &portPath);
+    const QVector<portConfig> &getSerialPortsConfig();
+    const portConfig *getSerialPortConfig(const QString& portPath);
 
-    int readSettings();
     int writeSettings();
+
+    void reloadPorts();
+
+signals:
+    void settingsSaved();
 };
 
 #endif // SETTINGS_H
