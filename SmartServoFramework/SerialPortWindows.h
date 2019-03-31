@@ -28,7 +28,9 @@
 #include "SerialPort.h"
 
 // Windows specific
+#ifndef NOMINMAX
 #define NOMINMAX // Not sure if really needed when building the framework without Qt, but still...
+#endif
 #undef UNICODE // Avoid runtime errors when building with MSVC...
 
 #include <windows.h>
