@@ -45,12 +45,12 @@ widgetSerialScan::widgetSerialScan(QString &port, QWidget *parent) :
 widgetSerialScan::~widgetSerialScan()
 {
     if (ui->portMode->currentIndex() == Manual) {
-        m_settings.beginGroup("portsConfig");
+        m_settings.beginGroup("serialport");
         m_settings.beginGroup(ui->portName->text());
         m_settings.setValue("firstAddress", ui->rangeStart_spinBox->value());
         m_settings.setValue("lastAddress", ui->rangeStop_spinBox->value());
         m_settings.endGroup(); // end port
-        m_settings.endGroup(); // end portsConfig
+        m_settings.endGroup(); // end serialport
     }
     delete ui;
 }
@@ -84,7 +84,7 @@ void widgetSerialScan::setSavedParameters(ServoProtocol protocol, int speed, int
 
 void widgetSerialScan::loadSavedParameters()
 {
-    m_settings.beginGroup("portsConfig");
+    m_settings.beginGroup("serialport");
     m_settings.beginGroup(ui->portName->text());
     ui->rangeStart_spinBox->setValue(m_settings.value("firstAddress", 0).toInt());
     ui->rangeStop_spinBox->setValue(m_settings.value("lastAddress", 253).toInt());
@@ -92,7 +92,7 @@ void widgetSerialScan::loadSavedParameters()
     ui->comboBox_baudrate->setBaudrate(m_settings.value("speed", 1000000).toInt());
     ui->portName->setChecked(m_settings.value("enabled", false).toBool());
     m_settings.endGroup(); // end port
-    m_settings.endGroup(); // end portSettings
+    m_settings.endGroup(); // end serialport
 }
 
 std::string widgetSerialScan::getDeviceName()
@@ -175,7 +175,6 @@ ServoProtocol widgetSerialScan::getCurrentProtocol(int index)
 
 int widgetSerialScan::getCurrentDeviceClass(int index)
 {
-    int deviceClass = 0;
     if (index == -1)
         index = ui->portMode->currentIndex();
 
@@ -183,34 +182,31 @@ int widgetSerialScan::getCurrentDeviceClass(int index)
     {
     case Manual:
     case Saved:
-        if (ui->comboBox_protocol->currentProtocol() == ServoProtocol::PROTOCOL_DXLv1)
-            deviceClass = SERVO_MX;
-        else if (ui->comboBox_protocol->currentProtocol() == ServoProtocol::PROTOCOL_DXLv1)
-            deviceClass = SERVO_XL;
-        else if (ui->comboBox_protocol->currentProtocol() == ServoProtocol::PROTOCOL_HKX)
-            deviceClass = SERVO_DRS;
+        switch (ui->comboBox_protocol->currentProtocol()) {
+        case PROTOCOL_UNKNOWN:
+            return SERVO_UNKNOWN;
+        case PROTOCOL_DXLv1:
+            return SERVO_MX;
+        case PROTOCOL_DXLv2:
+            return SERVO_XL;
+        case PROTOCOL_HKX:
+            return SERVO_DRS;
+        }
         break;
-
     case DXL_V1_1Mb:
     case DXL_V1_115k:
     case DXL_V1_57p6k:
-        deviceClass = SERVO_MX;
-        break;
+        return SERVO_MX;
     case DXL_V2_1Mb:
     case DXL_V2_115k:
     case DXL_V2_57p6k:
-        deviceClass = SERVO_XL;
-        break;
+        return SERVO_XL;
     case HKX_1Mb:
     case HKX_115k:
     case HKX_57p6k:
-        deviceClass = SERVO_DRS;
-        break;
-    default:
-        break;
+        return SERVO_DRS;
     }
-
-    return deviceClass;
+    return SERVO_UNKNOWN;
 }
 
 int widgetSerialScan::getMinRange()

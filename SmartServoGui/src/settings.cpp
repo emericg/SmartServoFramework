@@ -32,8 +32,8 @@ Settings::Settings(QWidget *parent):
     QWidget(parent),
     ui(new Ui::Settings)
 {
-    // UI
     ui->setupUi(this);
+    loadSettings();
 }
 
 Settings::~Settings()
@@ -80,7 +80,7 @@ void Settings::addPortWidgets(const portConfig portCfg, int row)
 void Settings::loadSerialPorts()
 {
     int row = 1;
-    m_settings.beginGroup("portsConfig");
+    m_settings.beginGroup("serialport");
     for (auto portInfo : QSerialPortInfo::availablePorts()) {
         m_settings.beginGroup(portInfo.systemLocation());
 
@@ -101,37 +101,43 @@ void Settings::loadSerialPorts()
 
 void Settings::loadSettings()
 {
-    // settings
-    m_settings.beginGroup("portsConfig");
-
+    m_settings.beginGroup("gui");
     ui_pause = m_settings.value("pause", false).toBool();
+    m_settings.endGroup();
+
+    m_settings.beginGroup("controller");
     ctrl_autoscan = m_settings.value("ctrl_autoscan", true).toBool();
     ctrl_locks = m_settings.value("ctrl_locks", true).toBool();
     ctrl_freq = m_settings.value("ctrl_freq", 10).toInt();
+    m_settings.endGroup();
 
     ui->checkBox_pause->setChecked(ui_pause);
     ui->checkBox_autoscan->setChecked(ctrl_autoscan);
     ui->checkBox_locks->setChecked(ctrl_locks);
     ui->spinBox_freq->setValue(ctrl_freq);
-    m_settings.endGroup();
 
     loadSerialPorts();
 }
 
 void Settings::on_pushButton_save_clicked()
 {
-    m_settings.beginGroup("portsConfig");
 
     ui_pause = ui->checkBox_pause->isChecked();
     ctrl_autoscan = ui->checkBox_autoscan->isChecked();
     ctrl_locks = ui->checkBox_locks->isChecked();
     ctrl_freq = ui->spinBox_freq->value();
 
+    m_settings.beginGroup("gui");
     m_settings.setValue("pause", ui_pause);
+    m_settings.endGroup();
+
+    m_settings.beginGroup("controller");
     m_settings.setValue("ctrl_autoscan", ctrl_autoscan);
     m_settings.setValue("ctrl_locks", ctrl_locks);
     m_settings.setValue("ctrl_freq", ctrl_freq);
+    m_settings.endGroup();
 
+    m_settings.beginGroup("serialport");
     for (int row = 1; row<(serial_ports.count() + 1); row++) {
         QString portName = static_cast<QLabel*>(
                     ui->gridLayoutPortsPort->itemAtPosition(row, Col_PortName)->widget())->text();
