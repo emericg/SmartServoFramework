@@ -15,7 +15,7 @@ before_install:
 install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
       sudo apt-get install g++-7 -y;
-      sudo apt-get install qt510base qt510svg qt510imageformats qt510tools -y;
+      sudo apt-get install qt510base qt510svg qt510imageformats qt510tools qt510serialport -y;
     fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
       brew install qt;

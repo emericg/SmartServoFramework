@@ -103,8 +103,7 @@ MainWindow::MainWindow(QWidget *parent):
 
     // Setting window
     stw = new Settings();
-    stw->readSettings();
-    stw->loadSettings();
+    connect(stw, &Settings::settingsSaved, this, &MainWindow::reloadPortSettings);
 
 #ifdef Q_OS_OSX
     ui->toolBar->setStyleSheet("");
@@ -262,6 +261,8 @@ void MainWindow::scanSerialPorts(bool autoScanDevices)
     ui->frameDevices->setDisabled(true);
     helpScreen(true);
 
+    stw->reloadPorts();
+
     // Clean the deviceTreeWidget content
     while (QWidget *item = ui->deviceTreeWidget->childAt(0,0))
     {
@@ -359,10 +360,13 @@ void MainWindow::scanSerialPorts(bool autoScanDevices)
             // search for saved settings
             if (stw)
             {
-                portConfig *pc = stw->getSerialPortConfig(p);
+                const portConfig *pc = stw->getSerialPortConfig(helper->deviceName_qstr);
                 if (pc)
                 {
-                    helper->deviceWidget->setSavedParameters(pc->protocol, pc->speed);
+                    helper->deviceWidget->setSavedParameters(pc->protocol,
+                                                             pc->speed,
+                                                             pc->firstAddress,
+                                                             pc->lastAddress);
                 }
             }
 
@@ -2123,5 +2127,12 @@ void MainWindow::modifier(int row, int column)
                 }
             }
         }
+    }
+}
+
+void MainWindow::reloadPortSettings()
+{
+    for (SerialPortHelper *helper : serialPorts) {
+        helper->deviceWidget->loadSavedParameters();
     }
 }

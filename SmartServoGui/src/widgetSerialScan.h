@@ -23,6 +23,9 @@
 #ifndef WIDGET_SERIAL_SCAN_H
 #define WIDGET_SERIAL_SCAN_H
 
+#include "SmartServoFramework/ServoTools.h"
+
+#include <QSettings>
 #include <QWidget>
 
 namespace Ui {
@@ -32,17 +35,38 @@ class widgetSerialScan;
 class widgetSerialScan : public QWidget
 {
     Q_OBJECT
+    enum PortMode {
+        Auto,
+        Manual,
+
+        DXL_V1_1Mb,
+        DXL_V1_115k,
+        DXL_V1_57p6k,
+
+        DXL_V2_1Mb,
+        DXL_V2_115k,
+        DXL_V2_57p6k,
+
+        HKX_1Mb,
+        HKX_115k,
+        HKX_57p6k,
+
+        Saved
+    };
 
     Ui::widgetSerialScan *ui;
 
-    int saved_protocol = -1;
+    ServoProtocol saved_protocol = ServoProtocol::PROTOCOL_UNKNOWN;
     int saved_speed = -1;
 
+    QSettings m_settings;
+
 public:
-    explicit widgetSerialScan(QString &port, QWidget *parent = 0);
+    explicit widgetSerialScan(QString &port, QWidget *parent = nullptr);
     ~widgetSerialScan();
 
-    void setSavedParameters(int protocol, int speed);
+    void setSavedParameters(ServoProtocol protocol, int speed, int firstAddress = 0, int lastAddress = 253);
+    void loadSavedParameters();
 
     std::string getDeviceName();
     bool isSelected();
@@ -50,14 +74,16 @@ public:
     int getCurrentIndex();
 
     int getCurrentSpeed(int index = -1);
-    int getCurrentProtocol(int index = -1);
+    ServoProtocol getCurrentProtocol(int index = -1);
     int getCurrentDeviceClass(int index = -1);
     int getMinRange();
     int getMaxRange();
 
-public slots:
+private slots:
     void on_portMode_currentIndexChanged(int index);
     void on_portScanButton_clicked();
+    void on_rangeStop_spinBox_valueChanged(int arg1);
+    void on_rangeStart_spinBox_valueChanged(int arg1);
 
 signals:
     void scanButton(QString port);

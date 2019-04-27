@@ -39,23 +39,60 @@ widgetSerialScan::widgetSerialScan(QString &port, QWidget *parent) :
     ui->wProtocol->hide();
     ui->wSpeed->hide();
     ui->wRange->hide();
+    loadSavedParameters();
 }
 
 widgetSerialScan::~widgetSerialScan()
 {
+    if (ui->portMode->currentIndex() == Manual) {
+        m_settings.beginGroup("serialport");
+        m_settings.beginGroup(ui->portName->text());
+        m_settings.setValue("firstAddress", ui->rangeStart_spinBox->value());
+        m_settings.setValue("lastAddress", ui->rangeStop_spinBox->value());
+        m_settings.endGroup(); // end port
+        m_settings.endGroup(); // end serialport
+    }
     delete ui;
 }
 
-void widgetSerialScan::setSavedParameters(int protocol, int speed)
+void widgetSerialScan::setSavedParameters(ServoProtocol protocol, int speed, int firstAddress, int lastAddress)
 {
     saved_protocol = protocol;
     saved_speed = speed;
-    ui->comboBox_protocol->setCurrentIndex(saved_protocol-1);
-    ui->spinBox_speed->setValue(saved_speed);
+    ui->comboBox_protocol->setCurrentProcotol(protocol);
+    ui->comboBox_baudrate->setBaudrate(saved_speed);
 
     if (ui->portMode->itemText(ui->portMode->count()-1) != tr("saved"))
         ui->portMode->addItem(tr("saved"));
     ui->portMode->setCurrentIndex(ui->portMode->count()-1);
+
+    if (firstAddress <= lastAddress) {
+        ui->rangeStart_spinBox->setValue(firstAddress);
+        ui->rangeStop_spinBox->setValue(lastAddress);
+
+
+        ui->rangeStart_spinBox->setMaximum(ui->rangeStop_spinBox->value());
+        ui->rangeStop_spinBox->setMinimum(ui->rangeStart_spinBox->value());
+    } else {
+        // malformed config
+        ui->rangeStart_spinBox->setValue(0);
+        ui->rangeStart_spinBox->setMaximum(253);
+        ui->rangeStop_spinBox->setValue(253);
+        ui->rangeStop_spinBox->setMinimum(0);
+    }
+}
+
+void widgetSerialScan::loadSavedParameters()
+{
+    m_settings.beginGroup("serialport");
+    m_settings.beginGroup(ui->portName->text());
+    ui->rangeStart_spinBox->setValue(m_settings.value("firstAddress", 0).toInt());
+    ui->rangeStop_spinBox->setValue(m_settings.value("lastAddress", 253).toInt());
+    ui->comboBox_protocol->setCurrentProcotol(static_cast<ServoProtocol>(m_settings.value("protocol", ServoProtocol::PROTOCOL_DXLv1).toInt()));
+    ui->comboBox_baudrate->setBaudrate(m_settings.value("speed", 1000000).toInt());
+    ui->portName->setChecked(m_settings.value("enabled", false).toBool());
+    m_settings.endGroup(); // end port
+    m_settings.endGroup(); // end serialport
 }
 
 std::string widgetSerialScan::getDeviceName()
@@ -79,34 +116,29 @@ int widgetSerialScan::getCurrentSpeed(int index)
     if (index == -1)
         index = ui->portMode->currentIndex();
 
-    switch (index)
+    switch (static_cast<PortMode>(index))
     {
-    case 1:
-        speed = ui->spinBox_speed->value();
+    case Manual:
+        speed = ui->comboBox_baudrate->currentBaudrate();
         break;
-
-    case 2:
-    case 5:
-    case 8:
+    case DXL_V1_1Mb:
+    case DXL_V2_1Mb:
+    case HKX_1Mb:
         speed = 1000000;
         break;
-
-    case 3:
-    case 6:
-    case 9:
+    case DXL_V1_115k:
+    case DXL_V2_115k:
+    case HKX_115k:
         speed = 115200;
         break;
-
-    case 4:
-    case 7:
-    case 10:
+    case DXL_V1_57p6k:
+    case DXL_V2_57p6k:
+    case HKX_57p6k:
         speed = 57600;
         break;
-
-    case 11:
+    case Saved:
         speed = saved_speed;
         break;
-
     default:
         break;
     }
@@ -114,109 +146,88 @@ int widgetSerialScan::getCurrentSpeed(int index)
     return speed;
 }
 
-int widgetSerialScan::getCurrentProtocol(int index)
+ServoProtocol widgetSerialScan::getCurrentProtocol(int index)
 {
-    int protocol = 0;
     if (index == -1)
         index = ui->portMode->currentIndex();
 
     switch (index)
     {
-    case 1:
-        protocol = ui->comboBox_protocol->currentIndex() + 1;
-        break;
-
-    case 2:
-    case 3:
-    case 4:
-        protocol = PROTOCOL_DXLv1;
-        break;
-
-    case 5:
-    case 6:
-    case 7:
-        protocol = PROTOCOL_DXLv2;
-        break;
-
-    case 8:
-    case 9:
-    case 10:
-        protocol = PROTOCOL_HKX;
-        break;
-
-    case 11:
-        protocol = saved_protocol;
-        break;
-
-    default:
-        break;
+    case Manual:
+        return ui->comboBox_protocol->currentProtocol();
+    case DXL_V1_1Mb:
+    case DXL_V1_115k:
+    case DXL_V1_57p6k:
+        return PROTOCOL_DXLv1;
+    case DXL_V2_1Mb:
+    case DXL_V2_115k:
+    case DXL_V2_57p6k:
+        return PROTOCOL_DXLv2;
+    case HKX_1Mb:
+    case HKX_115k:
+    case HKX_57p6k:
+        return PROTOCOL_HKX;
+    case Saved:
+        return saved_protocol;
     }
-
-    return protocol;
+    return  PROTOCOL_UNKNOWN;
 }
 
 int widgetSerialScan::getCurrentDeviceClass(int index)
 {
-    int deviceClass = 0;
     if (index == -1)
         index = ui->portMode->currentIndex();
 
     switch (index)
     {
-    case 1:
-    case 11:
-        if (ui->comboBox_protocol->currentIndex() == 0)
-            deviceClass = SERVO_MX;
-        else if (ui->comboBox_protocol->currentIndex() == 1)
-            deviceClass = SERVO_XL;
-        else if (ui->comboBox_protocol->currentIndex() == 2)
-            deviceClass = SERVO_DRS;
+    case Manual:
+    case Saved:
+        switch (ui->comboBox_protocol->currentProtocol()) {
+        case PROTOCOL_UNKNOWN:
+            return SERVO_UNKNOWN;
+        case PROTOCOL_DXLv1:
+            return SERVO_MX;
+        case PROTOCOL_DXLv2:
+            return SERVO_XL;
+        case PROTOCOL_HKX:
+            return SERVO_DRS;
+        }
         break;
-
-    case 2:
-    case 3:
-    case 4:
-        deviceClass = SERVO_MX;
-        break;
-
-    case 5:
-    case 6:
-    case 7:
-        deviceClass = SERVO_XL;
-        break;
-
-    case 8:
-    case 9:
-    case 10:
-        deviceClass = SERVO_DRS;
-        break;
-
-    default:
-        break;
+    case DXL_V1_1Mb:
+    case DXL_V1_115k:
+    case DXL_V1_57p6k:
+        return SERVO_MX;
+    case DXL_V2_1Mb:
+    case DXL_V2_115k:
+    case DXL_V2_57p6k:
+        return SERVO_XL;
+    case HKX_1Mb:
+    case HKX_115k:
+    case HKX_57p6k:
+        return SERVO_DRS;
     }
-
-    return deviceClass;
+    return SERVO_UNKNOWN;
 }
 
 int widgetSerialScan::getMinRange()
 {
-    if (ui->portMode->currentIndex() == 1)
+    if (ui->portMode->currentIndex() == Manual
+            || ui->portMode->currentIndex() == Saved)
         return ui->rangeStart_spinBox->value();
-
     return 0;
 }
 
 int widgetSerialScan::getMaxRange()
 {
-    if (ui->portMode->currentIndex() == 1)
+    if (ui->portMode->currentIndex() == Manual
+            || ui->portMode->currentIndex() == Saved)
         return ui->rangeStop_spinBox->value();
-
     return 253;
 }
 
 void widgetSerialScan::on_portMode_currentIndexChanged(int index)
 {
-    if (index == 1)
+    if (index == Manual)
     {
         // manual settings
         ui->wProtocol->show();
@@ -225,12 +236,12 @@ void widgetSerialScan::on_portMode_currentIndexChanged(int index)
     }
     else
     {
-        if (index == 11)
+        if (index == Saved)
         {
             // saved settings
             ui->portMode->setCurrentIndex(ui->portMode->count()-1);
-            ui->comboBox_protocol->setCurrentIndex(saved_protocol-1);
-            ui->spinBox_speed->setValue(saved_speed);
+            ui->comboBox_protocol->setCurrentProcotol(saved_protocol);
+            ui->comboBox_baudrate->setBaudrate(saved_speed);
         }
 
         ui->wProtocol->hide();
@@ -242,4 +253,14 @@ void widgetSerialScan::on_portMode_currentIndexChanged(int index)
 void widgetSerialScan::on_portScanButton_clicked()
 {
     emit scanButton(ui->portName->text());
+}
+
+void widgetSerialScan::on_rangeStop_spinBox_valueChanged(int arg1)
+{
+    ui->rangeStart_spinBox->setMaximum(arg1);
+}
+
+void widgetSerialScan::on_rangeStart_spinBox_valueChanged(int arg1)
+{
+    ui->rangeStop_spinBox->setMinimum(arg1);
 }

@@ -134,6 +134,8 @@ private slots:
 
     void modifier(int row, int column);
 
+    void reloadPortSettings();
+
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();

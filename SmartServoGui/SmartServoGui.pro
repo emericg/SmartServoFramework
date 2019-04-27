@@ -7,7 +7,7 @@ DESTDIR     = bin/
 
 TEMPLATE    = app
 CONFIG     += c++11
-QT         += core svg gui widgets
+QT         += core svg gui widgets serialport
 
 RCC_DIR     = build/
 UI_DIR      = build/
@@ -100,7 +100,9 @@ SOURCES    += src/main.cpp \
               src/widgetSerialError.cpp \
               src/widgetRegisterTable.cpp \
               src/qabout.cpp \
-              src/settings.cpp
+              src/settings.cpp \
+              src/protocolcombobox.cpp \
+              src/baudratecombobox.cpp
 
 HEADERS    += src/mainwindow.h \
               src/tabSerial.h \
@@ -109,7 +111,9 @@ HEADERS    += src/mainwindow.h \
               src/widgetSerialError.h \
               src/widgetRegisterTable.h \
               src/qabout.h \
-              src/settings.h
+              src/settings.h \
+              src/protocolcombobox.h \
+              src/baudratecombobox.h
 
 FORMS      += ui/mainwindow.ui \
               ui/advancescanner.ui \

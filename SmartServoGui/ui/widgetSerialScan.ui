@@ -216,23 +216,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="comboBox_protocol">
-           <item>
-            <property name="text">
-             <string>Dynamixel v1</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Dynamixel v2</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>HerkuleX</string>
-            </property>
-           </item>
-          </widget>
+          <widget class="ProtocolComboBox" name="comboBox_protocol"/>
          </item>
         </layout>
        </widget>
@@ -263,17 +247,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QSpinBox" name="spinBox_speed">
-           <property name="minimum">
-            <number>9600</number>
-           </property>
-           <property name="maximum">
-            <number>4500000</number>
-           </property>
-           <property name="value">
-            <number>1000000</number>
-           </property>
-          </widget>
+          <widget class="BaudrateComboBox" name="comboBox_baudrate"/>
          </item>
         </layout>
        </widget>
@@ -314,8 +288,14 @@
            <property name="toolTip">
             <string notr="true"/>
            </property>
+           <property name="minimum">
+            <number>0</number>
+           </property>
            <property name="maximum">
             <number>252</number>
+           </property>
+           <property name="value">
+            <number>0</number>
            </property>
           </widget>
          </item>
@@ -371,6 +351,18 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ProtocolComboBox</class>
+   <extends>QComboBox</extends>
+   <header>src/protocolcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>BaudrateComboBox</class>
+   <extends>QComboBox</extends>
+   <header>src/baudratecombobox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../resources/resources.qrc"/>
  </resources>
