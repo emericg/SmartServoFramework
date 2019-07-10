@@ -524,7 +524,6 @@ void ServoHerkuleX::setTorqueEnabled(int torque)
     else
     {
         TRACE_ERROR(HKX, "[#%i]  setTorqueEnabled(%i) [VALUE ERROR]", servoId, torque);
-
     }
 }
 

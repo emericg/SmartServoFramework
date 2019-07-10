@@ -118,16 +118,16 @@ SmartServoGui is a fully featured Qt GUI application that helps you discover dev
 
 ### Developers
 
-You can browse the code here on GitHub, submit patches and pull requests! Your help would be greatly appreciated ;-)
+You can browse the code on the GitHub page, submit patches and pull requests! Your help would be greatly appreciated ;-)
 
 ### Users
 
-You can help us finding bugs, proposing new features and more! Visit the "Issues" section in the GitHub menu to start.
+You can help us find and report bugs, propose new features, help with the documentation and more! Visit the Issues section of the GitHub page to start!
 
-## Licensing
+## License
 
-SmartServoFramework is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
-[Consult the licence on the FSF website](http://www.gnu.org/licenses/lgpl-3.0.txt).
+SmartServoFramework is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.  
+Read the [LICENSE](LICENSE) file or [consult the license on the FSF website](https://www.gnu.org/licenses/lgpl-3.0.txt) directly.
 
 Copyright (c) 2014, INRIA, All rights reserved.  
 Emeric Grange <emeric.grange@gmail.com>  

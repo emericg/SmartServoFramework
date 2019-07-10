@@ -69,7 +69,6 @@ typedef struct RegisterInfos
     int reg_value_def;   //!< Default (or initial) value
     int reg_value_min;   //!< Minimum value
     int reg_value_max;   //!< Maximum value
-
 } RegisterInfos;
 
 /* ************************************************************************** */

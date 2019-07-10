@@ -121,7 +121,6 @@ void Settings::loadSettings()
 
 void Settings::on_pushButton_save_clicked()
 {
-
     ui_pause = ui->checkBox_pause->isChecked();
     ctrl_autoscan = ui->checkBox_autoscan->isChecked();
     ctrl_locks = ui->checkBox_locks->isChecked();

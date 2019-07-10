@@ -70,7 +70,6 @@ void widgetSerialScan::setSavedParameters(ServoProtocol protocol, int speed, int
         ui->rangeStart_spinBox->setValue(firstAddress);
         ui->rangeStop_spinBox->setValue(lastAddress);
 
-
         ui->rangeStart_spinBox->setMaximum(ui->rangeStop_spinBox->value());
         ui->rangeStop_spinBox->setMinimum(ui->rangeStart_spinBox->value());
     } else {
