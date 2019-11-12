@@ -99,11 +99,11 @@ MainWindow::MainWindow(QWidget *parent):
 
     // Initialize device "self refresh" loop
     selfRefreshTimer = new QTimer(this);
-    connect(selfRefreshTimer, SIGNAL(timeout()), this, SLOT(servoUpdate()));
+    QObject::connect(selfRefreshTimer, SIGNAL(timeout()), this, SLOT(servoUpdate()));
 
     // Setting window
     stw = new Settings();
-    connect(stw, &Settings::settingsSaved, this, &MainWindow::reloadPortSettings);
+    QObject::connect(stw, SIGNAL(settingsSaved), this, SLOT(reloadPortSettings));
 
 #ifdef Q_OS_OSX
     ui->toolBar->setStyleSheet("");
