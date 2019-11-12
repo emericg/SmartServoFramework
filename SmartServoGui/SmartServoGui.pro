@@ -3,16 +3,25 @@
 #-------------------------------------------------------------------------------
 
 TARGET      = SmartServoGui
-DESTDIR     = bin/
 
 TEMPLATE    = app
 CONFIG     += c++11
 QT         += core svg gui widgets serialport
 
+# Validate Qt version
+if (lessThan(QT_MAJOR_VERSION, 5) | lessThan(QT_MINOR_VERSION, 6)) {
+    error("You need Qt 5.6 to build $${TARGET}...")
+}
+
+# Build artifacts ##############################################################
+
 RCC_DIR     = build/
 UI_DIR      = build/
 MOC_DIR     = build/
 OBJECTS_DIR = build/
+DESTDIR     = bin/
+
+# Build settings ###############################################################
 
 ## QtSerialPort
 #QT_VERSION = $$[QT_VERSION]
@@ -71,7 +80,7 @@ win32 {
     }
 }
 
-# SmartServoFramework
+# SmartServoFramework sources
 contains(CONFIG, SSF_SYSTEM) {
     # Use SmartServoFramework library from the system
     unix {
@@ -90,6 +99,8 @@ contains(CONFIG, SSF_SYSTEM) {
     SOURCES += $${SSF_DIR}/SmartServoFramework/*.cpp
     HEADERS += $${SSF_DIR}/SmartServoFramework/*.h
 }
+
+# Project files ################################################################
 
 # SmartServoGui sources
 SOURCES    += src/main.cpp \
@@ -133,7 +144,7 @@ RC_ICONS    = resources/app/smartservogui.ico
 # Then "lrelease SmartServoGui.pro" to build translated files
 TRANSLATIONS = resources/lang/es.ts resources/lang/fr.ts resources/lang/it.ts
 
-# Deployment -------------------------------------------------------------------
+# Deployment ###################################################################
 
 win32 {
     # Application packaging
