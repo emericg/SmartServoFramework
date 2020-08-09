@@ -147,7 +147,7 @@ int serialPortsScanner(std::vector <std::string> &availableSerialPorts)
     if (classesToMatch != nullptr)
     {
         // Look for devices that claim to be modems (will pick up usb adapters, but not regular RS232 ports)
-        CFDictionarySetValue(classesToMatch, CFSTR(kIOSerialBSDTypeKey), CFSTR(kIOSerialBSDModemType));
+        CFDictionarySetValue(classesToMatch, CFSTR(kIOSerialBSDTypeKey), CFSTR(kIOSerialBSDAllTypes));
 
         // Get an iterator across all matching devices.
         kernResult = IOServiceGetMatchingServices(kIOMasterPortDefault, classesToMatch, &serialPortIterator);
