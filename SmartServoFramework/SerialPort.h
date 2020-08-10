@@ -211,7 +211,7 @@ public:
     virtual bool isOpen() = 0;
 
     /*!
-     * \brief Flush incoming datas and close the serial link file handle.
+     * \brief Flush incoming data and close the serial link file handle.
      */
     virtual void closeLink() = 0;
 

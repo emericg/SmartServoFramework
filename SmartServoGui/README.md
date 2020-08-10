@@ -33,7 +33,7 @@ You will need a modern C++11 capable compiler:
 * MSVC >= 2015  
 
 Libraries:
-* Qt 5  
+* Qt 5.6+  
 * SmartServoFramework (we got this one covered)  
 
 ### Hardware
