@@ -1,7 +1,7 @@
-SmartServoFramework 0.99
-========================
+SmartServoFramework 0.100
+=========================
 
-[![Build Status](https://travis-ci.org/emericg/SmartServoFramework.svg?branch=master)](https://travis-ci.org/emericg/SmartServoFramework)
+[![Build Status](https://travis-ci.org/emericg/SmartServoFramework.svg?branch=master)](https://travis-ci.com/emericg/SmartServoFramework)
 [![Build status](https://ci.appveyor.com/api/projects/status/doqnmp6jrlqjyt22?svg=true)](https://ci.appveyor.com/project/emericg/smartservoframework)
 [![License: LGPL v3](https://img.shields.io/badge/license-LGPL%20v3-green.svg)](http://www.gnu.org/licenses/lgpl-3.0)
 

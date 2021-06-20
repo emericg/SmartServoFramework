@@ -5,7 +5,7 @@
 project(SmartServoFramework)
 
 set(SmartServoFramework_VERSION_MAJOR 0)
-set(SmartServoFramework_VERSION_MINOR 99)
+set(SmartServoFramework_VERSION_MINOR 100)
 set(SmartServoFramework_VERSION_PATCH 0)
 
 cmake_minimum_required(VERSION 3.0)

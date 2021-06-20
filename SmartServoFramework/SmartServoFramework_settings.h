@@ -30,10 +30,10 @@
 /* ************************************************************************** */
 
 #define SmartServoFramework_VERSION_MAJOR 0
-#define SmartServoFramework_VERSION_MINOR 0
+#define SmartServoFramework_VERSION_MINOR 100
 #define SmartServoFramework_VERSION_PATCH 0
 
-#define ENABLE_DEBUG        1  //!< Toggle debug and trace output
+#define ENABLE_DEBUG        0  //!< Toggle debug and trace output
 #define ENABLE_COLORS       1  //!< Toggle colored terminal output
 
 /* ************************************************************************** */
