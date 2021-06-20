@@ -109,17 +109,17 @@ void widgetRegisterTable::generateRegisterTableHerkuleX(const int servo_serie, c
         ui->tableWidget->setVerticalHeaderItem(row, new QTableWidgetItem(""));
         QTableWidgetItem *item_title = new QTableWidgetItem(tr("EEPROM registers"));
         item_title->setFont(font);
-        item_title->setTextColor(white);
+        item_title->setForeground(white);
         item_title->setFlags(item_title->flags() ^ Qt::ItemIsEditable ^ Qt::ItemIsSelectable);
-        item_title->setBackgroundColor(legend);
+        item_title->setBackground(legend);
         ui->tableWidget->setItem(row, 0, item_title);
         QTableWidgetItem *item_spacer1 = new QTableWidgetItem("");
         item_spacer1->setFlags(item_spacer1->flags() ^ Qt::ItemIsEditable ^ Qt::ItemIsSelectable);
-        item_spacer1->setBackgroundColor(legend);
+        item_spacer1->setBackground(legend);
         ui->tableWidget->setItem(row, 1, item_spacer1);
         QTableWidgetItem *item_spacer2 = new QTableWidgetItem("");
         item_spacer2->setFlags(item_spacer2->flags() ^ Qt::ItemIsEditable ^ Qt::ItemIsSelectable);
-        item_spacer2->setBackgroundColor(legend);
+        item_spacer2->setBackground(legend);
         ui->tableWidget->setItem(row, 2, item_spacer2);
         row++;
     }
@@ -159,8 +159,8 @@ void widgetRegisterTable::generateRegisterTableHerkuleX(const int servo_serie, c
             description->setFlags(description->flags() ^ Qt::ItemIsEditable);
             if (getRegisterAccessMode(ct, reg_name) == READ_ONLY)
             {
-                description->setBackgroundColor(orange);
-                rom_value->setBackgroundColor(orange);
+                description->setBackground(orange);
+                rom_value->setBackground(orange);
                 rom_value->setTextAlignment(Qt::AlignCenter);
                 rom_value->setFlags(rom_value->flags() ^ Qt::ItemIsEditable);
                 ram_value->setBackground(br_ro);
@@ -168,8 +168,8 @@ void widgetRegisterTable::generateRegisterTableHerkuleX(const int servo_serie, c
             }
             else
             {
-                description->setBackgroundColor(green);
-                rom_value->setBackgroundColor(green);
+                description->setBackground(green);
+                rom_value->setBackground(green);
                 rom_value->setTextAlignment(Qt::AlignCenter);
                 ram_value->setBackground(br_rw);
                 ram_value->setFlags(ram_value->flags() ^ Qt::ItemIsEditable);
@@ -198,17 +198,17 @@ void widgetRegisterTable::generateRegisterTableHerkuleX(const int servo_serie, c
         ui->tableWidget->setVerticalHeaderItem(row, new QTableWidgetItem(""));
         QTableWidgetItem *item_title = new QTableWidgetItem(tr("Registers"));
         item_title->setFont(font);
-        item_title->setTextColor(white);
+        item_title->setForeground(white);
         item_title->setFlags(item_title->flags() ^ Qt::ItemIsEditable ^ Qt::ItemIsSelectable);
-        item_title->setBackgroundColor(legend);
+        item_title->setBackground(legend);
         ui->tableWidget->setItem(row, 0, item_title);
         QTableWidgetItem *item_spacer1 = new QTableWidgetItem("");
         item_spacer1->setFlags(item_spacer1->flags() ^ Qt::ItemIsEditable ^ Qt::ItemIsSelectable);
-        item_spacer1->setBackgroundColor(legend);
+        item_spacer1->setBackground(legend);
         ui->tableWidget->setItem(row, 1, item_spacer1);
         QTableWidgetItem *item_spacer2 = new QTableWidgetItem("");
         item_spacer2->setFlags(item_spacer2->flags() ^ Qt::ItemIsEditable ^ Qt::ItemIsSelectable);
-        item_spacer2->setBackgroundColor(legend);
+        item_spacer2->setBackground(legend);
         ui->tableWidget->setItem(row, 2, item_spacer2);
         row++;
     }
@@ -248,20 +248,20 @@ void widgetRegisterTable::generateRegisterTableHerkuleX(const int servo_serie, c
             description->setFlags(description->flags() ^ Qt::ItemIsEditable);
             if (getRegisterAccessMode(ct, reg_name) == READ_ONLY)
             {
-                description->setBackgroundColor(orange);
-                rom_value->setBackgroundColor(grey);
+                description->setBackground(orange);
+                rom_value->setBackground(grey);
                 rom_value->setTextAlignment(Qt::AlignCenter);
                 rom_value->setFlags(rom_value->flags() ^ Qt::ItemIsEditable);
-                ram_value->setBackgroundColor(orange);
+                ram_value->setBackground(orange);
                 ram_value->setTextAlignment(Qt::AlignCenter);
                 ram_value->setFlags(ram_value->flags() ^ Qt::ItemIsEditable);
             }
             else
             {
-                description->setBackgroundColor(green);
-                rom_value->setBackgroundColor(green);
+                description->setBackground(green);
+                rom_value->setBackground(green);
                 rom_value->setTextAlignment(Qt::AlignCenter);
-                ram_value->setBackgroundColor(green);
+                ram_value->setBackground(green);
                 ram_value->setTextAlignment(Qt::AlignCenter);
             }
 
@@ -284,17 +284,17 @@ void widgetRegisterTable::generateRegisterTableHerkuleX(const int servo_serie, c
         ui->tableWidget->setVerticalHeaderItem(row, new QTableWidgetItem(""));
         QTableWidgetItem *item_title = new QTableWidgetItem(tr("RAM registers"));
         item_title->setFont(font);
-        item_title->setTextColor(white);
+        item_title->setForeground(white);
         item_title->setFlags(item_title->flags() ^ Qt::ItemIsEditable ^ Qt::ItemIsSelectable);
-        item_title->setBackgroundColor(legend);
+        item_title->setBackground(legend);
         ui->tableWidget->setItem(row, 0, item_title);
         QTableWidgetItem *item_spacer1 = new QTableWidgetItem("");
         item_spacer1->setFlags(item_spacer1->flags() ^ Qt::ItemIsEditable ^ Qt::ItemIsSelectable);
-        item_spacer1->setBackgroundColor(legend);
+        item_spacer1->setBackground(legend);
         ui->tableWidget->setItem(row, 1, item_spacer1);
         QTableWidgetItem *item_spacer2 = new QTableWidgetItem("");
         item_spacer2->setFlags(item_spacer2->flags() ^ Qt::ItemIsEditable ^ Qt::ItemIsSelectable);
-        item_spacer2->setBackgroundColor(legend);
+        item_spacer2->setBackground(legend);
         ui->tableWidget->setItem(row, 2, item_spacer2);
         row++;
     }
@@ -334,19 +334,19 @@ void widgetRegisterTable::generateRegisterTableHerkuleX(const int servo_serie, c
             description->setFlags(description->flags() ^ Qt::ItemIsEditable);
             if (getRegisterAccessMode(ct, reg_name) == READ_ONLY)
             {
-                description->setBackgroundColor(orange);
+                description->setBackground(orange);
                 rom_value->setBackground(br_ro);
                 rom_value->setFlags(rom_value->flags() ^ Qt::ItemIsEditable);
-                ram_value->setBackgroundColor(orange);
+                ram_value->setBackground(orange);
                 ram_value->setTextAlignment(Qt::AlignCenter);
                 ram_value->setFlags(ram_value->flags() ^ Qt::ItemIsEditable);
             }
             else
             {
-                description->setBackgroundColor(green);
+                description->setBackground(green);
                 rom_value->setBackground(br_rw);
                 rom_value->setFlags(rom_value->flags() ^ Qt::ItemIsEditable);
-                ram_value->setBackgroundColor(green);
+                ram_value->setBackground(green);
                 ram_value->setTextAlignment(Qt::AlignCenter);
             }
 
@@ -386,13 +386,13 @@ void widgetRegisterTable::generateRegisterTableDynamixel(const int servo_serie, 
         ui->tableWidget->setVerticalHeaderItem(row, new QTableWidgetItem(""));
         QTableWidgetItem *item_title = new QTableWidgetItem(tr("EEPROM registers"));
         item_title->setFont(font);
-        item_title->setTextColor(white);
+        item_title->setForeground(white);
         item_title->setFlags(item_title->flags() ^ Qt::ItemIsEditable ^ Qt::ItemIsSelectable);
-        item_title->setBackgroundColor(legend);
+        item_title->setBackground(legend);
         ui->tableWidget->setItem(row, 0, item_title);
         QTableWidgetItem *item_spacer1 = new QTableWidgetItem("");
         item_spacer1->setFlags(item_spacer1->flags() ^ Qt::ItemIsEditable ^ Qt::ItemIsSelectable);
-        item_spacer1->setBackgroundColor(legend);
+        item_spacer1->setBackground(legend);
         ui->tableWidget->setItem(row, 1, item_spacer1);
         row++;
     }
@@ -425,15 +425,15 @@ void widgetRegisterTable::generateRegisterTableDynamixel(const int servo_serie, 
             description->setFlags(description->flags() ^ Qt::ItemIsEditable);
             if (getRegisterAccessMode(ct, reg_name) == READ_ONLY)
             {
-                description->setBackgroundColor(orange);
-                rom_value->setBackgroundColor(orange);
+                description->setBackground(orange);
+                rom_value->setBackground(orange);
                 rom_value->setTextAlignment(Qt::AlignCenter);
                 rom_value->setFlags(rom_value->flags() ^ Qt::ItemIsEditable);
             }
             else
             {
-                description->setBackgroundColor(green);
-                rom_value->setBackgroundColor(green);
+                description->setBackground(green);
+                rom_value->setBackground(green);
                 rom_value->setTextAlignment(Qt::AlignCenter);
             }
             ui->tableWidget->setItem(row, 0, description);
@@ -459,13 +459,13 @@ void widgetRegisterTable::generateRegisterTableDynamixel(const int servo_serie, 
         ui->tableWidget->setVerticalHeaderItem(row, new QTableWidgetItem(""));
         QTableWidgetItem *item_title = new QTableWidgetItem(tr("RAM registers"));
         item_title->setFont(font);
-        item_title->setTextColor(white);
+        item_title->setForeground(white);
         item_title->setFlags(item_title->flags() ^ Qt::ItemIsEditable ^ Qt::ItemIsSelectable);
-        item_title->setBackgroundColor(legend);
+        item_title->setBackground(legend);
         ui->tableWidget->setItem(row, 0, item_title);
         QTableWidgetItem *item_spacer1 = new QTableWidgetItem("");
         item_spacer1->setFlags(item_spacer1->flags() ^ Qt::ItemIsEditable ^ Qt::ItemIsSelectable);
-        item_spacer1->setBackgroundColor(legend);
+        item_spacer1->setBackground(legend);
         ui->tableWidget->setItem(row, 1, item_spacer1);
         row++;
     }
@@ -498,15 +498,15 @@ void widgetRegisterTable::generateRegisterTableDynamixel(const int servo_serie, 
             description->setFlags(description->flags() ^ Qt::ItemIsEditable);
             if (getRegisterAccessMode(ct, reg_name) == READ_ONLY)
             {
-                description->setBackgroundColor(orange);
-                ram_value->setBackgroundColor(orange);
+                description->setBackground(orange);
+                ram_value->setBackground(orange);
                 ram_value->setTextAlignment(Qt::AlignCenter);
                 ram_value->setFlags(ram_value->flags() ^ Qt::ItemIsEditable);
             }
             else
             {
-                description->setBackgroundColor(green);
-                ram_value->setBackgroundColor(green);
+                description->setBackground(green);
+                ram_value->setBackground(green);
                 ram_value->setTextAlignment(Qt::AlignCenter);
             }
 
@@ -530,7 +530,7 @@ void widgetRegisterTable::generateRegisterTableDynamixel(const int servo_serie, 
 
 void widgetRegisterTable::cleanRegisterTable()
 {
-    QObject::disconnect(ui->tableWidget, SIGNAL(cellChanged(int,int)), this, SIGNAL(cellChangedSignal(int, int)));
+    QObject::disconnect(ui->tableWidget, SIGNAL(cellChanged(int,int)), this, SIGNAL(cellChangedSignal(int,int)));
 
     for (int i = 0; i < ui->tableWidget->rowCount(); i++)
     {
@@ -541,7 +541,7 @@ void widgetRegisterTable::cleanRegisterTable()
         }
     }
 
-    QObject::connect(ui->tableWidget, SIGNAL(cellChanged(int,int)), this, SIGNAL(cellChangedSignal(int, int)));
+    QObject::connect(ui->tableWidget, SIGNAL(cellChanged(int,int)), this, SIGNAL(cellChangedSignal(int,int)));
 }
 
 void widgetRegisterTable::resizeTableWidget()
@@ -696,14 +696,14 @@ void widgetRegisterTable::updateRegisterTableHerkuleX(Servo *servo_hkx, const in
     ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_GOAL_TRAJECTORY),2)->setText(QString::number(servo->getValue(REG_GOAL_TRAJECTORY)));
     ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_GOAL_VELOCITY),2)->setText(QString::number(servo->getValue(REG_GOAL_VELOCITY)));
 
-    QObject::connect(ui->tableWidget, SIGNAL(cellChanged(int,int)), this, SIGNAL(cellChangedSignal(int, int)));
+    QObject::connect(ui->tableWidget, SIGNAL(cellChanged(int,int)), this, SIGNAL(cellChangedSignal(int,int)));
 }
 
 void widgetRegisterTable::updateRegisterTableDynamixel(Servo *servo_dxl, const int servoSerie, const int servoModel)
 {
     ServoDynamixel *servo = static_cast <ServoDynamixel *>(servo_dxl);
 
-    QObject::disconnect(ui->tableWidget, SIGNAL(cellChanged(int,int)), this, SIGNAL(cellChangedSignal(int, int)));
+    QObject::disconnect(ui->tableWidget, SIGNAL(cellChanged(int,int)), this, SIGNAL(cellChangedSignal(int,int)));
 
     // EEPROM
     ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_MODEL_NUMBER),1)->setText(QString::fromStdString(servo->getModelString()));
@@ -815,7 +815,7 @@ void widgetRegisterTable::updateRegisterTableDynamixel(Servo *servo_dxl, const i
         ui->tableWidget->item(getTableIndex(servoSerie, servoModel, REG_HW_ERROR_STATUS),1)->setText(QString::number(static_cast<ServoXL*>(servo)->getHardwareErrorStatus()));
     }
 
-    QObject::connect(ui->tableWidget, SIGNAL(cellChanged(int,int)), this, SIGNAL(cellChangedSignal(int, int)));
+    QObject::connect(ui->tableWidget, SIGNAL(cellChanged(int,int)), this, SIGNAL(cellChangedSignal(int,int)));
 }
 
 /* ************************************************************************** */

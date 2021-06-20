@@ -87,7 +87,7 @@ void AdvanceScanner::fillWidgets_ports()
         ui->actionStartScan->setEnabled(true);
 
         int row = 0;
-        for (auto p: availablePorts)
+        for (const auto &p: availablePorts)
         {
             QTableWidgetItem *port = new QTableWidgetItem(QString::fromStdString(p));
             port->setFlags(port->flags() ^ Qt::ItemIsEditable ^ Qt::ItemIsSelectable);

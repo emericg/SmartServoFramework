@@ -81,7 +81,7 @@ void Settings::loadSerialPorts()
 {
     int row = 1;
     m_settings.beginGroup("serialport");
-    for (auto portInfo : QSerialPortInfo::availablePorts()) {
+    for (const auto &portInfo : QSerialPortInfo::availablePorts()) {
         m_settings.beginGroup(portInfo.systemLocation());
 
         struct portConfig config;
@@ -188,7 +188,7 @@ const QVector<portConfig> & Settings::getSerialPortsConfig()
 const struct portConfig * Settings::getSerialPortConfig(const QString &portPath)
 {
     int i = 0;
-    for (auto pc: serial_ports)
+    for (const auto &pc: qAsConst(serial_ports))
     {
         if (pc.enabled == true && pc.path == portPath)
         {

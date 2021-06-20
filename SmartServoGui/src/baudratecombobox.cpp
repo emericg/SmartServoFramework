@@ -29,7 +29,7 @@ BaudrateComboBox::BaudrateComboBox(QWidget *parent) :
     setEditable(true);
     QList<qint32> bauds = QSerialPortInfo::standardBaudRates();
     std::sort(bauds.begin(), bauds.end());
-    for (qint32 baud :bauds ) {
+    for (qint32 baud: qAsConst(bauds)) {
         if (baud >= 1200)
             addItem(QString::number(baud));
     }
@@ -49,7 +49,8 @@ void BaudrateComboBox::setBaudrate(qint32 baud)
     // if not found insert it to the list at
     // the proper position
     int index = findText(QString::number(baud));
-    for (int i = 0; i<count(); i++) {
+
+    for (int i = 0; i < count(); i++) {
         if (baud == itemText(i).toInt()) {
             setCurrentIndex(i);
             return;

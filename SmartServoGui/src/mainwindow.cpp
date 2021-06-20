@@ -301,9 +301,9 @@ void MainWindow::scanSerialPorts(bool autoScanDevices)
                 delete item;
             }
         }
-    }
 
-    ui->verticalLayout_2->update();
+        ui->verticalLayout_2->update();
+    }
 
     // Clean existing serial ports list and associated controllers
     for (auto p: serialPorts)
@@ -348,7 +348,7 @@ void MainWindow::scanSerialPorts(bool autoScanDevices)
 
         // Create "helper" structure to keep track of serial port instances
         // Create an entry inside the "scan group box" for each serial port
-        for (auto p: availablePorts)
+        for (const auto &p: availablePorts)
         {
             SerialPortHelper *helper = new SerialPortHelper();
             serialPorts.push_back(helper);
@@ -1427,7 +1427,7 @@ void MainWindow::servoUpdate()
         QObject::connect(ui->ccwlimit, SIGNAL(valueChanged(int)), this, SLOT(moveCCWLimit(int)));
         QObject::connect(ui->gpos, SIGNAL(valueChanged(int)), this, SLOT(moveServo(int)));
 
-        QObject::connect(ui->widgetRT, SIGNAL(cellChangedSignal(int,int)), this, SLOT(modifier(int, int)));
+        QObject::connect(ui->widgetRT, SIGNAL(cellChangedSignal(int,int)), this, SLOT(modifier(int,int)));
     }
     else
     {
